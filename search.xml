@@ -1,0 +1,1695 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>AES-CBC 密文填充攻击 — 深入理解和编程实现</title>
+    <url>/2020/12/01/AES-CBC-PaddingOracleAttack/</url>
+    <content><![CDATA[<p>密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证信息，实现密文破解。</p>
+<a id="more"></a>
+<div class="note success no-icon"><p><strong>Every secret creates a potential failure point.</strong><br> <strong>— <em>Bruce Schneier</em>（布鲁斯·施奈尔，美国密码学和信息安全专家、作家）</strong></p>
+</div>
+]]></content>
+      <categories>
+        <category>学习体会</category>
+      </categories>
+      <tags>
+        <tag>密码学</tag>
+        <tag>网络安全</tag>
+        <tag>Python编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解析IPv4和IPv6报文首部校验和算法</title>
+    <url>/2020/11/24/Analyze-IPv4-IPv6-checksum/</url>
+    <content><![CDATA[<p>关于IP报文首部校验和(checksum)算法，简单的说就是16位累加的反码运算，但具体是如何实现的，许多资料不得其详。TCP和UDP数据报首部也使用相同的校验算法，但参与运算的数据与IP报文首部不一样。此外，IPv6对校验和的运算与IPv4又有些许不同。因此有必要对IP分组的校验和算法作全面的解析。 <a id="more"></a></p>
+<div class="note success no-icon"><p><strong>Nothing in life is to be feared, it is only to be understood.</strong><br> <strong>— <em>Marie Curie</em>（居里夫人，波兰裔法国籍物理学家、化学家，两届诺贝尔奖得主）</strong></p>
+</div>
+<h2 id="ipv4首部校验和">IPv4首部校验和</h2>
+<p>IPv4报文首部的结构如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0                   1                   2                   3    </span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1  </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|Version|  IHL  |Type of Service|          Total Length         |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|         Identification        |Flags|      Fragment Offset    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  Time to Live |    Protocol   |        Header Checksum        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                       Source Address                          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Destination Address                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Options                    |    Padding    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<p>其中的<code>Header Checksum</code>域即为首部校验和部分。当要计算IPv4报文首部校验和时，发送方先将其置为全0，然后按16位逐一累加至IPv4报文首部结束，累加和保存于一个32位的数值中。如果总的字节数为奇数，则最后一个字节单独相加。累加完毕将结果中高16位再加到低16位上，重复这一过程直到高16位为全0。最后将结果取反存入首部校验和域。</p>
+<p>下面用实际截获的IPv4分组来演示整个计算过程：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0x0000: 00 60 47 41 11 c9 00 09 6b 7a 5b 3b 08 00 45 00 </span><br><span class="line">0x0010: 00 1c 74 68 00 00 80 11 59 8f c0 a8 64 01 ab 46 </span><br><span class="line">0x0020: 9c e9 0f 3a 04 05 00 08 7f c5 00 00 00 00 00 00 </span><br><span class="line">0x0030: 00 00 00 00 00 00 00 00 00 00 00 00</span><br></pre></td></tr></table></figure>
+<p>在上面的16进制采样中，起始为以太网 (Ethernet) 帧的开头。IPv4报文首部从地址偏移量0x000e开始，第一个字节为0x45，最后一个字节为0xe9。根据以上的算法描述，我们可以作如下计算：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(1) 0x4500 + 0x001c + 0x7468 + 0x0000 + 0x8011 +</span><br><span class="line">    0x0000 + 0xc0a8 + 0x6401 + 0xab46 + 0x9ce9 &#x3D; 0x3a66d</span><br><span class="line">(2) 0xa66d + 0x3 &#x3D; 0xa670</span><br><span class="line">(3) 0xffff - 0xa670 &#x3D; 0x598f</span><br></pre></td></tr></table></figure>
+<p>注意在第一步我们用<u>0x0000</u>设置首部校验和部分。可以看出这一报文首部的校验和与收到的值完全一致。以上的过程仅用于发送方计算初始的校验和，实际中对于中间转发的路由器和最终接收方，可将收到的IPv4报文首部校验和部分直接按同样算法相加，如果结果为<u>0xffff</u>，则校验正确。</p>
+<h2 id="c语言实现">C语言实现</h2>
+<p>如何编程计算 IPv4 首部校验和？<a href="https://tools.ietf.org/html/rfc1071">RFC 1071</a> (Computing the Internet Checksum) 给出了一个C语言的参考实现，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* Compute Internet Checksum for &quot;count&quot; bytes</span></span><br><span class="line"><span class="comment">     * beginning at location &quot;addr&quot;.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">register</span> <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>( count &gt; <span class="number">1</span> )  &#123;</span><br><span class="line">        <span class="comment">/* This is the inner loop */</span></span><br><span class="line">        sum += * (<span class="keyword">unsigned</span> <span class="keyword">short</span> *) addr++;</span><br><span class="line">        count -= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*  Add left-over byte, if any */</span></span><br><span class="line">    <span class="keyword">if</span> ( count &gt; <span class="number">0</span> )</span><br><span class="line">        sum += * (<span class="keyword">unsigned</span> <span class="keyword">char</span> *) addr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*  Fold 32-bit sum to 16 bits */</span></span><br><span class="line">    <span class="keyword">while</span> (sum&gt;&gt;<span class="number">16</span>)</span><br><span class="line">        sum = (sum &amp; <span class="number">0xffff</span>) + (sum &gt;&gt; <span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">    checksum = ~sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在实际的网络连接中，源点设备可以调用以上代码产生初始IPv4报文首部校验和。而后在每一步的路由跳转中，因为路由器必须递减首部存活时间 (Time To Live，简写TTL) 字段，所以要更新首部校验和。<a href="https://tools.ietf.org/html/rfc1141">RFC 1141</a> (Incremental Updating of the Internet Checksum) 给出了快速更新校验和的参考实现：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> sum;</span><br><span class="line">ipptr-&gt;ttl--;                  <span class="comment">/* decrement ttl */</span></span><br><span class="line">sum = ipptr-&gt;Checksum + <span class="number">0x100</span>; <span class="comment">/* increment checksum high byte*/</span></span><br><span class="line">ipptr-&gt;Checksum = (sum + (sum&gt;&gt;<span class="number">16</span>)); <span class="comment">/* add carry */</span></span><br></pre></td></tr></table></figure>
+<h2 id="tcpudp首部校验和">TCP/UDP首部校验和</h2>
+<p>对于TCP和UDP的数据报，其首部也包含16位的校验和，由目的地接收端验证。校验算法与IPv4报文首部完全一致，但参与校验的数据不同。这时校验和不仅包含整个TCP/UDP数据报，还覆盖了一个伪首部。IPv4伪首部的定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> 0      7 8     15 16    23 24    31 </span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|          source address           |</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|        destination address        |</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|  zero  |protocol| TCP&#x2F;UDP length  |</span><br><span class="line">+--------+--------+--------+--------+</span><br></pre></td></tr></table></figure>
+<p>其中有IP源地址，IP目的地址，协议号(TCP:6/UDP:17)及TCP或UDP数据报的总长度(首部+数据)。将伪首部加入校验的目的，是为了再次核对数据报是否到达正确的目的地，并防止IP欺骗攻击 (spoofing)。另外对于IPv4，UDP首部校验和是可选的，不用时该字段应被填充为全0。</p>
+<h2 id="ipv6的不同">IPv6的不同</h2>
+<p>IPv6是网际协议第6版，其设计的主要目的是为了解决IPv4地址枯竭问题，当然它在其他方面也有许多改进。虽然IPv6的使用量增长缓慢，但是其趋势不可阻挡。IPv6的最新互联网标准由<a href="https://tools.ietf.org/html/rfc8200">RFC 8200</a> (Internet Protocol, Version 6 (IPv6) Specification)规范。IPv6报文首部的结构如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|Version| Traffic Class |           Flow Label                  |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|         Payload Length        |  Next Header  |   Hop Limit   |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+                         Source Address                        +</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+                      Destination Address                      +</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<p>注意到IPv6首部并没有包含校验和字段，这也是与IPv4的一个显著不同点。IPv6协议的设计延展了互联网设计端到端原则，取消首部校验和字段简化了路由器的处理过程，加快了IPv6报文网络传输。对报文数据完整度的保护可由链路层或端点间高层协议（TCP/UDP）的差错检测功能完成。这也是为什么IPv6强制要求UDP层设定首部校验和字段的原因。</p>
+<p>对于IPv6数据报TCP/UDP首部校验和的计算，其IPv6伪首部的定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+                         Source Address                        +</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+                      Destination Address                      +</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                   Upper-Layer Packet Length                   |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                      zero                     |  Next Header  |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<h2 id="udp-lite应用">UDP-Lite应用</h2>
+<p>在实际的IPv6网络应用中，为了兼顾差错检测和传输效率，可以采用UDP-Lite（Lightweight UDP，轻量用户数据报协议）。UDP-Lite有自己的IP协议号136，其规范定义于 <a href="https://tools.ietf.org/html/rfc8200">RFC 3828</a> (The Lightweight User Datagram Protocol (UDP-Lite))。参考以下的UDP-Lite首部格式，它使用与UDP相同的<a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml">端口分配</a>，但是它将原来UDP首部的“长度”字段重定义为“校验和覆盖”（Checksum Coverage）域，这样就可以允许应用层自行控制需要计算校验和的数据长度，从而容许没被覆盖的数据部分可能有损地传输。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> 0              15 16             31</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|     Source      |   Destination   |</span><br><span class="line">|      Port       |      Port       |</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|    Checksum     |                 |</span><br><span class="line">|    Coverage     |    Checksum     |</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|                                   |</span><br><span class="line">:              Payload              :</span><br><span class="line">|                                   |</span><br><span class="line">+-----------------------------------+</span><br></pre></td></tr></table></figure>
+<p>UDP-Lite协议规定了“校验和覆盖”域的取值（以8位组为单位）：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">校验和覆盖值</th>
+<th style="text-align: center;">校验和覆盖区域</th>
+<th style="text-align: center;">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">整个UDP-Lites数据报</td>
+<td style="text-align: center;">计算要包括IP伪首部</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1-7</td>
+<td style="text-align: center;">（无效值）</td>
+<td style="text-align: center;">接收方必须抛弃数据报</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">UDP-Lites首部</td>
+<td style="text-align: center;">计算要包括IP伪首部</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">&gt; 8</td>
+<td style="text-align: center;">UDP-Lites 首部 + 部分负载数据 (payload)</td>
+<td style="text-align: center;">计算要包括IP伪首部</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">&gt; IP 数据报长度</td>
+<td style="text-align: center;">（无效值）</td>
+<td style="text-align: center;">接收方必须抛弃数据报</td>
+</tr>
+</tbody>
+</table>
+<p>对于多媒体应用，采用VoIP或流视频数据传输协议，接收有一定程度损坏的数据比没接收到任何数据要好。另一个实例，是思科（Cisco）的无线局域网控制器和无线接入点之间的连接所基于的 <a href="https://tools.ietf.org/html/rfc5415">CAPWAP</a> 协议规范，它就规定了当连接建立于IPv6网络之上时，其数据通道缺省使用校验和覆盖值为8的UDP-Lite协议。</p>
+<p>最后，分享一小段C程序，示例如何初始化Berkeley套接字 (socket) 以建立 IPv6 UDP-Lite 连接：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;net/udplite.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> udplite_conn = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDPLITE);</span><br><span class="line"><span class="keyword">int</span> val = <span class="number">8</span>;    <span class="comment">/* 校验和只覆盖8字节的UDP-Lite首部 */</span></span><br><span class="line">(<span class="keyword">void</span>)setsockopt(udplite_conn, IPPROTO_UDPLITE, UDPLITE_SEND_CSCOV, &amp;val, <span class="keyword">sizeof</span> val);</span><br><span class="line">(<span class="keyword">void</span>)setsockopt(udplite_conn, IPPROTO_UDPLITE, UDPLITE_RECV_CSCOV, &amp;val, <span class="keyword">sizeof</span> val);</span><br></pre></td></tr></table></figure>
+<p>这里 <code>IPPROTO_UDPLITE</code> 为协议号136，用它和<code>AF_INET6</code>地址集参数一起调用<code>socket()</code>函数来创建 IPv6 套接字。<code>UDPLITE_SEND_CSCOV</code>(10) 和 <code>UDPLITE_RECV_CSCOV</code>(11) 为套接字选项设置函数<code>setsockopt()</code>的控制参数，分别用来指定发送和接受时的校验和覆盖值。注意收发双方必须设置同样的数值，否则接受方无法正确验证校验和。</p>
+]]></content>
+      <categories>
+        <category>学习体会</category>
+      </categories>
+      <tags>
+        <tag>TCP/IP</tag>
+        <tag>C/C++编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Endianness一点通</title>
+    <url>/2020/11/24/Endianness/</url>
+    <content><![CDATA[<p>Endianness 的问题实质就是关于计算机如何存储大的数值的问题。 <a id="more"></a></p>
+<div class="note success no-icon"><p><strong>I do not fear computers. I fear lack of them.</strong><br> <strong>— <em>Isaac Asimov</em>（艾萨克·阿西莫夫，美籍犹太裔生化学家、科幻和科普作家）</strong></p>
+</div>
+<p>我们知道一个基本存储单元可以保存一个字节，每个存储单元对应一个地址。对于大于十进制 255（16进制 0xff）的整数，需要多个存储单元。例如，4660 对应于 0x1234，需要两个字节。不同的计算机系统使用不同的方法保存这两个字节。在我们常用的 PC 机中，低位的字节 0x34 保存在低地址的存储单元，高位的字节 0x12 保存在高地址的存储单元；而在 Sun 工作站中，情况恰恰相反，0x34 位于高地址的存储单元，0x12 位于低地址的存储单元。前一种就被称为<code>Little Endian</code>，后一种就是<code>Big Endian</code>。</p>
+<p>如何记住这两种存储模式？其实很简单。首先记住我们所说的存储单元的地址总是由低到高排列。对于多字节的数值，如果先见到的是低位的字节，则系统就是<code>Little Endian</code>的，Little 就是"小，少"的意思，也就对应"低"。相反就是<code>Big Endian</code>，这里 Big "大"对应"高"。</p>
+<h2 id="程序实例">程序实例</h2>
+<p>为了加深对 Endianness 的理解，让我们来看下面的C程序例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> a = <span class="number">1</span>; 	 	 	 </span><br><span class="line"><span class="keyword">char</span> b = <span class="number">2</span>;                       </span><br><span class="line"><span class="keyword">short</span> c = <span class="number">255</span>;	<span class="comment">/* 0x00ff */</span></span><br><span class="line"><span class="keyword">long</span> d = <span class="number">0x44332211</span>;</span><br></pre></td></tr></table></figure>
+<p>在基于Intel 80x86的系统上, 变量a，b，c，d对应的内存映像如下表所示：</p>
+<table>
+<thead>
+<tr class="header">
+<th>地址偏移量</th>
+<th>内存映像</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x0000</td>
+<td>01 02 FF 00</td>
+</tr>
+<tr class="even">
+<td>0x0004</td>
+<td>11 22 33 44</td>
+</tr>
+</tbody>
+</table>
+<p>显然我们可以马上判定这一系统是<code>Little Endian</code>的。对于16位的整形数<code>short c</code>，我们先见到其低位的0xff，下一个才是 0x00。同样对于32位长整形数<code>long d</code>，在最低的地址 0x0004 存的是最低位字节 0x11。如果是在<code>Big Endian</code>的计算机中，则地址偏移量从 0x0000 到 0x0007 的整个内存映像将为：<em>01 02 00 FF 44 33 22 11</em>。</p>
+<p>所有计算机处理器都必须在这两种 Endian 间作出选择。但某些处理器(如 ARM, MIPS 和 IA-64)支持两种模式，可由编程者通过软件或硬件设置一种 Endian。以下是一个处理器类型与对应的 Endian 的简表：</p>
+<ul>
+<li>纯<code>Big Endian</code>: Sun SPARC, Motorola 68000，Java 虚拟机</li>
+<li>Bi-Endian, 运行<code>Big Endian</code>模式: MIPS 运行 IRIX, PA-RISC，大多数 Power 和 PowerPC 系统</li>
+<li>Bi-Endian, 运行<code>Little Endian</code>模式: ARM, MIPS 运行 Ultrix，大多数 DEC Alpha, IA-64 运行 Linux</li>
+<li><code>Little Endian</code>: Intel x86，AMD64，DEC VAX</li>
+</ul>
+<p>如何在程序中检测本系统的 Endianess？可调用下面的函数来快速验证，如果返回值为1，则为<code>Little Endian</code>；为0则是<code>Big Endian</code>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">test_endian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> *((<span class="keyword">char</span> *)&amp;x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="网络序">网络序</h2>
+<p>Endianness 对于网络通信也很重要。试想当<code>Little Endian</code>系统与<code>Big Endian</code>的系统通信时，如果不做适当处理，接收方与发送方对数据的解释将完全不一样。比如对以上 C 程序段中的变量d，<code>Little Endian</code>发送方发出 <em>11 22 33 44</em> 四个字节，<code>Big Endian</code>接收方将其转换为数值 0x11223344。这与原始的数值大相径庭。为了解决这个问题，TCP/IP 协议规定了专门的“网络字节次序”(简称“网络序”），即无论计算机系统支持何种 Endian，在传输数据时，总是数值最高位的字节最先发送。从定义可以看出，网络序其实是对应<code>Big Endian</code>的。</p>
+<p>为了避免因为 Endianness 造成的通信问题，及便于软件开发者编写易于平台移植的程序，特别定义了一些C语言预处理的宏来实现网络字节与本机字节次序之间的相互转换。<code>htons()</code>和<code>htonl()</code>用来将本机字节次序转成网络字节次序，前者应用于16位无符号数，后者应用于32位无符号数。<code>ntohs()</code>和<code>ntohl()</code>实现反方向的转换。这四个宏的原型定义可参考如下(Linux 系统中可在<code>netinet/in.h</code>文件里找到)：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(BIG_ENDIAN) &amp;&amp; !defined(LITTLE_ENDIAN)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htons(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htonl(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohs(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohl(A)  (A)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(LITTLE_ENDIAN) &amp;&amp; !defined(BIG_ENDIAN)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htons(A)  ((((uint16)(A) &amp; 0xff00) &gt;&gt; 8) | \</span></span><br><span class="line">                   (((uint16)(A) &amp; <span class="number">0x00ff</span>) &lt;&lt; <span class="number">8</span>))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htonl(A)  ((((uint32)(A) &amp; 0xff000000) &gt;&gt; 24) | \</span></span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x00ff0000</span>) &gt;&gt; <span class="number">8</span>)  | \</span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x0000ff00</span>) &lt;&lt; <span class="number">8</span>)  | \</span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x000000ff</span>) &lt;&lt; <span class="number">24</span>))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohs     htons</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohl     htohl</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">error</span> <span class="meta-string">&quot;Either BIG_ENDIAN or LITTLE_ENDIAN must be #defined, but not both.&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>技术小札</category>
+      </categories>
+      <tags>
+        <tag>C/C++编程</tag>
+        <tag>计算机体系结构</tag>
+        <tag>网络通信</tag>
+        <tag>系统编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>克劳德·香农如何发明未来</title>
+    <url>/2021/01/18/How-Shannon-invent-future/</url>
+    <content><![CDATA[<p>2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表<a href="https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/">专栏文章</a>，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。<a id="more"></a>香农如此大名鼎鼎，却又异常低调，乃至许多学生和学者误以为他早已作古。在1985年的IEEE信息学年会上，当与会者得知香农现身在会议中时，会场一片轰动。当年的会议主席回忆：“就好像牛顿出现在物理学会议中。”香农最终于2001年去世，终年84岁。巨星陨落，但他的学术遗产已经由一代又一代的科学家、数学家和工程师所继承和发扬，继续照耀人类前进的道路。特此翻译此文，向先驱致敬！</p>
+<!--more-->
+<hr />
+<blockquote>
+<p><strong>感谢一位独到的天才的开创性工作，让今天的信息时代成为可能。</strong></p>
+</blockquote>
+<p>科学寻求自然的基本定律。数学在旧的基础上寻找新的定理。工程学构建解决人类需求的系统。这三个学科相互依存但又截然不同。很少有个人同时在这三个学科做出核心贡献 — 但是克劳德·香农就是这样一个难得的个人。</p>
+<p>虽然是最近的纪录片《<a href="http://www.thebitplayer.com/">比特玩家</a>》(The Bit Player) 的主角 — 而他的工作和研究理念也激发了我自己的职业生涯 — 香农并不是一个家喻户晓的人物。他从未获得过诺贝尔奖，而且在2001年去世前后，他都不是像阿尔伯特·爱因斯坦或理查德·费曼那样的名人。然而70多年前，在一篇划时代的论文中，他为构成现代信息时代根本的通信基础设施奠基。</p>
+<p>香农于1916年出生于密歇根州的盖洛德市，是一位当地商人和一名教师的儿子。从密歇根大学获得电气工程和数学学位后，他在麻省理工学院撰写了一篇<a href="https://www.cs.virginia.edu/~evans/greatworks/shannon38.pdf">硕士论文</a>，将名为布尔代数的数学理论应用于开关电路的分析和综合。这是一项变革性的工作，将电路设计从一门艺术变成了科学，现在被认为是数字电路设计的起点。</p>
+<img src="ClaudeShannon-portrait.jpg" />
+<p style="text-align: center;">
+年轻的克劳德·香农
+</p>
+<p>接下来，香农将目光投向了一个更大的目标：通信。</p>
+<p>通信是人类最基本的需求之一。从烟雾信号到信鸽，再到电话和电视，人类一直在寻求更远、更快和更可靠的通信方法。但是，通信系统的工程学过去总是与特定的信息源和物理介质相关联。而香农提出的问题是：“是否有一个大一统的通信理论？”1939年，在给导师万尼瓦尔·布什（Vannevar Bush）的信中，香农概述了他关于“用于情报传递的通用系统的基本特性”的一些初步想法。经过十年的研究，香农终于在1948年发表了他的开创性杰作《<a href="http://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">通信的数学理论</a>》。</p>
+<p>他的理论的核心是一个简单但非常通用的通信模型：发送器将信息编码为信号，该信号会被噪声破坏，然后被接收器解码。虽然简单，香农的模型融合了两个关键见解：将信息源和噪声源与要设计的通信系统隔离开来，并对这两个源进行概率建模。他设想信息源会生成许多可能的消息来进行通信，每条消息都有一定的概率。概率化噪声进一步增加了接收器解析的随机性。</p>
+<p>在香农之前，通信问题主要被视为确定性信号重建问题：如何转换被物理介质扭曲的接收信号，以尽可能准确地重建原始信号。香农的天才在于，他洞察到通信的关键是不确定性。毕竟，如果你提前知道了我在本专栏中对你说的话，那么还有什么必要写它呢？</p>
+<img src="Shannon-comm-model.jpg" />
+<p style="text-align: center;">
+香农的通信模型示意图
+</p>
+<p>这一观察将通信从实体问题转向到抽象问题，从而使香农可以使用概率对不确定性进行建模。这给当时的通信工程师们带来了极大的冲击。</p>
+<p>确定了不确定性和概率论的框架，香农在其具有里程碑意义的论文中着手系统地确定通信的基本限定。他的回答分为三个部分。在这三个方面都扮演着重要角色的，是信息“比特”（bit) 的概念。香农将其用作不确定性的基本单位。 比特好比是“二进制数字”的两格式旅行箱，可以是1或0，香农的论文是第一个使用该词的人（尽管他说数学家约翰·图基（John Tukey）先在一个备忘录中用到了该词）。</p>
+<p>首先，香农提出了一个用于表示信息量的每秒最少比特数的公式，这个数字他称之为熵率 <span class="math inline">\(H\)</span>。该数字量化了确定信息源将生成哪个消息所涉及的不确定性。熵率越低，不确定性越小，因此将消息压缩成较短的内容越容易。例如，以每分钟100个英文字母的速率发送短信，意味着每分钟发送有<span class="math inline">\(26^{100}\)</span>种可能的消息，每条消息均由100个字母的序列表示。因为<span class="math inline">\(2^{470}≈26^{100}\)</span>，人们可以将所有这些可能性编码为470比特。如果所有序列的可能性相同，那么香农的公式表明熵率确切值是每分钟470比特。现实中，由于某些序列比其他序列出现的可能性高得多，所以熵率要低得多，可以进行更大的压缩。</p>
+<p>其次，他给出了一个噪声条件下可以可靠通信的每秒最大比特数的公式，他将其称为系统的容量 <span class="math inline">\(C\)</span>。这是接收机可以有效解析消息不确定性的最大速率，也就是实际上的通信速度的上限。</p>
+<p>最后，他表明当且只当 <span class="math inline">\(H&lt;C\)</span> 时，来自信息源的信息才能在噪声条件下进行可靠的通信。因此，信息就像水一样：如果流量小于管道的容量，就能可靠地通过。</p>
+<p>虽然这是一种通信理论，但同时也是一种有关信息如何产生和转换的理论 — <a href="https://www.quantamagazine.org/tag/information-theory/">信息论</a>。因此，香农现在被誉为“信息论之父”。</p>
+<p>他的定理得出了一些与直觉相反的结论。假设你在嘈杂的地方讲话，确保你的消息能够传达的最佳方法是什么？也许重复多次？当然，这是每个人在喧哗的餐厅中的第一个本能，但事实证明这不是很有效。当然，你重复自己的次数越多，通信越可靠。但是你牺牲了速度来换取可靠性。香农向我们展示了我们可以做得更好。重复消息只是使用编码传输消息的一个例子，通过使用不同且更复杂的编码，可以在维持既定可靠性的同时，快速地通信 — 直到速度上限 <span class="math inline">\(C\)</span>。</p>
+<p>香农的理论得出的另一个意外结论是，无论信息的特质是什么 — 莎士比亚十四行诗、贝多芬第五交响曲的录音、还是黑泽明的电影 — 在传输之前，将其编码为比特总是最有效的。因此以无线电系统为例，即使初始的声音和通过空中发送的电磁信号都是模拟波形式的，香农定理也表明最好先将声波数字化为比特，然后将这些比特映射到电磁波。这一令人惊讶的结果是现代数字信息时代的基石，在这个时代里，作为信息通用货币的比特无所不在。</p>
+<p>香农的通用信息理论是如此自然，以至于他似乎发现了宇宙的通信定律，而不是发明了它们。他的理论与自然界的物理定律一样基本。从这个意义上说，他是一名科学家。</p>
+<p>香农发明了新的数学来描述通信定律。他引入了一些新思想，比如概率模型的熵率，这些新思想已应用于研究动力学系统长期行为的遍历数学等广泛的数学分支。从这个意义上说，香农是一个数学家。</p>
+<p>但最重要的是，香农是一名工程师。他的理论受到实际工程问题的启发。尽管对当时的工程师来说是深奥的，但香农的理论现已成为所有现代通信系统（光学、水下、甚至行星际）基础的标准框架。就我个人而言，我很幸运地参与了将香农的理论应用和扩展到无线通信的全球性努力中，历经几代标准将通信速度提高了两个数量级。确实，当前推出的5G标准使用的不是一种而是两种实用的编码，它们被证明可以达到香农的速度上限。</p>
+<img src="Shannon-Saturn.jpg" />
+<p style="text-align: center;">
+晚年香农手持土星的照片
+</p>
+<p>香农在70多年前就为所有这一切奠定了基础。他是怎么做到的？通过不懈地专注于问题的根本特征，忽略所有其它方面。他的通信模型的简单性就是这种风格的很好例证。他还知道要专注于可能，而不是立即可行的事情。</p>
+<p>香农的工作说明了顶级科学研究的真正作用。当我开始读研究生时，我的导师告诉我，最好的工作是修剪知识树，而不是扩张知识树。那时候我不知道该怎么做；我一直认为研究人员的工作就是添加自己的树枝。但是在我的职业生涯中，由于我有机会在自己的工作中运用这种思想，我开始理解了。</p>
+<p>当香农开始研究通信时，工程师已经掌握了大量技术。正是他的统一工作，将所有这些知识枝条修剪成了一棵贯通而优美的树 — 这棵树为几代科学家、数学家和工程师带来了累累硕果。</p>
+]]></content>
+      <categories>
+        <category>致敬先驱</category>
+      </categories>
+      <tags>
+        <tag>通信系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RSA的攻与防</title>
+    <url>/2020/12/01/RSA-attack-defense/</url>
+    <content><![CDATA[<p>RSA加密算法是一种非对称加密算法，在互联网中被广泛使用。</p>
+<a id="more"></a>
+<div class="note success no-icon"><p><strong>今有物不知其数，三三数之剩二；五五数之剩三；七七数之剩二。问物几何?</strong><br> <strong>— <em>《孙子算经》卷下·二十六</em></strong></p>
+</div>
+<blockquote>
+<p>很快更新，敬请期待</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术小札</category>
+      </categories>
+      <tags>
+        <tag>密码学</tag>
+        <tag>网络安全</tag>
+        <tag>Python编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C++编程实现的距离矢量路由协议仿真程序</title>
+    <url>/2020/11/25/CC-simulate-DV-routing/</url>
+    <content><![CDATA[<p>距离矢量 (Distance-vector) 和链路状态 (Link-state) 是路由协议的两大分类。距离矢量路由协议在互联网早期得到广泛应用，之后一些协议实现逐渐演变成为标准化的“<a href="https://tools.ietf.org/html/rfc2453">路由信息协议</a>” (Routing Information Protocol，缩写 RIP)。由于其简单和实用性，RIP 现今仍旧是小型网络配置的首选。</p>
+<a id="more"></a>
+<p>许多年以前，笔者在南加州大学 (University of Southern California，缩写USC) 攻读计算机工程硕士学位时，选修了编号<em>CS551: Computer Communication</em> 的课程。这是一门面向研究生的计算机网络通信课程，非常受到学生欢迎<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。但是CS551也以其难度较大的软件课件项目而著称，让不少缺乏编程经验的非EE/CS专业的学生望而却步。笔者那一学期的两个项目，第一个就是用C/C++编程实现距离矢量路由协议的仿真。完成这一课件作业，的确让自己增长了不少网络编程的经验，也加深了对距离矢量路由协议的理解。现在总结共享出来，希望对其他人有所帮助。</p>
+<div class="note success no-icon"><p><strong>Mathematicians makes natural questions precise.</strong><br> <strong>— <em>Richard Bellman</em>（理查德·贝尔曼，美国应用数学家，动态规划的创始人）</strong></p>
+</div>
+<h3 id="路由算法">路由算法</h3>
+<p>距离矢量路由协议的核心是贝尔曼-福特算法 (Bellman–Ford algorithm)，以美国两位数学家理查德·贝尔曼(Richard Bellman) 和小莱斯特·福特 (Lester Ford Jr.) 命名。贝尔曼1958年发布最短路径路由算法的论文，而福特与另一位美国数学家德尔伯特·富尔克森 (Delbert Fulkerson) 先于1956年在他们的网络流著作中提出了计算最大流通量的分布式贪心算法。二者相结合就产生了距离矢量路由协议，用于计算网络的最佳路由。全球互联网的鼻祖ARPANET就是使用的距离矢量路由协议。</p>
+<p>先来看看这一算法是如何工作的。对于给定的网络拓扑图及其顶点集合 <span class="math inline">\(V\)</span> 和带权重的边集合 <span class="math inline">\(E\)</span>，目的是要求得从每一个顶点到其它顶点的最短路径。贝尔曼-福特算法以松弛操作为基础，先预估到其它顶点的路径最大值，然后逐次计算出更加准确的最短路径值替换原来的估计值，重复迭代最终得到最优解。算法的伪代码描述如下：</p>
+<figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">BellmanFord</span><span class="params">(list vertices, list edges, vertex source)</span></span></span><br><span class="line"><span class="function">    <span class="comment">// 输入由n个顶点(vertice)和边(edge)的列表构成的图，执行算法找到从源点到</span></span></span><br><span class="line"><span class="function">    <span class="comment">// 其它顶点的最短路径，保存到距离(distance)和前向顶点(predecessor)数组</span></span></span><br><span class="line"><span class="function">    <span class="title">distance</span> :</span>= list <span class="keyword">of</span> size n</span><br><span class="line">    predecessor := list <span class="keyword">of</span> size n</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第一步：初始化图</span></span><br><span class="line">    <span class="keyword">for</span> each vertex v <span class="keyword">in</span> vertices:</span><br><span class="line">        distance[v] := infinity</span><br><span class="line">        predecessor[v] := null</span><br><span class="line">        </span><br><span class="line">    distance[source] := <span class="number">0</span> <span class="comment">// 源点到自身的距离为0</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 第二步：重复松弛操作</span></span><br><span class="line">   <span class="keyword">for</span> i from <span class="number">1</span> <span class="keyword">to</span> size(vertices)-<span class="number">1</span>:</span><br><span class="line">       <span class="keyword">for</span> each edge (u, v) <span class="keyword">with</span> weight w <span class="keyword">in</span> edges:</span><br><span class="line">           <span class="keyword">if</span> distance[u] + w &lt; distance[v]:</span><br><span class="line">               distance[v] := distance[u] + w</span><br><span class="line">               predecessor[v] := u</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 第三步：检查是否有负权重的回路</span></span><br><span class="line">   <span class="keyword">for</span> each edge (u, v) <span class="keyword">with</span> weight w <span class="keyword">in</span> edges:</span><br><span class="line">       <span class="keyword">if</span> distance[u] + w &lt; distance[v]:</span><br><span class="line">           error &quot;图包含负权重的回路&quot;</span><br><span class="line">           </span><br><span class="line">   return distance, predecessor</span><br></pre></td></tr></table></figure>
+<p>在以上的算法描述中，松弛操作循环每次都是作用于所有边，重复次数实际上对应所得到的最短路径的深度。以 <span class="math inline">\(|V|\)</span> 和 <span class="math inline">\(|E|\)</span> 分别代表节点和边的数量，则贝尔曼-福特算法的时间复杂度可以表示为 <span class="math inline">\(O(|V|\cdot|E|)\)</span>。另外还注意到，算法的基本操作实质上是在广度上探寻，所以负权重的边不会影响运算结果。</p>
+<p>那么距离矢量在哪里？其实对于计算机网络这样的分布式系统，每个网络节点 (就是图中的顶点) 最初只有与自己相邻节点的距离 (就是图中边的权重) 信息。所以要执行贝尔曼-福特算法，节点就必须向其邻接点发送路由信息，这样邻接点才能实现松弛操作运算。路由信息包括<strong>本节点到达所有其它节点的最短路径值序列，也就是距离矢量</strong>。每当节点收到邻接点发来距离矢量，就执行一轮松弛操作运算。如果运算结果产生了新的最短距离，就更新路由表并发出新的距离矢量给所有邻接点。如此往复，直到收敛得到最短距离，算法结束。</p>
+<p>下面以一个6节点的网络来说明距离矢量路由协议的执行细节：</p>
+<div class="mermaid">
+graph LR
+
+subgraph 网络拓扑图
+    G((A)) --- |1| H((B))
+    G((A)) --- |4| I((C))
+    G((A)) --- |6| J((D))
+    H --- |1| I
+    I --- |1| J
+    J --- |1| K((E))
+    I --- |1| K
+    K --- |1| L((F))
+    I --- |4| L
+    H --- |5| L
+end
+
+</div>
+<p>上图由6个节点 <span class="math inline">\(A-F\)</span> 和 <span class="math inline">\(10\)</span> 条链路构成网络连接拓扑。每个节点的距离矢量组合成一个 <span class="math inline">\(6\times6\)</span> 距离矩阵。如下第一个表 (Init) 所示，链路的权重值确定了距离矩阵的初始化状态。矩阵是沿着左上到右下对角线对称的，对角线上的元素代表源点到自身的距离，所以全为0。第一行元素为节点 <span class="math inline">\(A\)</span> 到其它节点的距离，即它的距离矢量。因为 <span class="math inline">\(A\)</span>只与 <span class="math inline">\(B/C/D\)</span> 相邻，距离为 <span class="math inline">\(1/4/6\)</span>。<span class="math inline">\(A\)</span> 到 <span class="math inline">\(E/F\)</span> 的距离初始设置为无穷大。</p>
+<p><span class="math display">\[
+% outer vertical array of arrays
+\begin{array}{c}
+% inner horizontal array of arrays
+\begin{array}{cc}
+% inner array of minimum values
+\begin{array}{c|ccccc}
+\text{Init} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; 4 &amp; 6 &amp; \infty &amp; \infty\\
+B &amp; 1 &amp; 0 &amp; 1 &amp; \infty &amp; \infty &amp; 5\\
+C &amp; 4 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 4\\
+D &amp; 6 &amp; \infty &amp; 1 &amp; 0 &amp; 1 &amp; \infty\\
+E &amp; \infty &amp; \infty &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; \infty &amp; 5 &amp; 4 &amp; \infty &amp; 1 &amp; 0
+\end{array}
+&amp;
+&amp;
+&amp;
+% inner array of maximum values
+\begin{array}{c|ccccc}
+\text{No.1} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; \color{fuchsia}{2} &amp; \color{fuchsia}{5} &amp; \color{fuchsia}{5} &amp; \color{fuchsia}{6}\\
+B &amp; 1 &amp; 0 &amp; 1 &amp; \color{fuchsia}{2}  &amp; \color{fuchsia}{2} &amp; 5\\
+C &amp; \color{fuchsia}{2}  &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; \color{fuchsia}{2}\\
+D &amp; \color{fuchsia}{5}  &amp; \color{fuchsia}{2}  &amp; 1 &amp; 0 &amp; 1 &amp; \color{fuchsia}{2} \\
+E &amp; \color{fuchsia}{5} &amp; \color{fuchsia}{2} &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; \color{fuchsia}{6} &amp; 5 &amp; \color{fuchsia}{2}  &amp; \color{fuchsia}{2}  &amp; 1 &amp; 0
+\end{array}
+\end{array}
+\\[2ex]
+\\
+% inner horizontal array of arrays
+\begin{array}{cc}
+% inner array of minimum values
+\begin{array}{c|ccccc}
+\text{No.2} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; 2 &amp; \color{fuchsia}{3} &amp; \color{fuchsia}{3} &amp; 6 \\
+B &amp; 1 &amp; 0 &amp; 1 &amp; 2  &amp; 2 &amp; \color{fuchsia}{3}\\
+C &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 2\\
+D &amp; \color{fuchsia}{3}  &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 2\\
+E &amp; \color{fuchsia}{3} &amp; 2 &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; 6 &amp; \color{fuchsia}{3} &amp; 2 &amp; 2 &amp; 1 &amp; 0
+\end{array}
+&amp;
+&amp;
+&amp;
+% inner array of maximum values
+\begin{array}{c|ccccc}
+\text{No.3} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 3 &amp; \color{fuchsia}{4}\\
+B &amp; 1 &amp; 0 &amp; 1 &amp; 2  &amp; 2 &amp; 3\\
+C &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 2 \\
+D &amp; 3 &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 2\\
+E &amp; 3 &amp; 2 &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; \color{fuchsia}{4} &amp; 3 &amp; 2 &amp; 2 &amp; 1 &amp; 0
+\end{array}
+\end{array}
+\end{array}
+\]</span></p>
+<p>接下来第一轮路由信息交换，<span class="math inline">\(A\)</span> 收到 <span class="math inline">\(B\)</span> 的距离矢量。<span class="math inline">\(B\)</span> 到 <span class="math inline">\(C/F\)</span> 的距离为 <span class="math inline">\(1/5\)</span>，<span class="math inline">\(A\)</span> 执行松弛操作运算，得到新的距离值 <span class="math inline">\(2/6\)</span>。这小于 <span class="math inline">\(A\)</span> 当前到 <span class="math inline">\(C/F\)</span> 的距离 <span class="math inline">\(4/\infty\)</span>，所以 <span class="math inline">\(A\)</span> 更新它的距离矢量。同理，<span class="math inline">\(A\)</span> 在处理完收到的 <span class="math inline">\(C\)</span> 的距离矢量之后，将它到 <span class="math inline">\(D/E\)</span> 的最短距离更新为 <span class="math inline">\(5/5\)</span>。这就是以上表No.1里第一行颜色高亮所示的变化。第一轮里其它节点也同时执行松弛操作运算，其距离矢量的变化也由颜色高亮显示。</p>
+<p>重复这一过程，每一轮的最短距离变化都由颜色高亮显示。至第三轮(No.3)结束，距离矩阵不再变化，算法收敛完毕。最后生成的最短路径如下图中的粗实线所示：</p>
+<div class="mermaid">
+graph LR
+
+subgraph 最短路径图
+    A((A)) &#x3D;&#x3D;&#x3D; |1| B((B))
+    A((A)) --- |4| C((C))
+    A((A)) --- |6| D((D))
+    B &#x3D;&#x3D;&#x3D; |1| C
+    C &#x3D;&#x3D;&#x3D; |1| D
+    D &#x3D;&#x3D;&#x3D; |1| E((E))
+    C &#x3D;&#x3D;&#x3D; |1| E
+    E &#x3D;&#x3D;&#x3D; |1| F((F))
+    C --- |4| F
+    B --- |5| F
+end
+
+</div>
+<p>这时节点 <span class="math inline">\(A\)</span> 的路由表如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">目的节点</th>
+<th style="text-align: center;">下一跳</th>
+<th style="text-align: center;">链路开销</th>
+<th style="text-align: center;">路径</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">A-B</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">A-B-C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">D</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">A-B-C-D</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">E</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">A-B-C-E</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">F</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">A-B-C-E-F</td>
+</tr>
+</tbody>
+</table>
+<h3 id="算法改进">算法改进</h3>
+<p>贝尔曼-福特算法本身是无瑕的，应用于距离矢量路由协议也发挥了有效的路由功能。然而，在现实的网络部署中，由于系统的动态和分布式特质，距离矢量路由协议在实际运行中暴露出来了一些问题。下面对两个突出的问题做一些简单讨论：</p>
+<ul>
+<li><strong>反弹效应</strong>：参考下图的4节点网络，最短路径为A-B-C-D。现在C和D之间的链路突然中断，C马上检测到这一故障，并把到D的距离改为无穷大。但是在C发出新的距离矢量之前，先收到来自B的距离矢量。这是很常见的，因为许多协议实现规定周期性的发送距离矢量报文，以防丢失。由于B的距离矢量里到D的距离为2，所以C将到D的距离更新为3，并把B设为到D的下一跳。然后C又发出路由更新到B。B随之更新到D的距离为4，并依然将C设为下一跳。这就形成了一个循环，A/B/C所有到D的数据包将在B和C间反复传输，直至“存活时间” (TTL) 超时而被抛弃。这就是“反弹效应”。只有当B计算出通过C到达D的距离大于7时，B才将Dz直接设为下一跳，循环中止。</li>
+</ul>
+<div class="mermaid">
+graph LR
+
+subgraph 反弹效应
+    E((A)) --- |1| F((B))
+    F --- |1| G((C))
+    F --- |7| H((D))
+    G -.- |1| H
+end
+
+</div>
+<ul>
+<li><strong>计数到无穷大</strong>：同样的4节点网络，假定现在B到C和D之间的链路同时中断了，网络被完全分隔成两个独立子网A/B及C/D。当反弹效应产生时，因为不存在到达另一个子网中任何节点的真正可达路径，每个子网里的循环都不会中止。由于无法收敛，在A和B的路由表里到C和D距离会一直增大下去。C和D之间也可能出现类似的现象，它们到A和B距离会一直循环往复增大。这种过程被称为“计数到无穷大”。当出现这一情况时，网路数据传输处于极度混乱状态，大量数据包被循环发送，链路拥塞，路由更新也会因此而丢失。</li>
+</ul>
+<div class="mermaid">
+graph LR
+
+subgraph 计数到无穷大
+    A((A)) --- |1| B((B))
+    B -.- |1| C((C))
+    B -.- |7| D((D))
+    C --- |1| D
+end
+</div>
+<p>反弹效应和计数到无穷大问题，对距离矢量路由协议在实际网络中的功效带来了困扰。对此，研究人员采纳了一些技术措施来将这些不利影响降低至最小。具体应用到RIP协议中的有“水平分割” (split-horizon) 和“触发更新” (triggered-updates)等。</p>
+<p>水平分割的思想是，如果节点A到目的地X的下一跳是节点B，那么A不应该告知B它有一条更短的路径到达X。在实现上，A可以从它发给B的距离矢量消息中拿掉到X的路由。还有一种更积极的方法，称为“毒性反转水平分割” (split-horizon with poisonous reverse)，是让A继续发出到X的路由，但是将其距离设定为无穷大。这样就可以立即消除两个节点间的循环。触发更新指定节点在察觉到链路中断时，立即发出更新消息，而不用等到下一个发送周期开始。这当然可以加快收敛速度，大幅减少路由循环的出现。</p>
+<p>然而，即使使用毒性反转水平分割和触发更新，也不能完全消除路由循环。在以上的4节点网络中，如果A到B的连接掉线，在出现路由更新丢失或不对等时延的情况下，B/C/D仍然可能会形成B-D-C-B的三点路由循环。所以，距离矢量路由协议还是必须设置一个路径距离的上限，以及时认定计数到无穷大的发生并马上中止循环。对于以跳转次数作为距离度量的RIP协议，规定最大距离值为15，超过15即被视为不可达。</p>
+<p>还有其他的研究者给出了不同的环路解构方案。在1989年的ACM SIGCOMM会议上，陈俊祥 (Chunhsiang Cheng) 等人<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>提出了一种<strong>扩展的贝尔曼-福特算法</strong>以消除环路。新算法在贝尔曼-福特算法的基础上添加了“源跟踪”功能。其设想是在路由表和路由更新里加入路径头 (head) 信息，在他们的论文中对路径头的定义是：</p>
+<blockquote>
+<p>The <em>head</em> of a path <span class="math inline">\(R_{ij}\)</span> is defined to be the last node preceding node j in the sequence of nodes in <span class="math inline">\(R_{ij}\)</span> (i.e., if <span class="math inline">\(R_{ij}=(i,n_1,n_2,..,n_r,j)\)</span>, then head of <span class="math inline">\(R_{ij}\)</span> is <span class="math inline">\(n_r\)</span> if r &gt; 0, and equal to i if r=0).</p>
+</blockquote>
+<p>显然路径头就是到目的地的路径中逆向的第一个节点。如果目的地是直接相邻的节点，本地节点就是路径头。将路径头加入到路由更新里，就会在网络中随着距离矢量一直传播到所有节点。那么如何检测环路呢？论文给出名为<strong>IN_PATH</strong>的函数伪代码：</p>
+<blockquote>
+<p><strong>Function</strong> IN_PATH(<span class="math inline">\(Node,Neighbor,Dest\)</span>);<br />
+(* return true or false *)<br />
+<span class="math inline">\(\qquad\)</span> <strong>begin</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <span class="math inline">\(h \gets HEAD_{Node}(Dest)\)</span>;<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* find head from Node to Dest *)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>if</strong> <span class="math inline">\(h=Node\)</span> <strong>then</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* Neighbor is not in <span class="math inline">\(R_{NodeDest}\)</span> *)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>return</strong>(false)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>else if</strong> <span class="math inline">\(h=Neighbor\)</span> <strong>then</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* Neighbor is in <span class="math inline">\(R_{NodeDest}\)</span> *)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>return</strong>(true)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>else</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> IN_PATH(<span class="math inline">\(Node,Neighbor, HEAD_{Node}(h)\)</span>);<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* cannot determine yet,try again *)<br />
+<span class="math inline">\(\qquad\)</span> <strong>end;</strong></p>
+</blockquote>
+<p>当节点 (Node) 想要向邻接点 (Neighbor) 发布去往目的地 Dest 的路由消息时，就执行IN_PATH函数。函数先取出目的地的路径头节点，检查其是否为节点本身，是就返回false；否则看看其是否为邻接点，是就返回true；两者都不是，就将路径头节点作为目的地，取出新的路径头节点，递归调用函数自身。所以当函数返回true时，表明路由消息的接收者就是路径头，节点完全没有必要发布此路由。换而言之，我们检测到一个环路，此时节点应该将距离值设为无穷大。当函数返回false时，节点正常发布路由消息。</p>
+<p>“源跟踪”算法可以更有效的解构环路，但是却增加了不少计算量，这与RIP协议简单通用和易于实现的设计原则相违背。此外，实际局域网的路由广播特性和子网聚合配置，不能保证提供和传播准确的路径头信息。所以这一类扩展的贝尔曼-福特算法并没有投入实用。然而，它却是很好的网络路由协议学习和实验素材，CS551 软件课件项目就是要求仿真实现<strong>扩展的贝尔曼-福特算法</strong>！</p>
+<h3 id="仿真设计">仿真设计</h3>
+<h4 id="项目要求和建议">项目要求和建议</h4>
+<p>以下是 CS551 任课教师 <a href="https://nsl.usc.edu/people/ramesh/">Ramesh Govindan</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> 教授给出的课件项目要求和参考建议：</p>
+<ol type="1">
+<li>写一个简单的<strong>管理员</strong>程序读入网络连接描述文件，然后生成几个子进程。每个子进程仿真一个路由器。
+<ul>
+<li>网络连接描述文件的格式是：
+<ul>
+<li>第一行包含单个整数<span class="math inline">\(N\)</span>，表示网络中有<span class="math inline">\(N\)</span>个节点，地址从<span class="math inline">\(0\)</span>到<span class="math inline">\(N-1\)</span></li>
+<li>后面每一行描述一个网络中的点对点链路。每一行有三个空格分开的整数：<span class="math inline">\(X\)</span>、<span class="math inline">\(Y\)</span>和<span class="math inline">\(C\)</span>。<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>是<span class="math inline">\([0,N-1]\)</span>范围内的节点编号，<span class="math inline">\(C\)</span>是一个代表<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>之间链路开销的正整数</li>
+</ul></li>
+</ul></li>
+</ol>
+<ul>
+<li>每个路由器都开启一个UDP套接字 (socket)，用以与邻接路由器交换路由信息；在此之前，路由器必须知道其地址和邻接表信息</li>
+<li>你必须实现一个简单的协议，让管理员告知路由器这一信息。建议的方法是：
+<ul>
+<li>在每个路由器启动之后，建立一个TCP连接到管理员 (想想如何实现）</li>
+<li>路由器向管理员发送消息，消息包含它的UDP端口号</li>
+<li>管理员回复路由器的地址和邻接表信息 (使用自己定义的消息格式)</li>
+</ul></li>
+</ul>
+<ol start="2" type="1">
+<li>在每个仿真路由器收到它的邻接表后，开始执行<strong>扩展的贝尔曼-福特算法</strong> (参见陈俊祥的论文)：
+<ul>
+<li>每个路由器都需要与邻接路由器交换距离矢量信息，设计你的路由表和距离矢量消息格式</li>
+<li>你可以假定不会出现节点失误或链路断线的情况，不需要仿真由此触发的路由更新</li>
+<li>你必须仔细阅读和理解协议处理规则，先在简单的拓扑图上熟悉算法</li>
+<li>每个路由器在收到邻接表后，发出第一个路由更新，之后只在路由表变化才发出路由更新</li>
+<li>你可以设置一定时长的定时器，以决定仿真结束时刻，结束后所有进程都必须及时终止</li>
+</ul></li>
+<li>仿真结束输出两类文件：
+<ul>
+<li>一个名为 ports 的文件，有<span class="math inline">\(N\)</span>行。每行列出以空格分开的两个数字<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>，<span class="math inline">\(X\)</span>为节点地址，<span class="math inline">\(Y\)</span>为其UDP端口号。全部行以地址从低到高排序。</li>
+<li>每个路由器的路由表文件，文件名为路由器地址 (<span class="math inline">\([0,N-1]\)</span>)，总共有<span class="math inline">\(N\)</span>个文件
+<ul>
+<li>每个路由表文件有<span class="math inline">\(N\)</span>行，每行对应一条到目标路由器的路由</li>
+<li>路由格式是：“X Y C P1,P2,P3”</li>
+<li>X是目标路由器地址，Y是到从本路由器到X的下一跳地址，C是链路开销</li>
+<li>P1,P2,P3是从X到本路由器的 (逆向) 路径，以逗号分隔</li>
+</ul></li>
+</ul></li>
+</ol>
+<p>以上的要求和建议其实给出了仿真程序设计的框架和运行流程，在此基础上可以进一步考虑管理员和路由器进程的许多设计细节。</p>
+<h4 id="管理员进程">管理员进程</h4>
+<p>从流程上看，管理员进程是主进程，负责读入网络连接信息；同时它也是父进程，为每个路由器生成子进程。管理员要开启TCP套接字，以接收每个路由器所监听的UDP端口号。那么路由器怎么知道管理员的TCP端口号呢？答案就在生成子进程的过程里。当管理员调用<code>fork()</code>生成子进程时，立即传递自己的TCP套接字文件描述符和总节点数目给路由器函数。而当路由器连接到管理员后，管理员也会从<code>accept()</code>的返回值得到路由器的TCP套接字文件描述符，这样管理员就可以发送后续的邻接表信息。</p>
+<p>理清了这一过程之后，整个管理员进程的运行时序就很清晰了。以下列出穿插关键数据结构定义的完整流程：</p>
+<ol type="1">
+<li><p>启动，读入命令行参数<code>argv[1]</code>，也就是网络连接描述文件名。</p></li>
+<li><p>初始化网络节点邻接表：一个结构类型<code>source</code>的数组，记录节点地址<code>id</code>、相邻节点数<code>numNeighbor</code>以及邻接点信息的链表<code>link</code>；邻接点信息定义为另一个结构类型<code>neighbor</code>，包含节点地址<code>id</code>、链路开销<code>cost</code>和下一个邻接点指针：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">neighbor</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">int</span> cost;</span><br><span class="line">    neighbor *next;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">source</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">int</span> numNeighbor;</span><br><span class="line">    neighbor *link;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>读入网络连接描述文件，分析后构造网络节点邻接表。</p></li>
+<li><p>创建TCP套接字，然后调用绑定<code>bind()</code>和监听<code>listen()</code>函数。</p></li>
+<li><p>循环调用<code>fork()</code>生成全部路由器子进程，传递TCP套接字文件描述符和总节点数目给路由器启动函数：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fork the routers</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;numNode; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((childpid = fork())==<span class="number">0</span>) &#123;</span><br><span class="line">        router(i, listenfd, numNode);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>循环调用<code>accept()</code>接收每个路由器发过来的UDP端口号，保存到 ports 文件；同时记录每个路由器的TCP连接文件描述符。</p></li>
+<li><p>循环给每个路由器发送邻接信息：</p>
+<ul>
+<li><p>先是路由器地址和相邻节点总数：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// This is header message to each router to tell it its own</span></span><br><span class="line"><span class="comment">// ID and how many neighbors it has.</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">message</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> routerId;</span><br><span class="line">    <span class="keyword">int</span> numNeighbor;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>后面是每一个邻接点的<em>&lt;节点地址，链路开销，UDP端口号&gt;</em>信息三元组：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// This message is used for the manager to tell each router</span></span><br><span class="line"><span class="comment">// its neighbor information including &lt;id, cost, UDP_port&gt;.</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nb_tuple</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> neighborId;</span><br><span class="line">    <span class="keyword">int</span> cost;</span><br><span class="line">    <span class="keyword">int</span> UDP_port;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+</ul></li>
+<li><p>循环调用<code>wait()</code>等待每个路由器子进程结束，然后整个仿真过程结束。</p></li>
+</ol>
+<h4 id="路由器进程">路由器进程</h4>
+<p>路由器进程的设计和实现要复杂得多。这里要创建距离矢量矩阵和路由表、实现节点间距离矢量的交换，还要处理距离矢量信息、更新路由表并重发距离矢量。这是一个典型的异步多进程软件设计的问题。另外还要记得必须实现<strong>扩展的贝尔曼-福特算法</strong>的环路解构功能。</p>
+<p>先来看看核心数据结构的定义和初始化代码：</p>
+<ul>
+<li>距离矢量结构及其二维矩阵初始化
+<ul>
+<li><p>距离矢量包含距离度量值和环路解构需要的路径头节点地址：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Dis_matrix</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> distance;</span><br><span class="line">    <span class="keyword">int</span> headId;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>初始化 [总节点数] <span class="math inline">\(\times\)</span> [本节点的相邻节点数] 的二维矩阵 (-1代表不可达)：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// create distance matrix entries</span></span><br><span class="line">Dis_matrix **entry;</span><br><span class="line">entry = <span class="keyword">new</span> Dis_matrix*[numNode];</span><br><span class="line"></span><br><span class="line"><span class="comment">// initialize distance matrix</span></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numNode; i++) &#123;</span><br><span class="line">    entry[i] = <span class="keyword">new</span> Dis_matrix[msg.numNeighbor];</span><br><span class="line">    <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;msg.numNeighbor; j++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (tup[j].neighborId==i) &#123;</span><br><span class="line">            entry[i][j].distance=tup[j].cost;</span><br><span class="line">            entry[i][j].headId=id;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            entry[i][j].distance=<span class="number">-1</span>;</span><br><span class="line">            entry[i][j].headId=<span class="number">-1</span>;</span><br><span class="line">        &#125;   </span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+</ul></li>
+<li>路由表结构及其初始化
+<ul>
+<li><p>路由表项是一个<em>&lt;目的节点，链路开销，下一跳，路径头节点&gt;</em>的四元组：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RtableEntry</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> dest;</span><br><span class="line">    <span class="keyword">int</span> cost;</span><br><span class="line">    <span class="keyword">int</span> nexthop;</span><br><span class="line">    <span class="keyword">int</span> head;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>初始化为 [总节点数] 一维数组：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// initialize routing table</span></span><br><span class="line">RtableEntry *table = <span class="keyword">new</span> RtableEntry[numNode];</span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numNode; i++) &#123;</span><br><span class="line">    <span class="keyword">int</span> tmp_cost = <span class="number">-1</span>; </span><br><span class="line">    <span class="keyword">int</span> tmp_next = tup[<span class="number">0</span>].neighborId; </span><br><span class="line">    <span class="keyword">int</span> tmp_head = <span class="number">-1</span>; </span><br><span class="line">    <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;msg.numNeighbor; j++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (entry[i][j].distance != <span class="number">-1</span>) &#123;</span><br><span class="line">            tmp_cost = entry[i][j].distance;</span><br><span class="line">            tmp_head = entry[i][j].headId;</span><br><span class="line">            tmp_next = tup[j].neighborId;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;   </span><br><span class="line">    &#125;   </span><br><span class="line">    table[i].dest = i;</span><br><span class="line">    table[i].cost = tmp_cost;</span><br><span class="line">    table[i].nexthop = tmp_next;</span><br><span class="line">    table[i].head = tmp_head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 接下来一个重要设计是实现论文中的IN_PATH函数以检测环路。原文的伪代码用到了递归，是为了说明的方便。所有的递归都可以转化为迭代，从性能上考虑迭代更好。仿真程序实现的IN_PATH函数如下：</p></li>
+</ul></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IN_PATH</span> <span class="params">(<span class="keyword">int</span> NB, <span class="keyword">int</span> dest, RtableEntry *table, <span class="keyword">int</span> id)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> head=table[dest].head;</span><br><span class="line">    <span class="keyword">if</span> (head==<span class="number">-1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> ((head!=id) &amp;&amp; (head!=NB) &amp;&amp; (head!=<span class="number">-1</span>))</span><br><span class="line">        head=table[head].head;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (head==id || head==<span class="number">-1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>函数里的变量名与论文中的的基本一致。可以看到，其实这是一个简单的代码实现，但是其中蕴含的思想却很重要。如论文中所述，这个函数在每次向邻接点发送路由更新时都要被调用。</p>
+<p>在以上这些都就绪后，整个路由器的运行流程就可以清楚地表述如下：</p>
+<ol type="1">
+<li><p>创建TCP套接字，连接到管理员进程。</p></li>
+<li><p>创建UDP套接字，绑定<code>bind()</code>后调用<code>getsockname()</code>取得端口号并发给管理员。</p></li>
+<li><p>从管理员接收相邻节点信息，包括链路开销和UDP端口号</p></li>
+<li><p>初始化距离矢量矩阵和路由表，开始路由。</p></li>
+<li><p>先发送第一个距离矢量消息给每个邻接点，消息是字符串格式：</p>
+<ul>
+<li>开头："<本节点地址>[空格]<邻节点地址>[空格]<总节点数><strong>*</strong>"</li>
+<li>然后对每一个目的地重复："<目的节点地址>[空格]<链路开销>[空格]<路径头节点地址><strong>#</strong>"</li>
+</ul></li>
+<li><p>调用<code>select()</code>开始事件循环，并设置定时为三倍总节点数的秒数。当在超时前收到邻接点发来的距离矢量时，<code>select()</code>返回大于0的值，路由器作如下处理：</p>
+<ul>
+<li><p>分析收到的距离矢量，更新自身距离矢量矩阵，然后生成新的路由表，原始的贝尔曼-福特算法的实现就在这里：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UpdateDisMatrix</span> <span class="params">(<span class="keyword">char</span>* recv, Dis_matrix **Entry,<span class="keyword">int</span> numNode, <span class="keyword">int</span> id,</span></span></span><br><span class="line"><span class="function"><span class="params">                      <span class="keyword">int</span> numNeighbor, nb_tuple *tup)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sour, dest, tempDest, tempDist, tempHead, i, j, k;</span><br><span class="line">    <span class="keyword">char</span> *temp;</span><br><span class="line">    </span><br><span class="line">    temp=<span class="built_in">strchr</span>(recv,<span class="string">&#x27;*&#x27;</span>)+<span class="number">1</span>;</span><br><span class="line">    <span class="built_in">sscanf</span>(recv,<span class="string">&quot;%d %d %d*&quot;</span>,&amp;sour,&amp;dest,&amp;numNode);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>;i&lt;numNode;i++) &#123;</span><br><span class="line">        <span class="built_in">sscanf</span>(temp,<span class="string">&quot;%d %d %d&quot;</span>,&amp;tempDest,&amp;tempDist,&amp;tempHead);</span><br><span class="line">        temp=<span class="built_in">strchr</span>(temp,<span class="string">&#x27;#&#x27;</span>)+<span class="number">1</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> ((tempDest==id)||(tempDest==sour))</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">            </span><br><span class="line">	    <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;numNode; j++) &#123;</span><br><span class="line">	        <span class="keyword">if</span> (j==tempDest) &#123;</span><br><span class="line">	            <span class="keyword">for</span> (k=<span class="number">0</span>;k&lt;numNeighbor; k++)</span><br><span class="line">	                <span class="keyword">if</span> (tup[k].neighborId==sour)</span><br><span class="line">	                    <span class="keyword">break</span>;</span><br><span class="line">	            <span class="keyword">if</span> (tempDist==<span class="number">-1</span>) &#123;</span><br><span class="line">	                Entry[j][k].distance=<span class="number">-1</span>;</span><br><span class="line">	                Entry[j][k].headId=<span class="number">-1</span>;</span><br><span class="line">	            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	                Entry[j][k].distance=tempDist+tup[k].cost;</span><br><span class="line">	                Entry[j][k].headId=tempHead;</span><br><span class="line">	            &#125;</span><br><span class="line">	            <span class="keyword">break</span>;</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CreateRTfromDM</span> <span class="params">(RtableEntry *rtEntry_new, Dis_matrix **Entry,</span></span></span><br><span class="line"><span class="function"><span class="params">                     nb_tuple *tup, <span class="keyword">int</span> numDest, <span class="keyword">int</span> numNB)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i,j, tmp, k;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numDest; i++) &#123;</span><br><span class="line">        tmp=Entry[i][<span class="number">0</span>].distance;</span><br><span class="line">        k=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (j=<span class="number">1</span>;j&lt;numNB; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Entry[i][j].distance==<span class="number">-1</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (tmp==<span class="number">-1</span>||Entry[i][j].distance&lt;tmp) &#123;</span><br><span class="line">                tmp=Entry[i][j].distance;</span><br><span class="line">                k=j;</span><br><span class="line">            &#125;</span><br><span class="line">    	&#125;</span><br><span class="line">        rtEntry_new[i].dest=i;</span><br><span class="line">        rtEntry_new[i].cost=tmp;</span><br><span class="line">        rtEntry_new[i].nexthop=tup[k].neighborId;</span><br><span class="line">        rtEntry_new[i].head=Entry[i][k].headId;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>比较新旧路由表，如果有变化就替换掉旧的，并发送新的距离矢量给所有邻节点。发送代码调用IN_PATH函数实现<strong>扩展的贝尔曼-福特算法</strong>：</p>
+<p><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numNode; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (IN_PATH(tup[j].neighborId, i, table, id)) &#123;</span><br><span class="line">        tmpRT[i].cost=<span class="number">-1</span>;</span><br><span class="line">        tmpRT[i].head=<span class="number">-1</span>;</span><br><span class="line">        tmpRT[i].dest=i;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        tmpRT[i].cost=table[i].cost;</span><br><span class="line">        tmpRT[i].head=table[i].head;</span><br><span class="line">        tmpRT[i].dest=i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>重新开始定时的事件循环。</p></li>
+</ul></li>
+<li><p>如果<code>select()</code>返回0，事件循环超时，这时假定网络路由已收敛，输出自己的路由表。</p></li>
+<li><p>路由器进程结束。</p></li>
+</ol>
+<h3 id="程序运行">程序运行</h3>
+<p>原始的仿真程序当年在Sun SPARK工作站中编译，通过了教师提供的10节点网络测试用例。之后又测试自己编写的6节点 (就是前面路由算法举例的网络图) 和12节点测试用例，才最后提交。几天后从教学助理那里得知，仿真程序获得了满分！</p>
+<p>现在将仿真程序重新拿出来，在Red Hat Linux和macOS系统中编译链接，两个系统的编译运行环境如下：</p>
+<ul>
+<li>Red Hat Enterprise Linux 8.1 (Ootpa)：
+<ul>
+<li>内核: Linux 4.18.0-147.3.1.el8_1.x86_64</li>
+<li>体系结构: x86-64</li>
+<li>处理器: Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz</li>
+<li>编译器: g++ (GCC) 8.3.1 20190507 (Red Hat 8.3.1-4)</li>
+</ul></li>
+<li>macOS Catalina Version 10.15.7：
+<ul>
+<li>内核: Darwin 19.6.0: Tue Nov 10 00:10:30 PST 2020</li>
+<li>体系结构: x86_64</li>
+<li>处理器: 2.2 GHz 6-Core Intel Core i7</li>
+<li>编译器: Apple clang version 12.0.0 (clang-1200.0.32.28)</li>
+</ul></li>
+</ul>
+<p>在macOS上需要对程序原文件做一个小改动<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>才编译成功。而在链接阶段发现在两个系统上都不需要原来的socket和nsl目标库文件，因为它们都已经被包含在缺省加载的标准libc库中。清除这些障碍后，运行时却发现路由器收不到相邻节点的距离矢量消息，而发送方调用<code>sendto()</code>时并没有报错，在两个系统中的症状一样。</p>
+<p>困扰了一天半后，终于找到原因了。原来的代码里，路由器从管理员收到相邻节点的UDP端口号后，保存时做了一个Endianness转换：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">neibaddr[i].sin_port = htons(tup[i].UDP_port);</span><br></pre></td></tr></table></figure>
+<p>Sun SPARK是<code>Big Endian</code>系统，而现在运行Red Hat Linux和macOS的系统是用的Intel x86_64体系结构，它们都是<code>Little Endian</code>的。注意到UDP端口号是从网络数据包中直接取出来的，所以这里可能不需要转换。果然，拿掉<code>htons()</code>之后，路由器之间的消息传递恢复正常，同样的三个测试用例全部通过。</p>
+<p>参考前面的路由算法讨论例图，以下是6节点网络的测试输入用例。节点A-F对应路由器ID 0-5：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cc-simulate-dv:9 &gt; cat test6.txt </span><br><span class="line">6</span><br><span class="line">0 1 1</span><br><span class="line">0 2 4</span><br><span class="line">1 2 1</span><br><span class="line">0 3 6</span><br><span class="line">2 3 1</span><br><span class="line">3 4 1</span><br><span class="line">2 4 1</span><br><span class="line">5 1 5</span><br><span class="line">2 5 4</span><br><span class="line">4 5 1</span><br></pre></td></tr></table></figure>
+<p>仿真程序编译和运行的记录如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cc-simulate-dv:10 &gt; make</span><br><span class="line">g++ -O2 -c manager.cc</span><br><span class="line">g++ -O2 -c router.cc </span><br><span class="line">g++ -O2 -o manager manager.o router.o  </span><br><span class="line">cc-simulate-dv:11 &gt; manager test6.txt</span><br><span class="line">numnode is: 6</span><br><span class="line">0 3: 3.6 2.4 1.1 </span><br><span class="line">1 3: 5.5 2.1 0.1 </span><br><span class="line">2 5: 5.4 4.1 3.1 1.1 0.4 </span><br><span class="line">3 3: 4.1 2.1 0.6 </span><br><span class="line">4 3: 5.1 2.1 3.1 </span><br><span class="line">5 3: 4.1 2.4 1.5 </span><br><span class="line">R1 begin routing</span><br><span class="line">R2 begin routing</span><br><span class="line">R3 begin routing</span><br><span class="line">R4 begin routing</span><br><span class="line">R0 begin routing</span><br><span class="line">R5 begin routing</span><br><span class="line">R4 timeout!</span><br><span class="line">R2 timeout!</span><br><span class="line">R3 timeout!</span><br><span class="line">R5 timeout!</span><br><span class="line">R0 timeout!</span><br><span class="line">R1 timeout!</span><br></pre></td></tr></table></figure>
+<p>运行结果显示节点A与F的路由表与逆向路径完全正确：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cc-simulate-dv:11 &gt; cat ports </span><br><span class="line">0 37352</span><br><span class="line">1 24551</span><br><span class="line">2 45772</span><br><span class="line">3 33265</span><br><span class="line">4 38391</span><br><span class="line">5 36583</span><br><span class="line">cc-simulate-dv:12 &gt; cat 0</span><br><span class="line">0 -1 0</span><br><span class="line">1 1 1 1,0</span><br><span class="line">2 1 2 2,1,0</span><br><span class="line">3 1 3 3,2,1,0</span><br><span class="line">4 1 3 4,2,1,0</span><br><span class="line">5 1 4 5,4,2,1,0</span><br><span class="line">cc-simulate-dv:13 &gt; cat 5</span><br><span class="line">0 4 4 0,1,2,4,5</span><br><span class="line">1 4 3 1,2,4,5</span><br><span class="line">2 4 2 2,4,5</span><br><span class="line">3 4 2 3,4,5</span><br><span class="line">4 4 1 4,5</span><br><span class="line">5 -1 0</span><br></pre></td></tr></table></figure>
+<p>完整的修正过的仿真程序打包下载链接在此：<a href="cc-simulate-dv.tgz">cc-simulate-dv.tgz</a></p>
+<p>总结这一项目的完成，加深了对距离矢量路由协议的深刻理解，也熟悉了Unix类系统上的网络编程的许多规范和细节，笔者收获很大。另一方面，从课程设计上看，此软件项目还可以做一些优化和扩展实验：</p>
+<ul>
+<li>创建面向对象的路由器类，实现完全模块化的路由器</li>
+<li>处理距离矢量时直接更新原来的路由表，不必生成新的路由表再比较</li>
+<li>设计仿真节点失误或链路断线的情况，验证协议实现的收敛性</li>
+<li>在同样的仿真架构下，实现链路状态路由协议 (<a href="https://en.wikipedia.org/wiki/Open_Shortest_Path_First">OSPF</a>)</li>
+<li>修改仿真架构，实现路径矢量路由协议 (<a href="https://en.wikipedia.org/wiki/Border_Gateway_Protocol">BGP</a>)</li>
+</ul>
+<p>回顾起来，CS551讲解的计算机网络知识点和软件作业都让人受益良多。总体上看，CS551可能是笔者在USC上的最具有挑战性、但也学到最多东西的一门课程。这样的学习和训练为笔者之后长期的网络研发工作打下了坚实的基础。非常感谢任课教师 Ramesh Govindan 教授！</p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>时至今日，CS551依然如当年一样火热，报名需要资格审批 (Clearance) ，之后可能还要通过一个预考 (Placement Exam) 才能正式注册。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>C. Cheng, R. Riley, S. P. R. Kumar, and J. J. Garcia-Luna-Aceves. <em><a href="https://dl.acm.org/doi/abs/10.1145/75247.75269">A loop-free Bellman-Ford routing protocol without bouncing effect</a></em>. In ACM SIGCOMM '8g, pages 224-237, September 1989<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Govindan教授专注于大型网络路由基础设施和无线及移动网络体系结构研究。他是IEEE和ACM双会士 (Fellow)，曾任 IEEE <em>移动计算</em> 会刊主编。Govindan教授2018年荣获 IEEE Internet Award。他现今依然活跃在科研和教学的一线。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>在macOS系统中，socket系列API的接口定义使用<code>socklen_t *restrict address_len</code>。这要求调用者传递严格类型定义的变量给地址长度参数<code>address_len</code>。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+]]></content>
+      <categories>
+        <category>技术小札</category>
+      </categories>
+      <tags>
+        <tag>C/C++编程</tag>
+        <tag>路由与交换</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>迪菲—赫尔曼密钥交换是使用和 RSA 相似的技术吗？</title>
+    <url>/2020/12/01/DH-and-RSA/</url>
+    <content><![CDATA[<p>近日在一次研发小组内部的 WPA3 技术介绍会上，演讲者提到加密无线开放网络的 <a href="https://tools.ietf.org/html/rfc8110">OWE</a> 技术基于迪菲—赫尔曼密钥交换，并随口说迪菲—赫尔曼密钥交换是使用和 RSA 相似的技术。这种说法是错误的！<a id="more"></a>虽然迪菲—赫尔曼密钥交换和 RSA 加密算法都属于公钥密码技术，它们的工作机理和应用场景是不同的。作为网络安全相关的研发工程技术人员，有必要清楚地了解两者的工作机制和所基于的数学原理，以及它们之间的区别和联系。</p>
+<div class="note success no-icon"><p><strong>A cryptographic system should be secure even if everything about the system, except the key, is public knowledge.</strong><br> <strong>— <em>Auguste Kerckhoffs</em>（奥古斯特·柯克霍夫，荷兰语言学家和密码学家，提出密码学的“柯克霍夫原则”）</strong></p>
+</div>
+<h2 id="迪菲赫尔曼密钥交换">迪菲—赫尔曼密钥交换</h2>
+<p>迪菲—赫尔曼密钥交换 (Diffie–Hellman key exchange，缩写为DH) 是一种保密通信协议，通过它可以让通信双方在没有任何预知信息的情况下，在不安全的公共信道上交换消息以创建共享密码。这个密码可以用于产生后续双方使用对称加密技术 (如 AES) 通信的密钥。</p>
+<p>这种公钥分配以达成共享秘密的思想最早由斯坦福大学教授马丁·赫尔曼 (Martin Hellman) 的博士研究生瑞夫·墨克 (Ralph Merkle) 提出，而后赫尔曼教授的研究助理惠特菲尔德·迪菲 (Whitfield Diffie) 和赫尔曼教授共同发明了实用的密钥交换协议。迪菲与赫尔曼于1976在 IEEE 信息论会刊上受邀共同发表了论文《<a href="https://ieeexplore.ieee.org/document/1055638">密码学的新方向</a>》，为公开密钥密码学体制奠基，也正式宣告了迪菲—赫尔曼密钥交换这一新技术的诞生。</p>
+<p>迪菲—赫尔曼密钥交换的工作原理，是基于数论中的<a href="https://zh.wikipedia.org/wiki/整数模n乘法群">整数模 <em>n</em> 乘法群</a>及其<a href="https://zh.wikipedia.org/wiki/原根">原根</a>的模幂 (modular exponentiation) 运算。下面以一个简单而具体的例子来描述：</p>
+<ol type="1">
+<li>爱丽丝选定一个素数 <span class="math inline">\(p=71\)</span>，再选定整数模 <span class="math inline">\(p\)</span> 乘法群的一个原根 <span class="math inline">\(g=7\)</span></li>
+<li>爱丽丝选定一个小于 <span class="math inline">\(p\)</span> 的随机数 <span class="math inline">\(a=17\)</span>，计算 <span class="math inline">\(A=g^a\;mod\;p=7^{17}\;mod\;71 = 62\)</span></li>
+<li>爱丽丝将 <span class="math inline">\((p,g,A)\)</span> 一起发给鲍勃</li>
+<li>鲍勃也选定一个小于 <span class="math inline">\(p\)</span> 的随机数 <span class="math inline">\(b=39\)</span>，计算 <span class="math inline">\(B=g^b\;mod\;p=7^{39}\;mod\;71 = 13\)</span></li>
+<li>鲍勃将 <span class="math inline">\(B\)</span> 发回给爱丽丝</li>
+<li>爱丽丝计算 <span class="math inline">\(s=B^a\;mod\;p=13^{17}\;mod\;71 = 42\)</span></li>
+<li>鲍勃计算 <span class="math inline">\(s=A^b\;mod\;p=62^{39}\;mod\;71 = 42\)</span></li>
+</ol>
+<details class="note primary"><summary><p><strong>计算 <span class="math inline">\(\color{#93F}{\bf62^{39}\;mod\;71}\)</span> 很麻烦吗？其实很容易……</strong></p>
+</summary>
+<p>记住模算数有保持基本运算的性质： <span class="math display">\[(a⋅b)\;mod\;m = [(a\;mod\;m)⋅(b\;mod\;m)]\;mod\;m\]</span> 结合<a href="https://zh.wikipedia.org/wiki/平方求幂">平方求幂</a>原理，可以应用<a href="https://zh.wikipedia.org/zh-cn/模幂#从右到左二位算法">从右到左二进制位算法</a>快速计算： <span class="math display">\[\begin{align}
+62^{39}\;mod\;71 &amp; = (62^{2^0}⋅62^{2^1}⋅62^{2^2}⋅62^{2^5})\;mod\;71\\
+&amp; = (62⋅10⋅(62^{2^1}⋅62^{2^1})⋅(62^{2^4}⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅(10⋅10)⋅(62^{2^3}⋅62^{2^3}⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅(29⋅29⋅62^{2^3}⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅(60⋅60⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅(50⋅50))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅15)\;mod\;71\\
+&amp; = 42
+\end{align}\]</span></p>
+
+</details>
+<p>如同魔法一般，爱丽丝和鲍勃都得到了同样的 <span class="math inline">\(s\)</span> 值 <span class="math inline">\(42\)</span>，这就是两个人的共享秘密！此后，爱丽丝和鲍勃就可用 <span class="math inline">\(s\)</span> 的哈希值作为对称密钥进行加密通讯，第三者无法知晓。</p>
+<p>为什么会这样？因为乘法群模幂运算的性质，在模 <span class="math inline">\(p\)</span> 下 <span class="math inline">\(g^{ab}\)</span> 和 <span class="math inline">\(g^{ba}\)</span> 相等：</p>
+<p><span class="math display">\[A^b\;mod\;p=g^{ab}\;mod\;p=g^{ba}\;mod\;p=B^a\;mod\;p\]</span></p>
+<p>所以计算出来的 <span class="math inline">\(s\)</span> 值一定相同。当然，真正的应用中会使用大得多的 <span class="math inline">\(p\)</span>，否则攻击者可以穷举其所有的余数，去试图破解对称加密的密文。</p>
+<p>注意 <span class="math inline">\((p,g,A,B)\)</span> 是公开的，<span class="math inline">\((a,b,s)\)</span> 是秘密的。现在假定一个窃听者伊芙可以看到爱丽丝和鲍伯之间的全部消息，那么她可以推导出 <span class="math inline">\(s\)</span> 吗？答案是只有当 <span class="math inline">\((p,a,b)\)</span> 值很小时才是实际可能的。伊芙首先必须从她知道的 <span class="math inline">\((p,g,A,B)\)</span> 倒推出 <span class="math inline">\((a,b)\)</span> :</p>
+<ul>
+<li><span class="math inline">\(A=g^a\;mod\;p\Rightarrow \color{fuchsia}{a = log_g A\;mod\;p}\)</span></li>
+<li><span class="math inline">\(B=g^b\;mod\;p\Rightarrow \color{fuchsia}{b = log_g B\;mod\;p}\)</span></li>
+</ul>
+<p>这就是著名的<strong>离散对数问题</strong>。这是一个公认的计算难题，当前并没有找到多项式时间效率的算法来计算离散对数。所以只要选择了合适的 <span class="math inline">\((p,a,b)\)</span>，这个协议被认为是窃听安全的。<a href="https://tools.ietf.org/html/rfc3526">RFC 3526</a> 推荐了6个大素数的模幂 DH 群可供实际应用，其中最小的素数就有1536比特位！</p>
+<p>还要强调的一点是，迪菲－赫尔曼密钥交换本身并不要求通信双方的身份验证，因此它很容易受到中间人攻击。如果攻击者可以在信道的中央窜改两边收发的消息，就可以假扮身份完成两次迪菲－赫尔曼密钥交换。这样攻击者就可以解密全部的信息。因此，通常实际应用中需要加入身份验证机制来防止这类攻击。</p>
+<p>迪菲－赫尔曼密钥交换技术是对现代密码学至关重要的贡献。2015年，在这项发明公布39年后，迪菲和赫尔曼共同荣获被誉为“计算机界的诺贝尔奖” 的 ACM 图灵奖。ACM 的颁奖海报上直接称他们“发明了公钥密码技术”。</p>
+<p><img src="acm-turing-2015.jpeg" /></p>
+<h2 id="rsa加密算法">RSA加密算法</h2>
+<p>RSA 是一种公钥加密算法，以此为核心技术构成的同名公钥加密系统，被广泛应用于保密数据传输。今天，互联网的全面发展已经在社会的各个层面为大众提供极大便利。不论你是在网上冲浪、游戏、娱乐、购物、还是与亲友即时通讯、管理银行账户、投资买卖金融证券，或者只是简单地收发电子邮件，都有 RSA 在幕后运行保障你的隐私和数据安全。</p>
+<p>RSA 实际上是三个人姓氏的缩写，他们是美国密码学家罗纳德·李维斯特 (Ronald <strong>R</strong>ivest)、以色列密码学家阿迪·沙米尔 (Adi <strong>S</strong>hamir) 和美国计算机科学家伦纳德·阿德曼 (Leonard Max <strong>A</strong>dleman) 。1977年，李维斯特、沙米尔和阿德曼三人在麻省理工学院 (MIT) 合作共同发明了 RSA 加密算法。算法最先发布在MIT的公开技术报告里，后来整理发表在1978年二月的 <em>ACM 通讯</em> 杂志，标题为《<a href="https://dl.acm.org/doi/10.1145/359340.359342">一种获取数字签名和公钥密码系统的方法</a>》。</p>
+<p>RSA 的基本思想是使用者创建由一个公钥和一个私钥组成的密钥对。公钥自由发布，私钥必须秘密保存。任何人都可以用公钥来加密消息，而生成的密文只有私钥持有者才能解读。另一方面，以私钥加密的信息，公钥都可以解开。由于我们假定私钥只是特定对象才能持有，所以使用私钥加密相当于生成数字签名，用公钥解密等效于验证签名。</p>
+<p>RSA 加密算法包括四步操作过程：密钥生成、密钥分配、加密和解密。下面也举一个简单而具体的例子来说明：</p>
+<ol type="1">
+<li>爱丽丝随机选择两个素数 <span class="math inline">\(p=127\)</span> 和 <span class="math inline">\(q=5867\)</span>，计算 <span class="math inline">\(N=pq=745109\)</span></li>
+<li>爱丽丝计算 <span class="math inline">\(N\)</span> 的<a href="https://zh.wikipedia.org/zh-cn/卡邁克爾函數">卡迈克尔函数</a> <span class="math inline">\(\lambda(N)=\lambda(745109)=52794\)</span>
+<ul>
+<li>当 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 都为素数时，通常 <span class="math inline">\(\lambda(pq)=lcm(p − 1, q − 1)\)</span></li>
+<li><span class="math inline">\(lcm\)</span> 是求最小公倍数的函数，可以用欧几里得算法得出</li>
+<li><span class="math inline">\(lcm(126,5866)=52794\)</span></li>
+</ul></li>
+<li>爱丽丝选择一个小于 <span class="math inline">\(\lambda(N)\)</span> 且与之互素的数 <span class="math inline">\(e=5\)</span>，并求得 <span class="math inline">\(e\)</span> 关于 <span class="math inline">\(\lambda(N)\)</span> 的<a href="https://zh.wikipedia.org/zh-cn/模反元素">模逆元</a> <span class="math inline">\(d\equiv e^{-1}\pmod {\lambda(N)}\)</span>，得到 <span class="math inline">\(d=10559\)</span>
+<ul>
+<li>模逆元的定义是，找到 <span class="math inline">\(d\)</span> 使得 <span class="math inline">\((d⋅e)\;mod\;\lambda(N)=1\)</span></li>
+<li><span class="math inline">\(d=10559\equiv 5^{-1}\pmod {52794}\)</span></li>
+</ul></li>
+<li><span class="math inline">\(\pmb{(N,e)}\)</span> <strong>就是爱丽丝的公钥</strong>，<span class="math inline">\(\pmb{(N,d)}\)</span> <strong>是她的私钥</strong>
+<ul>
+<li>爱丽丝将她的公钥 <span class="math inline">\((745109,5)\)</span> 发给鲍勃</li>
+<li>爱丽丝密藏她的私钥 <span class="math inline">\((745109,10559)\)</span></li>
+<li>爱丽丝销毁所有 <span class="math inline">\(p,q,\lambda(N)\)</span> 的记录</li>
+</ul></li>
+<li>当鲍勃想给爱丽丝送一个消息 <span class="math inline">\(M\)</span> 时，先按照双方约定好的编码格式将 <span class="math inline">\(M\)</span> 转化为一个或多个小于 <span class="math inline">\(N\)</span> 的正整数 <span class="math inline">\(m\)</span>，然后使用爱丽丝的公钥逐个计算出密文 <span class="math inline">\(c\)</span>。计算公式是 <span class="math inline">\(\pmb{c\equiv m^e\pmod N}\)</span>
+<ul>
+<li>假定 <span class="math inline">\(M\)</span> 为“<em>CACC 9678</em>”，编码格式是空格为0、a-z/A-Z（忽略大小写）为1-26、0-9为27-36</li>
+<li>转化后得到正整数串 “030103 030036 333435”，注意每个都小于745109</li>
+<li>加密后的密文整数串 “184539 741303 358095”
+<ul>
+<li><span class="math inline">\(184539 \equiv 30103^5\pmod {745109}\)</span></li>
+<li><span class="math inline">\(741303 \equiv 30036^5\pmod {745109}\)</span></li>
+<li><span class="math inline">\(358095 \equiv 333435^5\pmod {745109}\)</span></li>
+</ul></li>
+</ul></li>
+<li>爱丽丝收到密文整数串后，使用自己的私钥逐个计算出明文 <span class="math inline">\(m\)</span>，计算公式是 <span class="math inline">\(\pmb{m\equiv c^d\pmod N}\)</span>
+<ul>
+<li><span class="math inline">\(30103 \equiv 184539^{10559}\pmod {745109}\)</span></li>
+<li><span class="math inline">\(30036 \equiv 741303^{10559}\pmod {745109}\)</span></li>
+<li><span class="math inline">\(333435 \equiv 358095^{10559}\pmod {745109}\)</span></li>
+</ul></li>
+</ol>
+<details class="note primary"><summary><p><strong>以上第三步从 <span class="math inline">\(\color{#93F}{\bf(d\cdot 5)\;mod\;52794=1}\)</span> 算出 <span class="math inline">\(d\)</span>，这是怎么做到的？</strong></p>
+</summary>
+<p>应用<a href="https://zh.wikipedia.org/zh-cn/扩展欧几里得算法">扩展欧几里得算法</a>可以快速求解模逆元。参考该网页，根据互素的前提条件，可以写下关系式 (<span class="math inline">\(gcd\)</span> 为最大公约数函数)：</p>
+<p><span class="math display">\[52794s+5t=gcd(5, 52794)=1\]</span></p>
+<p>我们要求满足上式的最小正整数 <span class="math inline">\(t\)</span>。下表演示算法的迭代过程：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">序号 <span class="math inline">\(i\)</span></th>
+<th style="text-align: left;">商 <span class="math inline">\(q_{i-1}\)</span></th>
+<th style="text-align: left;">余数 <span class="math inline">\(r_i\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(s_i\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(t_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><span class="math inline">\(52794\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><span class="math inline">\(5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(52794 \div5 = 10558\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(4\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1 - 10558\times 0 = 1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0 - 10558\times 1 = -10558\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(5 \div4 = 1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0-1\times1 = -1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1 - 1\times (-10558) = \bf10559\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>只需要两步迭代就得到余数<span class="math inline">\(1\)</span>，算法结束。最后的 <span class="math inline">\(t\)</span> 就是我们要的 <span class="math inline">\(5^{-1}\pmod {52794}\)</span>。</p>
+
+</details>
+<p>解码后串起来得到同样的信息“<em>CACC 9678</em>”。为什么爱丽丝解密后的消息会与鲍勃发送的完全一致呢？原因就在模幂运算里。首先因为 <span class="math inline">\(c\equiv m^e\pmod N\)</span>，可以得到 <span class="math inline">\(c^d\equiv (m^e)^d \equiv m^{ed} \pmod N\)</span>。由于 <span class="math inline">\((d⋅e)\;mod\;\lambda(N)=1\)</span>，推导出 <span class="math inline">\(ed = 1 + h\lambda(N)\)</span> (<span class="math inline">\(h\)</span> 为非负整数）。综合两式</p>
+<p><span class="math display">\[\Rightarrow m^{ed} = m^{(1+h\lambda(N))} = \color{fuchsia}{m(m^{\lambda(N)})^h \equiv m(1)^h}\equiv m\pmod N\]</span></p>
+<p>以上倒数第二个同余等式 (符号 <span class="math inline">\(\equiv\)</span>) 的依据是<a href="https://zh.wikipedia.org/zh-cn/欧拉定理_(数论)">欧拉定理</a>。这样就证明了解密公式 <span class="math inline">\({m\equiv c^d\pmod N}\)</span> 的正确性！还可以看到，<span class="math inline">\(e\)</span> 和 <span class="math inline">\(d\)</span> 的次序对于 <span class="math inline">\(m^{ed}\;mod\;N\)</span> 的结果无关，所以爱丽丝用私钥加密的消息，鲍勃可以拿爱丽丝的公钥解开。这也证明了数字签名的可行性。</p>
+<p>安全性方面，如果第三方能从爱丽丝的公钥 <span class="math inline">\((N,e)\)</span> 推算出 <span class="math inline">\(d\)</span>，那就破解了这一算法。但是破解的前提是先要从 <span class="math inline">\(N\)</span> 里面分离出 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，这在 <span class="math inline">\(N\)</span> 很大时是非常困难的。实际上，这就是著名的<a href="https://zh.wikipedia.org/zh-cn/整数分解"><strong>大数素因数分解问题</strong></a>，另一个公认的计算难题。迄今为止，“已知最好的算法比指数数量级时间要快，比多项式数量级时间要慢”。<a href="https://en.wikipedia.org/wiki/RSA_Factoring_Challenge">RSA 大数分解挑战</a> 网站公布的最新纪录，是2020二月破解了 <a href="https://en.wikipedia.org/wiki/RSA_numbers#RSA-250">RSA-250</a>，一个829比特的大数。这一进展表明1024比特 <span class="math inline">\(N\)</span> 值公钥的安全性已经岌岌可危。有鉴于此，美国国家标准技术研究所 (National Institute of Standards and Technology，简写为NIST) 建议实际应用中的 RSA 密钥长度不少于2048比特。</p>
+<p>另一方面，虽然公钥不需要保密传送，但却要求可靠地分配。否则，伊芙可以假扮爱丽丝，将自己的公钥发给鲍勃。如果鲍勃信以为真，伊芙就可以拦截所有鲍勃传递给爱丽丝的消息，用她自己的私钥解密。伊芙再将这个消息用爱丽丝的公钥加密后传给她。爱丽丝和鲍勃无法发现这样的中间人攻击。解决这一问题的方案，是建立可信赖的第三方机构签发证书来确保公钥的可靠性。这就是公钥基础架构 (Public Key Infrastructure，缩写 PKI) 的由来。</p>
+<p>RSA 公钥加密算法，是三位密码学家和计算机科学家的天才创造。它的发明是公钥密码技术新的里程碑，也成为现代互联网安全通信的基石。李维斯特、沙米尔和阿德曼的杰出贡献，为他们赢得了2002 年的 ACM 图灵奖，比迪菲和赫尔曼早了足足13年！</p>
+<p><img src="acm-turing-2002.jpeg" /></p>
+<h2 id="区别与联系">区别与联系</h2>
+<p>下表总结了迪菲－赫尔曼密钥交换与 RSA 公钥加密算法的对比：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">密码技术</th>
+<th style="text-align: center;">迪菲－赫尔曼密钥交换</th>
+<th style="text-align: center;">RSA加密算法</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">技术类型</td>
+<td style="text-align: center;">非对称，公钥技术</td>
+<td style="text-align: center;">非对称，公钥技术</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">数学原理</td>
+<td style="text-align: center;">整数模 <span class="math inline">\(n\)</span> 乘法群，原根</td>
+<td style="text-align: center;">卡迈克尔函数，模逆元，欧拉定理</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">数学运算</td>
+<td style="text-align: center;">模幂，平方求幂</td>
+<td style="text-align: center;">模幂，平方求幂，扩展欧几里得算法</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">公开密钥</td>
+<td style="text-align: center;"><span class="math inline">\((p,g,A,B)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((N,e)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">私有密钥</td>
+<td style="text-align: center;"><span class="math inline">\((a,b,s)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((N,d)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">安全保障</td>
+<td style="text-align: center;">离散对数难题</td>
+<td style="text-align: center;">大数素因数分解难题</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">典型应用</td>
+<td style="text-align: center;">密钥交换</td>
+<td style="text-align: center;">加密/解密，数字签名</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">密钥长度</td>
+<td style="text-align: center;"><span class="math inline">\(\ge2048\)</span> 比特</td>
+<td style="text-align: center;"><span class="math inline">\(\ge2048\)</span> 比特</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">身份验证</td>
+<td style="text-align: center;">需要外部支持</td>
+<td style="text-align: center;">需要 PKI 支持公钥分配</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">前向保密</td>
+<td style="text-align: center;">支持</td>
+<td style="text-align: center;">不支持</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，两者都属于非对称的公钥技术，都有一个公钥和私钥密钥对。它们都用到了模幂和平方求幂数学运算，RSA 公钥加密算法还需要应用扩展欧几里得算法求解模逆元。尽管有这些相似点，它们所基于数学原理是不同的，其安全性对应的计算难题也是性质相异的。这些特质决定了迪菲－赫尔曼密钥交换可用于密钥交换，但是不能用来加密/解密；而 RSA 公钥加密算法既可以加密/解密，又能支持数字签名。所以，综合来看二者使用相似的技术的说法不能成立。</p>
+<div class="note info"><p>基于迪菲-赫尔曼密钥交换演化出来的 ElGamal 加密算法，可以用来加密/解密消息，但是由于一些历史原因以及 RSA 公钥加密算法的巨大商业成功，ElGamal 加密算法并不流行。</p>
+</div>
+<p>在现代密码学中，密钥长度定义为加密算法使用的密钥的比特数。理论上，因为所有的算法都可能会被暴力破解，所以密钥长度确定了一个加密算法的安全性上限。密码分析学研究表明，迪菲-赫尔曼密钥交换和 RSA 公钥加密算法的密钥强度大致相同。破解离散对数和分解大数素因子的计算强度是可比拟的。因此，在实际应用中对这两种密码技术的推荐密钥长度都是至少2048比特。</p>
+<p>对于身份验证，迪菲-赫尔曼密钥交换需要外部支持，否则无法抗击中间人攻击。RSA 公钥加密算法虽然可以用于验证数字签名，但前提是有 PKI 支持可靠的公钥分配。当前 PKI 的体系已经相当成熟，有专门的证书认证机构 (Certificate Authority，缩写 CA) 承担公钥体系中公钥合法性检验的责任，发放和管理 X.509 格式的公钥数字证书。</p>
+<p>RSA 公钥加密算法在实际应用中存在一个问题，即它没有<a href="https://zh.wikipedia.org/wiki/前向保密">前向保密</a>的功能。前向保密 (Forward Secrecy)，有时也被称为完全前向保密 (Perfect Forward Secrecy)，是保密通信协议的一种安全属性，指的是长期使用的主密钥泄漏不会导致过去的会话信息泄漏。如果系统具有前向保密性，就可以保护在私钥泄露时历史通信纪录的安全。设想一下这样的情况，虽然伊芙无法破解爱丽丝与鲍勃之间用 RSA 加密的消息，伊芙可以存档全部的过往消息密文。未来某一天，爱丽丝的私钥因为某种原因被泄漏，那么伊芙就可以解密所有的消息记录。</p>
+<p>解决这个问题的办法，就是迪菲-赫尔曼密钥交换！记得迪菲-赫尔曼密钥交换的公钥里的 <span class="math inline">\((A,B)\)</span> 由双方从各自的私钥 <span class="math inline">\((a,b)\)</span> 生成，那么如果每次会话时都产生随机的 <span class="math inline">\((a,b)\)</span> 值，未来的密钥泄漏并不会破解之前的会话密钥。这说明迪菲-赫尔曼密钥交换是支持前向保密的！如果我们结合迪菲-赫尔曼密钥交换的前向保密性与 RSA 公钥加密算法的数字签名功能，就可以实现带有身份验证保护的密钥交换。这一过程可以简化示例如下：</p>
+<ol type="1">
+<li>爱丽丝与鲍勃双方交换经过认证的 RSA 公钥证书</li>
+<li>爱丽丝与鲍勃各自产生随机的 <span class="math inline">\((a,b)\)</span> 值，用共享的迪菲-赫尔曼 <span class="math inline">\((p,g)\)</span> 计算出 <span class="math inline">\((A,B)\)</span></li>
+<li>爱丽丝用自己的 RSA 私钥加密 <span class="math inline">\(A\)</span> 生成数字签名，将之与 <span class="math inline">\(A\)</span> 一起发给鲍勃</li>
+<li>鲍勃用自己的 RSA 私钥加密 <span class="math inline">\(B\)</span> 生成数字签名，将之与 <span class="math inline">\(B\)</span> 一起发给爱丽丝</li>
+<li>爱丽丝用鲍勃的 RSA 公钥验证签名，确认 <span class="math inline">\(B\)</span> 来自鲍勃，用 <span class="math inline">\((p,a,B)\)</span> 算出 <span class="math inline">\(s\)</span></li>
+<li>鲍勃用爱丽丝的 RSA 公钥验证签名，确认 <span class="math inline">\(A\)</span> 来自爱丽丝，用 <span class="math inline">\((p,b,A)\)</span> 算出 <span class="math inline">\(s\)</span></li>
+<li>爱丽丝和鲍勃达成共享秘密，生成后续对称加密 (AES) 的会话密钥，进行保密通信</li>
+</ol>
+<p>这里 RSA 数字签名保障了密钥交换不受中间人攻击。另外以上的第二步中，如果每次会话都产生新的随机数，那么即使有一天爱丽丝或鲍勃的RSA 私钥泄漏，也不会威胁以前会话的安全性，因为窃密者还是必须要去求解离散对数的难题。我们也实现了前向保密。实际上，这就是无处不在的传输层安全性协议 (Transport Layer Security，缩写 TLS) 所定义的 DHE-RSA 密码套件的工作机理。</p>
+<h2 id="dhe-rsa加密套件">DHE-RSA加密套件</h2>
+<p>传输层安全性协议 (TLS) 及其前身安全套接层协议 (Secure Sockets Layer，缩写 SSL) 是一种为互联网通信提供安全及数据完整性保障的安全协议。TLS 广泛使用在浏览器、电子邮件、即时通信、VoIP、虚拟专用网 (VPN) 等应用程序中，已成为事实上的互联网保密通信工业标准。目前 <a href="https://tools.ietf.org/html/rfc5246">TLS 1.2</a> 是得到普遍支持的协议版本，支持建立于 TCP 之上的安全连接 。针对 UDP 的应用也定义了数据报传输层安全性协议 (Datagram Transport Layer Security，缩写 DTLS)。DTLS 与 TLS 大同小异，主要在可靠性和安全性方面为无连接的 UDP 传输做了一些扩展。<a href="https://tools.ietf.org/html/rfc6347">DTLS 1.2</a> 与 TLS 1.2 功能相匹配。</p>
+<p>TLS 协议采用主从式（客户机/服务器）架构模型。它的工作模式，是使用 X.509 认证和非对称加密算法对通信方做身份认证，之后交换密钥生成对称加密的会话密钥。这个会话密钥就用来加密通信双方交换的数据，保证信息的保密性和可靠性，不必担心被第三方攻击或窃听。为了标识方便，TLS 1.2 协议将使用的<em>身份验证、密钥交换、批量加密和消息认证码算法</em> 组合成<strong>密码套件 (Cipher Suite) </strong>名称。每个密码套件被赋予一个双字节的编码。<a href="https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4">TLS 密码套件注册表</a>提供了全部登记在录的密码套件命名参考表，参考表以编码值从小到大排序。</p>
+<div class="note info"><p>由于非对称加密算法 (RSA 等) 计算强度远远高于对称加密算法 (AES 等)，从性能上考虑实际应用几乎总是使用对称加密算法批量加密消息。</p>
+</div>
+<p>TLS 1.2 协议支持一系列组合迪菲-赫尔曼密钥交换与 RSA 公钥加密算法的密码套件。它们都以<code>TLS_DH_RSA</code>或<code>TLS_DHE_RSA</code>作为开头。DHE 中的 “E” 代表 “Ephemeral” (临时的)，其意义是要求每次会话都要产生随机的 <span class="math inline">\((a,b)\)</span> 值。所以<code>TLS_DHE_RSA</code>密码套件能提供前向保密，而<code>TLS_DH_RSA</code>不可以，实际应用中应该优先选择前者。</p>
+<p>这里以典型的<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code>(编码 0x00,0x33) 密码套件为例，解析迪菲-赫尔曼与 RSA 协同工作建立 DTLS 会话的过程。首先解释一下密码套件的构成：</p>
+<ul>
+<li><code>DHE</code>：临时 DH 实现密钥交换</li>
+<li><code>RSA</code>：签名认证 DHE 的公钥</li>
+<li><code>AES_128_CBC</code>：128比特密码分组链接模式 AES 加密</li>
+<li><code>SHA</code>：160比特 <code>HMAC-SHA1</code> 散列消息认证码</li>
+</ul>
+<p>参考从网络端口截取的数据包文件 <a href="dtls-dhe-rsa.pcap">dtls-dhe-rsa.pcap</a>，可得到以下握手协议消息时序图：</p>
+<div class="mermaid">
+sequenceDiagram
+
+autonumber
+participant C as 客户机 (Client)
+participant S as 服务器 (Server)
+Note over C,S: 握手协议
+rect rgb(230, 250, 255)
+C-&gt;&gt;S: Client Hello (Cr, Cipher Suites))
+S--&gt;&gt;C: Hello Verify Request (Cookie)
+C-&gt;&gt;S: Client Hello (Cr, Cookie, Cipher Suites)
+S--&gt;&gt;C: Server Hello (Sr, Cipher Suite), Certificate (Sn, Se)
+S--&gt;&gt;C: Server Key Exchange (p,g,A,Ss)
+S--&gt;&gt;C: Certificate Request, Server Hello Done
+C-&gt;&gt;S: Certificate (Cn, Ce)
+C-&gt;&gt;S: Client Key Exchange (B)
+C-&gt;&gt;S: Certificate Verify (Cs)
+end
+Note over C,S: 加密通道建立
+rect rgb(239, 252, 202)
+C-&gt;&gt;S: Change Cipher Spec, Encrypted Handshake Message
+S--&gt;&gt;C: Change Cipher Spec, Encrypted Handshake Message
+C-&gt;&gt;S: Application Data
+S--&gt;&gt;C: Application Data
+end
+ 
+</div>
+<p>参考时序图中数据包编号解析如下：</p>
+<ul>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{1}-\enclose{circle}{3}\)</span> 实现初始握手信息交换：
+<ul>
+<li>客户机先发出问候消息，消息包含随机数 <span class="math inline">\(C_r\)</span> 和所支持的密码套件列表</li>
+<li>服务器回应一个问候验证请求消息，消息包含一个信息块 (Cookie)</li>
+<li>客户机收到验证请求后重发问候消息，包括上次的全部内容外加复制的信息块</li>
+</ul></li>
+</ul>
+<div class="note info"><p>问候验证是 DTLS 特有的，目的是防止拒绝服务攻击。协议规定，服务器只有在收到包含复制的信息块的问候消息后，才会继续为该客户机提供服务。</p>
+</div>
+<ul>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{4}-\enclose{circle}{6}\)</span> 显示服务器进入验证和密钥交换阶段：
+<ul>
+<li>服务器先发出问候消息回应，消息包含了随机数 <span class="math inline">\(S_r\)</span> 和所选定的密码套件
+<ul>
+<li>如下图所示，服务器选择了<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code><img src="dtls-server-hello.png" /></li>
+</ul></li>
+<li>同一数据包还包含了服务器证书消息，证书一般较大，会分成多个分片 (fragment)</li>
+<li>服务器证书提供了可验证其签名的 RSA 公钥 <span class="math inline">\((S_N,\;S_e)\)</span></li>
+<li>接下来服务器发出密钥交换消息，消息包含了其 DH 公钥 <span class="math inline">\((p,g,A)\)</span> 和签名<span class="math inline">\(Ss\)</span>
+<ul>
+<li>下图中 <span class="math inline">\(p\)</span> 的长度256字节，说明密钥长度为2048比特，<span class="math inline">\(Pubkey\)</span> 就是 <span class="math inline">\(A\)</span></li>
+<li>图中也可看到签名选用算法是 SHA512 和 RSA，</li>
+<li>操作是先计算 <span class="math inline">\(SHA512(Cr,Sr,p,g,A)\)</span>，再用服务器 RSA 私钥加密<img src="dtls-server-key.png" /></li>
+</ul></li>
+<li>之后是服务器发的证书请求消息和问候结束消息
+<ul>
+<li>服务器请求客户机发送可验证其签名的 RSA 公钥证书</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="note warning"><p><strong>注意：</strong>如果是使用 DH-RSA 密码套件，则服务器端的 DH 公钥参数 <span class="math inline">\((p,g,A)\)</span> 都是不变的，会直接包含在其证书消息中， 这时服务器不会发出密钥交换消息<span class="math inline">\(\require{enclose}\enclose{circle}{5}\)</span>。对于 DHE-RSA，每次会话的 <span class="math inline">\(A\)</span> 值都不一样。</p>
+</div>
+<ul>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{7}-\enclose{circle}{9}\)</span> 显示客户机进入验证和密钥交换阶段：
+<ul>
+<li>客户机先发出证书消息，证书包括 RSA 公钥 <span class="math inline">\((C_N,\;C_e)\)</span>，也会分成多个分片</li>
+<li>客户机再发出密钥交换消息，消息包含了其 DH 公钥 <span class="math inline">\(B\)</span>
+<ul>
+<li>下图中的<span class="math inline">\(Pubkey\)</span> 就是 <span class="math inline">\(B\)</span><img src="dtls-client-key.png" /></li>
+</ul></li>
+<li>客户机最后发出证书验证消息，消息包含了签名 <span class="math inline">\(Cs\)</span>
+<ul>
+<li>签名覆盖除最开始的客户机问候 <span class="math inline">\(\require{enclose}\enclose{circle}{1}\)</span> 及问候验证请求 <span class="math inline">\(\require{enclose}\enclose{circle}{2}\)</span> 之外的全部过往消息</li>
+<li>签名操作同样是先计算 <span class="math inline">\(SHA512\)</span>，再用客户机 RSA 私钥加密</li>
+</ul></li>
+</ul></li>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{10}-\enclose{circle}{11}\)</span> 完成握手并建立加密通道：
+<ul>
+<li>双方先各自验证对方发过来的签名</li>
+<li>验证成功后运行 DH 算法生成同样的预备主密钥 (<code>pre_master_secret</code>)</li>
+<li>双方调用<a href="https://tools.ietf.org/html/rfc5246#page-14">伪随机函数(PRF)</a>从预备主密钥生成48字节主密钥 (<code>master_secret</code>)： <span class="math display">\[master\_secret = PRF(pre\_master\_secret,\unicode{x201C}master\;secret\unicode{x201D},Cr+Sr)[0..47]\]</span></li>
+<li>双方再次调用 PRF 从主密钥生成84字节密钥块 (<code>key_block</code>)： <span class="math display">\[key\_block = PRF(master\_secret,\unicode{x201C}key\;expansion\unicode{x201D},Sr+Cr)[0,83]\]</span></li>
+<li>密钥块分配给<code>HMAC-SHA1</code>和<code>AES_128_CBC</code>功能模块：
+<ul>
+<li>客户机写消息验证码 (MAC) 密钥：20字节</li>
+<li>服务器写消息验证码 (MAC) 密钥：20字节</li>
+<li>客户机写加密密钥：16字节</li>
+<li>服务器写加密密钥：16字节</li>
+<li>客户机写初始向量 IV：16字节</li>
+<li>服务器写初始向量 IV：16字节</li>
+</ul></li>
+<li>客户机产生更新密码规范 (Change Cipher Spec) 消息，表明开始使用加密和 MAC 模块</li>
+<li>客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块： <span class="math display">\[PRF(master\_secret,finished\_label,SHA256(handshake\_messages)[0,11]\]</span></li>
+<li>客户机发送更新密码规范消息和加密后的握手结束消息到服务器</li>
+<li>服务器验证收到的客户机握手结束消息后，重复上面三步，生成自己的更新密码规范消息和加密后的握手结束消息，发送给客户机</li>
+<li>客户机验证收到的服务器握手结束消息完成握手，加密通道建成</li>
+</ul></li>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{12}-\enclose{circle}{13}\)</span> 显示加密的应用数据交换正式开始</li>
+</ul>
+<p>这就是使用<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code>(编码 0x00,0x33) 密码套件建立安全信息通道的完整过程。DHE 实现了有前向保密保护的密钥交换，而 RSA 数字签名为 DHE 提供了身份验证功能，二者结合打造了一种安全通信的解决方案。清楚了解了这些之后，我们就会更好地掌握迪菲-赫尔曼与 RSA 的工作机理，有效应用于实际工作中并避免不必要的失误。</p>
+]]></content>
+      <categories>
+        <category>学习体会</category>
+      </categories>
+      <tags>
+        <tag>密码学</tag>
+        <tag>网络安全</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>IPv6 动态地址分配机制详解</title>
+    <url>/2020/12/01/IPv6-Addressing/</url>
+    <content><![CDATA[<p>IPv6支持多个地址，地址分配更加灵活方便。与 IPv4 仅仅依赖 DHCP 协议的地址分配方法不同，IPv6 加入了原生的无状态地址自动配置 (<a href="https://tools.ietf.org/html/rfc4862">Sateless Address Autoconfiguration</a>，简写 SLAAC) 协议。SLAAC 既可以单独工作为主机提供 IPv6 地址，又能与 <a href="https://tools.ietf.org/html/rfc8415">DHCPv6</a> 协同运作产生新的分配方案。这里对 IPv6 动态地址分配机制做一个全面分析。 <a id="more"></a></p>
+<div class="note success no-icon"><p><strong>Who the hell knew how much address space we needed?</strong><br> <strong>— <em>Vint Cerf</em>（温特·瑟夫，美国互联网先驱，公认的“互联网之父”之一）</strong></p>
+</div>
+<h2 id="ipv6-地址概述">IPv6 地址概述</h2>
+<h3 id="地址构成">地址构成</h3>
+<p>IPv6 与 IPv4 最显著的不同，就是其超大的地址空间。IPv4 有32比特 (4字节)，允许大约42.9亿（2<sup>32</sup>）个地址。而 IPv6 定义了128比特 (16字节)，支持大约340 x 10<sup>36</sup>个地址。这是一个相当可观的数字，在可预见的未来都不会出现地址枯竭的问题。典型的 IPv6 地址可被划分成两部分。如下图所示，开头的64比特用来代表网络，后面的64比特用作接口标识：<img src="ipv6-addr-format.png" />接口标识可以有多种方式产生：</p>
+<ul>
+<li>静态手工设置</li>
+<li><a href="https://en.wikipedia.org/wiki/IPv6_address#Modified_EUI-64">链路层地址 (MAC) 转化为64比特 EUI-64</a></li>
+<li>由 DHCPv6 指定</li>
+<li>由隐私扩展或加密协议生成</li>
+</ul>
+<p>为了便于书写，IPv6 推荐末端加上网络前缀长度的压缩格式标记，据此上面的地址可以缩短表示为： 2001:db8:130f<strong>::</strong>7000:<strong>0</strong>:140b/<strong>64</strong></p>
+<h3 id="地址类型">地址类型</h3>
+<p><a href="https://tools.ietf.org/html/rfc4291">RFC 4291</a> 区分了三种 IPv6 地址类型：</p>
+<ol type="1">
+<li>单播 (unicast)：网络地址和网络节点一一对应，点对点连接</li>
+<li>任播 (anycast)：发送地址对应一群接收节点，但只有最近一个接收到</li>
+<li>组播 (multicast)：发送地址对应一群接收可以复制信息的节点</li>
+</ol>
+<p>留意到 IPv6 取消了广播 (broadcast) 地址类型，对应的 IPv4 广播功能可以更好地由组播实现。任播地址与单播并无不同，应用场景非常有限。任播的一个典型应用是设定 DNS 根服务器，以便让主机就近查询域名。对于单播和组播地址，它们之间可由不同的网络前缀所辨认：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">地址类型</th>
+<th style="text-align: left;">英文名称</th>
+<th style="text-align: left;">二进制</th>
+<th style="text-align: left;">16进制</th>
+<th style="text-align: left;">应用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">链路本地地址（单播）</td>
+<td style="text-align: left;">Link-local address</td>
+<td style="text-align: left;">1111 1110 10</td>
+<td style="text-align: left;">fe80::/10</td>
+<td style="text-align: left;">单链路通信</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">唯一本地地址（单播）</td>
+<td style="text-align: left;">Unique local address</td>
+<td style="text-align: left;">1111 1101</td>
+<td style="text-align: left;">fd00::/8</td>
+<td style="text-align: left;">本地网络通信</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">全局单播地址</td>
+<td style="text-align: left;">Global unicast address</td>
+<td style="text-align: left;">001</td>
+<td style="text-align: left;">2000::/3</td>
+<td style="text-align: left;">互联网通信</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">组播地址</td>
+<td style="text-align: left;">Multicast address</td>
+<td style="text-align: left;">1111 1111</td>
+<td style="text-align: left;">ff00::/8</td>
+<td style="text-align: left;">群组通信，流媒体视频</td>
+</tr>
+</tbody>
+</table>
+<p>主机的每个接口都必须有一个链路本地地址，此外接口还可以以手工或动态自动配置方式获得唯一本地地址和全局单播地址。这样 IPv6 接口很自然地就拥有多个单播地址。唯一本地地址由本地网管管理，全局单播地址则需要 IANA 指定的地区注册中心负责分配。参考下图，当前所有的全局单播地址都从2000::/3地址块里分配，地址前面48比特标识服务提供商的全局路由网络，之后的16比特标识企业或校园内部子网： <img src="ipv6-addr-alloc.png" /> 因为 IPv6 组播地址只能用作目的地址，所以其比特位定义与单播不同。参见 RFC 4291，组播地址包含4比特特征标志位、4比特应用范围标志及最后112比特群组标识： <img src="ipv6-multicast-addr.png" />另外同一协议还规定了一些<a href="https://tools.ietf.org/html/rfc4291#page-15">预留的 IPv6 组播地址</a>，其中最重要的有：</p>
+<ul>
+<li>本地网段所有节点 — ff02::1</li>
+<li>本地网段所有路由器 — ff02::2</li>
+<li>本地请求节点地址: ff02::1:ffxx:xxxx</li>
+</ul>
+<h2 id="动态分配方案">动态分配方案</h2>
+<h3 id="ndp-协议">NDP 协议</h3>
+<p>IPv6 动态地址分配依赖于邻居发现协议 (<a href="https://tools.ietf.org/html/rfc4861">Neighbor Discovery Protocol</a>，简称NDP)。NDP作用于数据链路层，负责在链路上发现其他节点和相应的 IPv6 地址，并确定可用路由和维护其他活动节点的信息可达性。它为 IPv6 网络提供了等效于 IPv4 网络中地址解析协议 (ARP) 与 ICMP 路由器发现和重定向协议的功能。然而，NDP加入了许多改进以及新的功能。 NDP 定义了五种 <a href="https://tools.ietf.org/html/rfc4443">ICMPv6</a> 消息类型：</p>
+<ol type="1">
+<li>路由器请求 (Router Solicitation，简称 RS)</li>
+<li>路由器通告 (Router Advertisement，简称 RA)</li>
+<li>邻居请求 (Neighbor Solicitation)</li>
+<li>邻居通告 (Neighbor Advertisement)</li>
+<li>重定向 (Redirect)</li>
+</ol>
+<p>这里的头二个消息类型 RS 和 RA，就是实现 IPv6 动态地址分配的关键。主机会发送 RS 消息到本地网段所有路由器组播地址 ff02::2，请求路由信息。当路由器收到网络节点发出的 RS 时，会即时发送 RA 回应。RA 的消息格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|     Type      |     Code      |          Checksum             |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| Cur Hop Limit |M|O|  Reserved |       Router Lifetime         |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                         Reachable Time                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                          Retrans Timer                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|   Options ...</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-</span><br></pre></td></tr></table></figure>
+<p>它定义了两个特殊比特位 M 和 O，其意义如下：</p>
+<ul>
+<li>M — 受监管的地址配置标志，设为1时地址从 DHCPv6 获取。</li>
+<li>O — 其他配置标志，设为1时指示其他配置信息从 DHCPv6 获取</li>
+</ul>
+<p>RA 消息的最后是选项部分 (Options)，最初有源链路层地址、MTU 和前缀信息三个选项。后来，<a href="https://tools.ietf.org/html/rfc8106">RFC 8106</a> (取代 RFC 6106) 又加上了递归域名服务器 (RDNSS) 和域名服务搜索列表 (DNSSL) 两个选项。这其中前缀信息选项直接决定了主机接口的动态地址配置，它的格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|     Type      |    Length     | Prefix Length |L|A| Reserved1 |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                         Valid Lifetime                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                       Preferred Lifetime                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                           Reserved2                           |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+                            Prefix                             +</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<p>这里前缀长度 (Prefix Length) 和前缀 (Prefix) 联合决定了 IPv6 地址的网络前缀。此外，前缀信息选项也定义了两个特殊比特位 L 和 A：</p>
+<ul>
+<li>L — “在链路” (on-link) 标志，设为1时指示前缀可用于“在链路”判定</li>
+<li>A — 自动地址配置标志，设为1时指示前缀可用于 SLAAC</li>
+</ul>
+<p>类似于 IPv4 的子网掩码功能，“在链路”判定的意义在于让主机确定某个接口可以接入哪些网络。缺省情况下，主机只将链路本地地址所在的网络视为“在链路”。如果无法判定一个目的地址的“在链路”状态，主机默认将 IPv6 数据报转发给默认网关（或缺省路由器）。当主机收到 RA 消息时，如果一个前缀信息选项的“在链路”标志设为1，并且有效使用期限 (Valid Lifetime) 也是非0值，那么主机就会在前缀列表中为之创建一个新的前缀网络条目。所有未过期的前缀网络条目都是“在链路”的。</p>
+<h3 id="消息时序">消息时序</h3>
+<p>了解了 NDP 协议及 RA 消息所传递的信息之后，来看看它们是如何引导网络节点实现动态地址分配的。</p>
+<p>网络中的路由器会周期性的发送 RA 消息到本地网段所有节点组播地址 (ff02::1)。但是，为了避免时延，主机启动完成后会马上发送一个或多个 RS 消息到本地网段所有路由器。协议规定路由器要在0.5秒内回应 RA 消息。之后，根据所收到的 RA 消息中的 M/O/A 比特位的取值，主机会决定如何动态配置接口的唯一本地地址和全局单播地址，以及如何获取其他配置信息。在某些比特位取值组合下，主机需要运行 DHCPv6 客户端软件，连接到服务器以获取地址分配和/或其他配置信息。整个过程如以下消息时序图所示：</p>
+<div class="mermaid">
+sequenceDiagram
+
+participant R as 路由器
+participant H as 主机
+participant S as DHCPv6 服务器
+Note over R,H: 路由器请求
+rect rgb(239, 252, 202)
+H-&gt;&gt;R: Router Solitication
+R--&gt;&gt;H: Router Advertisement
+end
+Note over H,S: 地址请求
+rect rgb(230, 250, 255)
+H-&gt;&gt;S: DHCPv6 Solicit
+S--&gt;&gt;H: DHCPv6 Advertise
+H-&gt;&gt;S: DHCPv6 Request
+S--&gt;&gt;H: DHCPv6 Reply
+end
+Note over H,S: 其他信息请求
+rect rgb(230, 250, 255)
+H-&gt;&gt;S: DHCPv6 Information-request
+S--&gt;&gt;H: DHCPv6 Reply
+end
+
+</div>
+<div class="note warning"><p><strong>注意：</strong> 与 IPv4 DHCP 协议不同，DHCPv6 客户端使用 UDP 端口546，服务器使用 UDP 端口547。</p>
+</div>
+<p>以下详细解释由 M/O/A 比特位的取值组合所确定的三种动态分配方案：</p>
+<ul>
+<li>SLAAC</li>
+<li>SLAAC + 无状态 DHCPv6</li>
+<li>有状态 DHCPv6</li>
+</ul>
+<h3 id="slaac">SLAAC</h3>
+<p>SLAAC是最简单的 IPv6 地址自动分配方案，不需要任何服务器。其工作原理是主机启动后发送 RS 消息请求，路由器回送 RA 消息至本地网段所有节点。如果 RA 消息包含如下设置：</p>
+<ul>
+<li><strong><mark>首部的 M 比特和 O 比特都清零</mark></strong></li>
+<li><strong>前缀信息选项的 L 比特和 A 比特置为1</strong></li>
+</ul>
+<p>那么主机收到这个 RA 消息后，执行如下操作实现 SLAAC：</p>
+<ol type="1">
+<li>组合网络前缀与本地接口标识，生成唯一本地地址或全局单播地址</li>
+<li>安装默认网关（或缺省路由）指向路由器地址 (RA消息的源地址)</li>
+<li>将此接口设为对应网络前缀的“在链路”，也是以上默认网关的下一跳接口</li>
+<li>如果包含 RDNSS 和/或 DNSSL 选项，安装域名服务器和域名后缀</li>
+</ol>
+<p>这样，主机就获得了一个或多个 IPv6 唯一本地地址或全局单播地址，以及默认网关和域名服务信息，可以完成各种互联网连接。</p>
+<p>下面是思科 Catalyst 9300 多层接入交换机上的 SLAAC 配置示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ipv6 unicast-routing</span><br><span class="line">interface Vlan10</span><br><span class="line">    ipv6 enable</span><br><span class="line">    ipv6 address 2001:ABCD:1000::1&#x2F;64</span><br><span class="line">    ipv6 nd ra dns server 2001:4860:4860::8888 infinite</span><br><span class="line">    ipv6 nd ra dns search-list example.com</span><br></pre></td></tr></table></figure>
+<p>思科多层交换机的第三层接口提供路由功能。可以看到，当在 VLAN 10 的第三层接口激活 IPv6 之后，其默认的地址自动分配方案就是 SLAAC。从该接口发出的 RA 消息的控制比特位全部按照 SLAAC 方案设置，其配置的每个 IPv6 地址的网络前缀都会被自动加入到 RA 前缀信息选项列表中。当然，网络管理员也可以用单独的接口配置命令排除某些网络前缀。示例的最后两行配置命令指定了 RDNSS 和 DNSSL，它们也被加入到 RA 消息选项中。</p>
+<p>这时如果主机接入 VLAN 10 的端口，就会马上获得一个网络前缀为 2001:ABCD:1000::/64 全局单播地址，同时其默认网关的地址被设定为 2001:ABCD:1000::1。打开浏览器输入一个网址，它就会向指定的域名服务器 2001:4860:4860::8888（谷歌的公共域名服务器地址）发出域名解析请求，以获取目的网址的 IPv6 地址建立连接。</p>
+<h3 id="slaac-无状态-dhcpv6">SLAAC + 无状态 DHCPv6</h3>
+<p>SLAAC 自动地址分配快捷方便，为中小型网络部署提供了即插即用的 IPv6 部署方案。但是如果网络节点需要获得其他一些配置信息，比如 NTP/SNTP 服务器、TFTP 服务器和 SIP 服务器地址，或者其功能依赖某些厂商特定的信息选项 (Vendor-specific Information Option) 时，就必须选择 <u>SLAAC + 无状态 DHCPv6</u> 的方案。</p>
+<p>这一方案依然使用 SLAAC 自动地址分配，但是路由器会指示主机去连接 DHCPv6 服务器以获取其他配置信息。这时路由器回送的 RA 消息设置变为：</p>
+<ul>
+<li><strong>首部的 M 比特清零，<mark>O 比特置为1</mark></strong></li>
+<li><strong>前缀信息选项的 L 比特和 A 比特置为1</strong></li>
+</ul>
+<p>主机收到这个 RA 消息后，执行如下操作：</p>
+<ol type="1">
+<li>组合网络前缀与本地接口标识，生成唯一本地地址或全局单播地址</li>
+<li>安装默认网关（或缺省路由）指向路由器地址 (RA消息的源地址)</li>
+<li>将此接口设为对应网络前缀的“在链路”，也是以上默认网关的下一跳接口</li>
+<li>如果包含 RDNSS 和/或 DNSSL 选项，安装域名服务器和域名后缀</li>
+<li><mark>启动 DHCPv6 客户端，连接 DHCPv6 服务器请求其他配置信息</mark></li>
+<li><mark>保存 DHCPv6 服务器回复的其他配置信息</mark></li>
+</ol>
+<p>可以看到，<u>SLAAC + 无状态 DHCPv6</u> 在地址分配上与 SLAAC 并没有什么不同。DHCPv6 只是提供附加配置信息，不会分配 IPv6 地址。所以 DHCPv6 服务器不会追踪网络节点的地址分配状况，这就是“无状态”的含义。</p>
+<p>相应的 Catalyst 9300 交换机上的配置命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ipv6 unicast-routing</span><br><span class="line">ipv6 dhcp pool vlan-10-clients</span><br><span class="line">    dns-server 2001:4860:4860::8888</span><br><span class="line">    domain-name example.com</span><br><span class="line">    sntp address 2001:DB8:2000:2000::33</span><br><span class="line">interface Vlan10</span><br><span class="line">    ipv6 enable</span><br><span class="line">    ipv6 address 2001:ABCD:1000::1&#x2F;64</span><br><span class="line">    ipv6 nd other-config-flag</span><br><span class="line">    ipv6 dhcp server vlan-10-clients</span><br><span class="line">    # ipv6 dhcp relay destination 2001:9:6:40::1</span><br></pre></td></tr></table></figure>
+<p>与 SLAAC 的例子不同点在于，VLAN 10 接口配置命令<code>ipv6 nd other-config-flag</code>明确指定置位 RA 消息的 O 比特。其下一条命令<code>ipv6 dhcp server vlan-10-clients</code>激活接口的 DHCPv6 服务器响应功能，对应服务器的共用资源名称为<code>vlan-10-clients</code>。DHCPv6 服务器的配置在接口配置的上方，从<code>ipv6 dhcp pool vlan-10-clients</code>处开始，包含了 DNS 服务器地址、DNS 域名和 SNTP 服务器地址。</p>
+<p>如果使用交换机之外的位于其他网段的 DHCPv6 服务器，可以删除<code>ipv6 dhcp server</code>命令，启用示例中下一行的<code>ipv6 dhcp relay destination</code>命令指定转发 DHCPv6 请求至外部服务器的地址。</p>
+<h3 id="有状态-dhcpv6">有状态 DHCPv6</h3>
+<p>许多大型企业应用 DHCP 管理设备的 IPv4 地址，所以部署 DHCPv6 集中分配和管理 IPv6 地址是自然的优先选择。这就是<u>有状态 DHCPv6</u>的用武之地。这一方案同样需要路由器发送的 RA 消息，但是不会仅仅依靠网络前缀进行自动地址分配。RA 消息的控制比特位设置是：</p>
+<ul>
+<li><strong><mark>首部的 M 比特置为1</mark>，O 比特无所谓</strong></li>
+<li><strong>前缀信息选项的 L/A 比特可按需要设为1或0</strong></li>
+</ul>
+<p>收到这个 RA 消息后，主机执行操作如下：</p>
+<ol type="1">
+<li>如果有前缀信息选项 A 比特设为1，则组合生成唯一本地地址或全局单播地址</li>
+<li>安装默认网关（或缺省路由）指向路由器地址 (RA消息的源地址)</li>
+<li>如果有前缀信息选项 L 比特设为1，将此接口设为对应网络前缀的“在链路”</li>
+<li>如果包含 RDNSS 和/或 DNSSL 选项，安装域名服务器和域名后缀</li>
+<li><mark>启动 DHCPv6 客户端，连接服务器请求地址和其他配置信息</mark></li>
+<li><mark>将 DHCPv6 服务器分配的地址设置到此接口</li>
+<li><mark>保存 DHCPv6 服务器回复的其他配置信息</mark></li>
+</ol>
+<p>Catalyst 9300 交换机上的<u>有状态 DHCPv6</u> 配置命令示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ipv6 unicast-routing</span><br><span class="line">ipv6 dhcp pool vlan-10-clients</span><br><span class="line">    address prefix FD09:9:5:90::&#x2F;64</span><br><span class="line">    address prefix 2001:9:5:90::&#x2F;64</span><br><span class="line">    dns-server 2001:9:5:90::115</span><br><span class="line">    domain-name test.com</span><br><span class="line">interface Vlan10</span><br><span class="line">    ipv6 enable</span><br><span class="line">    ipv6 address 2001:ABCD:1:1::1&#x2F;64</span><br><span class="line">    ipv6 nd prefix 2001:ABCD:1:1::&#x2F;64 no-advertise</span><br><span class="line">    ipv6 nd managed-config-flag</span><br><span class="line">    ipv6 dhcp server vlan-10-clients</span><br></pre></td></tr></table></figure>
+<p>与 <u>SLAAC + 无状态 DHCPv6</u> 相比，这里接口配置去掉了<code>ipv6 nd other-config-flag</code>，改用<code>ipv6 nd managed-config-flag</code>命令。这对应于将 RA 消息首部的 M 比特置为1。DHCPv6 服务器的配置加入了两条<code>address prefix</code>命令设置网络前缀。同时接口配置的<code>ipv6 nd prefix 2001:ABCD:1:1::/64 no-advertise</code>指定路由器不包含 2001:ABCD:1:1::/64 前缀信息选项到 RA 中。所以，这个例子主机接口不会生成 SLAAC 地址，只会产生来自 DHPCv6 的两个地址：一个是网络前缀为 FD09:9:5:90::/64 的唯一本地地址，另一个是网络前缀为 2001:9:5:90::/64 的全局单播地址。这两个地址的接口标识也分别由 DHPCv6 指定。</p>
+<p>如何分辨主机接口动态分配的地址来源？方法很简单。要记住的一点是，DHPCv6 不会发送网络前缀长度给请求者，所以从 DHPCv6 拿到的地址的网络前缀长度都是128。而 SLAAC 生成的地址网络前缀长度不会是128的。请看下面 Linux 主机上 wired0 接口实例：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ifconfig wired0</span><br><span class="line">wired0    Link encap:Ethernet  HWaddr A0:EC:F9:6C:D9:30  </span><br><span class="line">          inet6 addr: 2001:20::53c7:1364:a4d8:fd91/128 Scope:Global</span><br><span class="line">          inet6 addr: 2001:20::a2ec:f9ff:fe6c:d930/64 Scope:Global</span><br><span class="line">          inet6 addr: fe80::a2ec:f9ff:fe6c:d930/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:510 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:1213 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:93670 (91.4 KiB)  TX bytes:271979 (265.6 KiB)</span><br></pre></td></tr></table></figure>
+<p>我们马上可以判定，该接口使用的是<u>有状态 DHCPv6</u> 地址分配，但也用收到的相同的网络前缀2001:20::/64生成了 SLAAC 地址：</p>
+<ul>
+<li>2001:20::53c7:1364:a4d8:fd91/128 — DHCPv6 地址，接口标识为随机数</li>
+<li>2001:20::a2ec:f9ff:fe6c:d930/64 — SLAAC 地址，接口标识为 MAC EUI-64 格式</li>
+<li>fe80::a2ec:f9ff:fe6c:d930/64 — 链路本地地址，接口标识为 MAC EUI-64 格式</li>
+</ul>
+<div class="note warning"><p><strong>注意：</strong>DHPCv6 服务器也不提供任何 IPv6 默认网关信息，主机需要从 RA 消息获知动态默认网关。</p>
+</div>
+<h3 id="总结比较">总结比较</h3>
+<p>下表列出了 RA 消息的控制比特组合与地址分配和其他配置获取方式的关系：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">M-比特</th>
+<th style="text-align: center;">O-比特</th>
+<th style="text-align: center;">A-比特</th>
+<th style="text-align: center;">主机地址</th>
+<th style="text-align: center;">其他配置</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">静态设置</td>
+<td style="text-align: center;">手工配置</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">前缀由 RA 指定，自动生成</td>
+<td style="text-align: center;">手工配置</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">静态设置</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">前缀由 RA 指定，自动生成</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">有状态 DHCPv6</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">有状态 DHCPv6 和/或 自动生成</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">有状态 DHCPv6</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">有状态 DHCPv6 和/或 自动生成</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+</tbody>
+</table>
+<p>总结三种动态分配方案:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">分配方案</th>
+<th style="text-align: center;">特点</th>
+<th style="text-align: center;">适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">SLAAC</td>
+<td style="text-align: center;">简单实用，快速部署</td>
+<td style="text-align: center;">中小企业、消费类产品联网、物联网 (IoT)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">SLAAC + 无状态 DHCPv6</td>
+<td style="text-align: center;">自动配置，扩展服务</td>
+<td style="text-align: center;">中小企业需要附加网络服务</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">有状态 DHCPv6</td>
+<td style="text-align: center;">集中管理和控制</td>
+<td style="text-align: center;">大型企业、事业单位和校园网</td>
+</tr>
+</tbody>
+</table>
+<div class="note warning"><p><strong>注意：</strong>由于 IPv6 网络接口可以有多个地址（一个链路本地地址，加上一个或多个唯一本地地址和/或全局单播地址），在建立外部连接时，如何选择源地址变得非常重要。<a href="https://tools.ietf.org/html/rfc6724">RFC 6724</a> 给出了详细的 IPv6 源地址选择规则。在嵌入式系统的开发中，与同一远端设备连接的控制平面和数据平面常常由不同的功能组件实现。比如控制平面直接调用 Linux 用户空间套接字建立连接，连接使用的 IPv6 源地址由 TCP/IP 协议栈选定，而数据平面直接在内核空间实现数据封装处理和传输。这时要及时将控制平面所选择的 IPv6 源地址同步到数据平面，否则用户数据无法送达同一目的地。</p>
+</div>
+<h2 id="排错指南">排错指南</h2>
+<p>在思科路由器和交换机上通用的 IPv6 动态地址分配调试和排错命令如下表所示：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令行</th>
+<th style="text-align: left;">用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>show ipv6 interface brief</code></td>
+<td style="text-align: left;">显示全部接口 IPv6 地址信息简表</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show ipv6 interface [type] [num]</code></td>
+<td style="text-align: left;">显示单个接口 IPv6 和 NDP 配置和状态信息</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show ipv6 interface [type] [num] prefix</code></td>
+<td style="text-align: left;">显示单个接口 IPv6 网络前缀信息</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show ipv6 dhcp pool</code></td>
+<td style="text-align: left;">显示 DHCPv6 共用资源配置信息</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show ipv6 dhcp binding</code></td>
+<td style="text-align: left;">显示 DHCPv6 服务器保存的 IPv6 与主机绑定信息</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show ipv6 dhcp interface [type] [num]</code></td>
+<td style="text-align: left;">显示单个接口 DHCPv6 配置和状态信息</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>debug ipv6 nd</code></td>
+<td style="text-align: left;">调试 IPv6 NDP 协议</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>debug ipv6 dhcp</code></td>
+<td style="text-align: left;">调试 DHCPv6 服务器</td>
+</tr>
+</tbody>
+</table>
+<p>下面这个控制终端 NDP 协议调试记录显示路由器收到来自主机 FE80::5850:6D61:1FB:EF3A 的 RS 消息，回应 RA 消息到本网络全部节点组播地址 FF02::1：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Router# debug ipv6 nd</span><br><span class="line">  ICMP Neighbor Discovery events debugging is on</span><br><span class="line">Router# show logging | include RS</span><br><span class="line">  ICMPv6-ND: Received RS on GigabitEthernet0&#x2F;0&#x2F;0 from FE80::5850:6D61:1FB:EF3A</span><br><span class="line">Router# show logging | include RA</span><br><span class="line"> ICMPv6-ND: Sending solicited RA on GigabitEthernet0&#x2F;0&#x2F;0</span><br><span class="line"> ICMPv6-ND: Request to send RA for FE80::C801:EFFF:FE5A:8</span><br><span class="line"> ICMPv6-ND: Setup RA from FE80::C801:EFFF:FE5A:8 to FF02::1 on GigabitEthernet0&#x2F;0&#x2F;0</span><br></pre></td></tr></table></figure>
+<p>而下一段记录显示输入<code>debug ipv6 dhcp</code>调试命令之后，观察到的<u>无状态 DHCPv6</u> 的例子。主机 FE80::5850:6D61:1FB:EF3A 向 DHCPv6 服务器发出信息请求 (INFORMATION-REQUEST) 消息，服务器选择源地址 FE80::C801:B9FF:FEF0:8 发出回应消息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Router#debug ipv6 dhcp</span><br><span class="line">   IPv6 DHCP debugging is on</span><br><span class="line"></span><br><span class="line">IPv6 DHCP: Received INFORMATION-REQUEST from FE80::5850:6D61:1FB:EF3A on FastEthernet0&#x2F;0</span><br><span class="line">IPv6 DHCP: Option VENDOR-CLASS(16) is not processed</span><br><span class="line">IPv6 DHCP: Using interface pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Source Address from SAS FE80::C801:B9FF:FEF0:8</span><br><span class="line">IPv6 DHCP: Sending REPLY to FE80::5850:6D61:1FB:EF3A on FastEthernet0&#x2F;0</span><br></pre></td></tr></table></figure>
+<p>以下是一段<u>有状态 DHCPv6</u> 的调试记录，第1、15、16和26行显示两次消息交换 (SOLICIT/ADVERTISE，REQUEST/REPLY) 的完整过程：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">IPv6 DHCP: Received SOLICIT from FE80::5850:6D61:1FB:EF3A on FastEthernet0&#x2F;0</span><br><span class="line">IPv6 DHCP: Option UNKNOWN(39) is not processed</span><br><span class="line">IPv6 DHCP: Option VENDOR-CLASS(16) is not processed</span><br><span class="line">IPv6 DHCP: Using interface pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Creating binding for FE80::5850:6D61:1FB:EF3A in pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Binding for IA_NA 0E000C29 not found</span><br><span class="line">IPv6 DHCP: Allocating IA_NA 0E000C29 in binding for FE80::5850:6D61:1FB:EF3A</span><br><span class="line">IPv6 DHCP: Looking up pool 2001:ABCD::&#x2F;64 entry with username &#39;000100011F3E8772000C29806CCC0E000C29&#39;</span><br><span class="line">IPv6 DHCP: Poolentry for user not found</span><br><span class="line">IPv6 DHCP: Allocated new address 2001:ABCD::D9F7:61C:D803:DCF1</span><br><span class="line">IPv6 DHCP: Allocating address 2001:ABCD::D9F7:61C:D803:DCF1 in binding for FE80::5850:6D61:1FB:EF3A, IAID 0E000C29</span><br><span class="line">IPv6 DHCP: Updating binding address entry for address 2001:ABCD::D9F7:61C:D803:DCF1</span><br><span class="line">IPv6 DHCP: Setting timer on 2001:ABCD::D9F7:61C:D803:DCF1 for 60 seconds</span><br><span class="line">IPv6 DHCP: Source Address from SAS FE80::C801:B9FF:FEF0:8</span><br><span class="line">IPv6 DHCP: Sending ADVERTISE to FE80::5850:6D61:1FB:EF3A on FastEthernet0&#x2F;0</span><br><span class="line">IPv6 DHCP: Received REQUEST from FE80::5850:6D61:1FB:EF3A on FastEthernet0&#x2F;0</span><br><span class="line">IPv6 DHCP: Option UNKNOWN(39) is not processed</span><br><span class="line">IPv6 DHCP: Option VENDOR-CLASS(16) is not processed</span><br><span class="line">IPv6 DHCP: Using interface pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Looking up pool 2001:ABCD::&#x2F;64 entry with username &#39;000100011F3E8772000C29806CCC0E000C29&#39;</span><br><span class="line">IPv6 DHCP: Poolentry for user found</span><br><span class="line">IPv6 DHCP: Found address 2001:ABCD::D9F7:61C:D803:DCF1 in binding for FE80::5850:6D61:1FB:EF3A, IAID 0E000C29</span><br><span class="line">IPv6 DHCP: Updating binding address entry for address 2001:ABCD::D9F7:61C:D803:DCF1</span><br><span class="line">IPv6 DHCP: Setting timer on 2001:ABCD::D9F7:61C:D803:DCF1 for 172800 seconds</span><br><span class="line">IPv6 DHCP: Source Address from SAS FE80::C801:B9FF:FEF0:8</span><br><span class="line">IPv6 DHCP: Sending REPLY to FE80::5850:6D61:1FB:EF3A on FastEthernet0&#x2F;0</span><br></pre></td></tr></table></figure>
+<p>对于难以厘清是主机、路由器还是 DHCPv6 服务器问题的复杂情况，推荐使用免费开源网络数据包分析软件 <a href="https://www.wireshark.org">Wireshark</a> 截取整个流程的数据包作分析。在用 Wireshark 分析数据包时，可以应用关键词过滤功能：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">过滤关键词</th>
+<th style="text-align: left;">只显示</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">icmpv6.type=133</td>
+<td style="text-align: left;">ICMPv6 RS</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">icmpv6.nd.ra.flag</td>
+<td style="text-align: left;">ICMPv6 RA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dhcpv6</td>
+<td style="text-align: left;">DHCPv6 数据包</td>
+</tr>
+</tbody>
+</table>
+<p>我们可以直接在主机端运行 Wireshark，也可以在网络侧用交换机提供的交换端口分析器 (Switched Port Analyzer，简写 SPAN) 将指定端口数据包集中重定向到运行 Wireshark 的监控端口截取。思科 Catalyst 9300 系列交换机还直接<a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-4/configuration_guide/nmgmt/b_174_nmgmt_9300_cg/configuring_packet_capture.html">集成了 Wireshark 软件</a>，能够在线截取和分析过滤数据包，使用起来十分方便。</p>
+<p>这里提供三种分配方案的样例数据包文件供下载学习： <a href="slaac.pcap">slaac.pcap</a>，<a href="stateless-dhcpv6.pcap">stateless-dhcpv6.pcap</a>，<a href="stateful-dhcpv6.pcap">stateful-dhcpv6.pcap</a></p>
+<h2 id="参考资料">参考资料</h2>
+<h3 id="ipv6-产品认证测试">IPv6 产品认证测试</h3>
+<p>精准而实效的 IPv6 产品测试是确保 IPv6 基础架构高互操作性、安全性和可靠性部署的关键。 <strong>IPv6 Ready</strong> 标识是 <a href="https://www.ipv6forum.com">IPv6 论坛</a> 创立的 IPv6 测试和认证项目。它的目标是定义 IPv6 的一致性和互操作测试规范、提供自测试工具集、建立<a href="https://www.ipv6ready.org.cn">全球IPv6测试中心</a>并提供产品验证服务，以及最后颁发认证证书。</p>
+<p>2020年5月 <a href="https://www.ipv6ready.org">IPv6 Ready 标识项目</a>发布新的5.0版测试规范：</p>
+<ul>
+<li><a href="https://www.ipv6ready.org/docs/Core_Conformance_5_0_1.pdf">IPv6 核心协议一致性测试规范（v5.0.1）</a></li>
+<li><a href="https://www.ipv6ready.org/docs/Core_Interoperability_5_0_1.pdf">IPv6 核心协议互操作测试规范（v5.0.1）</a></li>
+</ul>
+<p>伴随着这两个新的测试序列，项目组还申明了两个永久变化：</p>
+<ol type="1">
+<li>测试在纯 IPv6 环境下完成，不会提供任何 IPv4 网络环境</li>
+<li>被测设备必须在缺省态激活系统及所有接口的 IPv6 功能</li>
+</ol>
+<p>不出意外地，在新的5.0版测试规范中有专门的章节定义 SLAAC 测试用例，以验证这一 IPv6 核心协议。</p>
+<h3 id="ipv6-核心协议-rfc-列表">IPv6 核心协议 RFC 列表</h3>
+<p>粗体显示的部分由 IPv6 Ready 5.0版核心协议测试规范直接覆盖：</p>
+<ul>
+<li>RFC 4191 Default Router Preferences and More-Specific Routes</li>
+<li>RFC 4193 Unique Local IPv6 Unicast Addresses</li>
+<li><strong>RFC 4291 IP Version 6 Addressing Architecture</strong></li>
+<li><strong>RFC 4443 Internet Control Message Protocol (ICMPv6) for the Internet Protocol Version 6 (IPv6) Specification</strong></li>
+<li><strong>RFC 4861 Neighbor Discovery for IP version 6 (IPv6)</strong></li>
+<li><strong>RFC 4862 IPv6 Stateless Address Autoconfiguration</strong></li>
+<li>RFC 4941 Privacy Extensions for Stateless Address Autoconfiguration in IPv6</li>
+<li>RFC 5095 Deprecation of Type 0 Routing Headers in IPv6</li>
+<li>RFC 6724 Default Address Selection for Internet Protocol Version 6 (IPv6)</li>
+<li>RFC 6980 Security Implications of IPv6 Fragmentation with IPv6 Neighbor Discovery</li>
+<li>RFC 7217 A Method for Generating Semantically Opaque Interface Identifiers with IPv6 Stateless Address Autoconfiguration (SLAAC)</li>
+<li>RFC 8064 Recommendation on Stable IPv6 Interface Identifiers</li>
+<li>RFC 8106 IPv6 Router Advertisement Options for DNS Configuration</li>
+<li><strong>RFC 8200 Internet Protocol, Version 6 (IPv6) Specification</strong></li>
+<li><strong>RFC 8201 Path MTU Discovery for IP version 6</strong></li>
+<li>RFC 8415 Dynamic Host Configuration Protocol for IPv6 (DHCPv6)</li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术小札</category>
+      </categories>
+      <tags>
+        <tag>TCP/IP</tag>
+        <tag>思科技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用ISIC测试网络设备IP协议栈的健壮性</title>
+    <url>/2020/11/25/ISIC-test-IP-stack/</url>
+    <content><![CDATA[<p>ISIC是一个开放源码的IP协议栈健壮性测试工具集。许多网络设备的安全漏洞 (比如拒绝服务等) 源于IP协议栈的软件设计或实现错误，应用此工具集可以及时发现和修复这些差错，确保系统运行的稳定性和可靠性。 <a id="more"></a></p>
+<div class="note success no-icon"><p><strong>Testing leads to failure, and failure leads to underatanding.</strong><br> <strong>— <em>Burt Rutan</em>（伯特·鲁坦，美国航空工程师，2004年首次率领民间团队制造载人航天器飞上太空）</strong></p>
+</div>
+<h3 id="工具概要">工具概要</h3>
+<p><a href="http://isic.sourceforge.net/">ISIC</a>是英文全称 <strong>I</strong>P <strong>S</strong>tack <strong>I</strong>ntegrity <strong>C</strong>hecker 的首字母缩写，翻译过来就是“IP协议栈完整性检查器”。这是一个用于测试IPv4和IPv6及其附属协议族 (TCP，UDP，ICMP等) 软硬件实现的工具集。其思想是产生目标协议的部分参数可控的随机数据包，然后将数据包发送到指定的被测试设备，观察设备的输出结果和运行状态。被测试设备可以是路由器、交换机、网络防火墙、入侵检测/预防系统 (IDS/IPS) 或者任何联网主机。ISIC也包含一个产生原始以太网帧的工具，用于检验以太网底层的软硬件实现。</p>
+<p>ISIC工具集包含的十个可执行的命令行工具如下，它们覆盖了几乎所有的TCP/IP核心协议：</p>
+<ul>
+<li>isic：IPv4协议栈完整性检查器</li>
+<li>tcpsic：TCP协议栈完整性检查器</li>
+<li>udpsic：UDP协议栈完整性检查器</li>
+<li>esic：以太网协议栈完整性检查器</li>
+<li>icmpsic：ICMP协议栈完整性检查器</li>
+<li>multisic: 组播UDP协议栈完整性检查器</li>
+<li>isic6：IPv6协议栈完整性检查器</li>
+<li>tcpsic6：IPv6 TCP协议栈完整性检查器</li>
+<li>udpsic6：IPv6 UDP协议栈完整性检查器</li>
+<li>icmpsic6：ICMPv6协议栈完整性检查器</li>
+</ul>
+<p>ISIC支持Unix类 (Linux/BSD/macOS) 系统，其编译和运行都需要<a href="https://github.com/libnet/libnet">Libnet库</a> (版本1.1以上) 。Libnet是一个可移植的底层网络数据包构造和注入框架，ISIC调用它的应用程序接口 (API) 来创建和发送网络层数据包和链路层数据帧。ISIC在其主页上以源代码的压缩包发布，也可以使用RPM安装。ISIC的最后版本是0.07，它以BSD风格的许可证发布，对使用者的限制很少。</p>
+<p>ISIC最早的0.01版在1999年由迈克·弗兰岑 (Mike Frantzen) 在Redhat Linux 5.1上用了两周的时间写成。一开始弗兰岑用它来检测防火墙的漏洞，但是意外地发现它竟然造成许多设备崩溃。弗兰岑把ISIC放到网上后，得到了很好反响，许多IDS/IPS研发和测试工程师都在工作中使用它。直到0.05版，ISIC一直由弗兰岑自己维护和更新。2004年初，Libnet的作者迈克·希夫曼 (Mike Schiffman) 重写了这一API库，新的1.1.x版本不再向后兼容。至此，ISIC无法再与最新的Libnet库编译和链接。</p>
+<p>2004年晚些时候，思科公司的安全测试工程师<a href="https://www.linkedin.com/in/shu-xiao-7925a3/">Shu Xiao</a>将一份补丁发送给弗兰岑，使ISIC能够工作于新版Libnet之上，补丁也包含了对其它一些错误的修复。这成为了弗兰岑移交责任给Xiao的完美时机，0.06版就此诞生。Xiao继续进一步增强ISIC的功能。他添加了新的IPv6协议测试工具 (*sic6)，以及组播测试工具 (multisic)，同时还改进了随机性和发送效率。最终的0.07版由Xiao于2006年12月发布。</p>
+<p>虽然原来的开发目的是做防火墙的功能测试，但ISIC在发现IP协议栈完整性漏洞方面的惊人表现，使得它成为一个网络系统安全评估的一个重要工具。<a href="https://sourceforge.net/projects/isic/">ISIC在Sourceforge的项目页面</a>显示，截止到2020年一月0.07版下载量接近两万。如果包含RPM的下载安装，实际的使用量应该远远大于这个数目。搜索网上<u>公共漏洞和暴露</u> (Common Vulnerabilities and Exposures，缩写CVE) 数据库，可以找到下面由ISIC工具集披露的安全漏洞：</p>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 29%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">编号 (CVE-ID)</th>
+<th style="text-align: center;">CVSS<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> 评分</th>
+<th style="text-align: center;">相关产品/系统</th>
+<th style="text-align: left;">问题描述</th>
+<th style="text-align: center;">ISIC工具</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">CVE-2000-0451</td>
+<td style="text-align: center;">5.0 MEDIUM</td>
+<td style="text-align: center;">英特尔 Express 8100 ISDN 路由器</td>
+<td style="text-align: left;">允许远程攻击者使用过大或分片ICMP数据包进行拒绝服务攻击</td>
+<td style="text-align: center;">icmpsic</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CVE-2000-0463</td>
+<td style="text-align: center;">5.0 MEDIUM</td>
+<td style="text-align: center;">BeOS 5.0 操作系统</td>
+<td style="text-align: left;">允许远程攻击者使用分片TCP数据包进行拒绝服务攻击</td>
+<td style="text-align: center;">tcpsic</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CVE-2008-1746</td>
+<td style="text-align: center;">7.8 HIGH</td>
+<td style="text-align: center;">思科统一通信管理器 (CUCM)</td>
+<td style="text-align: left;">允许远程攻击者通过一系列格式错误的UDP数据包导致拒绝服务 (核心转储和服务重启)</td>
+<td style="text-align: center;">udpsic</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CVE-2013-7470</td>
+<td style="text-align: center;">7.1 HIGH</td>
+<td style="text-align: center;">Linux 内核 &lt;3.11.7版本</td>
+<td style="text-align: left;">允许攻击者造成拒绝服务 (无限循环和崩溃)</td>
+<td style="text-align: center;">icmpsic</td>
+</tr>
+</tbody>
+</table>
+<p>由于存在被黑客利用的风险，大量CVE都不给出所使用工具的信息。所以，有理由相信用ISIC找到的安全弱点及漏洞也远不止上面这些。比如，在网上对<a href="https://attackerkb.com/topics/12890azSfK/cve-2019-12256-vxworks-ipv4-options-buffer-overflow">2019年风河系统VxWorks的IPv4选项堆栈溢出漏洞</a>的讨论中，就有人问到为什么VxWorks没有做“isic"：</p>
+<blockquote>
+<p><em>In this particular case, it’s really surprising however that <strong>VxWorks did not just isic</strong>, which has been around for years and years to find a vulnerability like this: http://isic.sourceforge.net/</em></p>
+</blockquote>
+<p>从计算机科学和工程的学术研究上看，ISIC可被归类为自动软件测试技术中的模糊 (fuzzing) 测试。<a href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C5&amp;q=%22IP+Stack+Integrity+Checker%22&amp;oq=I">许多研究文献</a>都提及对ISIC的直接应用或间接参考。这种技术的基本思想是将无效、未被考虑或随机的数据输入到计算机程序，然后监视程序运行是否发生异常，例如崩溃、死循环、内置代码断言失败 (assert) 或潜在的内存泄漏等。从缓冲区溢出到跨站点脚本攻击的大多数安全漏洞，通常是对用户提供的输入数据验证不足的结果。模糊测试发现的网络系统安全漏洞常常是严重的，如果不及时发现和清除，会给用户造成重大损失。有证据显示，一些主要的网络设备厂商都集成了ISIC到质量控制的测试工程实践中。</p>
+<h3 id="安装过程">安装过程</h3>
+<p>这里以树莓派 (Respberry Pi 4 Model B) 目标系统为例，说明ISIC的安装过程。首先，查看系统软硬件和GCC编译器版本信息：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pi@raspberrypi:~ $ cat /proc/device0tree/model</span><br><span class="line">Raspberry Pi 4 Model B Rev 1.4</span><br><span class="line">pi@raspberrypi:~ $ uname -a</span><br><span class="line">Linux raspberrypi 4.19.118-v7l+ <span class="comment">#1311 SMP Mon Apr 27 14:26:42 BST 2020 armv7l GNU/Linux</span></span><br><span class="line">pi@raspberrypi:~ $ gcc --version</span><br><span class="line">gcc (Raspbian 8.3.0-6+rpi1) 8.3.0</span><br><span class="line">Copyright (C) 2018 Free Software Foundation, Inc.</span><br><span class="line">This is free software; see the <span class="built_in">source</span> <span class="keyword">for</span> copying conditions.  There is NO</span><br><span class="line">warranty; not even <span class="keyword">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span><br></pre></td></tr></table></figure>
+<p>如前所述，ISIC的编译和运行需要Libnet库的支持。最新的Libnet 1.2版可以从其<a href="https://github.com/libnet/libnet/releases">GitHub项目发布主页下载</a>，然后执行以下步骤编译和安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar xf libnet-1.2.tar.gz</span><br><span class="line"><span class="built_in">cd</span> libnet-x.y.z/</span><br><span class="line">./configure &amp;&amp; make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>安装完可以在<code>/usr/local/lib</code>目录下找到Libnet的静态库文件<code>libnet.a</code>和动态链接库文件<code>libnet.so</code>，而所有的编程需要的头文件位于<code>/usr/local/include</code>目录下。这些验证无误后，接下来就可以开始ISIC的安装：</p>
+<ol type="1">
+<li><p>从ISIC的主页 (<a href="http://isic.sourceforge.net/">http://isic.sourceforge.net/</a>) 下载压缩的打包文件<strong>isic-0.07.tgz</strong></p></li>
+<li><p>用<code>tar xzvf isic-0.07.tgz</code>命令解压展开：</p></li>
+<li><p>进入<code>isic-0.07</code>目录，执行<code>./configure</code>命令配置编译环境：</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ ./configure </span><br><span class="line">creating cache ./config.cache</span><br><span class="line">checking <span class="keyword">for</span> gcc... gcc</span><br><span class="line">checking whether the C compiler (gcc  ) works... yes</span><br><span class="line">checking whether the C compiler (gcc  ) is a cross-compiler... no</span><br><span class="line">checking whether we are using GNU C... yes</span><br><span class="line">checking whether gcc accepts -g... yes</span><br><span class="line">checking <span class="keyword">for</span> a BSD compatible install... /usr/bin/install -c</span><br><span class="line">checking <span class="keyword">for</span> /usr/<span class="built_in">local</span>/lib/libnet.a... no</span><br><span class="line">checking <span class="keyword">for</span> -lnet... no</span><br><span class="line">checking <span class="keyword">for</span> libnet_init <span class="keyword">in</span> -lnet... yes</span><br><span class="line">checking how to run the C preprocessor... gcc -E</span><br><span class="line">checking <span class="keyword">for</span> ANSI C header files... no</span><br><span class="line">checking <span class="keyword">for</span> u_int16_t... yes</span><br><span class="line">checking <span class="keyword">for</span> u_int32_t... yes</span><br><span class="line">checking <span class="keyword">for</span> in_addr_t... no</span><br><span class="line">checking whether gcc needs -traditional... no</span><br><span class="line">updating cache ./config.cache</span><br><span class="line">creating ./config.status</span><br><span class="line">creating Makefile</span><br></pre></td></tr></table></figure></p></li>
+<li><p>执行<code>make</code>命令编译和链接：</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ make</span><br><span class="line">gcc -o isic isic.c -Wall -W -g -O2 -I/usr/<span class="built_in">local</span>/include `libnet-config --cflags` -DHAVE_LIBNET=1 -Din_addr_t=u_int32_t  `libnet-config --defines` -DVERSION=\&quot;0.07\&quot; -lnet -L/usr/<span class="built_in">local</span>/lib  `libnet-config --libs` </span><br><span class="line">gcc -o tcpsic tcpsic.c -Wall -W -g -O2 -I/usr/<span class="built_in">local</span>/include `libnet-config --cflags` -DHAVE_LIBNET=1 -Din_addr_t=u_int32_t  `libnet-config --defines` -DVERSION=\&quot;0.07\&quot; -lnet -L/usr/<span class="built_in">local</span>/lib  `libnet-config --libs` </span><br><span class="line">tcpsic.c: In <span class="keyword">function</span> ‘main’:</span><br><span class="line">tcpsic.c:274:7: error: dereferencing pointer to incomplete <span class="built_in">type</span> ‘struct tcphdr’</span><br><span class="line">    tcp-&gt;th_off = rand() &amp; 0xf;</span><br><span class="line">       ^~</span><br><span class="line">make: *** [Makefile:27: tcpsic] Error 1</span><br></pre></td></tr></table></figure> 糟糕！有一个编译错误！不必惊慌，这是Linux系统的TCP/IP头文件的变化造成的 (毕竟从最后的0.07版发布到现在已经十多年了)。如下修改<code>isic.h</code>文件就可以清除这个错误：</p>
+<p><figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ git diff isic.h.bak isic.h</span><br><span class="line"><span class="comment">diff --git a/isic.h.bak b/isic.h</span></span><br><span class="line"><span class="comment">index c12f716..8a8641c 100644</span></span><br><span class="line"><span class="comment">--- a/isic.h.bak</span></span><br><span class="line"><span class="comment">+++ b/isic.h</span></span><br><span class="line"><span class="meta">@@ -10,6 +10,8 @@</span></span><br><span class="line"> #include &lt;netinet/icmp6.h&gt;</span><br><span class="line"> #include &lt;netinet/ip6.h&gt;</span><br><span class="line"> #include &lt;netinet/if_ether.h&gt;</span><br><span class="line"><span class="addition">+#include &lt;netinet/tcp.h&gt;</span></span><br><span class="line"><span class="addition">+#include &lt;netinet/udp.h&gt;</span></span><br><span class="line"></span><br><span class="line"> #ifndef ETHER_FRAME_SIZE</span><br><span class="line"> #define ETHER_FRAME_SIZE 1500</span><br></pre></td></tr></table></figure></p></li>
+<li><p>下一步执行<code>sudo make install</code>，将可执行文件安装到<code>/usr/local/bin</code>目录，同时将用户手册安装到<code>/usr/local/man/man1</code>目录：</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ sudo make install</span><br><span class="line">/usr/bin/install -c -m 0755 -d /usr/<span class="built_in">local</span>/bin</span><br><span class="line">/usr/bin/install -c -m 0755 -c isic tcpsic udpsic icmpsic esic multisic isic6 tcpsic6 udpsic6 icmpsic6 /usr/<span class="built_in">local</span>/bin</span><br><span class="line">/usr/bin/install -c -m 0755 -d /usr/<span class="built_in">local</span>/man/man1</span><br><span class="line">/usr/bin/install -c -m 0755 -c isic.1 /usr/<span class="built_in">local</span>/man/man1</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<p>至此安装过程结束，运行<code>man isic</code>可以在终端直接在线查询<a href="https://linux.die.net/man/1/isic">用户手册</a>。<strong>注意，因为ISIC工具集调用原始套接字 (raw socket) 发送数据包，运行命令行需要超级用户权限，或者授予普通用户特殊权限以<code>sudo</code>方式运行。</strong></p>
+<h3 id="用户指南">用户指南</h3>
+<h4 id="命令行选项">命令行选项</h4>
+<p>下表给出了通用的命令行选项的使用说明：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">选项字符</th>
+<th style="text-align: center;">相关参数</th>
+<th style="text-align: center;">说明</th>
+<th style="text-align: center;">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">c</td>
+<td style="text-align: center;">数据包数目</td>
+<td style="text-align: center;">只适用于esic</td>
+<td style="text-align: center;"><span class="math inline">\(2^{32}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">目的MAC/IP地址</td>
+<td style="text-align: center;">对esic可选，对其它为必需。设为“rand”选择随机地址</td>
+<td style="text-align: center;">对esic为FF:FF:FF:FF:FF:FF</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">i</td>
+<td style="text-align: center;">接口标识</td>
+<td style="text-align: center;">对esic和multisic为必需，其它不适用</td>
+<td style="text-align: center;">由系统路由选定</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">k</td>
+<td style="text-align: center;">跳过的数据包数目</td>
+<td style="text-align: center;">指定跳过（不发送）的初始数据包数目</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">l</td>
+<td style="text-align: center;">数据包长度</td>
+<td style="text-align: center;">只适用于esic</td>
+<td style="text-align: center;">1500</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">打印速率或最大速率</td>
+<td style="text-align: center;">指定esic的打印间隙，对其它为最大速率 (kB/s)</td>
+<td style="text-align: center;">对esic为1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">p</td>
+<td style="text-align: center;">协议号或数据包数目</td>
+<td style="text-align: center;">指定esic的上层协议号，对其它为数据包数目</td>
+<td style="text-align: center;">对esic为0x0800 (IP)，对其它为<span class="math inline">\(2^{32}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">随机数种子</td>
+<td style="text-align: center;">指定伪随机序列的种子</td>
+<td style="text-align: center;">当前进程标识 (ID)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">s</td>
+<td style="text-align: center;">源MAC/IP地址</td>
+<td style="text-align: center;">对esic可选，对其它为必需。设为“rand”选择随机地址</td>
+<td style="text-align: center;">对esic为接口的MAC地址</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">x</td>
+<td style="text-align: center;">重复次数</td>
+<td style="text-align: center;">适用于esic以外的全部工具，设置数据包的重复次数</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">v</td>
+<td style="text-align: center;">无</td>
+<td style="text-align: center;">打印当前版本号</td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">z</td>
+<td style="text-align: center;">源MAC地址</td>
+<td style="text-align: center;">只适用于multisic，设置源MAC地址</td>
+<td style="text-align: center;">指定接口的MAC地址</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">D</td>
+<td style="text-align: center;">无</td>
+<td style="text-align: center;">适用于esic以外的全部工具，打印调试输出</td>
+<td style="text-align: center;">无</td>
+</tr>
+</tbody>
+</table>
+<p>有几点要特别解释一下：</p>
+<ol type="1">
+<li><span class="math inline">\(p/k/x\)</span>三个参数决定了总计发送多少个数据包。假设数据包总数为<span class="math inline">\(N\)</span>，那么 <span class="math inline">\(N＝(p-k)\cdot x\)</span>。所以<span class="math inline">\(k\)</span>一定要小于<span class="math inline">\(p\)</span>，不然就没有数据包发出。</li>
+<li>如果<span class="math inline">\(r\)</span>参数固定，伪随机序列的种子不变，那么ISICI构造和发送的数据包集合就完全一致。应用这一点可以重复测试序列。</li>
+<li>实际的数据包传输速率由网络接口卡决定，ISIC不能控制，但是它可以指定每秒生成和发送数据包的数量。</li>
+</ol>
+<p>此外，除esic以外的全部工具还支持特定的百分比选项，说明如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">选项字符</th>
+<th style="text-align: center;">相关百分比参数</th>
+<th style="text-align: center;">说明</th>
+<th style="text-align: center;">默认值 (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">i</td>
+<td style="text-align: center;">错误的ICMP校验和</td>
+<td style="text-align: center;">只用于icmpsic和icmpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">t</td>
+<td style="text-align: center;">错误的TCP校验和</td>
+<td style="text-align: center;">只用于tcpsic和tcpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">u</td>
+<td style="text-align: center;">TCP高优先级 (URG) 标志符置位</td>
+<td style="text-align: center;">只用于tcpsic和tcpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">F</td>
+<td style="text-align: center;">分片的数据包</td>
+<td style="text-align: center;">对isic6意味着包括随机的分片扩展报头</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">I</td>
+<td style="text-align: center;">IP选项或随机长度值</td>
+<td style="text-align: center;">对isic为IP报头随机长度值，对其它为IP选项</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">T</td>
+<td style="text-align: center;">有TCP选项的数据包</td>
+<td style="text-align: center;">只用于tcpsic和tcpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">U</td>
+<td style="text-align: center;">错误的UDP校验和</td>
+<td style="text-align: center;">只用于udpsic和udpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">V</td>
+<td style="text-align: center;">错误的IP版本号</td>
+<td style="text-align: center;">适用于全部工具</td>
+<td style="text-align: center;">10</td>
+</tr>
+</tbody>
+</table>
+<h4 id="命令行示例">命令行示例</h4>
+<ul>
+<li><p>使用esic生成具有首部包含随机协议编号的以太网帧，并通过eth0接口发送出去；在帧中，源MAC地址固定为01:02:34:56:07:89，目的MAC地址是默认的广播地址；每5000帧会有一条打印输出行：</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">esic -i eth0 -s 01:02:34:56:07:89 -p rand -m 5000</span><br></pre></td></tr></table></figure></p></li>
+<li><p>指定isic生成带有随机源地址的100个IP数据包，目的地址固定为10.11.12.13；随机种子设置为10；一半的数据包将是分片报文；发送时，将跳过前20个数据包，从第21个数据包开始：</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">isic -s rand -d 10.11.12.13 -F 50 -p 100 -k 20 -r 10</span><br></pre></td></tr></table></figure></p></li>
+<li><p>指定tcpsic生成源地址为1.2.3.4和源TCP端口69，目的地址21.22.23.24和随机目的TCP端口的数据包；每个数据包将被发送两次；整体最大速度为1000kB/s；在所有生成的TCP数据包中，30％的数据包将具有随机的TCP选项；而50％的TCP校验和将不正确。</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tcpsic -s 1.2.3.4,69 -d 21.22.23.24 -x 2 -m 1000 -T 30 -t 50</span><br></pre></td></tr></table></figure></p></li>
+<li><p>使用以下multisic命令向组播地址224.0.0.5发送50000个UDP数据包；随机源地址和源/目的UDP端口；输出接口被强制为eth2；50％的传出数据包将是分片报文；并且源MAC地址设置为ff:ff:ff:ff:ff:ff：</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">multisic -s rand -d 224.0.0.5 -i eth2 -p 50000 -F 50 -z 	ff:ff:ff:ff:ff:ff</span><br></pre></td></tr></table></figure></p></li>
+<li><p>使用以下udpsic6命令发送100万个具有随机源地址和源UDP端口的IPv6 UDP数据包；目的地址为2001:1:2:3:4::2，目的UDP端口161 (SNMP端口)；90％的传出数据包将具有随机的IPv6目的选项标头，而总数据包中的20％将包含不正确的UDP校验和：</p>
+<p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">udpsic6 -s rand -d 2001:1:2:3:4::2,161 -p 1000000 -I 90 -U 20</span><br></pre></td></tr></table></figure> <div class="note danger"><p>当心：请务必谨慎使用ISIC工具集，尽量在封闭的实验网络中运行，以避免给共享的工作环境造成破坏，否则可能要为给团体或他人所带来的损失负责！</p>
+</div></p></li>
+</ul>
+<p>最后，给出一段完整的<code>isic</code>工具运行记录及解读：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pi@raspberrypi:~ $ sudo isic -v</span><br><span class="line">Version 0.07 </span><br><span class="line">pi@raspberrypi:~ $ sudo isic -s rand -d 10.0.23.1 -p 5000</span><br><span class="line">Using random <span class="built_in">source</span> IP<span class="string">&#x27;s</span></span><br><span class="line"><span class="string">Compiled against Libnet 1.2</span></span><br><span class="line"><span class="string">Installing Signal Handlers.</span></span><br><span class="line"><span class="string">Seeding with 1445</span></span><br><span class="line"><span class="string">No Maximum traffic limiter</span></span><br><span class="line"><span class="string">Bad IP Version = 10% Odd IP Header Length = 10% Frag&#x27;</span>d Pcnt = 10%</span><br><span class="line"> 1000 @ 18317.7 pkts/sec and 11797.1 k/s</span><br><span class="line"> 2000 @ 20195.5 pkts/sec and 12885.9 k/s</span><br><span class="line"> 3000 @ 26723.7 pkts/sec and 17110.4 k/s</span><br><span class="line"> 4000 @ 27171.0 pkts/sec and 17936.8 k/s</span><br><span class="line"></span><br><span class="line">Wrote 5000 packets <span class="keyword">in</span> 0.22s @ 23122.03 pkts/s</span><br></pre></td></tr></table></figure>
+<p>从上面的记录可以看到，该<code>isic</code>命令指定发送5000个的IP数据包。数据包源地址随机，目的地址为10.0.23.1。输出显示<code>isic</code>工具使用Libnet 1.2版编译和链接，随机数种子默认为进程号1445。之后是三个百分比选项：错误的IP版本号、IP报头随机长度值和分片数据包，都取默认值10%。每一千个数据包会打印一行，显示累计数据包发送速率和当前一千个数据包的字节发送速率，单位分别为pkt/s和k(B)/s。全部数据包发送完毕，打印总计运行时间0.22秒和累计数据包发送速率约23k pkts/s。</p>
+<h4 id="使用经验">使用经验</h4>
+<ul>
+<li>ISIC的基本应用场景总结如下：
+<ul>
+<li>检验防火墙是否有数据包泄漏</li>
+<li>IDS/IPS 的穿透性测试</li>
+<li>路由器、交换机和主机协议栈的健壮性测试</li>
+</ul></li>
+<li>ISIC的主要延伸应用，是对网络安全极为重要的脆弱性/漏洞审查。可以运行下面的测试，并观察是否会发生系统崩溃或死机状态：
+<ul>
+<li>模糊 (fuzzing) 测试</li>
+<li>充溢 (flooding) 测试</li>
+<li>拒绝服务 (DoS) 攻击</li>
+</ul></li>
+<li>另外还可以在测试进行中，并行监测被测设备的健康性，主要指标为：
+<ul>
+<li>CPU和内/外存资源利用率</li>
+<li>响应SNMP查询的能力</li>
+<li>命令行接口/图形用户界面的访问性能</li>
+</ul></li>
+<li>当出现问题时，可以使用同样的<code>-r</code>参数，然后组合<code>-p/c/k</code>选项运用二分查找算法定位相关的数据包。比如，假定发<code>isic</code>送1000个数据包造成被测设备异常，那么将<code>-p</code>减半为500运行。如果发生同样的异常，则继续减半搜索；如果异常没有出现，就将<code>-p</code>改回1000并设定<code>-k 500</code>跳过前半段数据包运行。重复这一过程，不超过10步就可以找到造成问题的单个 IP数据包。</li>
+</ul>
+<h3 id="工具扩展">工具扩展</h3>
+<p>未来如果有需求且有开源开发者愿意贡献，可以考虑加入以下功能扩展：</p>
+<ul>
+<li>新的选项指定isic或isic6报文首部IP协议号 (建议为<code>-P</code>)</li>
+<li>开发前端图形用户界面 (GUI)，参考<a href="https://nmap.org/zenmap/">Zenmap</a></li>
+<li>支持多协议标签交换 (MPLS) 的帧格式</li>
+<li>支持因特网组管理协议 (IGMP) 的报文</li>
+<li>支持IEEE 802.1Q以及虚拟局域网标签 (VLAN Tagging) 的帧格式</li>
+<li>支持调试打印输出的详细程度 (verbosity) 分级</li>
+<li>支持加载预先捕获的<a href="https://gitlab.com/wireshark/wireshark/-/wikis/Development/LibpcapFileFormat">pcap格式</a>的网络数据包文件</li>
+<li>与其它的测试工具集成为完整的网络安全测试方案</li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>公共漏洞评分系统 (Common Vulnerability Scoring System，缩写CVSS) 是一种用于评估计算机系统安全漏洞严重性的开放行业标准。CVSS为每一个漏洞的严重性评分，分数范围是0到10，其中最严重的是10。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+]]></content>
+      <categories>
+        <category>工具使用</category>
+      </categories>
+      <tags>
+        <tag>网络安全</tag>
+        <tag>TCP/IP</tag>
+        <tag>C/C++编程</tag>
+        <tag>软件测试</tag>
+      </tags>
+  </entry>
+</search>

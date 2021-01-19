@@ -113,4 +113,4 @@ backup:
   theme: next
   message: Back up my packetmania.github.io blog
   repo:
-    github: git@github.com:packetmania/packetmania.github.io.git,hexo-next
+    github: git@github.com:packetmania/packetmania.github.io.git,hexo

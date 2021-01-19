@@ -298,7 +298,7 @@ $\qquad$ **end;**
 5. 循环调用`fork()`生成全部路由器子进程，传递TCP套接字文件描述符和总节点数目给路由器启动函数：
 
 	``` c++
-	   // fork the routers
+	 // fork the routers
     for (i = 0; i <numNode; i++) {
         if ((childpid = fork())==0) {
             router(i, listenfd, numNode);
@@ -373,14 +373,14 @@ $\qquad$ **end;**
 * 路由表结构及其初始化
 	* 路由表项是一个*<目的节点，链路开销，下一跳，路径头节点>*的四元组：
 	
-	    ``` c++
+	   ``` c++
 		struct RtableEntry {
 		    int dest;
 		    int cost;
 		    int nexthop;
 		    int head;
 		};
-	    ```
+	   ```
 	* 初始化为 [总节点数] 一维数组：
 	 
 		``` c++
@@ -404,6 +404,7 @@ $\qquad$ **end;**
 		    table[i].head = tmp_head;
 		}
 		```
+
 
 接下来一个重要设计是实现论文中的IN\_PATH函数以检测环路。原文的伪代码用到了递归，是为了说明的方便。所有的递归都可以转化为迭代，从性能上考虑迭代更好。仿真程序实现的IN\_PATH函数如下：
 

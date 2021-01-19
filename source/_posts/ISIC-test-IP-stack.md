@@ -64,7 +64,7 @@ ISIC最早的0.01版在1999年由迈克·弗兰岑 (Mike Frantzen) 在Redhat Lin
 
 ### 安装过程
 
-这里以树莓派 (Respberry Pi 4 Model B) 目标系统为例，说明ISIC的安装过程。首先，查看系统软硬件和GCC编译器版本信息：
+这里以树莓派 (Respberry Pi 4 Model B) 目标系统为例，说明ISIC的安装过程。首先，使用几个命令查看系统软硬件和GCC编译器版本信息：
 
 ``` bash
 pi@raspberrypi:~ $ cat /proc/device0tree/model

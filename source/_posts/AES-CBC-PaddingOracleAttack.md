@@ -18,3 +18,5 @@ date: 2020-12-01 21:18:32
 **Every secret creates a potential failure point.**<br>
 **— *Bruce Schneier*（布鲁斯·施奈尔，美国密码学和信息安全专家、作家）**
 {% endnote %}
+
+> 很快更新，敬请期待

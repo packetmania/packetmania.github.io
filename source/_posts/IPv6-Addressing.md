@@ -1,5 +1,5 @@
 ---
-title: IPv6 动态地址分配机制详解
+title: IPv6动态地址分配机制详解
 categories:
   - 技术小札
 tags:

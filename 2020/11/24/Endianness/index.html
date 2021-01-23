@@ -586,8 +586,8 @@
   }, 1000);
 </script>
   </div>
-  <div class="addthis_inline_share_toolbox">
-    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  <div class="addthis_inline_share_toolbox_jii4">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7"></script>
   </div>
 
     </div>
@@ -629,26 +629,6 @@ if (document.querySelectorAll('.mermaid').length) {
   
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
-
-<script>
-NexT.utils.loadComments('.gitalk-container', () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : 'a45f6ae3f97c1a467856',
-      clientSecret: '7d81b74f952b388f93dcb5a8c44cd12f657969fa',
-      repo        : 'packetmania.github.io',
-      owner       : 'packetmania',
-      admin       : ['packetmania'],
-      id          : '778b919c8d62ff0b768b8c0419df9e40',
-        language: 'zh-CN',
-      distractionFreeMode: true
-    });
-    gitalk.render(document.querySelector('.gitalk-container'));
-  }, window.Gitalk);
-});
-</script>
-
 <script>
   var disqus_config = function() {
     this.page.url = "https://packetmania.github.io/2020/11/24/Endianness/";
@@ -668,6 +648,26 @@ NexT.utils.loadComments('.gitalk-container', () => {
       (d.head || d.body).appendChild(s);
     }
   });
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'a45f6ae3f97c1a467856',
+      clientSecret: '7d81b74f952b388f93dcb5a8c44cd12f657969fa',
+      repo        : 'packetmania.github.io',
+      owner       : 'packetmania',
+      admin       : ['packetmania'],
+      id          : '778b919c8d62ff0b768b8c0419df9e40',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
 </script>
 
 <script>

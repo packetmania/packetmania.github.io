@@ -1684,7 +1684,7 @@ end
 <a id="more"></a>
 <div class="note success no-icon"><p><strong>今有物不知其数，三三数之剩二；五五数之剩三；七七数之剩二。问物几何?</strong><br> <strong>— <em>《孙子算经》卷下·二十六</em></strong></p>
 </div>
-<p>幸运的是，历经40多年的广泛研究和现实应用的考验，虽然发现了不少精巧的攻击手段，总体上RSA是安全的。这些攻击手段都是利用RSA的不当使用或软硬件实现中脆弱性，并不能动摇其加密算法的安全性根基。另一方面，对这些攻击手段的研究表明，实现一个安全而牢固的RSA应用并不是一个简单的任务。实际上，密码学和网络安全工程实践中的一个共识就是：<strong>不要试图从头开始实现RSA！</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> 恰当的方案，是使用现有的、久经测试并有可靠维护的库或API，去实现RSA算法和协议的应用。</p>
+<p>幸运的是，历经40多年的广泛研究和现实应用的考验，虽然发现了不少精巧的攻击手段，总体上RSA是安全的。这些攻击手段都是利用RSA的不当使用或软硬件实现中脆弱性，并不能动摇其加密算法的安全性根基。另一方面，对这些攻击手段的研究表明，实现一个安全而牢固的RSA应用并不是一个简单的任务。实际上，密码学和网络安全软硬件工程实践中的一个共识就是：<strong>不要试图从头开始实现RSA！</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> 恰当的方案，是使用现有的、久经测试并有可靠维护的库或API，去实现RSA算法和协议的应用。</p>
 <p>这里将常见的攻击RSA的手段、攻击所基于的数学机理和相应的防护措施做一个简要的调研。参考<a href="https://packetmania.github.io/2020/12/01/DH-and-RSA/">前文</a>，开始我们先复习一下RSA的工作机制和流程：</p>
 <ol type="1">
 <li>选择两个大的素数 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，计算 <span class="math inline">\(N=pq\)</span></li>
@@ -1710,7 +1710,7 @@ end
 <p>注意，<a href="http://people.csail.mit.edu/rivest/Rsapaper.pdf">原始的RSA论文</a>里第二步和第三步采用 <span class="math inline">\(N\)</span> 的<a href="https://zh.wikipedia.org/zh-cn/欧拉函数">欧拉函数</a> <span class="math inline">\(\varphi(N)\)</span>。这两个函数之间的关系是： <span class="math display">\[\varphi(N)=\lambda(N)⋅gcd(p-1,d-1)\]</span> 这里 <span class="math inline">\(gcd\)</span> 为最大公约数函数。使用 <span class="math inline">\(\lambda(N)\)</span> 可以求得最小可用的私钥指数 <span class="math inline">\(d\)</span>，有利于高效的解密和签名运算。无论是使用欧拉函数还是卡迈克尔函数，遵循以上流程的实现常常被称为“<strong>教科书RSA</strong>”。</p>
 <p>教科书RSA是不安全的，有许多简单而有效的攻击手段。在详细讨论教科书RSA的安全漏洞之前，有必要审视一下人所共知的首要攻击方法 — 大数分解！</p>
 <h3 id="大数分解">大数分解</h3>
-<p>RSA加密算法安全性的理论基石，就是<a href="https://zh.wikipedia.org/zh-cn/整数分解"><strong>大数素因数分解问题</strong></a>。如果从已知的<span class="math inline">\(N\)</span>里面分离出 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，就可以马上推导出私钥指数<span class="math inline">\(d\)</span>，从而完全破解RSA。大数分解是公认的计算难题，已知最好的渐近线运行时间算法是<a href="https://zh.wikipedia.org/zh-cn/普通数域筛选法">普通数域筛选法</a> (General Number Field Sieve，简写GNFS)，其时间复杂度是<span class="math inline">\({\displaystyle \exp \left(\left(c+o(1)\right)(\ln N)^{\frac {1}{3}}(\ln \ln N)^{\frac {2}{3}}\right)}\)</span>，这里常数 <span class="math inline">\(c = 4/\sqrt[3]{9}\)</span>，<span class="math inline">\(\displaystyle \exp\)</span>为自然常数 (2.718) 的幂函数。</p>
+<p>RSA加密算法安全性的理论基石，就是<a href="https://zh.wikipedia.org/zh-cn/整数分解"><strong>大数素因数分解问题</strong></a>。如果能从已知的<span class="math inline">\(N\)</span>里面分离出 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，就可以马上推导出私钥指数<span class="math inline">\(d\)</span>，从而完全破解RSA。大数分解是公认的计算难题，已知最好的渐近线运行时间算法是<a href="https://zh.wikipedia.org/zh-cn/普通数域筛选法">普通数域筛选法</a> (General Number Field Sieve，简写GNFS)，其时间复杂度是<span class="math inline">\({\displaystyle \exp \left(\left(c+o(1)\right)(\ln N)^{\frac {1}{3}}(\ln \ln N)^{\frac {2}{3}}\right)}\)</span>，这里常数 <span class="math inline">\(c = 4/\sqrt[3]{9}\)</span>，<span class="math inline">\(\displaystyle \exp\)</span>为自然常数 (2.718) 的幂函数。</p>
 <p>对于给定的大数，精确地估计应用GNFS算法的实际复杂度是困难的。但是依据启发式的复杂性经验估计，我们可以粗略看出计算时间复杂性的增长趋势：</p>
 <ul>
 <li>对于1024比特的大数，有两个各约500比特的素因数，分解需要 <span class="math inline">\(2^{70}\)</span> 数量级的基本运算操作</li>
@@ -1753,8 +1753,8 @@ end
 <li>严格格式定义的填充破坏了延展性，降低了选择密文攻击可能性。比如填充后开头几个字节必须为给定值，那对相应的密文进行代数运算后，解密出的数据极大可能不符合预定的格式，这就瓦解了选择密文攻击</li>
 </ul>
 <h3 id="低公钥指数攻击">低公钥指数攻击</h3>
-<p>使用小的公钥指数<span class="math inline">\(e\)</span>是危险的，在不填充或不恰当填充的情况下，即使暴力开方破解不能成功，也还有一些高级的攻击手段。</p>
-<p>####广播攻击####</p>
+<p>使用小的公钥指数是危险的，在不填充或不当填充的情况下，即使暴力开方破解不能成功，也还有一些高级的攻击手段。</p>
+<h4 id="广播攻击">广播攻击</h4>
 <p>由瑞典理论计算科学家约翰·霍斯塔德 (Johan Håstad) 发现，因此也被称为<mark>霍斯塔德广播攻击</mark>。考虑这样一种简化的场景，假设爱丽丝需要发送同一条消息<span class="math inline">\(m\)</span>给鲍伯、卡罗尔和戴夫。三位接收者的公钥分别为<span class="math inline">\((N_1,3)\)</span>、<span class="math inline">\((N_2,3)\)</span>和<span class="math inline">\((N_3,3)\)</span>，即公钥指数都为3，公钥模数各不相同。消息不填充，爱丽丝直接用其他三人的公钥加密并发出三段密文<span class="math inline">\(c_1,c_2,c_3\)</span>： <span class="math display">\[\begin{cases}
 c_1=m^3\bmod N_1\\
 c_2=m^3\bmod N_2\\
@@ -1766,7 +1766,7 @@ c_3=m^3\bmod N_3
 x \equiv a_2 \pmod {m_2} \\
 \vdots \qquad\qquad\qquad \\
 x \equiv a_n \pmod {m_n} \end
-{matrix} \right.\]</span> 假设整数<span class="math inline">\(m_1,m_2,\ldots,m_n\)</span>其中任两数互素，则对任意的整数<span class="math inline">\(a_1,a_2,\ldots,a_n\)</span>，方程组<span class="math inline">\((S)\)</span>有解，并且通解可以用如下四步构造得到： <span class="math display">\[\begin{align}
+{matrix} \right.\]</span> 假设整数<span class="math inline">\(m_1,m_2,\ldots,m_n\)</span>其中任两数互素，则对任意的整数<span class="math inline">\(a_1,a_2,\ldots,a_n\)</span>，方程组<span class="math inline">\((S)\)</span>有解，并且通解可以用如下四步构造： <span class="math display">\[\begin{align}
 M &amp;= m_1 \times m_2 \times \cdots \times m_n = \prod_{i=1}^n m_i \tag{1}\label{eq1}\\
 M_i &amp;= M/m_i, \; \; \forall i \in \{1, 2, \cdots , n\}\tag{2}\label{eq2}\\
 t_i M_i &amp;\equiv 1\pmod {m_i},  \; \; \forall i \in \{1, 2, \cdots , n\}\tag{3}\label{eq3}\\

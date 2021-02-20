@@ -133,9 +133,9 @@ $$m^{ed}=m^{ed-1}m=m^{k(q-1)}m=(m^{q-1})^{k}m\equiv 1^{k}m\equiv m{\pmod {q}}$$
 RSA加密算法里模数$N$是两个素数$p$和$q$的乘积，所以对于小于$N$的任何数$m$，设定 $m_1=m\bmod p$ 和 $m_2=m\bmod q$，则$m$由$(m_1,m_2)$唯一确定。根据中国余数定理，我们可以使用通解公式从$(m_1,m_2)$推算出$m$。因为$p$和$q$各自的比特数只有$N$的一半，模运算将比直接计算$c^d\equiv m\pmod N$快得多。而在计算$(m_1,m_2)$的过程中，应用费马小定理的推论得到：
 $$\begin{align}
 m_1&=m\bmod p=(c^d\bmod N)\bmod p\\
-&=c^d\bmod p=c^{d\bmod (p-1)}\bmod p\tag{1}\label{eq1}\\
+&=c^d\bmod p=c^{d\mod(p-1)}\bmod p\tag{1}\label{eq1}\\
 m_2&=m\bmod q=(c^d\bmod N)\bmod q\\
-&=c^d\bmod q=c^{d\bmod (q-1)}\bmod q\tag{2}\label{eq2}\\
+&=c^d\bmod q=c^{d\mod(q-1)}\bmod q\tag{2}\label{eq2}\\
 \end{align}$$
 很明显，在上面$(1)$和$(2)$式里，指数从$d$分别降阶到 $d_P=d\bmod (p-1)$ 和 $d_Q=d\bmod (q-1)$，这进一步加快运算。最后，计算$m$的步骤再运用加纳算法[^Garner](Garner Algorithm)优化：
 $$\begin{align}

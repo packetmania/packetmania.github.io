@@ -35,7 +35,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://packetmania.github.io/2021/02/14/Fermats-Little-Theorem/Fermat-on-stamp.jpg">
 <meta property="article:published_time" content="2021-02-14T22:55:53.000Z">
-<meta property="article:modified_time" content="2021-02-20T20:47:03.430Z">
+<meta property="article:modified_time" content="2021-02-20T21:09:29.575Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
@@ -324,7 +324,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-20 12:47:03" itemprop="dateModified" datetime="2021-02-20T12:47:03-08:00">2021-02-20</time>
+        <time title="修改时间：2021-02-20 13:09:29" itemprop="dateModified" datetime="2021-02-20T13:09:29-08:00">2021-02-20</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -441,9 +441,9 @@
 <p>费马小定理和中国余数定理相结合，不仅可以验证RSA加密算法的正确性，还能推演出一种加速解密的方法。</p>
 <p>RSA加密算法里模数<span class="math inline">\(N\)</span>是两个素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>的乘积，所以对于小于<span class="math inline">\(N\)</span>的任何数<span class="math inline">\(m\)</span>，设定 <span class="math inline">\(m_1=m\bmod p\)</span> 和 <span class="math inline">\(m_2=m\bmod q\)</span>，则<span class="math inline">\(m\)</span>由<span class="math inline">\((m_1,m_2)\)</span>唯一确定。根据中国余数定理，我们可以使用通解公式从<span class="math inline">\((m_1,m_2)\)</span>推算出<span class="math inline">\(m\)</span>。因为<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>各自的比特数只有<span class="math inline">\(N\)</span>的一半，模运算将比直接计算<span class="math inline">\(c^d\equiv m\pmod N\)</span>快得多。而在计算<span class="math inline">\((m_1,m_2)\)</span>的过程中，应用费马小定理的推论得到： <span class="math display">\[\begin{align}
 m_1&amp;=m\bmod p=(c^d\bmod N)\bmod p\\
-&amp;=c^d\bmod p=c^{d\bmod (p-1)}\bmod p\tag{1}\label{eq1}\\
+&amp;=c^d\bmod p=c^{d\mod(p-1)}\bmod p\tag{1}\label{eq1}\\
 m_2&amp;=m\bmod q=(c^d\bmod N)\bmod q\\
-&amp;=c^d\bmod q=c^{d\bmod (q-1)}\bmod q\tag{2}\label{eq2}\\
+&amp;=c^d\bmod q=c^{d\mod(q-1)}\bmod q\tag{2}\label{eq2}\\
 \end{align}\]</span> 很明显，在上面<span class="math inline">\((1)\)</span>和<span class="math inline">\((2)\)</span>式里，指数从<span class="math inline">\(d\)</span>分别降阶到 <span class="math inline">\(d_P=d\bmod (p-1)\)</span> 和 <span class="math inline">\(d_Q=d\bmod (q-1)\)</span>，这进一步加快运算。最后，计算<span class="math inline">\(m\)</span>的步骤再运用加纳算法<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>(Garner Algorithm)优化： <span class="math display">\[\begin{align}
 q_{\text{inv}}&amp;=q^{-1}\pmod {p}\\
 h&amp;=q_{\text{inv}}(m_{1}-m_{2})\pmod {p}\\

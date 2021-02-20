@@ -230,7 +230,7 @@
 </ol>
 <p>既然 <span class="math inline">\(m^{ed}≡m\pmod p\)</span> 和 <span class="math inline">\(m^{ed}≡m\pmod q\)</span> 都被证实，<span class="math inline">\(m^{ed}≡m\pmod{pq}\)</span> 成立，证毕！</p>
 <h4 id="加速rsa解密">加速RSA解密</h4>
-<p>费马小定理和中国余数定理相结合，不仅可以验证RSA加密算法的正确性，还能推到出一种加速解密过程的方法。</p>
+<p>费马小定理和中国余数定理相结合，不仅可以验证RSA加密算法的正确性，还能推演出一种加速解密的方法。</p>
 <p>RSA加密算法里模数<span class="math inline">\(N\)</span>是两个素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>的乘积，所以对于小于<span class="math inline">\(N\)</span>的任何数<span class="math inline">\(m\)</span>，设定 <span class="math inline">\(m_1=m\bmod p\)</span> 和 <span class="math inline">\(m_2=m\bmod q\)</span>，则<span class="math inline">\(m\)</span>由<span class="math inline">\((m_1,m_2)\)</span>唯一确定。根据中国余数定理，我们可以使用通解公式从<span class="math inline">\((m_1,m_2)\)</span>推算出<span class="math inline">\(m\)</span>。因为<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>的比特数只有<span class="math inline">\(N\)</span>的一半，模运算将比直接计算<span class="math inline">\(c^d\equiv m\pmod N\)</span>快得多。而在计算<span class="math inline">\((m_1,m_2)\)</span>的过程中，应用费马小定理的推论得到： <span class="math display">\[\begin{align}
 m_1&amp;=m\bmod p=(c^d\bmod N)\bmod p\\
 &amp;=c^d\bmod p=c^{d\bmod (p-1)}\bmod p\tag{1}\label{eq1}\\

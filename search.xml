@@ -159,56 +159,6 @@
       </tags>
   </entry>
   <entry>
-    <title>克劳德·香农如何发明未来</title>
-    <url>/2021/01/18/How-Shannon-invent-future/</url>
-    <content><![CDATA[<p>2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表<a href="https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/">专栏文章</a>，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。<a id="more"></a>香农如此大名鼎鼎，却又异常低调，乃至许多学生和学者误以为他早已作古。在1985年的IEEE信息学年会上，当与会者得知香农现身在会议中时，会场一片轰动。当年的会议主席回忆：“就好像牛顿出现在物理学会议中。”香农最终于2001年去世，终年84岁。巨星陨落，但他的学术遗产已经由一代又一代的科学家、数学家和工程师所继承和发扬，继续照耀人类前进的道路。特此翻译此文，向先驱致敬！</p>
-<!--more-->
-<hr />
-<blockquote>
-<p><strong>感谢一位独到的天才的开创性工作，让今天的信息时代成为可能。</strong></p>
-</blockquote>
-<p>科学寻求自然的基本定律。数学在旧的基础上寻找新的定理。工程学构建解决人类需求的系统。这三个学科相互依存但又截然不同。很少有个人同时在这三个学科做出核心贡献 — 但是克劳德·香农就是这样一个难得的个人。</p>
-<p>虽然是最近的纪录片《<a href="http://www.thebitplayer.com/">比特玩家</a>》(The Bit Player) 的主角 — 而他的工作和研究理念也激发了我自己的职业生涯 — 香农并不是一个家喻户晓的人物。他从未获得过诺贝尔奖，而且在2001年去世前后，他都不是像阿尔伯特·爱因斯坦或理查德·费曼那样的名人。然而70多年前，在一篇划时代的论文中，他为构成现代信息时代根本的通信基础设施奠基。</p>
-<p>香农于1916年出生于密歇根州的盖洛德市，是一位当地商人和一名教师的儿子。从密歇根大学获得电气工程和数学学位后，他在麻省理工学院撰写了一篇<a href="https://www.cs.virginia.edu/~evans/greatworks/shannon38.pdf">硕士论文</a>，将名为布尔代数的数学理论应用于开关电路的分析和综合。这是一项变革性的工作，将电路设计从一门艺术变成了科学，现在被认为是数字电路设计的起点。</p>
-<img src="ClaudeShannon-portrait.jpg" />
-<p style="text-align: center;">
-年轻的克劳德·香农
-</p>
-<p>接下来，香农将目光投向了一个更大的目标：通信。</p>
-<p>通信是人类最基本的需求之一。从烟雾信号到信鸽，再到电话和电视，人类一直在寻求更远、更快和更可靠的通信方法。但是，通信系统的工程学过去总是与特定的信息源和物理介质相关联。而香农提出的问题是：“是否有一个大一统的通信理论？”1939年，在给导师万尼瓦尔·布什（Vannevar Bush）的信中，香农概述了他关于“用于情报传递的通用系统的基本特性”的一些初步想法。经过十年的研究，香农终于在1948年发表了他的开创性杰作《<a href="http://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">通信的数学理论</a>》。</p>
-<p>他的理论的核心是一个简单但非常通用的通信模型：发送器将信息编码为信号，该信号会被噪声破坏，然后被接收器解码。虽然简单，香农的模型融合了两个关键见解：将信息源和噪声源与要设计的通信系统隔离开来，并对这两个源进行概率建模。他设想信息源会生成许多可能的消息来进行通信，每条消息都有一定的概率。概率化噪声进一步增加了接收器解析的随机性。</p>
-<p>在香农之前，通信问题主要被视为确定性信号重建问题：如何转换被物理介质扭曲的接收信号，以尽可能准确地重建原始信号。香农的天才在于，他洞察到通信的关键是不确定性。毕竟，如果你提前知道了我在本专栏中对你说的话，那么还有什么必要写它呢？</p>
-<img src="Shannon-comm-model.jpg" />
-<p style="text-align: center;">
-香农的通信模型示意图
-</p>
-<p>这一观察将通信从实体问题转向到抽象问题，从而使香农可以使用概率对不确定性进行建模。这给当时的通信工程师们带来了极大的冲击。</p>
-<p>确定了不确定性和概率论的框架，香农在其具有里程碑意义的论文中着手系统地确定通信的基本限定。他的回答分为三个部分。在这三个方面都扮演着重要角色的，是信息“比特”（bit) 的概念。香农将其用作不确定性的基本单位。 比特好比是“二进制数字”的两格式旅行箱，可以是1或0，香农的论文是第一个使用该词的人（尽管他说数学家约翰·图基（John Tukey）先在一个备忘录中用到了该词）。</p>
-<p>首先，香农提出了一个用于表示信息量的每秒最少比特数的公式，这个数字他称之为熵率 <span class="math inline">\(H\)</span>。该数字量化了确定信息源将生成哪个消息所涉及的不确定性。熵率越低，不确定性越小，因此将消息压缩成较短的内容越容易。例如，以每分钟100个英文字母的速率发送短信，意味着每分钟发送有<span class="math inline">\(26^{100}\)</span>种可能的消息，每条消息均由100个字母的序列表示。因为<span class="math inline">\(2^{470}≈26^{100}\)</span>，人们可以将所有这些可能性编码为470比特。如果所有序列的可能性相同，那么香农的公式表明熵率确切值是每分钟470比特。现实中，由于某些序列比其他序列出现的可能性高得多，所以熵率要低得多，可以进行更大的压缩。</p>
-<p>其次，他给出了一个噪声条件下可以可靠通信的每秒最大比特数的公式，他将其称为系统的容量 <span class="math inline">\(C\)</span>。这是接收机可以有效解析消息不确定性的最大速率，也就是实际上的通信速度的上限。</p>
-<p>最后，他表明当且只当 <span class="math inline">\(H&lt;C\)</span> 时，来自信息源的信息才能在噪声条件下进行可靠的通信。因此，信息就像水一样：如果流量小于管道的容量，就能可靠地通过。</p>
-<p>虽然这是一种通信理论，但同时也是一种有关信息如何产生和转换的理论 — <a href="https://www.quantamagazine.org/tag/information-theory/">信息论</a>。因此，香农现在被誉为“信息论之父”。</p>
-<p>他的定理得出了一些与直觉相反的结论。假设你在嘈杂的地方讲话，确保你的消息能够传达的最佳方法是什么？也许重复多次？当然，这是每个人在喧哗的餐厅中的第一个本能，但事实证明这不是很有效。当然，你重复自己的次数越多，通信越可靠。但是你牺牲了速度来换取可靠性。香农向我们展示了我们可以做得更好。重复消息只是使用编码传输消息的一个例子，通过使用不同且更复杂的编码，可以在维持既定可靠性的同时，快速地通信 — 直到速度上限 <span class="math inline">\(C\)</span>。</p>
-<p>香农的理论得出的另一个意外结论是，无论信息的特质是什么 — 莎士比亚十四行诗、贝多芬第五交响曲的录音、还是黑泽明的电影 — 在传输之前，将其编码为比特总是最有效的。因此以无线电系统为例，即使初始的声音和通过空中发送的电磁信号都是模拟波形式的，香农定理也表明最好先将声波数字化为比特，然后将这些比特映射到电磁波。这一令人惊讶的结果是现代数字信息时代的基石，在这个时代里，作为信息通用货币的比特无所不在。</p>
-<p>香农的通用信息理论是如此自然，以至于他似乎发现了宇宙的通信定律，而不是发明了它们。他的理论与自然界的物理定律一样基本。从这个意义上说，他是一名科学家。</p>
-<p>香农发明了新的数学来描述通信定律。他引入了一些新思想，比如概率模型的熵率，这些新思想已应用于研究动力学系统长期行为的遍历数学等广泛的数学分支。从这个意义上说，香农是一个数学家。</p>
-<p>但最重要的是，香农是一名工程师。他的理论受到实际工程问题的启发。尽管对当时的工程师来说是深奥的，但香农的理论现已成为所有现代通信系统（光学、水下、甚至行星际）基础的标准框架。就我个人而言，我很幸运地参与了将香农的理论应用和扩展到无线通信的全球性努力中，历经几代标准将通信速度提高了两个数量级。确实，当前推出的5G标准使用的不是一种而是两种实用的编码，它们被证明可以达到香农的速度上限。</p>
-<img src="Shannon-Saturn.jpg" />
-<p style="text-align: center;">
-晚年香农手持土星的照片
-</p>
-<p>香农在70多年前就为所有这一切奠定了基础。他是怎么做到的？通过不懈地专注于问题的根本特征，忽略所有其它方面。他的通信模型的简单性就是这种风格的很好例证。他还知道要专注于可能，而不是立即可行的事情。</p>
-<p>香农的工作说明了顶级科学研究的真正作用。当我开始读研究生时，我的导师告诉我，最好的工作是修剪知识树，而不是扩张知识树。那时候我不知道该怎么做；我一直认为研究人员的工作就是添加自己的树枝。但是在我的职业生涯中，由于我有机会在自己的工作中运用这种思想，我开始理解了。</p>
-<p>当香农开始研究通信时，工程师已经掌握了大量技术。正是他的统一工作，将所有这些知识枝条修剪成了一棵贯通而优美的树 — 这棵树为几代科学家、数学家和工程师带来了累累硕果。</p>
-]]></content>
-      <categories>
-        <category>致敬先驱</category>
-      </categories>
-      <tags>
-        <tag>通信系统</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>费马小定理的归纳法证明和应用</title>
     <url>/2021/02/14/Fermats-Little-Theorem/</url>
     <content><![CDATA[<p>在数学的发展史上，皮埃尔·德·费马（Pierre de Fermat）是一位特别的人物。他的正式职业是律师，却格外爱好数学。虽然是业余的，费马在数学上的成就不低于同时代的职业数学家。他对于现代微积分、解析几何、概率论和数论都有贡献。尤其是在数论领域，费马最有兴趣也成果最突出。<a id="more"></a></p>
@@ -243,7 +193,7 @@
 <h4 id="竞赛题解">竞赛题解</h4>
 <p>费马小定理为一些看似繁杂的计算问题提供了简明的解法。先看一个简单的例子：如果今天是星期日，问 <span class="math inline">\(2^{100}\)</span> 天以后是星期几？一周有 7 天，根据费马小定理有 <span class="math inline">\(2^{7−1}≡1\bmod 7\)</span>，由此可以得到 <span class="math display">\[2^{100}=2^{16×6+4} ≡ 1^{16}×2^4≡16≡2\pmod 7\]</span> 所以答案是星期二。这实际上就是以具体的数字重复了上面第二个推论的证明过程。运用此推论可以极大地加快模幂运算，比如要求计算 <span class="math inline">\(49^{901}\bmod 151\)</span>，由于 <span class="math inline">\(901\bmod(151-1)=1\)</span>，据此马上可以得出 <span class="math display">\[49^{901}\equiv 49^1\equiv 49\pmod {151}\]</span> 这当然比将 <span class="math inline">\(901\)</span> 转化为二进制数再应用平方模幂运算快得多。</p>
 <p>现在看一道似乎难一点的题：给定等式 <span class="math inline">\(133^5+110^5+84^5+27^5=n^{5}\)</span>，求 <span class="math inline">\(n\)</span> 的数值。</p>
-<p>初看起来好像没有头绪，那就从基础的奇偶性检查开始。等式左边两项为奇两项为偶，所以总和为偶数，这也决定了<span class="math inline">\(n\)</span>一定为偶数。再看指数<span class="math inline">\(5\)</span>为一个素数，联想到费马小定理得出 <span class="math inline">\(n^5≡n\pmod 5\)</span>，因此 <span class="math display">\[133^5+110^5+84^5+27^5≡n\pmod 5\]</span> <span class="math display">\[3+0+4+2≡4≡n\pmod 5\]</span> 继续再对<span class="math inline">\(3\)</span>取模，同样依据费马小定理的推论有 <span class="math inline">\(n^5≡n^{5\bmod (3-1)}≡n\pmod 3\)</span>，所以 <span class="math display">\[133^5+110^5+84^5+27^5≡n\pmod 3\]</span> <span class="math display">\[1+2+0+0≡0≡n\pmod 3\]</span> 好了，到此总结一下：</p>
+<p>初看起来好像没有头绪，那就从基础的奇偶性检查开始。等式左边两项为奇两项为偶，所以总和为偶数，这也决定了<span class="math inline">\(n\)</span>一定为偶数。再看指数<span class="math inline">\(5\)</span>为一个素数，联想到费马小定理得出 <span class="math inline">\(n^5≡n\pmod 5\)</span>，因此 <span class="math display">\[133^5+110^5+84^5+27^5≡n\pmod 5\]</span> <span class="math display">\[3+0+4+2≡4≡n\pmod 5\]</span> 继续再对<span class="math inline">\(3\)</span>取模，同样依据费马小定理的推论有 <span class="math inline">\(n^5≡n^{5\mod(3-1)}≡n\pmod 3\)</span>，所以 <span class="math display">\[133^5+110^5+84^5+27^5≡n\pmod 3\]</span> <span class="math display">\[1+2+0+0≡0≡n\pmod 3\]</span> 好了，到此总结一下：</p>
 <ol type="1">
 <li><span class="math inline">\(n\)</span> 应该大于<span class="math inline">\(133\)</span>，且 <span class="math inline">\(n\)</span> 为偶数</li>
 <li><span class="math inline">\(n\)</span> 为<span class="math inline">\(3\)</span>的倍数，因此所有数位相加为<span class="math inline">\(3\)</span>的倍数</li>
@@ -309,6 +259,55 @@ m&amp;=m_{2}+hq\pmod {pq}\tag{3}\label{eq3}
       </categories>
       <tags>
         <tag>密码学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>克劳德·香农如何发明未来</title>
+    <url>/2021/01/18/How-Shannon-invent-future/</url>
+    <content><![CDATA[<p>2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表<a href="https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/">专栏文章</a>，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。<a id="more"></a>香农如此大名鼎鼎，却又异常低调，乃至许多学生和学者误以为他早已作古。在1985年的IEEE信息学年会上，当与会者得知香农现身在会议中时，会场一片轰动。当年的会议主席回忆：“就好像牛顿出现在物理学会议中。”香农最终于2001年去世，终年84岁。巨星陨落，但他的学术遗产已经由一代又一代的科学家、数学家和工程师所继承和发扬，继续照耀人类前进的道路。特此翻译此文，向先驱致敬！</p>
+<hr />
+<blockquote>
+<p><strong>感谢一位独到的天才的开创性工作，让今天的信息时代成为可能。</strong></p>
+</blockquote>
+<p>科学寻求自然的基本定律。数学在旧的基础上寻找新的定理。工程学构建解决人类需求的系统。这三个学科相互依存但又截然不同。很少有个人同时在这三个学科做出核心贡献 — 但是克劳德·香农就是这样一个难得的个人。</p>
+<p>虽然是最近的纪录片《<a href="http://www.thebitplayer.com/">比特玩家</a>》(The Bit Player) 的主角 — 而他的工作和研究理念也激发了我自己的职业生涯 — 香农并不是一个家喻户晓的人物。他从未获得过诺贝尔奖，而且在2001年去世前后，他都不是像阿尔伯特·爱因斯坦或理查德·费曼那样的名人。然而70多年前，在一篇划时代的论文中，他为构成现代信息时代根本的通信基础设施奠基。</p>
+<p>香农于1916年出生于密歇根州的盖洛德市，是一位当地商人和一名教师的儿子。从密歇根大学获得电气工程和数学学位后，他在麻省理工学院撰写了一篇<a href="https://www.cs.virginia.edu/~evans/greatworks/shannon38.pdf">硕士论文</a>，将名为布尔代数的数学理论应用于开关电路的分析和综合。这是一项变革性的工作，将电路设计从一门艺术变成了科学，现在被认为是数字电路设计的起点。</p>
+<img src="ClaudeShannon-portrait.jpg" />
+<p style="text-align: center;">
+年轻的克劳德·香农
+</p>
+<p>接下来，香农将目光投向了一个更大的目标：通信。</p>
+<p>通信是人类最基本的需求之一。从烟雾信号到信鸽，再到电话和电视，人类一直在寻求更远、更快和更可靠的通信方法。但是，通信系统的工程学过去总是与特定的信息源和物理介质相关联。而香农提出的问题是：“是否有一个大一统的通信理论？”1939年，在给导师万尼瓦尔·布什（Vannevar Bush）的信中，香农概述了他关于“用于情报传递的通用系统的基本特性”的一些初步想法。经过十年的研究，香农终于在1948年发表了他的开创性杰作《<a href="http://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">通信的数学理论</a>》。</p>
+<p>他的理论的核心是一个简单但非常通用的通信模型：发送器将信息编码为信号，该信号会被噪声破坏，然后被接收器解码。虽然简单，香农的模型融合了两个关键见解：将信息源和噪声源与要设计的通信系统隔离开来，并对这两个源进行概率建模。他设想信息源会生成许多可能的消息来进行通信，每条消息都有一定的概率。概率化噪声进一步增加了接收器解析的随机性。</p>
+<p>在香农之前，通信问题主要被视为确定性信号重建问题：如何转换被物理介质扭曲的接收信号，以尽可能准确地重建原始信号。香农的天才在于，他洞察到通信的关键是不确定性。毕竟，如果你提前知道了我在本专栏中对你说的话，那么还有什么必要写它呢？</p>
+<img src="Shannon-comm-model.jpg" />
+<p style="text-align: center;">
+香农的通信模型示意图
+</p>
+<p>这一观察将通信从实体问题转向到抽象问题，从而使香农可以使用概率对不确定性进行建模。这给当时的通信工程师们带来了极大的冲击。</p>
+<p>确定了不确定性和概率论的框架，香农在其具有里程碑意义的论文中着手系统地确定通信的基本限定。他的回答分为三个部分。在这三个方面都扮演着重要角色的，是信息“比特”（bit) 的概念。香农将其用作不确定性的基本单位。 比特好比是“二进制数字”的两格式旅行箱，可以是1或0，香农的论文是第一个使用该词的人（尽管他说数学家约翰·图基（John Tukey）先在一个备忘录中用到了该词）。</p>
+<p>首先，香农提出了一个用于表示信息量的每秒最少比特数的公式，这个数字他称之为熵率 <span class="math inline">\(H\)</span>。该数字量化了确定信息源将生成哪个消息所涉及的不确定性。熵率越低，不确定性越小，因此将消息压缩成较短的内容越容易。例如，以每分钟100个英文字母的速率发送短信，意味着每分钟发送有<span class="math inline">\(26^{100}\)</span>种可能的消息，每条消息均由100个字母的序列表示。因为<span class="math inline">\(2^{470}≈26^{100}\)</span>，人们可以将所有这些可能性编码为470比特。如果所有序列的可能性相同，那么香农的公式表明熵率确切值是每分钟470比特。现实中，由于某些序列比其他序列出现的可能性高得多，所以熵率要低得多，可以进行更大的压缩。</p>
+<p>其次，他给出了一个噪声条件下可以可靠通信的每秒最大比特数的公式，他将其称为系统的容量 <span class="math inline">\(C\)</span>。这是接收机可以有效解析消息不确定性的最大速率，也就是实际上的通信速度的上限。</p>
+<p>最后，他表明当且只当 <span class="math inline">\(H&lt;C\)</span> 时，来自信息源的信息才能在噪声条件下进行可靠的通信。因此，信息就像水一样：如果流量小于管道的容量，就能可靠地通过。</p>
+<p>虽然这是一种通信理论，但同时也是一种有关信息如何产生和转换的理论 — <a href="https://www.quantamagazine.org/tag/information-theory/">信息论</a>。因此，香农现在被誉为“信息论之父”。</p>
+<p>他的定理得出了一些与直觉相反的结论。假设你在嘈杂的地方讲话，确保你的消息能够传达的最佳方法是什么？也许重复多次？当然，这是每个人在喧哗的餐厅中的第一个本能，但事实证明这不是很有效。当然，你重复自己的次数越多，通信越可靠。但是你牺牲了速度来换取可靠性。香农向我们展示了我们可以做得更好。重复消息只是使用编码传输消息的一个例子，通过使用不同且更复杂的编码，可以在维持既定可靠性的同时，快速地通信 — 直到速度上限 <span class="math inline">\(C\)</span>。</p>
+<p>香农的理论得出的另一个意外结论是，无论信息的特质是什么 — 莎士比亚十四行诗、贝多芬第五交响曲的录音、还是黑泽明的电影 — 在传输之前，将其编码为比特总是最有效的。因此以无线电系统为例，即使初始的声音和通过空中发送的电磁信号都是模拟波形式的，香农定理也表明最好先将声波数字化为比特，然后将这些比特映射到电磁波。这一令人惊讶的结果是现代数字信息时代的基石，在这个时代里，作为信息通用货币的比特无所不在。</p>
+<p>香农的通用信息理论是如此自然，以至于他似乎发现了宇宙的通信定律，而不是发明了它们。他的理论与自然界的物理定律一样基本。从这个意义上说，他是一名科学家。</p>
+<p>香农发明了新的数学来描述通信定律。他引入了一些新思想，比如概率模型的熵率，这些新思想已应用于研究动力学系统长期行为的遍历数学等广泛的数学分支。从这个意义上说，香农是一个数学家。</p>
+<p>但最重要的是，香农是一名工程师。他的理论受到实际工程问题的启发。尽管对当时的工程师来说是深奥的，但香农的理论现已成为所有现代通信系统（光学、水下、甚至行星际）基础的标准框架。就我个人而言，我很幸运地参与了将香农的理论应用和扩展到无线通信的全球性努力中，历经几代标准将通信速度提高了两个数量级。确实，当前推出的5G标准使用的不是一种而是两种实用的编码，它们被证明可以达到香农的速度上限。</p>
+<img src="Shannon-Saturn.jpg" />
+<p style="text-align: center;">
+晚年香农手持土星的照片
+</p>
+<p>香农在70多年前就为所有这一切奠定了基础。他是怎么做到的？通过不懈地专注于问题的根本特征，忽略所有其它方面。他的通信模型的简单性就是这种风格的很好例证。他还知道要专注于可能，而不是立即可行的事情。</p>
+<p>香农的工作说明了顶级科学研究的真正作用。当我开始读研究生时，我的导师告诉我，最好的工作是修剪知识树，而不是扩张知识树。那时候我不知道该怎么做；我一直认为研究人员的工作就是添加自己的树枝。但是在我的职业生涯中，由于我有机会在自己的工作中运用这种思想，我开始理解了。</p>
+<p>当香农开始研究通信时，工程师已经掌握了大量技术。正是他的统一工作，将所有这些知识枝条修剪成了一棵贯通而优美的树 — 这棵树为几代科学家、数学家和工程师带来了累累硕果。</p>
+]]></content>
+      <categories>
+        <category>致敬先驱</category>
+      </categories>
+      <tags>
+        <tag>通信系统</tag>
       </tags>
   </entry>
   <entry>
@@ -1009,16 +1008,15 @@ end
 <li>双方先各自验证对方发过来的签名</li>
 <li>验证成功后运行 DH 算法生成同样的预备主密钥 (<code>pre_master_secret</code>)</li>
 <li>双方调用<a href="https://tools.ietf.org/html/rfc5246#page-14">伪随机函数(PRF)</a>从预备主密钥生成48字节主密钥 (<code>master_secret</code>)： <span class="math display">\[master\_secret = PRF(pre\_master\_secret,\unicode{x201C}master\;secret\unicode{x201D},Cr+Sr)[0..47]\]</span></li>
-<li>双方再次调用 PRF 从主密钥生成84字节密钥块 (<code>key_block</code>)： <span class="math display">\[key\_block = PRF(master\_secret,\unicode{x201C}key\;expansion\unicode{x201D},Sr+Cr)[0,83]\]</span></li>
+<li>双方再次调用 PRF 从主密钥生成72字节密钥块 (<code>key_block</code>)： <span class="math display">\[key\_block = PRF(master\_secret,\unicode{x201C}key\;expansion\unicode{x201D},Sr+Cr)[0,71]\]</span></li>
 <li>密钥块分配给<code>HMAC-SHA1</code>和<code>AES_128_CBC</code>功能模块：
 <ul>
 <li>客户机写消息验证码 (MAC) 密钥：20字节</li>
 <li>服务器写消息验证码 (MAC) 密钥：20字节</li>
 <li>客户机写加密密钥：16字节</li>
 <li>服务器写加密密钥：16字节</li>
-<li>客户机写初始向量 IV：16字节</li>
-<li>服务器写初始向量 IV：16字节</li>
-</ul></li>
+</ul>
+注意TLS/DTLS 1.2规定此密码套件使用显式初始向量 (IV)，不需要分配密钥块</li>
 <li>客户机产生更新密码规范 (Change Cipher Spec) 消息，表明开始使用加密和 MAC 模块</li>
 <li>客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块： <span class="math display">\[PRF(master\_secret,finished\_label,SHA256(handshake\_messages)[0,11]\]</span></li>
 <li>客户机发送更新密码规范消息和加密后的握手结束消息到服务器</li>
@@ -1778,6 +1776,148 @@ end
         <tag>TCP/IP</tag>
         <tag>C/C++编程</tag>
         <tag>软件测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python编程实现的教科书RSA</title>
+    <url>/2021/03/01/Python-Textbook-RSA/</url>
+    <content><![CDATA[<p>RSA加密算法是现代公钥密码学的核心技术之一，在互联网中应用广泛。作为公钥密码学的经典算法，教科书RSA的编程实现可以帮助我们迅速掌握其数学机理和设计思想，并积累重要的密码技术软件实现经验。这里详述Python3.8编程环境下教科书RSA的实现示例。<a id="more"></a></p>
+<div class="note success no-icon"><p><strong>Random numbers should not be generated with a method chosen at random.</strong><br> <strong>— <em>Donald Knuth</em>（高德纳，著名计算机科学家，现代计算机科学的先驱人物，1974年图灵奖得主）</strong></p>
+</div>
+<h3 id="生成大素数">生成大素数</h3>
+<p>RSA加密算法的安全性建立在大数素因数分解的数学难题之上。构造RSA加密系统的第一步，就是生成两个大的素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>并计算模数<span class="math inline">\(N=pq\)</span>。<span class="math inline">\(N\)</span>就是RSA的密钥长度，越大越安全。现在实用的系统要求密钥长度不小于2048比特，对应的 <span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>各为1024比特左右。生成如此大的随机素数，一种通用的实效方法是基于概率的随机化算法，其过程如下：</p>
+<ol type="1">
+<li>预选择设定比特长度的随机数</li>
+<li>用小素数做初级素性检测 (<a href="https://zh.wikipedia.org/zh-cn/埃拉托斯特尼筛法">埃拉托斯特尼筛法</a>)
+<ul>
+<li>如果通过，继续第三步</li>
+<li>如果失败，返回第一步</li>
+</ul></li>
+<li>执行高级素性检测 (<a href="https://zh.wikipedia.org/zh-cn/米勒-拉宾检验">米勒-拉宾算法</a>)
+<ul>
+<li>如果通过，输出认定的素数</li>
+<li>如果失败，返回第一步</li>
+</ul></li>
+</ol>
+<p>在这里的软件实现中，第一步可以直接生成奇数。同时出于演示的目的，第二步采用大于2的前50个素数做初级素性检测。整个过程如下面的流程图所示：<img src="finding-prime.jpg" /></p>
+<p>第一步的Python函数编程，需要从<code>random</code>库导入库函数<code>randrange()</code>。函数将输入的比特数n设置为2的指数，用来指定<code>randrange()</code>的起始和结束值，并把步长定为2以确保只输出n比特数随机奇数值：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> randrange</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_n_bit_odd</span>(<span class="params">n: <span class="built_in">int</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Generate a random odd number in the range [2**(n-1)+1, 2**n-1]&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">assert</span> n &gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> randrange(<span class="number">2</span> ** (n - <span class="number">1</span>) + <span class="number">1</span>, <span class="number">2</span> ** n, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>第二步的代码很简单。先定义一个数组，元素是2以后的50个素数。然后在函数中用双循环实现在初级素性检测，内部<code>for</code>循环用素数数组的元素逐个筛选，失败就马上中止回到外循环，再调用第一步的函数生成下一个候选奇数重新测试：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># The first 50 prime numbers after 2</span></span><br><span class="line">first_50_primes = [<span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">23</span>, <span class="number">29</span>, <span class="number">31</span>,</span><br><span class="line">                   <span class="number">37</span>, <span class="number">41</span>, <span class="number">43</span>, <span class="number">47</span>, <span class="number">53</span>, <span class="number">59</span>, <span class="number">61</span>, <span class="number">67</span>, <span class="number">71</span>, <span class="number">73</span>,</span><br><span class="line">                   <span class="number">79</span>, <span class="number">83</span>, <span class="number">89</span>, <span class="number">97</span>, <span class="number">101</span>, <span class="number">103</span>, <span class="number">107</span>, <span class="number">109</span>, <span class="number">113</span>, <span class="number">127</span>,</span><br><span class="line">                   <span class="number">131</span>, <span class="number">137</span>, <span class="number">139</span>, <span class="number">149</span>, <span class="number">151</span>, <span class="number">157</span>, <span class="number">163</span>, <span class="number">167</span>, <span class="number">173</span>, <span class="number">179</span>,</span><br><span class="line">                   <span class="number">181</span>, <span class="number">191</span>, <span class="number">193</span>, <span class="number">197</span>, <span class="number">199</span>, <span class="number">211</span>, <span class="number">223</span>, <span class="number">227</span>, <span class="number">229</span>, <span class="number">233</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lowlevel_prime</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Generate a prime candidate not divisible by first primes&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="comment"># Obtain a random odd number</span></span><br><span class="line">        c = generate_n_bit_odd(n)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Test divisibility by pre-generated primes</span></span><br><span class="line">        <span class="keyword">for</span> divisor <span class="keyword">in</span> first_50_primes:</span><br><span class="line">            <span class="keyword">if</span> c % divisor == <span class="number">0</span> <span class="keyword">and</span> divisor ** <span class="number">2</span> &lt;= c:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># The for loop did not encounter a break statement,</span></span><br><span class="line">            <span class="comment"># so it passes low level primality test.</span></span><br><span class="line">            <span class="keyword">return</span> c</span><br></pre></td></tr></table></figure>
+<p>第三步的米勒-拉宾素性检验<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>，是当前普遍使用的一种素数判定法则。它利用随机化算法判断一个数是合数还是可能是素数。虽然同样基于<a href="https://packetmania.github.io/2021/02/14/Fermats-Little-Theorem/">费马小定理</a>，米勒-拉宾素性检验比费马素性检验效率高得多。在展示米勒-拉宾素性检验的Python实现之前，简要介绍一下其工作原理。</p>
+<p>根据费马小定理 ，对于一个素数<span class="math inline">\(n\)</span> ，如果整数<span class="math inline">\(a\)</span>不是<span class="math inline">\(n\)</span>的倍数，则有<span class="math inline">\(a^{n-1}\equiv 1\pmod n\)</span>。从这里出发，如果<span class="math inline">\(n&gt;2\)</span>，<span class="math inline">\(n-1\)</span>是一个偶数，一定可以被表示为<span class="math inline">\(2^{s}*d\)</span>的形式，<span class="math inline">\(s\)</span>和<span class="math inline">\(d\)</span>都是正整数且<span class="math inline">\(d\)</span>是奇数。由此得到 <span class="math display">\[a^{2^{s}*d}\equiv 1\pmod n\]</span> 这时如果不断对上式左边取平方根再取模，总会得到<span class="math inline">\(1\)</span>和<span class="math inline">\(-1\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。如果得到了<span class="math inline">\(-1\)</span> ，意味着下面②式成立；如果从未得到<span class="math inline">\(-1\)</span>，则①式成立： <span class="math display">\[a^{d}\equiv 1{\pmod {n}}{\text{ ①}}\]</span> <span class="math display">\[a^{2^{r}d}\equiv -1{\pmod {n}}{\text{ ②}}\]</span> 其中<span class="math inline">\(r\)</span>是位于<span class="math inline">\([0, s-1]\)</span>区间的某个整数。所以，如果<span class="math inline">\(n\)</span>是大于<span class="math inline">\(2\)</span>的素数，一定有①或②式成立。这一规律的<u>逆否命题</u>也为真，即<strong>如果我们能找到这样一个<span class="math inline">\(\pmb{a}\)</span>，使得对任意<span class="math inline">\(\pmb{0\leq r\leq s-1}\)</span>以下两个式子均满足： <span class="math display">\[\pmb{a^{d}\not \equiv 1\pmod n}\]</span> <span class="math display">\[\pmb{a^{2^{r}d}\not \equiv -1\pmod n}\]</span> 那么<span class="math inline">\(\pmb{n}\)</span>一定不是一个素数</strong>。这就是米勒-拉宾素性测试的机理。对于待测数<span class="math inline">\(n\)</span>，算出<span class="math inline">\(s\)</span>和<span class="math inline">\(d\)</span>的值后，随机选取基数<span class="math inline">\(a\)</span>，迭代检测以上两式。如果都不成立，<span class="math inline">\(n\)</span>为合数，否则<span class="math inline">\(n\)</span>可能为素数。重复这一过程，<span class="math inline">\(n\)</span>为真素数的概率会越来越大。计算表明，经过<span class="math inline">\(k\)</span>轮测试，米勒-拉宾素性检验的差错率最高不超过<span class="math inline">\(4^{-k}\)</span>。</p>
+<p>Python实现的米勒-拉宾素性检验函数如下，代码中的变量<code>n,s,d,k</code>与上面的说明对应：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">miller_rabin_primality_check</span>(<span class="params">n, k=<span class="number">20</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Miller-Rabin Primality Test wwith specified round of test </span></span><br><span class="line"><span class="string">    Input:</span></span><br><span class="line"><span class="string">        n - n &gt; 3, an odd integer to be tested for primality</span></span><br><span class="line"><span class="string">        k - the number of rounds of testing to perfor</span></span><br><span class="line"><span class="string">    Output:</span></span><br><span class="line"><span class="string">        True  - passed (n is a strong probable prime)</span></span><br><span class="line"><span class="string">        False - failed (n is a composite)&#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># For a given odd integer n &gt; 3, write n as (2^s)*d+1,</span></span><br><span class="line">    <span class="comment"># where s and d are positive integers and d is odd.</span></span><br><span class="line">    <span class="keyword">assert</span> n &gt; <span class="number">3</span></span><br><span class="line">    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    s, d = <span class="number">0</span>, n - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> d % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        d &gt;&gt;= <span class="number">1</span></span><br><span class="line">        s += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">        a = randrange(<span class="number">2</span>, n - <span class="number">1</span>)</span><br><span class="line">        x = <span class="built_in">pow</span>(a, d, n)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> x == <span class="number">1</span> <span class="keyword">or</span> x == n - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(s):</span><br><span class="line">            x = <span class="built_in">pow</span>(x, <span class="number">2</span>, n)</span><br><span class="line">            <span class="keyword">if</span> x == n - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># The for loop did not encounter a break statement,</span></span><br><span class="line">            <span class="comment"># so it fails the test, it must be a composite</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Passed the test, it is a strong probable prime</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>综合以上所有，可以将整个过程包装到以下的函数，函数输入为比特数，输出为认定的随机大素数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_random_prime</span>(<span class="params">num_bits</span>):</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        pp = get_lowlevel_prime(num_bits)</span><br><span class="line">        <span class="keyword">if</span> miller_rabin_primality_check(pp):</span><br><span class="line">            <span class="keyword">return</span> pp</span><br></pre></td></tr></table></figure>
+<h3 id="工具函数">工具函数</h3>
+<ol type="1">
+<li><p><strong>最大公约数函数<code>gcd(a,b)</code>和最小公倍数函数<code>lcm(a,b)</code>：</strong><br />
+RSA加密算法需要计算模数<span class="math inline">\(N\)</span>的卡迈克尔函数<span class="math inline">\(\lambda(N)\)</span>，其公式是<span class="math inline">\(\lambda(pq)=\operatorname{lcm}(p − 1, q − 1)\)</span>，这里用到了最小公倍数函数。最小公倍数与最大公约数的关系是：<span class="math display">\[\operatorname{lcm}(a,b)={\frac{(a\cdot b)}{\gcd(a,b)}}\]</span> 而求最大公约数有高效的欧几里得算法 (辗转相除法)，其原理是：两个整数的最大公约数等于其中较小的数和两数相除余数的最大公约数。欧几里得算法的具体实现可以使用迭代或递归方法。这里应用迭代实现最大公约数函数，两个函数的Python代码如下：</p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Computes the Great Common Divisor using the Euclid&#x27;s algorithm&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">while</span> b:</span><br><span class="line">        a, b = b, a % b</span><br><span class="line">    <span class="keyword">return</span> a</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lcm</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Computes the Lowest Common Multiple using the GCD method.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> a // gcd(a, b) * b</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>扩展欧几里得算法<code>exgcd(a,b)</code>和模逆元函数<code>invmod(e,m)</code>：</strong><br />
+RSA密钥对满足等式<span class="math inline">\((d⋅e)\bmod \lambda(N)=1\)</span>，即二者互为关于<span class="math inline">\(\lambda(N)\)</span>的模逆元。应用扩展欧几里得算法可以快速求解公钥指数<span class="math inline">\(e\)</span>的模逆元<span class="math inline">\(d\)</span>。算法原理是给定整数<span class="math inline">\(a、b\)</span>，可以在求得<span class="math inline">\(a、b\)</span>的最大公约数的同时，找到整数<span class="math inline">\(x、y\)</span> (其中一个很可能是负数)，使它们满足裴蜀等式：<span class="math display">\[a⋅x+b⋅y=\gcd(a, b)\]</span>代入RSA加密算法的参数<span class="math inline">\(a=e\)</span>，<span class="math inline">\(b=m=\lambda(N)\)</span>，又由于<span class="math inline">\(e\)</span>与<span class="math inline">\(\lambda(N)\)</span>互素，可以得到：<span class="math display">\[e⋅x+m⋅y=1\]</span>这样解出的<span class="math inline">\(x\)</span>就是<span class="math inline">\(e\)</span>的模逆元<span class="math inline">\(d\)</span>。下面给出这两个函数的Python实现：</p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exgcd</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Extended Euclidean Algorithm that can give back all gcd, s, t </span></span><br><span class="line"><span class="string">    such that they can make Bézout&#x27;s identity: gcd(a,b) = a*s + b*t</span></span><br><span class="line"><span class="string">    Return: (gcd, s, t) as tuple&quot;&quot;&quot;</span></span><br><span class="line">    old_s, s = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    old_t, t = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> b:</span><br><span class="line">        q = a // b</span><br><span class="line">        s, old_s = old_s - q * s, s</span><br><span class="line">        t, old_t = old_t - q * t, t</span><br><span class="line">        a, b = b, a % b</span><br><span class="line">    <span class="keyword">return</span> a, old_s, old_t</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">invmod</span>(<span class="params">e, m</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Find out the modular multiplicative inverse x of the input integer</span></span><br><span class="line"><span class="string">    e with respect to the modulus m. Return the minimum positive x&quot;&quot;&quot;</span></span><br><span class="line">    g, x, y = exgcd(e, m)</span><br><span class="line">    <span class="keyword">assert</span> g == <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Now we have e*x + m*y = g = 1, so e*x ≡ 1 (mod m).</span></span><br><span class="line">    <span class="comment"># The modular multiplicative inverse of e is x.</span></span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">0</span>:</span><br><span class="line">        x += m</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure> 同样地，这里应用了迭代方法实现扩展欧几里得算法，模逆元函数调用了前者。</p></li>
+<li><p><strong>整数与字节序列相互转换函数：</strong><br />
+RSA加解密算法本身是操作于整数的模幂运算，而要加密的消息明文通常以字节序列表示，所以需要两个转换函数。加密时调用<code>uint_from_bytes()</code>先将字节序列转换为整数，再用公钥指数进行模幂运算；解密时次序相反，先用私钥指数进行模幂运算，再调用<code>uint_to_bytes()</code>将整数结果转换为字节序列，这样就可以恢复消息明文。Python实现的转换函数如下：</p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uint_from_bytes</span>(<span class="params">xbytes: <span class="built_in">bytes</span></span>) -&gt; int:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;This works only for unsigned (non-negative) integers.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>.from_bytes(xbytes, <span class="string">&#x27;big&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uint_to_bytes</span>(<span class="params">x: <span class="built_in">int</span></span>) -&gt; bytes:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;This works only for unsigned (non-negative) integers.</span></span><br><span class="line"><span class="string">    It does not work for 0.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">bytes</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> x.to_bytes((x.bit_length() + <span class="number">7</span>) // <span class="number">8</span>, <span class="string">&#x27;big&#x27;</span>)</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<h3 id="实现rsa类">实现RSA类</h3>
+<div class="note danger"><p><strong>注意</strong>：教科书RSA有内在的安全漏洞。这里给出的Python语言参考实现仅用于学习和演示目的，不可用在实际的应用系统中，否则可能会造成严重的信息安全事故，切记！</p>
+</div>
+<p>基于面向对象的编程思想，可以设计将RSA的密钥数据和所有运算操作封装到一个Python类中。RSA类的解密和签名生成各自实现了常规和快速两种方法。快速方法基于中国余数定理和费马小定理 (参考《<a href="https://packetmania.github.io/2021/02/14/Fermats-Little-Theorem/">费马小定理的归纳法证明和应用</a>》)。以下描述了RSA类的实现细节：</p>
+<ol type="1">
+<li><p><strong>对象初始化函数</strong><br />
+初始化函数<code>__init__()</code>的用户自定义参数和缺省值如下：</p>
+<ul>
+<li>密钥长度：2048 (<span class="math inline">\(N\)</span>)</li>
+<li>公钥指数：65537 (<span class="math inline">\(e\)</span>)</li>
+<li>快速解密/签名：False (不设定)</li>
+</ul>
+<p>函数内部调用<code>get_random_prime()</code>函数生成两个大约为密钥长度一半的随机大素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>，计算它们的卡迈克尔函数值并验证其是否与<span class="math inline">\(e\)</span>互素，不是就重复直到找到为止。然后计算模数<span class="math inline">\(N\)</span>和使用模逆元函数<code>invmod()</code>算出私钥指数<span class="math inline">\(d\)</span>。如果需要快速解密/签名，还要计算出三个额外的参数： <span class="math display">\[\begin{align}
+d_P&amp;=d\bmod (p-1)\\
+d_Q&amp;=d\bmod (q-1)\\
+q_{\text{inv}}&amp;=q^{-1}\pmod {p}
+\end{align}\]</span></p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">RSA_DEFAULT_EXPONENT = <span class="number">65537</span></span><br><span class="line">RSA_DEFAULT_MODULUS_LEN = <span class="number">2048</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RSA</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Implements the RSA public key encryption/decryption with default</span></span><br><span class="line"><span class="string">    exponent 65537 and default key size 2048&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, key_length=RSA_DEFAULT_MODULUS_LEN,</span></span></span><br><span class="line"><span class="function"><span class="params">                 exponent=RSA_DEFAULT_EXPONENT, fast_decrypt=<span class="literal">False</span></span>):</span></span><br><span class="line">        self.e = exponent</span><br><span class="line">        self.fast = fast_decrypt</span><br><span class="line">        t = <span class="number">0</span></span><br><span class="line">        p = q = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> gcd(self.e, t) != <span class="number">1</span>:</span><br><span class="line">            p = get_random_prime(key_length // <span class="number">2</span>)</span><br><span class="line">            q = get_random_prime(key_length // <span class="number">2</span>)</span><br><span class="line">            t = lcm(p - <span class="number">1</span>, q - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        self.n = p * q</span><br><span class="line">        self.d = invmod(self.e, t)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (fast_decrypt):</span><br><span class="line">            self.p, self.q = p, q</span><br><span class="line">            self.d_P = self.d % (p - <span class="number">1</span>)</span><br><span class="line">            self.d_Q = self.d % (q - <span class="number">1</span>)</span><br><span class="line">            self.q_Inv = invmod(q, p)</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>加解密成员函数</strong><br />
+RSA加密和常规解密公式为 <span class="math display">\[\begin{align}
+c\equiv m^e\pmod N\\
+m\equiv c^d\pmod N
+\end{align}\]</span> Python的内建指数函数<code>pow()</code>支持模幂运算，只需要先做相应的整数与字节序列转换，再使用公钥指数或私钥指数调用<code>pow()</code>就可以实现上面两式：</p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encrypt</span>(<span class="params">self, binary_data: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    int_data = uint_from_bytes(binary_data)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(int_data, self.e, self.n)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt</span>(<span class="params">self, encrypted_int_data: <span class="built_in">int</span></span>):</span></span><br><span class="line">    int_data = <span class="built_in">pow</span>(encrypted_int_data, self.d, self.n)</span><br><span class="line">    <span class="keyword">return</span> uint_to_bytes(int_data)</span><br></pre></td></tr></table></figure> 对于快速解密，需要一些额外的步骤 <span class="math display">\[\begin{align}
+m_1&amp;=c^{d_P}\pmod {p}\tag{1}\label{eq1}\\
+m_2&amp;=c^{d_Q}\pmod {q}\tag{2}\label{eq2}\\
+h&amp;=q_{\text{inv}}(m_1-m_2)\pmod {p}\tag{3}\label{eq3}\\
+m&amp;=m_{2}+hq\pmod {pq}\tag{4}\label{eq4}
+\end{align}\]</span> 实际中，如果上面<span class="math inline">\((3)\)</span>式中的<span class="math inline">\(m_1-m_2&lt;0\)</span>，需要加上<span class="math inline">\(p\)</span>调整为正数。还可以看到，由于快速解密方法的模数和指数都降阶大致一半，加速比理论上会接近<span class="math inline">\(4\)</span>。考虑额外计算步骤，实际的加速比估计值要减掉一个修正值 <span class="math inline">\(\varepsilon\)</span>，记为 <span class="math inline">\(4-\varepsilon\)</span>。快速解密函数的代码如下：</p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt_fast</span>(<span class="params">self, encrypted_int_data: <span class="built_in">int</span></span>):</span></span><br><span class="line">    <span class="comment"># Use Chinese Remaider Theorem + Fermat&#x27;s Little Theorem to</span></span><br><span class="line">    <span class="comment"># do fast RSA description</span></span><br><span class="line">    <span class="keyword">assert</span> self.fast == <span class="literal">True</span></span><br><span class="line">    m1 = <span class="built_in">pow</span>(encrypted_int_data, self.d_P, self.p)</span><br><span class="line">    m2 = <span class="built_in">pow</span>(encrypted_int_data, self.d_Q, self.q)</span><br><span class="line">    t = m1 - m2</span><br><span class="line">    <span class="keyword">if</span> t &lt; <span class="number">0</span>:</span><br><span class="line">        t += self.p</span><br><span class="line">    h = (self.q_Inv * t) % self.p</span><br><span class="line">    m = (m2 + h * self.q) % self.n</span><br><span class="line">    <span class="keyword">return</span> uint_to_bytes(m)</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>签名生成和验证成员函数</strong><br />
+RSA数字签名的生成和验证函数与加密和常规解密很相似，不同的只是将公钥指数和私钥指数对调使用而已。签名生成使用私钥指数，而验证函数使用公钥指数。快速签名的实现与快速解密步骤一致，但是输入和输出的数据要做相应的转换调整。具体的实现如下：</p>
+<p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_signature</span>(<span class="params">self, encoded_msg_digest: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Use RSA private key to generate Digital Signature for given</span></span><br><span class="line"><span class="string">    encoded message digest&quot;&quot;&quot;</span></span><br><span class="line">    int_data = uint_from_bytes(encoded_msg_digest)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(int_data, self.d, self.n)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_signature_fast</span>(<span class="params">self, encoded_msg_digest: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    <span class="comment"># Use Chinese Remaider Theorem + Fermat&#x27;s Little Theorem to</span></span><br><span class="line">    <span class="comment"># do fast RSA signature generation</span></span><br><span class="line">    <span class="keyword">assert</span> self.fast == <span class="literal">True</span></span><br><span class="line">    int_data = uint_from_bytes(encoded_msg_digest)</span><br><span class="line">    s1 = <span class="built_in">pow</span>(int_data, self.d_P, self.p)</span><br><span class="line">    s2 = <span class="built_in">pow</span>(int_data, self.d_Q, self.q)</span><br><span class="line">    t = s1 - s2</span><br><span class="line">    <span class="keyword">if</span> t &lt; <span class="number">0</span>:</span><br><span class="line">        t += self.p</span><br><span class="line">    h = (self.q_Inv * t) % self.p</span><br><span class="line">    s = (s2 + h * self.q) % self.n</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verify_signature</span>(<span class="params">self, digital_signature: <span class="built_in">int</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Use RSA public key to decrypt given Digital Signature&quot;&quot;&quot;</span></span><br><span class="line">    int_data = <span class="built_in">pow</span>(digital_signature, self.e, self.n)</span><br><span class="line">    <span class="keyword">return</span> uint_to_bytes(int_data)</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<h3 id="功能测试">功能测试</h3>
+<p>完成了RSA类，就可以进行测试了。为测试基本的加解密功能，先初始化一个RSA对象，初始化参数为：</p>
+<ul>
+<li>密钥长度：512比特 (模数<span class="math inline">\(N\)</span>)</li>
+<li>公钥指数：3</li>
+<li>快速解密/签名：True (设定)</li>
+</ul>
+<p>接下来就可以调用RSA对象实例的加密函数<code>encrypt()</code>加密定义好的消息，然后将密文分别输入到解密函数<code>decrypt()</code>和快速解密函数<code>decrypt_fast()</code>，并用<code>assert</code>语句比较结果和消息原文。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ---- Test RSA class ----</span></span><br><span class="line">alice = RSA(<span class="number">512</span>, <span class="number">3</span>, <span class="literal">True</span>)</span><br><span class="line">msg = <span class="string">b&#x27;Textbook RSA in Python&#x27;</span></span><br><span class="line">ctxt = alice.encrypt(msg)</span><br><span class="line"><span class="keyword">assert</span> alice.decrypt(ctxt) == msg</span><br><span class="line"><span class="keyword">assert</span> alice.decrypt_fast(ctxt) == msg</span><br><span class="line">print(<span class="string">&quot;RSA message encryption/decryption test passes!&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>同理，还可以测试签名功能。这时需要把下面<code>import</code>语句添加到文件首部</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha1</span><br></pre></td></tr></table></figure>
+<p>这样就可以用库函数<code>sha1()</code>生成消息摘要，然后分别调用RSA对象实例的<code>generate_signature()</code> 函数和<code>generate_signature_fast()</code>函数产生签名。两个签名输入到验证函数<code>verify_signature()</code>得到的结果应该都与原消息摘要一致。如下所示：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">mdg = sha1(msg).digest()</span><br><span class="line">sign1 = alice.generate_signature(mdg)</span><br><span class="line">sign2 = alice.generate_signature_fast(mdg)</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> alice.verify_signature(sign1) == mdg</span><br><span class="line"><span class="keyword">assert</span> alice.verify_signature(sign2) == mdg</span><br><span class="line">print(<span class="string">&quot;RSA signature generation/verification test passes!&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>如果没有看到报告<code>AssertionError</code>，就会得到下面的输出，表明加解密和签名测试都通过了：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">RSA message encryption/decryption <span class="built_in">test</span> passes!</span><br><span class="line">RSA signature generation/verification <span class="built_in">test</span> passes!</span><br></pre></td></tr></table></figure>
+<h3 id="性能测试">性能测试</h3>
+<p>功能测试通过之后，可以来看看快速解密的性能如何。我们关心的是实际能达到的加速比是多少，这就需要对代码的执行计时。计时测量要从Python内建库<code>os</code>和<code>timeit</code>分别导入库函数<code>urandom()</code>和<code>timeit()</code>：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> os <span class="keyword">import</span> urandom</span><br><span class="line"><span class="keyword">from</span> timeit <span class="keyword">import</span> timeit</span><br></pre></td></tr></table></figure>
+<p><code>urandom()</code>用于产生随机字节序列，<code>timeit()</code>提供了对给定代码段的执行计时功能。作为辅助，先将要计时的RSA解密函数打包在两个函数中:</p>
+<ul>
+<li><code>decrypt_norm()</code> - 常规解密方法</li>
+<li><code>decrypt_fast()</code> - 快速解密方法</li>
+</ul>
+<p>两个函数都用<code>assert</code>语句核对结果，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt_norm</span>(<span class="params">tester, ctxt: <span class="built_in">bytes</span>, msg: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    ptxt = tester.decrypt(ctxt)</span><br><span class="line">    <span class="keyword">assert</span> ptxt == msg</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt_fast</span>(<span class="params">tester, ctxt: <span class="built_in">bytes</span>, msg: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    ptxt = tester.decrypt_fast(ctxt)</span><br><span class="line">    <span class="keyword">assert</span> ptxt == msg</span><br></pre></td></tr></table></figure>
+<p>计时代码设置两个嵌套的<code>for</code>循环：</p>
+<ul>
+<li><p>外层循环遍历不同的密钥长度<code>klen</code>，从512比特到4096比特共5级，相应的RSA对象<code>obj</code>初始化为：</p>
+<ul>
+<li>密钥长度：<code>klen</code> (模数<span class="math inline">\(N\)</span>)</li>
+<li>公钥指数：65537</li>
+<li>快速解密/签名：True (设定)</li>
+</ul>
+<p>外层循环里也设定变量<code>rpt</code>为密钥长度的平方根，并清零计时变量<code>t_n</code>和<code>t_f</code>。</p></li>
+<li><p>内层也循环5次，每次执行的操作是：</p>
+<ul>
+<li>调用<code>urandom()</code>生成比特长度为密钥长度一半、内容随机的字节序列<code>mg</code></li>
+<li>调用加密函数<code>obj.encrypt()</code>生成密文<code>ct</code></li>
+<li>调用<code>timeit()</code>并分别输入打包函数<code>decrypt_norm()</code>和<code>decrypt_fast()</code>及解密相关的参数<code>obj</code>、<code>ct</code>和<code>mg</code>，同时设置代码重复运行次数为<code>rpt</code></li>
+<li><code>timeit()</code>函数的返回值累加保存到<code>t_n</code>和<code>t_f</code></li>
+</ul></li>
+</ul>
+<p>每次内层循环结束，就打印当前的密钥长度、计时统计的均值和计算出来的加速比<code>t_n/t_f</code>。对应的实际程序段如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">print(<span class="string">&quot;Start RSA fast decryption profiling...&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> klen <span class="keyword">in</span> [<span class="number">512</span>, <span class="number">1024</span>, <span class="number">2048</span>, <span class="number">3072</span>, <span class="number">4096</span>]:</span><br><span class="line">    rpt = <span class="built_in">int</span>(klen ** <span class="number">0.5</span>)</span><br><span class="line">    obj = RSA(klen, <span class="number">65537</span>, <span class="literal">True</span>)</span><br><span class="line">    t_n = t_f = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        mg = urandom(<span class="built_in">int</span>(klen/<span class="number">16</span>))</span><br><span class="line">        ct = obj.encrypt(mg)</span><br><span class="line">        t_n += timeit(<span class="keyword">lambda</span>: decrypt_norm(obj, ct, mg), number=rpt)</span><br><span class="line">        t_f += timeit(<span class="keyword">lambda</span>: decrypt_fast(obj, ct, mg), number=rpt)      </span><br><span class="line">    print(<span class="string">&quot;Key size %4d =&gt; norm %.4fs, fast %.4fs\tSpeedup: %.2f&quot;</span></span><br><span class="line">          % (klen, t_n/<span class="number">5</span>/rpt, t_f/<span class="number">5</span>/rpt, t_n/t_f))</span><br></pre></td></tr></table></figure>
+<p>下面是在Macbook Pro上的运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Start RSA fast decryption profiling...</span><br><span class="line">Key size  512 =&gt; norm 0.0008s, fast 0.0003s  Speedup: 2.43</span><br><span class="line">Key size 1024 =&gt; norm 0.0043s, fast 0.0015s  Speedup: 2.88</span><br><span class="line">Key size 2048 =&gt; norm 0.0273s, fast 0.0085s  Speedup: 3.19</span><br><span class="line">Key size 3072 =&gt; norm 0.0835s, fast 0.0240s  Speedup: 3.48</span><br><span class="line">Key size 4096 =&gt; norm 0.1919s, fast 0.0543s  Speedup: 3.53</span><br></pre></td></tr></table></figure>
+<p>测试结果证实了快速解密方法的有效性。随着密钥长度的增加，计算强度逐渐加大，核心解密运算所占的运行时间比重也更突出，所以加速比对应增长。但最终加速比趋于稳定值3.5左右，这与理论估计的上界 (<span class="math inline">\(4-\varepsilon\)</span>) 相一致。</p>
+<p>教科书RSA的Python编程实现，帮我们强化了所学的基础数论知识，也有助于深入理解RSA加密算法的机理。在此基础上，参考前文《<a href="https://packetmania.github.io/2020/12/01/RSA-attack-defense/">RSA的攻与防（一）</a>》，还可以扩展试验一些RSA初级攻防技巧，进一步掌握这一公钥密码学的关键技术。完整的程序点击这里下载：<a href="textbook-rsa.py.gz">textbook-rsa.py.gz</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>卡内基梅隆大学的计算机系教授加里·米勒 (Gary Lee Miller) 首先提出了基于广义黎曼猜想的确定性算法，由于广义黎曼猜想并没有被证明，其后由以色列耶路撒冷希伯来大学的迈克尔·拉宾 (Michael O. Rabin) 教授作出修改，提出了不依赖于该假设的随机化算法。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>这是因为从 <span class="math inline">\(x^2\equiv 1\pmod n\)</span> 可以推导出 <span class="math inline">\((x-1)(x+1)=x^{2}-1\equiv 0\pmod n\)</span>，又由于<span class="math inline">\(n\)</span>是素数，根据<a href="https://zh.wikipedia.org/zh-cn/欧几里得引理">欧几里得引理</a>，它必然整除 <span class="math inline">\(x-1\)</span> 和 <span class="math inline">\(x+1\)</span>其中的一个，所以 <span class="math inline">\(x\bmod n\)</span> 一定是 <span class="math inline">\(1\)</span> 或 <span class="math inline">\(-1\)</span>。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+]]></content>
+      <categories>
+        <category>技术小札</category>
+      </categories>
+      <tags>
+        <tag>密码学</tag>
+        <tag>Python编程</tag>
       </tags>
   </entry>
   <entry>

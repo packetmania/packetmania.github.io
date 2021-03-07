@@ -280,15 +280,15 @@ end
    * 验证成功后运行 DH 算法生成同样的预备主密钥 (`pre_master_secret`)
   * 双方调用[伪随机函数(PRF)](https://tools.ietf.org/html/rfc5246#page-14)从预备主密钥生成48字节主密钥 (`master_secret`)：
    $$master\_secret = PRF(pre\_master\_secret,\unicode{x201C}master\;secret\unicode{x201D},Cr+Sr)[0..47]$$
-  * 双方再次调用 PRF 从主密钥生成84字节密钥块 (`key_block`)： 
-  $$key\_block = PRF(master\_secret,\unicode{x201C}key\;expansion\unicode{x201D},Sr+Cr)[0,83]$$
+  * 双方再次调用 PRF 从主密钥生成72字节密钥块 (`key_block`)： 
+  $$key\_block = PRF(master\_secret,\unicode{x201C}key\;expansion\unicode{x201D},Sr+Cr)[0,71]$$
   * 密钥块分配给`HMAC-SHA1`和`AES_128_CBC`功能模块：
        * 客户机写消息验证码 (MAC) 密钥：20字节
        * 服务器写消息验证码 (MAC) 密钥：20字节
        * 客户机写加密密钥：16字节
        * 服务器写加密密钥：16字节
-       * 客户机写初始向量 IV：16字节
-       * 服务器写初始向量 IV：16字节
+       
+       注意TLS/DTLS 1.2规定此密码套件使用显式初始向量 (IV)，不需要分配密钥块
   * 客户机产生更新密码规范 (Change Cipher Spec) 消息，表明开始使用加密和 MAC 模块
    *  客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块：
 $$PRF(master\_secret,finished\_label,SHA256(handshake\_messages)[0,11]$$

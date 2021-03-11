@@ -26,25 +26,25 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"packetmania.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere | disqus | gitalk","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"livere":{"text":"LiveRe评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表专栏文章，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。">
+<meta name="description" content="协调世界时（UTC）2021年2月18日20时55分，美国宇航局（NASA）制造的毅力号火星探测器成功登陆火星。之前的2月10日，中国首次自主发射的天问一号火星探测器成功进入火星轨道，之后也将择机展开着陆、巡视等科学探测任务。人类对最近的邻星的科学探测活动，正在紧锣密鼓地进行中。到2030年，人类将开始执行登陆火星计划，这将是我们实现卡尔·萨根走出“暗淡蓝点”、探寻太空家园的梦想的第一个里程碑！">
 <meta property="og:type" content="article">
-<meta property="og:title" content="克劳德·香农如何发明未来">
-<meta property="og:url" content="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/index.html">
+<meta property="og:title" content="勇踏IP未至之境">
+<meta property="og:url" content="https://packetmania.github.io/2021/03/06/Internet-in-space/index.html">
 <meta property="og:site_name" content="网络热度">
-<meta property="og:description" content="2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表专栏文章，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。">
+<meta property="og:description" content="协调世界时（UTC）2021年2月18日20时55分，美国宇航局（NASA）制造的毅力号火星探测器成功登陆火星。之前的2月10日，中国首次自主发射的天问一号火星探测器成功进入火星轨道，之后也将择机展开着陆、巡视等科学探测任务。人类对最近的邻星的科学探测活动，正在紧锣密鼓地进行中。到2030年，人类将开始执行登陆火星计划，这将是我们实现卡尔·萨根走出“暗淡蓝点”、探寻太空家园的梦想的第一个里程碑！">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/ClaudeShannon-portrait.jpg">
-<meta property="og:image" content="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/Shannon-comm-model.jpg">
-<meta property="og:image" content="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/Shannon-Saturn.jpg">
-<meta property="article:published_time" content="2021-01-18T21:04:02.975Z">
-<meta property="article:modified_time" content="2021-03-07T07:01:44.765Z">
+<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/10/Vint-Cerf_2880_Lede.jpg">
+<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/10/Vint-Cerf_2K_JPL-Cal.jpg">
+<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/10/Vint-Cerf_2K_Home.jpg">
+<meta property="article:published_time" content="2021-03-06T23:04:48.000Z">
+<meta property="article:modified_time" content="2021-03-10T07:29:00.000Z">
 <meta property="article:author" content="子曦">
-<meta property="article:tag" content="通信系统">
+<meta property="article:tag" content="TCP&#x2F;IP">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/ClaudeShannon-portrait.jpg">
+<meta name="twitter:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/10/Vint-Cerf_2880_Lede.jpg">
 
 
-<link rel="canonical" href="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/">
+<link rel="canonical" href="https://packetmania.github.io/2021/03/06/Internet-in-space/">
 
 
 <script class="page-configurations">
@@ -56,7 +56,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>克劳德·香农如何发明未来 | 网络热度</title>
+<title>勇踏IP未至之境 | 网络热度</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
     <script>
@@ -229,7 +229,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -294,7 +294,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/">
+    <link itemprop="mainEntityOfPage" href="https://packetmania.github.io/2021/03/06/Internet-in-space/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ccie_rs.png">
@@ -307,7 +307,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          克劳德·香农如何发明未来
+          勇踏IP未至之境
         </h1>
 
         <div class="post-meta-container">
@@ -318,14 +318,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-01-18 13:04:02" itemprop="dateCreated datePublished" datetime="2021-01-18T13:04:02-08:00">2021-01-18</time>
+      <time title="创建时间：2021-03-06 15:04:48" itemprop="dateCreated datePublished" datetime="2021-03-06T15:04:48-08:00">2021-03-06</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-03-06 23:01:44" itemprop="dateModified" datetime="2021-03-06T23:01:44-08:00">2021-03-06</time>
+        <time title="修改时间：2021-03-09 23:29:00" itemprop="dateModified" datetime="2021-03-09T23:29:00-08:00">2021-03-09</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -352,14 +352,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.2k</span>
+      <span>5.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -370,44 +370,78 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表<a target="_blank" rel="noopener" href="https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/">专栏文章</a>，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。<a id="more"></a>香农如此大名鼎鼎，却又异常低调，乃至许多学生和学者误以为他早已作古。在1985年的IEEE信息学年会上，当与会者得知香农现身在会议中时，会场一片轰动。当年的会议主席回忆：“就好像牛顿出现在物理学会议中。”香农最终于2001年去世，终年84岁。巨星陨落，但他的学术遗产已经由一代又一代的科学家、数学家和工程师所继承和发扬，继续照耀人类前进的道路。特此翻译此文，向先驱致敬！</p>
+        <p>协调世界时（UTC）2021年2月18日20时55分，美国宇航局（NASA）制造的<strong>毅力号</strong>火星探测器成功登陆火星。之前的2月10日，中国首次自主发射的<strong>天问一号</strong>火星探测器成功进入火星轨道，之后也将择机展开着陆、巡视等科学探测任务。人类对最近的邻星的科学探测活动，正在紧锣密鼓地进行中。到2030年，人类将开始执行登陆火星计划，这将是我们实现卡尔·萨根走出“暗淡蓝点”、探寻太空家园的梦想的第一个里程碑！<a id="more"></a>在这一切的背后，是数代科学家和工程师的不懈努力和奉献。特别地，那些创造了互联网，从而为我们的生活带来翻天覆地变化的先驱们，还在活跃于科研和工程的一线，引领团队打造太空网络的基础设施。2020年《量子杂志》（Quanta Magazine）上发表<a target="_blank" rel="noopener" href="https://www.quantamagazine.org/vint-cerfs-plan-for-building-an-internet-in-space-20201021/">专栏文章</a>，介绍和访谈美国互联网先驱温顿·瑟夫（Vinton Cerf）在拓展互联网到太空方面的重要工作。特此翻译精校如下，向先驱致敬！</p>
 <hr />
 <blockquote>
-<p><strong>感谢一位独到的天才的开创性工作，让今天的信息时代成为可能。</strong></p>
+<p><strong>40年前温顿·瑟夫帮助创建了互联网，如今他仍在努力联接世界各地、以及这个世界之外的人们。</strong></p>
 </blockquote>
-<p>科学寻求自然的基本定律。数学在旧的基础上寻找新的定理。工程学构建解决人类需求的系统。这三个学科相互依存但又截然不同。很少有个人同时在这三个学科做出核心贡献 — 但是克劳德·香农就是这样一个难得的个人。</p>
-<p>虽然是最近的纪录片《<a target="_blank" rel="noopener" href="http://www.thebitplayer.com/">比特玩家</a>》(The Bit Player) 的主角 — 而他的工作和研究理念也激发了我自己的职业生涯 — 香农并不是一个家喻户晓的人物。他从未获得过诺贝尔奖，而且在2001年去世前后，他都不是像阿尔伯特·爱因斯坦或理查德·费曼那样的名人。然而70多年前，在一篇划时代的论文中，他为构成现代信息时代根本的通信基础设施奠基。</p>
-<p>香农于1916年出生于密歇根州的盖洛德市，是一位当地商人和一名教师的儿子。从密歇根大学获得电气工程和数学学位后，他在麻省理工学院撰写了一篇<a target="_blank" rel="noopener" href="https://www.cs.virginia.edu/~evans/greatworks/shannon38.pdf">硕士论文</a>，将名为布尔代数的数学理论应用于开关电路的分析和综合。这是一项变革性的工作，将电路设计从一门艺术变成了科学，现在被认为是数字电路设计的起点。</p>
-<img src="ClaudeShannon-portrait.jpg" />
+<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/10/Vint-Cerf_2880_Lede.jpg" />
 <p style="text-align: center;">
-年轻的克劳德·香农
+“互联网之父”之一的温顿·瑟夫在建立行星际互联网方面也发挥了举足轻重的作用
 </p>
-<p>接下来，香农将目光投向了一个更大的目标：通信。</p>
-<p>通信是人类最基本的需求之一。从烟雾信号到信鸽，再到电话和电视，人类一直在寻求更远、更快和更可靠的通信方法。但是，通信系统的工程学过去总是与特定的信息源和物理介质相关联。而香农提出的问题是：“是否有一个大一统的通信理论？”1939年，在给导师万尼瓦尔·布什（Vannevar Bush）的信中，香农概述了他关于“用于情报传递的通用系统的基本特性”的一些初步想法。经过十年的研究，香农终于在1948年发表了他的开创性杰作《<a target="_blank" rel="noopener" href="http://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">通信的数学理论</a>》。</p>
-<p>他的理论的核心是一个简单但非常通用的通信模型：发送器将信息编码为信号，该信号会被噪声破坏，然后被接收器解码。虽然简单，香农的模型融合了两个关键见解：将信息源和噪声源与要设计的通信系统隔离开来，并对这两个源进行概率建模。他设想信息源会生成许多可能的消息来进行通信，每条消息都有一定的概率。概率化噪声进一步增加了接收器解析的随机性。</p>
-<p>在香农之前，通信问题主要被视为确定性信号重建问题：如何转换被物理介质扭曲的接收信号，以尽可能准确地重建原始信号。香农的天才在于，他洞察到通信的关键是不确定性。毕竟，如果你提前知道了我在本专栏中对你说的话，那么还有什么必要写它呢？</p>
-<img src="Shannon-comm-model.jpg" />
+<p>太空探索困难重重，通信难度尤甚。宇航员需要与控制中心联络，理想情况下是通过视频通讯；而太空飞行器则需要回送收集的数据，最好是高速且时延尽可能低方式。起初，太空探索团队设计并部署了自己独特的通信系统，虽然效果很好，但这并不是效率的典范。直到1998年的一天，互联网先驱<a target="_blank" rel="noopener" href="https://research.google/people/author32412/">温顿·瑟夫</a>设想了一种新型网络，可以提供更强大的功能支持不断增长的太空人群体和载具数量。行星际互联网的梦想就此诞生了。</p>
+<p>但将互联网扩展到太空，可不仅仅是在火箭上安装Wi-Fi那么简单。科学家们面临着新的障碍：涉及的距离是天文数字，且行星持续移动并可能阻塞信号。地球上任何人，如果想要向其他星球上人或物发送消息，都必须对付经常中断的通信路径。</p>
+<p>“我们开始对互联网标准进行数学计算，这套协议在地球上运转良好。然而，光速太慢了，”瑟夫回忆他与<a target="_blank" rel="noopener" href="http://ipnsig.org/">行星际联网特别兴趣小组</a>同事们的早期工作时说。克服这个问题将是一项艰巨的任务，但是这位美国计算机科学家和前斯坦福大学教授已经习惯了迎接重大挑战。</p>
+<p>几十年前，两位“互联网之父”瑟夫和罗伯特·卡恩（Robert Kahn）设计和开发了地面互联网的架构和协议套件，即为人熟知的传输控制协议/网际协议（TCP/IP）。尽管瑟夫很快就推辞了这一极高荣誉的头衔，但每一位曾经在网上冲浪、发送电子邮件或下载应用程序的人都应该感谢他们。“很多人都为互联网的创立做出了贡献，”他用平和的语调说。</p>
+<p>为了在地球互联网上传输数据，TCP/IP需要路由器构建的完整的端到端路径，这一路径通过铜缆、光纤或蜂窝数据网络之类的链路转发信息包。瑟夫和卡恩并未设计用于存储数据的互联网，部分原因是在1970年代初期内存太昂贵了。因此，如果路径中的某个链路断开，路由器将丢弃该数据包，而后从源点重发。这在地球的低时延、高连通性环境中效果很好。然而，太空中的网络更易受到干扰，需要采用不同的方法。</p>
+<p>“TCP/IP在行星际距离上不起作用，”瑟夫说，“因此，我们设计了一套可行的协议。”</p>
+<p>2003年，瑟夫和一个研究小组引入了新的<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/1204759">捆绑协议</a>。“捆绑”是一种具有中断/时延容忍性的网络连接（disruption/delay-tolerant networking，简写DTN）协议，具有将互联网拓展到这个世界之外的能力。就像构成地球互联网的协议一样，捆绑是基于分组交换机制的。这意味着数据包沿着由路由器控制切换的路径，一路从数据源转发到目的地。但是，捆绑具有地面互联网所不具备的属性，比如可以存储信息的节点。</p>
+<p>瑟夫解释说，例如，从地球到木星的数据包可能会途经火星上的中继站。但是，当数据包到达约4千万英里之外的中继站时（才完成总路程4亿英里的一小部分），火星当时的朝向可能并不合适，无法将数据包发送到木星。“为什么要丢掉这些信息，而不是暂存直到木星出现？” 瑟夫说。这种存储转发功能，使得捆绑数据包在大规模中断和拖延条件下，仍旧可以顽强地一次次跳转到目的地。他在这一研究方向上的<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/8396643">最新论文</a>，强调了Loon SDN（一种能够管理在空中移动的网络的技术）在NASA下一代太空通信体系结构中的适用性。</p>
+<p>除了行星际互联网，年过70的瑟夫还专注于作为谷歌首席互联网布道师的日常工作。这是他所喜欢的一个别致职称。充满了传教士般的热忱和渴望，他希望通过全球政策制定，将互联网带到数十亿还没有接触到它的人们手中。他对严肃工作一丝不苟，却又保持着顽皮一面。尽管他给人的典型印象是修剪整齐的胡须和三件套西装（有人说他正是电影《黑客帝国》中像神一样的<a target="_blank" rel="noopener" href="https://matrix.fandom.com/wiki/The_Architect">架构师</a>形象的灵感来源），他也曾经在主题演讲开场时，像超人一样解开他的外套和衬衫露出T恤，上面写着“I P on Everything！”<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>瑟夫<a target="_blank" rel="noopener" href="https://cacm.acm.org/careers/243977-vint-cerf-tweets-good-news-on-coronavirus-recovery/fulltext">从COVID-19中康复</a>后不久，《量子杂志》就在<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=6CkgsfVJ3l4">他参加虚拟海德堡获奖者论坛</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>之前联系上了他。为了简明起见，以下访谈进行了缩减和编辑。</p>
+<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/10/Vint-Cerf_2K_JPL-Cal.jpg" />
 <p style="text-align: center;">
-香农的通信模型示意图
+瑟夫对探索太阳系充满热情，他与喷气推进实验室、行星际网络特别兴趣小组以及其他机构合作，为太空中的宇航员和计算机带来了可容忍时延的互联网
 </p>
-<p>这一观察将通信从实体问题转向到抽象问题，从而使香农可以使用概率对不确定性进行建模。这给当时的通信工程师们带来了极大的冲击。</p>
-<p>确定了不确定性和概率论的框架，香农在其具有里程碑意义的论文中着手系统地确定通信的基本限定。他的回答分为三个部分。在这三个方面都扮演着重要角色的，是信息“比特”（bit) 的概念。香农将其用作不确定性的基本单位。 比特好比是“二进制数字”的两格式旅行箱，可以是1或0，香农的论文是第一个使用该词的人（尽管他说数学家约翰·图基（John Tukey）先在一个备忘录中用到了该词）。</p>
-<p>首先，香农提出了一个用于表示信息量的每秒最少比特数的公式，这个数字他称之为熵率 <span class="math inline">\(H\)</span>。该数字量化了确定信息源将生成哪个消息所涉及的不确定性。熵率越低，不确定性越小，因此将消息压缩成较短的内容越容易。例如，以每分钟100个英文字母的速率发送短信，意味着每分钟发送有<span class="math inline">\(26^{100}\)</span>种可能的消息，每条消息均由100个字母的序列表示。因为<span class="math inline">\(2^{470}≈26^{100}\)</span>，人们可以将所有这些可能性编码为470比特。如果所有序列的可能性相同，那么香农的公式表明熵率确切值是每分钟470比特。现实中，由于某些序列比其他序列出现的可能性高得多，所以熵率要低得多，可以进行更大的压缩。</p>
-<p>其次，他给出了一个噪声条件下可以可靠通信的每秒最大比特数的公式，他将其称为系统的容量 <span class="math inline">\(C\)</span>。这是接收机可以有效解析消息不确定性的最大速率，也就是实际上的通信速度的上限。</p>
-<p>最后，他表明当且只当 <span class="math inline">\(H&lt;C\)</span> 时，来自信息源的信息才能在噪声条件下进行可靠的通信。因此，信息就像水一样：如果流量小于管道的容量，就能可靠地通过。</p>
-<p>虽然这是一种通信理论，但同时也是一种有关信息如何产生和转换的理论 — <a target="_blank" rel="noopener" href="https://www.quantamagazine.org/tag/information-theory/">信息论</a>。因此，香农现在被誉为“信息论之父”。</p>
-<p>他的定理得出了一些与直觉相反的结论。假设你在嘈杂的地方讲话，确保你的消息能够传达的最佳方法是什么？也许重复多次？当然，这是每个人在喧哗的餐厅中的第一个本能，但事实证明这不是很有效。当然，你重复自己的次数越多，通信越可靠。但是你牺牲了速度来换取可靠性。香农向我们展示了我们可以做得更好。重复消息只是使用编码传输消息的一个例子，通过使用不同且更复杂的编码，可以在维持既定可靠性的同时，快速地通信 — 直到速度上限 <span class="math inline">\(C\)</span>。</p>
-<p>香农的理论得出的另一个意外结论是，无论信息的特质是什么 — 莎士比亚十四行诗、贝多芬第五交响曲的录音、还是黑泽明的电影 — 在传输之前，将其编码为比特总是最有效的。因此以无线电系统为例，即使初始的声音和通过空中发送的电磁信号都是模拟波形式的，香农定理也表明最好先将声波数字化为比特，然后将这些比特映射到电磁波。这一令人惊讶的结果是现代数字信息时代的基石，在这个时代里，作为信息通用货币的比特无所不在。</p>
-<p>香农的通用信息理论是如此自然，以至于他似乎发现了宇宙的通信定律，而不是发明了它们。他的理论与自然界的物理定律一样基本。从这个意义上说，他是一名科学家。</p>
-<p>香农发明了新的数学来描述通信定律。他引入了一些新思想，比如概率模型的熵率，这些新思想已应用于研究动力学系统长期行为的遍历数学等广泛的数学分支。从这个意义上说，香农是一个数学家。</p>
-<p>但最重要的是，香农是一名工程师。他的理论受到实际工程问题的启发。尽管对当时的工程师来说是深奥的，但香农的理论现已成为所有现代通信系统（光学、水下、甚至行星际）基础的标准框架。就我个人而言，我很幸运地参与了将香农的理论应用和扩展到无线通信的全球性努力中，历经几代标准将通信速度提高了两个数量级。确实，当前推出的5G标准使用的不是一种而是两种实用的编码，它们被证明可以达到香农的速度上限。</p>
-<img src="Shannon-Saturn.jpg" />
+<p><strong>行星际互联网的想法从哪儿来的？</strong></p>
+<p>1998年春季，我们9个人在喷气推进实验室（Jet Propulsion Laboratory，简写JPL）聚会讨论：展望从现在开始25年后的太空探索可能的需要，我们应该怎么做？曾在JPL任职，后来又服务于NASA总部的阿德里安·胡克（Adrian Hooke）是真正支持并推动这一工作的人。他几年前去世，但正是他将这支团队凝聚在一起。</p>
+<p>我们已经研究了数十年的太阳系，但是无论是直接载人还是使用机器人，这种探索通常涉及无线电通信，要么直接点对点要么通过所谓的“弯曲的管道”：由无线电中继站接收信号并重新广播，以提高到达地球的可能性。</p>
+<p>我们的小组问：我们可以做得更好吗？我们能否利用互联网技术来改善太空通信，特别是随着航天器数量的持续增加，或者当我们开始在月球或火星上安置定居点时，我们该如何做？</p>
+<p><strong>那么，在构思了捆绑协议二十年之后，行星际互联网是否已经建立并开始运行？</strong></p>
+<p>我们不必构建整个事物，然后希望有人使用它。我们寻求建立与互联网类似的标准、免费发布这些标准，而后实现互操作性，以便各个航天国家可以互相帮助。</p>
+<p>互联网不会发明或发现任何东西。它只是促进人们协同工作和发现新事物的媒介。</p>
+<p>对于多任务基础架构，我们正在迈出下一步：设计行星际主干网的功能。你建造下一个任务所需的设备。随着航天器的建造和部署，它们将携带成为行星际骨干网一部分的标准协议。然后，当这些航天器完成其首要的科学任务后，便被重新定位为骨干网中的节点。随着时间的推移，我们累积增生行星际骨干网。</p>
+<p><strong>这种重新定位已经开始吗？</strong></p>
+<p>2004年，火星探测车本应通过深空网络直接将数据传输回地球——位于澳大利亚、西班牙和加利福尼亚的三根巨大的70米长天线已为此做好准备。然而，该信道的可用数据速率仅为每秒28KB，这实在有限。当火星探测车开启无线电传输时，出现过热现象。它们被迫放弃，这意味着发回的数据更少。那使科学家们情绪很坏。</p>
+<p>JPL的一位工程师使用一款超酷的原型软件，对亿万英里以外的探测车和轨道飞行器进行重新编程。我们建立了一个小型的存储转发行星际互联网，该网络实质上只有三个节点：火星表面的探测车、轨道飞行器和地球上的深空网络。从那以后一直在运行。</p>
+<p><strong>从那时起，它变得越来越大，对吧？</strong></p>
+<p>我们一直在完善这些协议的设计，协议的实现和测试也在持续进行中。最新协议正在地球与国际空间站之间来回中继运行。我们还进行了其他一些非常酷的测试。一艘近距离探测彗星的航天器EPOXI，在飞离地球大约81光秒时，有人告诉我们：“如果你们上载协议并在那个航天器上进行测试，我们没意见。”我们也照做了。</p>
+<p>我们在国际空间站进行了另一项测试，当时宇航员正在控制位于德国的一辆小型机器人车辆。通常，你不会这样做：如果你试着驾驶在火星上的车辆，信号到达那里需要20分钟，那么你可能会转动方向盘，而在20分钟后，车辆转弯并落下悬崖。然后，再过20分钟，你才发现你的造价60亿美元的车辆报废了。但这种直接操控在国际空间站和地球之间没问题，因为距离只有几百英里。这项测试的目的，在于辅助宇航员无需降落至其他行星就可以完成某些任务。他们只要绕着其轨道运行，就可以实时部署行星表面上远程设备。</p>
+<iframe width="461" height="259" src="https://www.youtube.com/embed/SnETgd4ePXI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
 <p style="text-align: center;">
-晚年香农手持土星的照片
+温顿·瑟夫谈创建行星际互联网面临的挑战
 </p>
-<p>香农在70多年前就为所有这一切奠定了基础。他是怎么做到的？通过不懈地专注于问题的根本特征，忽略所有其它方面。他的通信模型的简单性就是这种风格的很好例证。他还知道要专注于可能，而不是立即可行的事情。</p>
-<p>香农的工作说明了顶级科学研究的真正作用。当我开始读研究生时，我的导师告诉我，最好的工作是修剪知识树，而不是扩张知识树。那时候我不知道该怎么做；我一直认为研究人员的工作就是添加自己的树枝。但是在我的职业生涯中，由于我有机会在自己的工作中运用这种思想，我开始理解了。</p>
-<p>当香农开始研究通信时，工程师已经掌握了大量技术。正是他的统一工作，将所有这些知识枝条修剪成了一棵贯通而优美的树 — 这棵树为几代科学家、数学家和工程师带来了累累硕果。</p>
+<p><strong>用户体验如何？行星际互联网的捆绑协议的使用感受和地球互联网的TCP/IP一样吗？</strong></p>
+<p>很快你就不再处于交互模式。您要么处于“通话完毕”模式，要么处于“这是我几个小时前录制的一个不错的视频记录”模式，就像电子邮件一样。这些协议的着眼点，是认识到时延消除了交互的可能性。这给协议设计带来了限制。</p>
+<p><strong>看来您已经解决了主要问题，但是还有什么待决的问题吗？</strong></p>
+<p>在技​​术设计上达成共识并实现协议是一回事，在需要它们的地方应用则是另一回事。对于新事物的尝试有很多阻力，因为“新”意味着：“那可能有风险！”和“给我看看它真的有用！” 除非你愿意冒险，否则无法做出证明。</p>
+<p>我们正在努力说服设计太空任务的人员，这些东西已经过充分的测试。那是一个艰难的过程，还有很多工作要做。我们必须为支持太空探索的商业公司提供现成的功能。我们必须让设计任务的科学家说：“这就是我们现在能做到的。”</p>
+<p>这样，你就可以利用我们已拥有行星际骨干网假设，规划更加雄心勃勃的项目。如果你预设自己不做到，那么你将设计出通信能力有限的任务。</p>
+<p><strong>行星际互联网会催生新的太空探索方法，进而带来新发现吗？</strong></p>
+<p>行星际互联网是旨在支持行星际活动的基础设施，它可能是研究性质的，但有朝一日也可能商业化。它是一种基础设施，就像地球互联网一样。互联网不会发明或发现任何东西。它只是促进人们协同工作和发现新事物的媒介。</p>
+<p><strong>那么在地球上，DTN协议在这里也有用吗？</strong></p>
+<p>瑞典的一位工程师曾想过采用DTN协议来追踪拉普兰地区的驯鹿，萨米族人在那里放牧了8000年。驯鹿四处游荡，在无线电覆盖区域中进进出出。这是一个不可预测的环境，与能够应用准确的航天动力学计算预测可能发生的接触的环境大不相同。正在拉普兰进行的测试，可以研究在通讯的可预测性较差时，DTN的机会性功能。</p>
+<p>同样，在海洋研究中，你在海洋表面或海床上部署数据采集和积累的设备，但却未必能与其保持持续连接。对于地球观测，传感器可以间歇地扫描林地，但无法连续广播。在完全连接的互联网环境中，生成的数据会马上发送出去。这在具有间歇性连接的环境中不适用。你需要一个协议说：“不要惊慌！没关系，先暂存在上面。” 实际上，出于能源效率的考虑，电池驱动的设备都不应该持续传输。</p>
+<p>间歇性存储转发功能在地面上非常有用，尤其是在发生重大灾害后，你可能没有太多的通信功能选项。在资源不足以提供TCP/IP方式的覆盖时，使用DTN快速恢复网络连接。</p>
+<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/10/Vint-Cerf_2K_Home.jpg" />
+<p style="text-align: center;">
+除了从事行星际互联网的工作之外，瑟夫还是谷歌的首席互联网布道师，致力于拓展地面互联网的全球覆盖
+</p>
+<p><strong>对于整个地球的互联网，从TCP/IP转到DTN有意义吗？</strong></p>
+<p>我们已经证明，即使DTN协议比传统的TCP/IP协议有更多的开销，它也可以高速运行。但是很难在任何地方都引入DTN，因为要看那里有多少TCP/IP在运行。互联网方面还发展了另一套称为QUIC的协议，该协议不仅可以实现更高的数据传输速率，而且还能够更快地从故障或中断中恢复。但是，这种演进不在DTN发展方向上。</p>
+<p>另一方面，对于连通性还很差的移动设备，DTN功用可能相当不错。我们现在正在研究在移动环境中实现DTN。</p>
+<p><strong>作为互联网之父和布道师，您是否对自己的创作有任何担忧？</strong></p>
+<p>滥用互联网、虚假信息和恶意软件、伤害性攻击、网络钓鱼攻击、勒索软件。意识到人们会利用如此有前景、且不负所望的基础设施去做坏事，这很令人痛苦和沮丧。不幸的是，这是人的本性。</p>
+<p>我们需要附加的手段治理在线环境，但那很难。中国人建造了一个大防火墙，然后将所有人置于其中监管。那不一定是我们其他人想要生活的社会，但我们仍然必须解决这个问题。在不走极端的情况下，我们该如何应对？我没有一个好答案。我希望我有，但很可惜。</p>
+<p>这些就是我现在所想的。实际上，思考行星际的网络协议是一个令人耳目一新的转变，因为我们在那里关注的几乎完全是纯粹的科学成果。</p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>这是故意搞笑的双关语。字母I和P连在一起，就是网际协议的缩写IP，“IP on Everything”意即IP运行于任何链路和物理媒介之上，代表当时（1998年）对IP一统天下的展望，这已经成为互联网的现实。另一方面，I就是英文的“我”，P与英文的小便pee谐音，瑟夫借此跟大家开个玩笑。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>由海德堡获奖者论坛基金会举办的年度国际高端青年学术论坛，旨在促进数学和计算机科学的研究和发展，为青年一代学者提供与荣获阿贝尔奖、内万林纳奖、菲尔兹奖和图灵奖等国际顶级奖项的科学家交流学术的机会。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 
     </div>
 
@@ -425,7 +459,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/" title="克劳德·香农如何发明未来">https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/</a>
+      <a href="https://packetmania.github.io/2021/03/06/Internet-in-space/" title="勇踏IP未至之境">https://packetmania.github.io/2021/03/06/Internet-in-space/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
@@ -434,21 +468,18 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F/" rel="tag"><i class="fa fa-tag"></i> 通信系统</a>
+              <a href="/tags/TCP-IP/" rel="tag"><i class="fa fa-tag"></i> TCP/IP</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/12/01/AES-CBC-PaddingOracleAttack/" rel="prev" title="AES-CBC密文填充攻击—深入理解和编程实现">
-                  <i class="fa fa-chevron-left"></i> AES-CBC密文填充攻击—深入理解和编程实现
+                <a href="/2021/03/01/Python-Textbook-RSA/" rel="prev" title="Python编程实现的教科书RSA">
+                  <i class="fa fa-chevron-left"></i> Python编程实现的教科书RSA
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/02/14/Fermats-Little-Theorem/" rel="next" title="费马小定理的归纳法证明和应用">
-                  费马小定理的归纳法证明和应用 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -525,14 +556,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">93k</span>
+    <span title="站点总字数">98k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:25</span>
+    <span title="站点阅读时长">1:29</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -623,45 +654,14 @@ if (document.querySelectorAll('.mermaid').length) {
 
 
 
-  <script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'none'
-      },
-      options: {
-        renderActions: {
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              const target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    const script = document.createElement('script');
-    script.src = '//cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
-    script.defer = true;
-    document.head.appendChild(script);
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.typesetClear();
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
+  
 
 
 <script>
   var disqus_config = function() {
-    this.page.url = "https://packetmania.github.io/2021/01/18/How-Shannon-invent-future/";
-    this.page.identifier = "2021/01/18/How-Shannon-invent-future/";
-    this.page.title = "克劳德·香农如何发明未来";
+    this.page.url = "https://packetmania.github.io/2021/03/06/Internet-in-space/";
+    this.page.identifier = "2021/03/06/Internet-in-space/";
+    this.page.title = "勇踏IP未至之境";
     };
   NexT.utils.loadComments('#disqus_thread', () => {
     if (window.DISQUS) {
@@ -689,7 +689,7 @@ NexT.utils.loadComments('.gitalk-container', () => {
       repo        : 'packetmania.github.io',
       owner       : 'packetmania',
       admin       : ['packetmania'],
-      id          : '130f89eccdba2db0307ea74392c6b00e',
+      id          : 'ec72e5b6ca6b9501a3fa0c817e8ae01d',
         language: 'zh-CN',
       distractionFreeMode: true
     });
@@ -701,7 +701,7 @@ NexT.utils.loadComments('.gitalk-container', () => {
 <script>
 NexT.utils.loadComments('#lv-container', () => {
   window.livereOptions = {
-    refer: "2021/01/18/How-Shannon-invent-future/"
+    refer: "2021/03/06/Internet-in-space/"
   };
   (function(d, s) {
     var j, e = d.getElementsByTagName(s)[0];

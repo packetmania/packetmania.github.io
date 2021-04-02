@@ -155,7 +155,7 @@ backup:
 流程图  | mmermaid |  [Mermaid](https://theme-next.js.org/docs/tag-plugins/mermaid.html?highlight=mermaid) 可绘制多种流程、时序和甘特图 |
 图像缩放     | fancybox |   添加[图像缩放功能](https://fancyapps.com/fancybox) |
 添加书签      | bookmark |   文章页面右上方显示书签图标 |
-许可协议          |    creative_commons   |   选用 [BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh) 版权协议       |
+许可协议          |    creative_commons   |   选用 [BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh) 版权协议       |
 评论系统         | comments |  添加了 [Gitalk](https://github.com/gitalk/gitalk)，[LiveRe](https://livere.com)，[Disqus](https://disqus.com) 三种评论  |
 网页分享        | add\_this\_id | 页面底部加入 [AddThis](https://www.addthis.com) 分享图标  |
 

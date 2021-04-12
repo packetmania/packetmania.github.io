@@ -136,7 +136,6 @@ void* confcpy (char *dst, char *src, int len, int type)
             *d++ = *s++;
             len--;
         }
-
     }
     return (dst);
 }

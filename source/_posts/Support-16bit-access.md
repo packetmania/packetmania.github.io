@@ -104,7 +104,14 @@ void write_conf_byte (char *confaddr, char c, conf_access_type type)
 这里还给出另一个复制字节序列到基于SRAM的配置存储地址的函数`confcpy()`。它也支持8位和16位两种存取接口类型，但只工作于大端序的系统环境。作为练习，读者可自行修改代码让它也可以在小端序系统中运行。
 
 ``` c
-/* Copy a given length of bytes to configuration storage */
+/*
+ * This function copies a given length of bytes from some source memory location
+ * to configuration storage. Here we assume the source has 8-bit memory interface,
+ * while the destination access type could be 8-bit or 16-bit.
+ *
+ * It works for Big Endian system only. Changes are needed to make it work for
+ * Litte Endian system.
+ */
 void* confcpy (char *dst, char *src, int len, int type)
 {
     uchar *s = src;
@@ -198,20 +205,25 @@ Target: mips-linux-gnu
 Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.3.0-17ubuntu1~20.04' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libitm --disable-libsanitizer --disable-libquadmath --disable-libquadmath-support --enable-plugin --with-system-zlib --without-target-system-zlib --enable-libpth-m2 --enable-multiarch --disable-werror --enable-multilib --with-arch-32=mips32r2 --with-fp-32=xx --with-lxc1-sxc1=no --enable-targets=all --with-arch-64=mips64r2 --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=mips-linux-gnu --program-prefix=mips-linux-gnu- --includedir=/usr/mips-linux-gnu/include
 Thread model: posix
 gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04) 
-$ mips-linux-gnu-gcc -o conf-16bit-access-mips suppport-16bit-access.c -static
-$ ./conf-16bit-access-mips
+$ mips-linux-gnu-gcc -o support-16bit-access-mips suppport-16bit-access.c -static
+$ ./support-16bit-access-mips
 Big Endian system
 Buffer content: 0x00010203
 ```
 上面的记录显示，使用安装好的`mips-linux-gnu-gcc`编译器，成功编译链接同一个C程序。运行结果打印出大端序的系统信息，以及正确的缓冲区数据内容。注意到编译链接的命令行使用了静态链接选项`-static`，这是必须的。因为此时宿主系统为Intel x86_64架构，如果使用动态链接，程序将无法找到相应的MIPS动态链接库文件，运行失败。
 
-比较两个生成的可执行文件，可看到MIPS文件`support-16bit-access-mips`远远大于x86_64文件`support-16bit-access`，这也印证了MIPS GCC静态链接的输出：
+比较两个生成的可执行文件，可看到MIPS文件`support-16bit-access-mips`远远大于x86_64文件`support-16bit-access`。再使用`file`命令检查二者，印证了`support-16bit-access-mips`确实是MIPS GCC静态链接生成的：
 
 ``` bash
 $ ls -al support-16bit-access*
 -rwxrwxr-x  1 zixi zixi  16984 Apr 11 19:31 support-16bit-access
 -rw-rw-r--  1 zixi zixi   1282 Apr 11 19:30 support-16bit-access.c
 -rwxrwxr-x  1 zixi zixi 611592 Apr 11 19:31 support-16bit-access-mips
+$ file support-16bit-access
+support-16bit-access: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=883f851beccb99c970c0d0924ff23479080f12b1, for GNU/Linux 3.2.0, not stripped
+$ file support-16bit-access-mips
+support-16bit-access-mips: ELF 32-bit MSB executable, MIPS, MIPS32 rel2 version 1 (SYSV), statically linked, BuildID[sha1]=dceaf3d5f41f3208046b5a56b1187f03f8f63114, for GNU/Linux 3.2.0, not stripped
 ```
+还可以调整系统配置，直接运行MIPS GCC动态链接生成的可执行文件，详细见此文：[Transparently running binaries from any architecture in Linux with QEMU and binfmt_misc](https://ownyourbits.com/2018/06/13/transparently-running-binaries-from-any-architecture-in-linux-with-qemu-and-binfmt_misc/)
 
 完整的程序可点击这里下载：[support-16bit-access.c.gz](support-16bit-access.c.gz)

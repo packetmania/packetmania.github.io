@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>AES-CBC密文填充攻击—深入理解和编程实现</title>
+    <url>/2020/12/01/AES-CBC-PaddingOracleAttack/</url>
+    <content><![CDATA[<p>密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证信息，实现密文破解。</p>
+<a id="more"></a>
+<div class="note success no-icon"><p><strong>Every secret creates a potential failure point.</strong><br> <strong>— <em>Bruce Schneier</em>（布鲁斯·施奈尔，美国密码学和信息安全专家、作家）</strong></p>
+</div>
+<blockquote>
+<p>很快更新，敬请期待</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>学习体会</category>
+      </categories>
+      <tags>
+        <tag>密码学</tag>
+        <tag>网络安全</tag>
+        <tag>Python编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>解析IPv4和IPv6报文首部校验和算法</title>
     <url>/2020/11/24/Analyze-IPv4-IPv6-checksum/</url>
     <content><![CDATA[<p>关于IP报文首部校验和(checksum)算法，简单的说就是16位累加的反码运算，但具体是如何实现的，许多资料不得其详。TCP和UDP数据报首部也使用相同的校验算法，但参与运算的数据与IP报文首部不一样。此外，IPv6对校验和的运算与IPv4又有些许不同。因此有必要对IP分组的校验和算法作全面的解析。 <a id="more"></a></p>
@@ -81,26 +101,6 @@
       <tags>
         <tag>C/C++编程</tag>
         <tag>TCP/IP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>AES-CBC密文填充攻击—深入理解和编程实现</title>
-    <url>/2020/12/01/AES-CBC-PaddingOracleAttack/</url>
-    <content><![CDATA[<p>密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证信息，实现密文破解。</p>
-<a id="more"></a>
-<div class="note success no-icon"><p><strong>Every secret creates a potential failure point.</strong><br> <strong>— <em>Bruce Schneier</em>（布鲁斯·施奈尔，美国密码学和信息安全专家、作家）</strong></p>
-</div>
-<blockquote>
-<p>很快更新，敬请期待</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>学习体会</category>
-      </categories>
-      <tags>
-        <tag>密码学</tag>
-        <tag>网络安全</tag>
-        <tag>Python编程</tag>
       </tags>
   </entry>
   <entry>
@@ -2026,7 +2026,7 @@ end
 <p>这一看似帽子戏法的算法，是“分而治之”策略的典型应用。一个16位整数的比特1计数问题，被转化为两个8位整数的计数问题，分别解决后再将结果相加合并。递归运用此策略，直至分解到单个比特计数的问题。然后反复运用并行位运算求解再合并，即可求出最终的计数值。很明显，给定N比特位整数，此算法的时间复杂性是<span class="math inline">\(O(\log N)\)</span>。</p>
 <p>对于32位的整数，上图中的算法用C语言写出来就是：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Divide-and-Conquer - original (20 arithmetic operations) */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_dnq1</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    n = (n &amp; <span class="number">0x55555555</span>) + ((n &gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x55555555</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x33333333</span>) + ((n &gt;&gt; <span class="number">2</span>) &amp; <span class="number">0x33333333</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x0F0F0F0F</span>) + ((n &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F0F0F0F</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x00FF00FF</span>) + ((n &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0x00FF00FF</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x0000FFFF</span>) + ((n &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0x0000FFFF</span>);</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>值得说明的一点是，此函数实现中的圆括号都是必要的。这是因为在C语言运算符的优先级次序表里，加减（<code>+</code>、<code>-</code>）要高于移位(<code>&gt;&gt;</code>、<code>&lt;&lt;</code>)，而后者又高于比特位逻辑运算（<code>&amp;</code>、<code>|</code>、<code>^</code>、<code>~</code>）。在<code>n &gt;&gt; 1</code>两边加圆括号则有助于增强代码的可读性。</p>
+<p>值得说明的一点是，此函数实现中的圆括号都是必要的。这是因为在C语言运算符的优先级次序表里，加减（<code>+</code>、<code>-</code>）要高于移位(<code>&lt;&lt;</code>、<code>&gt;&gt;</code>)，而后者又高于比特位运算（<code>&amp;</code>、<code>^</code>、<code>|</code>）<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。在<code>n &gt;&gt; 1</code>两边加圆括号则有助于增强代码的可读性。</p>
 <p>另外，函数的第一行（上面代码段行号4）按照算法描述本来应该写成<code>(n &amp; 0xAAAAAAAA) &gt;&gt; 1</code>，之所以这么写是为了避免在寄存器中生成两个大的常数。如果使用0xAAAAAAAA，在不支持单个“and not”指令的计算机里，就必须多耗费一条指令先将0x55555555<em>取反</em>，再与n做<em>位与</em>运算。后面四行的写法也出于同样的考虑。统计下来，这种“分而治之”算法的实现运算量恒定，总共只有20次算术运算操作，运行速度达到了快速解法平均速度的三倍多！</p>
 <p>到这里，如果面试者对以上全部的解法都有清晰的思路并写下无错的代码，应该可以得到面试官的首肯。再往下的知识点，就是属于能给面试官带来惊喜的技能了。</p>
 <h3 id="锦上添花">锦上添花</h3>
@@ -2034,7 +2034,7 @@ end
 <p>是的，上述“分而治之”算法的代码实现还能进一步优化：</p>
 <ol type="1">
 <li>仔细审查函数<code>popcount_dnq1</code>返回语句之前的三行（代码段行号6、7、8），你会发现一些<em>位与</em>操作是多余的。一则，在这些步骤中比特位段求和的结果不可能向左边的比特位段进位；二则，在最后一步，高位的比特值是可忽略的，计数结果只在最右边的m位比特中，这里<span class="math inline">\(m=\log N+1\)</span>，所以可以省却一个<em>位与</em>运算。</li>
-<li>函数<code>popcount_dnq1</code>的第一行（代码段行号4）还有另一种写法，可以减少一次算术运算。其依据是下面的“种群统计”数学公式<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>： <span class="math display">\[\operatorname{popcount}(n)=n-\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor-\Bigl\lfloor\frac{n}{4}\Bigr\rfloor-\cdots-\Bigl\lfloor\frac{n}{2^{N-1}}\Bigr\rfloor\tag{1}\]</span> N为整数n的比特位数目，<span class="math inline">\(\lfloor\space\rfloor\)</span>为向下取整操作。此公式的前两项可以用来并行计算宽度为2的比特位段，以一个四比特位数为例： <span class="math display">\[\begin{align}
+<li>函数<code>popcount_dnq1</code>的第一行（代码段行号4）还有另一种写法，可以减少一次算术运算。其依据是下面的“种群统计”数学公式<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>： <span class="math display">\[\operatorname{popcount}(n)=n-\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor-\Bigl\lfloor\frac{n}{4}\Bigr\rfloor-\cdots-\Bigl\lfloor\frac{n}{2^{N-1}}\Bigr\rfloor\tag{1}\]</span> N为整数n的比特位数目，<span class="math inline">\(\lfloor\space\rfloor\)</span>为向下取整操作。此公式的前两项可以用来并行计算宽度为2的比特位段，以一个四比特位数为例： <span class="math display">\[\begin{align}
 n&amp;=a_3⋅2^3+a_2⋅2^2+a_1⋅2^1+a_0⋅2^0\tag{2}\\
 \Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor&amp;=a_3⋅2^2+a_2⋅2^1+a_1⋅2^0\tag{3}\\
 \Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor\space\&amp;\space0\mathbf{x}5&amp;=a_3⋅2^2+a_1⋅2^0\tag{4}\\
@@ -2132,7 +2132,7 @@ n-(\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor\space\&amp;\space0\mathbf{x}5)&amp;=a_3
 </tr>
 </tbody>
 </table>
-<p>比特位计数当然不仅仅是用来考验面试者的，它广泛应用于数据压缩、纠错编码和密码学的理论、设计和实践。实际上，“种群统计”就是二进制符号数据的汉明重量<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。而两个数据比特串的<strong>汉明距离</strong>，就定义为二者对应位置上不同的比特的个数，即二者相<em>异或</em>后的汉明重量。基于汉明距离的分析对密码分析学至关重要，是历史上破解许多密码的关键。从比特位计数的算法，也衍生出一些快速计算汉明距离的算法，感兴趣者可以留言讨论。</p>
+<p>比特位计数当然不仅仅是用来考验面试者的，它广泛应用于数据压缩、纠错编码和密码学的理论、设计和实践。实际上，“种群统计”就是二进制符号数据的汉明重量<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。而两个数据比特串的<strong>汉明距离</strong>，就定义为二者对应位置上不同的比特的个数，即二者相<em>异或</em>后的汉明重量。基于汉明距离的分析对密码分析学至关重要，是历史上破解许多密码的关键。从比特位计数的算法，也衍生出一些快速计算汉明距离的算法，感兴趣者可以留言讨论。</p>
 <p>事实上，比特位计数是如此重要，乃至Intel为之设定了专门的指令。GCC提供了特定的库函数<code>__builtin_popcount</code>，在用户指定GCC选项<code>-march=native</code>时编译成单一指令<code>popcntl</code>：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">159</span>:popcount.c    ****         count = __builtin_popcount(num);</span><br><span class="line"><span class="number">1204</span>              		.loc <span class="number">1</span> <span class="number">159</span> <span class="number">17</span></span><br><span class="line"><span class="number">1205</span> <span class="number">08b</span>4 F30FB845 		popcntl	<span class="number">-8</span>(%rbp), %eax</span><br></pre></td></tr></table></figure>
 <p>完整程序（包含以上所有计数函数及测试代码的）和示例列表文件的压缩包在此下载：<a href="popcount.tar.gz">popcount.tar.gz</a></p>
@@ -2140,8 +2140,9 @@ n-(\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor\space\&amp;\space0\mathbf{x}5)&amp;=a_3
 <hr />
 <ol>
 <li id="fn1" role="doc-endnote"><p>Reingold, Edward M., Nievergelt, Jurg, and Deo, Narsingh. <em>Combintional Algorithms: Theory and Practice</em>. Prentice-Hall, 1977.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>这个公式的证明不难，需要讨论的请在评论区留言。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>English理查德·汉明（Richard Hamming），美国数学家，对计算机和电信工程贡献良多。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>比特位<em>取反</em>操作（<code>~</code>）是一个例外，C语言定义其优先级高于乘除、取余和加减运算。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>这个公式的证明不难，需要讨论的请在评论区留言。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>命名于理查德·汉明（Richard Hamming），美国数学家，对计算机和通信工程贡献突出。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 ]]></content>

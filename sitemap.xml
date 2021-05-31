@@ -137,6 +137,20 @@
 
   
   <url>
+    <loc>https://packetmania.github.io/tags/C-C-%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2021-05-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://packetmania.github.io/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2021-05-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://packetmania.github.io/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/</loc>
     <lastmod>2021-05-31</lastmod>
     <changefreq>daily</changefreq>
@@ -158,28 +172,7 @@
   </url>
   
   <url>
-    <loc>https://packetmania.github.io/tags/C-C-%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2021-05-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://packetmania.github.io/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2021-05-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://packetmania.github.io/tags/TCP-IP/</loc>
-    <lastmod>2021-05-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://packetmania.github.io/tags/%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F/</loc>
     <lastmod>2021-05-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -194,6 +187,13 @@
   
   <url>
     <loc>https://packetmania.github.io/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/</loc>
+    <lastmod>2021-05-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://packetmania.github.io/tags/%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F/</loc>
     <lastmod>2021-05-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -230,14 +230,14 @@
 
   
   <url>
-    <loc>https://packetmania.github.io/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/</loc>
+    <loc>https://packetmania.github.io/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/</loc>
     <lastmod>2021-05-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://packetmania.github.io/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/</loc>
+    <loc>https://packetmania.github.io/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/</loc>
     <lastmod>2021-05-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

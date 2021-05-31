@@ -33,15 +33,15 @@
 <meta property="og:site_name" content="网络热度">
 <meta property="og:description" content="现代计算机的硬件设计建立于数字电路的基础之上，而数字电路采用以2为基数的二进制记数系统。由此，二进制及其数字位（称为比特）的运算构成计算机系统软件的基石。一个常见的程序员面试题，就是比特位计数，即计算给定整数的二进制表示中比特1的个数。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://packetmania.github.io/2021/05/30/PGITVW-1-bitcount/bitcout1.png">
+<meta property="og:image" content="https://packetmania.github.io/2021/05/30/PGITVW-1-bitcount/bitcount1.png">
 <meta property="og:image" content="https://packetmania.github.io/2021/05/30/PGITVW-1-bitcount/bitcount2.png">
 <meta property="og:image" content="https://packetmania.github.io/2021/05/30/PGITVW-1-bitcount/bitcount3.png">
 <meta property="article:published_time" content="2021-05-31T03:53:56.000Z">
-<meta property="article:modified_time" content="2021-05-31T05:12:38.349Z">
+<meta property="article:modified_time" content="2021-05-31T05:21:19.783Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="C&#x2F;C++编程 - 系统编程">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://packetmania.github.io/2021/05/30/PGITVW-1-bitcount/bitcout1.png">
+<meta name="twitter:image" content="https://packetmania.github.io/2021/05/30/PGITVW-1-bitcount/bitcount1.png">
 
 
 <link rel="canonical" href="https://packetmania.github.io/2021/05/30/PGITVW-1-bitcount/">
@@ -320,7 +320,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-05-30 20:53:56 / 修改时间：22:12:38" itemprop="dateCreated datePublished" datetime="2021-05-30T20:53:56-07:00">2021-05-30</time>
+      <time title="创建时间：2021-05-30 20:53:56 / 修改时间：22:21:19" itemprop="dateCreated datePublished" datetime="2021-05-30T20:53:56-07:00">2021-05-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -390,7 +390,7 @@
 <h3 id="快速解法">快速解法</h3>
 <p>实现常规解法可以验证面试者是否拥有初级程序员的基本技能。然而，对于中高级程序员的职位，面试官会要求效率更高的解法。那么，存在更快的解法吗？答案是肯定的。</p>
 <p>考虑一个单字节8比特的整数n, 其数值为0x94，以二进制表示为0b10010100。如下图所示，如果将n减去1，得到0b10010011，即0x93。仔细观察二者的区别，减1后原整数最右边的比特1及后面的比特0全部取反，而其之前的比特位均保持不变。这时，如果将二者做<em>位与</em>运算，结果是0b10010000（0x90），最右的比特1被清除了！重复减1后<em>位与</em>操作，会得到0b10000000 (0x80)，原整数从右边数第二个比特1被清除了。第三次同样的操作完成，得到0，即原来的全部三个比特1都被清零。</p>
-<p><img src="bitcout1.png" /></p>
+<p><img src="bitcount1.png" /></p>
 <p>总结这一规律：将一个整数减去1，再同原整数做<em>位与</em>运算，得到的结果等于原整数最右边的比特1清零；在最终结果变成0之前，能重复进行这样的操作的次数，就是原整数中比特1的数目。基于这一规律，我们可以写出新的计数函数代码：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_fast1</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n) &#123;</span><br><span class="line">        c++;</span><br><span class="line">        n &amp;= (n<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>毫无疑问，由于循环的次数取决于比特1的数目，这种解法当然比常规解法要快。在比特1个数不多的场合，这是优选的快速解法。</p>

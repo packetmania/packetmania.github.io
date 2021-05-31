@@ -1,26 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>AES-CBC密文填充攻击—深入理解和编程实现</title>
-    <url>/2020/12/01/AES-CBC-PaddingOracleAttack/</url>
-    <content><![CDATA[<p>密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证信息，实现密文破解。</p>
-<a id="more"></a>
-<div class="note success no-icon"><p><strong>Every secret creates a potential failure point.</strong><br> <strong>— <em>Bruce Schneier</em>（布鲁斯·施奈尔，美国密码学和信息安全专家、作家）</strong></p>
-</div>
-<blockquote>
-<p>很快更新，敬请期待</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>学习体会</category>
-      </categories>
-      <tags>
-        <tag>密码学</tag>
-        <tag>网络安全</tag>
-        <tag>Python编程</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>解析IPv4和IPv6报文首部校验和算法</title>
     <url>/2020/11/24/Analyze-IPv4-IPv6-checksum/</url>
     <content><![CDATA[<p>关于IP报文首部校验和(checksum)算法，简单的说就是16位累加的反码运算，但具体是如何实现的，许多资料不得其详。TCP和UDP数据报首部也使用相同的校验算法，但参与运算的数据与IP报文首部不一样。此外，IPv6对校验和的运算与IPv4又有些许不同。因此有必要对IP分组的校验和算法作全面的解析。 <a id="more"></a></p>
@@ -101,6 +81,81 @@
       <tags>
         <tag>C/C++编程</tag>
         <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>AES-CBC密文填充攻击—深入理解和编程实现</title>
+    <url>/2020/12/01/AES-CBC-PaddingOracleAttack/</url>
+    <content><![CDATA[<p>密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证信息，实现密文破解。</p>
+<a id="more"></a>
+<div class="note success no-icon"><p><strong>Every secret creates a potential failure point.</strong><br> <strong>— <em>Bruce Schneier</em>（布鲁斯·施奈尔，美国密码学和信息安全专家、作家）</strong></p>
+</div>
+<blockquote>
+<p>很快更新，敬请期待</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>学习体会</category>
+      </categories>
+      <tags>
+        <tag>密码学</tag>
+        <tag>网络安全</tag>
+        <tag>Python编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Endianness一点通</title>
+    <url>/2020/11/24/Endianness/</url>
+    <content><![CDATA[<p>Endianness 的问题实质就是关于计算机如何存储大的数值的问题。 <a id="more"></a></p>
+<div class="note success no-icon"><p><strong>I do not fear computers. I fear lack of them.</strong><br> <strong>— <em>Isaac Asimov</em>（艾萨克·阿西莫夫，美籍犹太裔生化学家、科幻和科普作家）</strong></p>
+</div>
+<p>我们知道一个基本存储单元可以保存一个字节，每个存储单元对应一个地址。对于大于十进制 255（16进制 0xff）的整数，需要多个存储单元。例如，4660 对应于 0x1234，需要两个字节。不同的计算机系统使用不同的方法保存这两个字节。在我们常用的 PC 机中，低位的字节 0x34 保存在低地址的存储单元，高位的字节 0x12 保存在高地址的存储单元；而在 Sun 工作站中，情况恰恰相反，0x34 位于高地址的存储单元，0x12 位于低地址的存储单元。前一种就被称为<code>Little Endian</code>，后一种就是<code>Big Endian</code>。</p>
+<p>如何记住这两种存储模式？其实很简单。首先记住我们所说的存储单元的地址总是由低到高排列。对于多字节的数值，如果先见到的是低位的字节，则系统就是<code>Little Endian</code>的，Little 就是"小，少"的意思，也就对应"低"。相反就是<code>Big Endian</code>，这里 Big "大"对应"高"。</p>
+<h2 id="程序实例">程序实例</h2>
+<p>为了加深对 Endianness 的理解，让我们来看下面的C程序例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> a = <span class="number">1</span>; 	 	 	 </span><br><span class="line"><span class="keyword">char</span> b = <span class="number">2</span>;                       </span><br><span class="line"><span class="keyword">short</span> c = <span class="number">255</span>;	<span class="comment">/* 0x00ff */</span></span><br><span class="line"><span class="keyword">long</span> d = <span class="number">0x44332211</span>;</span><br></pre></td></tr></table></figure>
+<p>在基于Intel 80x86的系统上, 变量a，b，c，d对应的内存映像如下表所示：</p>
+<table>
+<thead>
+<tr class="header">
+<th>地址偏移量</th>
+<th>内存映像</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x0000</td>
+<td>01 02 FF 00</td>
+</tr>
+<tr class="even">
+<td>0x0004</td>
+<td>11 22 33 44</td>
+</tr>
+</tbody>
+</table>
+<p>显然我们可以马上判定这一系统是<code>Little Endian</code>的。对于16位的整形数<code>short c</code>，我们先见到其低位的0xff，下一个才是 0x00。同样对于32位长整形数<code>long d</code>，在最低的地址 0x0004 存的是最低位字节 0x11。如果是在<code>Big Endian</code>的计算机中，则地址偏移量从 0x0000 到 0x0007 的整个内存映像将为：<em>01 02 00 FF 44 33 22 11</em>。</p>
+<p>所有计算机处理器都必须在这两种 Endian 间作出选择。但某些处理器(如 ARM, MIPS 和 IA-64)支持两种模式，可由编程者通过软件或硬件设置一种 Endian。以下是一个处理器类型与对应的 Endian 的简表：</p>
+<ul>
+<li>纯<code>Big Endian</code>: Sun SPARC, Motorola 68000，Java 虚拟机</li>
+<li>Bi-Endian, 运行<code>Big Endian</code>模式: MIPS 运行 IRIX, PA-RISC，大多数 Power 和 PowerPC 系统</li>
+<li>Bi-Endian, 运行<code>Little Endian</code>模式: ARM, MIPS 运行 Ultrix，大多数 DEC Alpha, IA-64 运行 Linux</li>
+<li><code>Little Endian</code>: Intel x86，AMD64，DEC VAX</li>
+</ul>
+<p>如何在程序中检测本系统的 Endianess？可调用下面的函数来快速验证，如果返回值为1，则为<code>Little Endian</code>；为0则是<code>Big Endian</code>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">test_endian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> *((<span class="keyword">char</span> *)&amp;x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="网络序">网络序</h2>
+<p>Endianness 对于网络通信也很重要。试想当<code>Little Endian</code>系统与<code>Big Endian</code>的系统通信时，如果不做适当处理，接收方与发送方对数据的解释将完全不一样。比如对以上 C 程序段中的变量d，<code>Little Endian</code>发送方发出 <em>11 22 33 44</em> 四个字节，<code>Big Endian</code>接收方将其转换为数值 0x11223344。这与原始的数值大相径庭。为了解决这个问题，TCP/IP 协议规定了专门的“网络字节次序”(简称“网络序”），即无论计算机系统支持何种 Endian，在传输数据时，总是数值最高位的字节最先发送。从定义可以看出，网络序其实是对应<code>Big Endian</code>的。</p>
+<p>为了避免因为 Endianness 造成的通信问题，及便于软件开发者编写易于平台移植的程序，特别定义了一些C语言预处理的宏来实现网络字节与本机字节次序之间的相互转换。<code>htons()</code>和<code>htonl()</code>用来将本机字节次序转成网络字节次序，前者应用于16位无符号数，后者应用于32位无符号数。<code>ntohs()</code>和<code>ntohl()</code>实现反方向的转换。这四个宏的原型定义可参考如下(Linux 系统中可在<code>netinet/in.h</code>文件里找到)：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(BIG_ENDIAN) &amp;&amp; !defined(LITTLE_ENDIAN)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htons(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htonl(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohs(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohl(A)  (A)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(LITTLE_ENDIAN) &amp;&amp; !defined(BIG_ENDIAN)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htons(A)  ((((uint16)(A) &amp; 0xff00) &gt;&gt; 8) | \</span></span><br><span class="line">                   (((uint16)(A) &amp; <span class="number">0x00ff</span>) &lt;&lt; <span class="number">8</span>))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htonl(A)  ((((uint32)(A) &amp; 0xff000000) &gt;&gt; 24) | \</span></span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x00ff0000</span>) &gt;&gt; <span class="number">8</span>)  | \</span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x0000ff00</span>) &lt;&lt; <span class="number">8</span>)  | \</span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x000000ff</span>) &lt;&lt; <span class="number">24</span>))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohs     htons</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohl     htohl</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">error</span> <span class="meta-string">&quot;Either BIG_ENDIAN or LITTLE_ENDIAN must be #defined, but not both.&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>技术小札</category>
+      </categories>
+      <tags>
+        <tag>C/C++编程</tag>
+        <tag>系统编程</tag>
+        <tag>计算机体系结构</tag>
+        <tag>网络通信</tag>
       </tags>
   </entry>
   <entry>
@@ -253,61 +308,6 @@ m&amp;=m_{2}+hq\pmod {pq}\tag{3}\label{eq3}
       </categories>
       <tags>
         <tag>通信系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Endianness一点通</title>
-    <url>/2020/11/24/Endianness/</url>
-    <content><![CDATA[<p>Endianness 的问题实质就是关于计算机如何存储大的数值的问题。 <a id="more"></a></p>
-<div class="note success no-icon"><p><strong>I do not fear computers. I fear lack of them.</strong><br> <strong>— <em>Isaac Asimov</em>（艾萨克·阿西莫夫，美籍犹太裔生化学家、科幻和科普作家）</strong></p>
-</div>
-<p>我们知道一个基本存储单元可以保存一个字节，每个存储单元对应一个地址。对于大于十进制 255（16进制 0xff）的整数，需要多个存储单元。例如，4660 对应于 0x1234，需要两个字节。不同的计算机系统使用不同的方法保存这两个字节。在我们常用的 PC 机中，低位的字节 0x34 保存在低地址的存储单元，高位的字节 0x12 保存在高地址的存储单元；而在 Sun 工作站中，情况恰恰相反，0x34 位于高地址的存储单元，0x12 位于低地址的存储单元。前一种就被称为<code>Little Endian</code>，后一种就是<code>Big Endian</code>。</p>
-<p>如何记住这两种存储模式？其实很简单。首先记住我们所说的存储单元的地址总是由低到高排列。对于多字节的数值，如果先见到的是低位的字节，则系统就是<code>Little Endian</code>的，Little 就是"小，少"的意思，也就对应"低"。相反就是<code>Big Endian</code>，这里 Big "大"对应"高"。</p>
-<h2 id="程序实例">程序实例</h2>
-<p>为了加深对 Endianness 的理解，让我们来看下面的C程序例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> a = <span class="number">1</span>; 	 	 	 </span><br><span class="line"><span class="keyword">char</span> b = <span class="number">2</span>;                       </span><br><span class="line"><span class="keyword">short</span> c = <span class="number">255</span>;	<span class="comment">/* 0x00ff */</span></span><br><span class="line"><span class="keyword">long</span> d = <span class="number">0x44332211</span>;</span><br></pre></td></tr></table></figure>
-<p>在基于Intel 80x86的系统上, 变量a，b，c，d对应的内存映像如下表所示：</p>
-<table>
-<thead>
-<tr class="header">
-<th>地址偏移量</th>
-<th>内存映像</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>0x0000</td>
-<td>01 02 FF 00</td>
-</tr>
-<tr class="even">
-<td>0x0004</td>
-<td>11 22 33 44</td>
-</tr>
-</tbody>
-</table>
-<p>显然我们可以马上判定这一系统是<code>Little Endian</code>的。对于16位的整形数<code>short c</code>，我们先见到其低位的0xff，下一个才是 0x00。同样对于32位长整形数<code>long d</code>，在最低的地址 0x0004 存的是最低位字节 0x11。如果是在<code>Big Endian</code>的计算机中，则地址偏移量从 0x0000 到 0x0007 的整个内存映像将为：<em>01 02 00 FF 44 33 22 11</em>。</p>
-<p>所有计算机处理器都必须在这两种 Endian 间作出选择。但某些处理器(如 ARM, MIPS 和 IA-64)支持两种模式，可由编程者通过软件或硬件设置一种 Endian。以下是一个处理器类型与对应的 Endian 的简表：</p>
-<ul>
-<li>纯<code>Big Endian</code>: Sun SPARC, Motorola 68000，Java 虚拟机</li>
-<li>Bi-Endian, 运行<code>Big Endian</code>模式: MIPS 运行 IRIX, PA-RISC，大多数 Power 和 PowerPC 系统</li>
-<li>Bi-Endian, 运行<code>Little Endian</code>模式: ARM, MIPS 运行 Ultrix，大多数 DEC Alpha, IA-64 运行 Linux</li>
-<li><code>Little Endian</code>: Intel x86，AMD64，DEC VAX</li>
-</ul>
-<p>如何在程序中检测本系统的 Endianess？可调用下面的函数来快速验证，如果返回值为1，则为<code>Little Endian</code>；为0则是<code>Big Endian</code>：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">test_endian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> *((<span class="keyword">char</span> *)&amp;x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="网络序">网络序</h2>
-<p>Endianness 对于网络通信也很重要。试想当<code>Little Endian</code>系统与<code>Big Endian</code>的系统通信时，如果不做适当处理，接收方与发送方对数据的解释将完全不一样。比如对以上 C 程序段中的变量d，<code>Little Endian</code>发送方发出 <em>11 22 33 44</em> 四个字节，<code>Big Endian</code>接收方将其转换为数值 0x11223344。这与原始的数值大相径庭。为了解决这个问题，TCP/IP 协议规定了专门的“网络字节次序”(简称“网络序”），即无论计算机系统支持何种 Endian，在传输数据时，总是数值最高位的字节最先发送。从定义可以看出，网络序其实是对应<code>Big Endian</code>的。</p>
-<p>为了避免因为 Endianness 造成的通信问题，及便于软件开发者编写易于平台移植的程序，特别定义了一些C语言预处理的宏来实现网络字节与本机字节次序之间的相互转换。<code>htons()</code>和<code>htonl()</code>用来将本机字节次序转成网络字节次序，前者应用于16位无符号数，后者应用于32位无符号数。<code>ntohs()</code>和<code>ntohl()</code>实现反方向的转换。这四个宏的原型定义可参考如下(Linux 系统中可在<code>netinet/in.h</code>文件里找到)：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(BIG_ENDIAN) &amp;&amp; !defined(LITTLE_ENDIAN)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htons(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htonl(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohs(A)  (A)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohl(A)  (A)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(LITTLE_ENDIAN) &amp;&amp; !defined(BIG_ENDIAN)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htons(A)  ((((uint16)(A) &amp; 0xff00) &gt;&gt; 8) | \</span></span><br><span class="line">                   (((uint16)(A) &amp; <span class="number">0x00ff</span>) &lt;&lt; <span class="number">8</span>))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> htonl(A)  ((((uint32)(A) &amp; 0xff000000) &gt;&gt; 24) | \</span></span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x00ff0000</span>) &gt;&gt; <span class="number">8</span>)  | \</span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x0000ff00</span>) &lt;&lt; <span class="number">8</span>)  | \</span><br><span class="line">                   (((uint32)(A) &amp; <span class="number">0x000000ff</span>) &lt;&lt; <span class="number">24</span>))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohs     htons</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ntohl     htohl</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">error</span> <span class="meta-string">&quot;Either BIG_ENDIAN or LITTLE_ENDIAN must be #defined, but not both.&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>技术小札</category>
-      </categories>
-      <tags>
-        <tag>C/C++编程</tag>
-        <tag>系统编程</tag>
-        <tag>计算机体系结构</tag>
-        <tag>网络通信</tag>
       </tags>
   </entry>
   <entry>
@@ -1973,8 +1973,8 @@ end
         <category>工具使用</category>
       </categories>
       <tags>
-        <tag>网络安全</tag>
         <tag>C/C++编程</tag>
+        <tag>网络安全</tag>
         <tag>TCP/IP</tag>
         <tag>软件测试</tag>
       </tags>
@@ -2007,7 +2007,7 @@ end
 <h3 id="快速解法">快速解法</h3>
 <p>实现常规解法可以验证面试者是否拥有初级程序员的基本技能。然而，对于中高级程序员的职位，面试官会要求效率更高的解法。那么，存在更快的解法吗？答案是肯定的。</p>
 <p>考虑一个单字节8比特的整数n, 其数值为0x94，以二进制表示为0b10010100。如下图所示，如果将n减去1，得到0b10010011，即0x93。仔细观察二者的区别，减1后原整数最右边的比特1及后面的比特0全部取反，而其之前的比特位均保持不变。这时，如果将二者做<em>位与</em>运算，结果是0b10010000（0x90），最右的比特1被清除了！重复减1后<em>位与</em>操作，会得到0b10000000 (0x80)，原整数从右边数第二个比特1被清除了。第三次同样的操作完成，得到0，即原来的全部三个比特1都被清零。</p>
-<p><img src="bitcout1.png" /></p>
+<p><img src="bitcount1.png" /></p>
 <p>总结这一规律：将一个整数减去1，再同原整数做<em>位与</em>运算，得到的结果等于原整数最右边的比特1清零；在最终结果变成0之前，能重复进行这样的操作的次数，就是原整数中比特1的数目。基于这一规律，我们可以写出新的计数函数代码：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_fast1</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n) &#123;</span><br><span class="line">        c++;</span><br><span class="line">        n &amp;= (n<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>毫无疑问，由于循环的次数取决于比特1的数目，这种解法当然比常规解法要快。在比特1个数不多的场合，这是优选的快速解法。</p>

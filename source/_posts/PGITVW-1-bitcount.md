@@ -4,7 +4,7 @@ categories:
   - 技术小札
 tags:
   - C/C++编程
-   - 系统编程
+  - 系统编程
 mathjax: true
 date: 2021-05-30 20:53:56
 
@@ -216,7 +216,7 @@ int popcount_dnq3 (uint32_t n)
 ```
 它只需要12次算术运算操作就完成任务，真的非常快！
 
-使用GCC编译器选项，可以生成混合C代码及对照汇编语言的列表（list）文件，用来验证`popcount_dnq3`实现的优越性。在运行于Intel处理器的Ubuntu-64虚拟机上，执行以下命令：
+使用GCC编译器特定选项，可以生成混合C代码及对照汇编语言的列表（list）文件，用来验证`popcount_dnq3`实现的优越性。在运行于Intel处理器的Ubuntu Linux x86-64虚拟机上，执行以下命令：
 
 ``` bash
 gcc -Wa,-adhln -g -march=native popcount.c > popcount.s
@@ -279,7 +279,7 @@ int popcount_tablelookup (uint32_t n)
            popcount_tab[(n >> 24)];
 }
 ```
-透彻掌握本节的内容，一定可以让面试官对你另眼相看，因为你写出的代码，实现的就是广为认可的高效算法。不信去看看最新的GCC 11.1.0版本，在库文件`libgcc/libgcc2.c`里的比特位计数函数复制如下，本质上是一模一样的：
+透彻掌握本节的内容，一定可以让面试官对你刮目相看，因为你写出的代码，实现的就是广为认可的高效算法。不信去下载GCC最新的11.1.0版本，看看库文件`libgcc/libgcc2.c`里的比特位计数函数（复制如下），与前面的代码实质上是一样的：
 
 ``` c
 int
@@ -321,17 +321,18 @@ __popcountSI2 (UWtype x)
 | 分而治之  | popcount_dnq3 | 位段并行计数合并、递归（最优化） | 最快（通用） |
 | 分而治之  | popcount_tablelookup | 单字节查表法（以空间换时间）| 最快（通用） |
 
-比特位计数当然不仅仅是用来考验面试者的，它广泛应用于数据压缩、纠错编码和密码学的理论、设计和实践。实际上，“种群统计”就是二进制符号数据的汉明重量[^Hamming]。而两个数据比特串的**汉明距离**，就定义为二者对应位置上不同的比特的个数，即二者相*异或*后的汉明重量。基于汉明距离的分析对密码分析学至关重要，是历史上破解许多密码的关键。从比特位计数的算法，也衍生出一些快速计算汉明距离的算法，感兴趣者可以留言讨论。
+比特位计数当然不仅仅是用来考验面试者的，它广泛应用于信息学、纠错编码和密码学等多个领域。实际上，“种群统计”就是二进制符号数据的汉明重量[^Hamming]。而两个数据比特串的**汉明距离**，就定义为二者对应位置上不同比特的个数，即二者相*异或*后的汉明重量。基于汉明距离的分析是密码分析学的一个关键技术，是历史上破解许多密码的关键。从比特位计数的算法，也衍生出一些快速计算汉明距离的算法，感兴趣者可以留言讨论。
 
-事实上，比特位计数是如此重要，乃至Intel为之设定了专门的指令。GCC提供了特定的库函数`__builtin_popcount`，在用户指定GCC选项`-march=native`时编译成单一指令`popcntl`：
+事实上，比特位计数是如此重要，乃至GCC和Clang编译器都提供了内建库函数`__builtin_popcount`。Intel、AMD和ARM处理器也都为之设定了专门的指令。如下在运行于Intel处理器的Ubuntu Linux x86-64虚拟机上，指定GCC选项`-march=native`后`__builtin_popcount`函数编译成单一指令`popcntl`：
 
 ``` c
  159:popcount.c    ****         count = __builtin_popcount(num);
  1204              		.loc 1 159 17
  1205 08b4 F30FB845 		popcntl	-8(%rbp), %eax
 ```
+对比特位计数功能应用方面的了解，有助于扩展知识面，会成为面试时的加分项。
 
-完整程序（包含以上所有计数函数及测试代码的）和示例列表文件的压缩包在此下载：[popcount.tar.gz](popcount.tar.gz)
+完整程序（包含以上所有计数函数及测试代码）和示例列表文件的压缩包在此下载：[popcount.tar.gz](popcount.tar.gz)
 
 [^RND]: Reingold, Edward M., Nievergelt, Jurg, and Deo, Narsingh. *Combintional Algorithms: Theory and Practice*. Prentice-Hall, 1977.
 
@@ -339,5 +340,5 @@ __popcountSI2 (UWtype x)
 
 [^formula]: 这个公式的证明不难，需要讨论的请在评论区留言。
 
-[^Hamming]: 命名于理查德·汉明（Richard Hamming），美国数学家，对计算机和通信工程贡献突出。
+[^Hamming]: 命名于美国数学家理查德·汉明（Richard Hamming），他对计算机和通信工程贡献突出。
 

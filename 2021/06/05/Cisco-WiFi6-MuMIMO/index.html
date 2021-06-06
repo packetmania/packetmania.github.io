@@ -26,25 +26,30 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"packetmania.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere | disqus | gitalk","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"livere":{"text":"LiveRe评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表专栏文章，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。">
+<meta name="description" content="思科的技术博客网站设立了Wi-Fi 6专题页，讲解Wi-Fi 6技术要点及思科相应产品功能。近期的一篇由思科高级无线工程师史瑞亚斯·特里维迪和octoScope公司首席科学家史蒂夫·希勒合作的博文，结合测试实例介绍OFDMA与MU-MIMO技术相结合，在多用户环境下达到两倍多总吞吐量的能力。文章简洁明了，可以让读者快速领悟Wi-Fi 6的关键技术革新，特此翻译为中文，分享给感兴趣的朋友。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="克劳德·香农如何发明未来">
-<meta property="og:url" content="https://packetmania.github.io/2021/01/03/How-Shannon-invent-future/index.html">
+<meta property="og:title" content="思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情">
+<meta property="og:url" content="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/index.html">
 <meta property="og:site_name" content="网络热度">
-<meta property="og:description" content="2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表专栏文章，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。">
+<meta property="og:description" content="思科的技术博客网站设立了Wi-Fi 6专题页，讲解Wi-Fi 6技术要点及思科相应产品功能。近期的一篇由思科高级无线工程师史瑞亚斯·特里维迪和octoScope公司首席科学家史蒂夫·希勒合作的博文，结合测试实例介绍OFDMA与MU-MIMO技术相结合，在多用户环境下达到两倍多总吞吐量的能力。文章简洁明了，可以让读者快速领悟Wi-Fi 6的关键技术革新，特此翻译为中文，分享给感兴趣的朋友。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Claude-Portrait_v0.jpg">
-<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/Shannon-Communication_v1.jpg">
-<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Shannon-Saturn_v1.jpg">
-<meta property="article:published_time" content="2021-01-04T06:03:00.000Z">
-<meta property="article:modified_time" content="2021-04-02T01:57:25.233Z">
+<meta property="og:image" content="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/redphasor.png">
+<meta property="og:image" content="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/bluephasor.png">
+<meta property="og:image" content="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/superposition.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture1-4.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture3.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture4.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture5-468x200.png">
+<meta property="article:published_time" content="2021-06-05T21:49:07.000Z">
+<meta property="article:modified_time" content="2021-06-06T05:52:18.645Z">
 <meta property="article:author" content="子曦">
-<meta property="article:tag" content="通信系统">
+<meta property="article:tag" content="思科技术">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Claude-Portrait_v0.jpg">
+<meta name="twitter:image" content="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/redphasor.png">
 
 
-<link rel="canonical" href="https://packetmania.github.io/2021/01/03/How-Shannon-invent-future/">
+<link rel="canonical" href="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/">
 
 
 <script class="page-configurations">
@@ -56,7 +61,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>克劳德·香农如何发明未来 | 网络热度</title>
+<title>思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情 | 网络热度</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
     <script>
@@ -201,7 +206,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -214,6 +219,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A2%E6%9D%9F%E6%88%90%E5%BD%A2%E5%92%8Cmu-mimo"><span class="nav-number">1.</span> <span class="nav-text">波束成形和MU-MIMO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0%E5%92%8C%E6%B5%8B%E8%AF%95%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-number">2.</span> <span class="nav-text">系统概述和测试基础设施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">实际测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -294,7 +300,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://packetmania.github.io/2021/01/03/How-Shannon-invent-future/">
+    <link itemprop="mainEntityOfPage" href="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ccie_rs.png">
@@ -307,7 +313,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          克劳德·香农如何发明未来
+          思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情
         </h1>
 
         <div class="post-meta-container">
@@ -317,23 +323,17 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-01-03 22:03:00" itemprop="dateCreated datePublished" datetime="2021-01-03T22:03:00-08:00">2021-01-03</time>
+      <time title="创建时间：2021-06-05 14:49:07 / 修改时间：22:52:18" itemprop="dateCreated datePublished" datetime="2021-06-05T14:49:07-07:00">2021-06-05</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-04-01 18:57:25" itemprop="dateModified" datetime="2021-04-01T18:57:25-07:00">2021-04-01</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%87%B4%E6%95%AC%E5%85%88%E9%A9%B1/" itemprop="url" rel="index"><span itemprop="name">致敬先驱</span></a>
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
         </span>
     </span>
 
@@ -352,7 +352,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.2k</span>
+      <span>3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -370,44 +370,52 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表<a target="_blank" rel="noopener" href="https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/">专栏文章</a>，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。<a id="more"></a>香农如此大名鼎鼎，却又异常低调，乃至许多学生和学者误以为他早已作古。在1985年的IEEE信息学年会上，当与会者得知香农现身在会议中时，会场一片轰动。当年的会议主席回忆：“就好像牛顿出现在物理学会议中。”香农最终于2001年去世，终年84岁。巨星陨落，但他的学术遗产已经由一代又一代的科学家、数学家和工程师所继承和发扬，继续照耀人类前进的道路。特此翻译此文，向先驱致敬！</p>
+        <p>思科的技术博客网站设立了<a target="_blank" rel="noopener" href="https://blogs.cisco.com/tag/wi-fi-6">Wi-Fi 6专题页</a>，讲解Wi-Fi 6技术要点及思科相应产品功能。近期的一篇由思科高级无线工程师<a target="_blank" rel="noopener" href="https://blogs.cisco.com/author/shreyastrivedi">史瑞亚斯·特里维迪</a>和octoScope公司首席科学家<a target="_blank" rel="noopener" href="http://www.linkedin.com/in/ehsshearer">史蒂夫·希勒</a>合作的<a target="_blank" rel="noopener" href="https://blogs.cisco.com/networking/too-fast-too-furious-with-catalyst-wi-fi-6-mu-mimo">博文</a>，结合测试实例介绍OFDMA与MU-MIMO技术相结合，在多用户环境下达到两倍多总吞吐量的能力。文章简洁明了，可以让读者快速领悟Wi-Fi 6的关键技术革新，特此翻译为中文，分享给感兴趣的朋友。 <a id="more"></a></p>
 <hr />
-<blockquote>
-<p><strong>感谢一位独到的天才的开创性工作，让今天的信息时代成为可能。</strong></p>
-</blockquote>
-<p>科学寻求自然的基本定律。数学在旧的基础上寻找新的定理。工程学构建解决人类需求的系统。这三个学科相互依存但又截然不同。很少有个人同时在这三个学科做出核心贡献 — 但是克劳德·香农就是这样一个难得的个人。</p>
-<p>虽然是最近的纪录片《<a target="_blank" rel="noopener" href="http://www.thebitplayer.com/">比特玩家</a>》(The Bit Player) 的主角 — 而他的工作和研究理念也激发了我自己的职业生涯 — 香农并不是一个家喻户晓的人物。他从未获得过诺贝尔奖，而且在2001年去世前后，他都不是像阿尔伯特·爱因斯坦或理查德·费曼那样的名人。然而70多年前，在一篇划时代的论文中，他为构成现代信息时代根本的通信基础设施奠基。</p>
-<p>香农于1916年出生于密歇根州的盖洛德市，是一位当地商人和一名教师的儿子。从密歇根大学获得电气工程和数学学位后，他在麻省理工学院撰写了一篇<a target="_blank" rel="noopener" href="https://www.cs.virginia.edu/~evans/greatworks/shannon38.pdf">硕士论文</a>，将名为布尔代数的数学理论应用于开关电路的分析和综合。这是一项变革性的工作，将电路设计从一门艺术变成了科学，现在被认为是数字电路设计的起点。</p>
-<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Claude-Portrait_v0.jpg" />
-<p style="text-align: center;">
-年轻的克劳德·香农
-</p>
-<p>接下来，香农将目光投向了一个更大的目标：通信。</p>
-<p>通信是人类最基本的需求之一。从烟雾信号到信鸽，再到电话和电视，人类一直在寻求更远、更快和更可靠的通信方法。但是，通信系统的工程学过去总是与特定的信息源和物理介质相关联。而香农提出的问题是：“是否有一个大一统的通信理论？”1939年，在给导师万尼瓦尔·布什（Vannevar Bush）的信中，香农概述了他关于“用于情报传递的通用系统的基本特性”的一些初步想法。经过十年的研究，香农终于在1948年发表了他的开创性杰作《<a target="_blank" rel="noopener" href="http://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">通信的数学理论</a>》。</p>
-<p>他的理论的核心是一个简单但非常通用的通信模型：发送器将信息编码为信号，该信号会被噪声破坏，然后被接收器解码。虽然简单，香农的模型融合了两个关键见解：将信息源和噪声源与要设计的通信系统隔离开来，并对这两个源进行概率建模。他设想信息源会生成许多可能的消息来进行通信，每条消息都有一定的概率。概率化噪声进一步增加了接收器解析的随机性。</p>
-<p>在香农之前，通信问题主要被视为确定性信号重建问题：如何转换被物理介质扭曲的接收信号，以尽可能准确地重建原始信号。香农的天才在于，他洞察到通信的关键是不确定性。毕竟，如果你提前知道了我在本专栏中对你说的话，那么还有什么必要写它呢？</p>
-<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/Shannon-Communication_v1.jpg" />
-<p style="text-align: center;">
-香农的通信模型示意图
-</p>
-<p>这一观察将通信从实体问题转向到抽象问题，从而使香农可以使用概率对不确定性进行建模。这给当时的通信工程师们带来了极大的冲击。</p>
-<p>确定了不确定性和概率论的框架，香农在其具有里程碑意义的论文中着手系统地确定通信的基本限定。他的回答分为三个部分。在这三个方面都扮演着重要角色的，是信息“比特”（bit) 的概念。香农将其用作不确定性的基本单位。 比特好比是“二进制数字”的两格式旅行箱，可以是1或0，香农的论文是第一个使用该词的人（尽管他说数学家约翰·图基（John Tukey）先在一个备忘录中用到了该词）。</p>
-<p>首先，香农提出了一个用于表示信息量的每秒最少比特数的公式，这个数字他称之为熵率 <span class="math inline">\(H\)</span>。该数字量化了确定信息源将生成哪个消息所涉及的不确定性。熵率越低，不确定性越小，因此将消息压缩成较短的内容越容易。例如，以每分钟100个英文字母的速率发送短信，意味着每分钟发送有<span class="math inline">\(26^{100}\)</span>种可能的消息，每条消息均由100个字母的序列表示。因为<span class="math inline">\(2^{470}≈26^{100}\)</span>，人们可以将所有这些可能性编码为470比特。如果所有序列的可能性相同，那么香农的公式表明熵率确切值是每分钟470比特。现实中，由于某些序列比其他序列出现的可能性高得多，所以熵率要低得多，可以进行更大的压缩。</p>
-<p>其次，他给出了一个噪声条件下可以可靠通信的每秒最大比特数的公式，他将其称为系统的容量 <span class="math inline">\(C\)</span>。这是接收机可以有效解析消息不确定性的最大速率，也就是实际上的通信速度的上限。</p>
-<p>最后，他表明当且只当 <span class="math inline">\(H&lt;C\)</span> 时，来自信息源的信息才能在噪声条件下进行可靠的通信。因此，信息就像水一样：如果流量小于管道的容量，就能可靠地通过。</p>
-<p>虽然这是一种通信理论，但同时也是一种有关信息如何产生和转换的理论 — <a target="_blank" rel="noopener" href="https://www.quantamagazine.org/tag/information-theory/">信息论</a>。因此，香农现在被誉为“信息论之父”。</p>
-<p>他的定理得出了一些与直觉相反的结论。假设你在嘈杂的地方讲话，确保你的消息能够传达的最佳方法是什么？也许重复多次？当然，这是每个人在喧哗的餐厅中的第一个本能，但事实证明这不是很有效。当然，你重复自己的次数越多，通信越可靠。但是你牺牲了速度来换取可靠性。香农向我们展示了我们可以做得更好。重复消息只是使用编码传输消息的一个例子，通过使用不同且更复杂的编码，可以在维持既定可靠性的同时，快速地通信 — 直到速度上限 <span class="math inline">\(C\)</span>。</p>
-<p>香农的理论得出的另一个意外结论是，无论信息的特质是什么 — 莎士比亚十四行诗、贝多芬第五交响曲的录音、还是黑泽明的电影 — 在传输之前，将其编码为比特总是最有效的。因此以无线电系统为例，即使初始的声音和通过空中发送的电磁信号都是模拟波形式的，香农定理也表明最好先将声波数字化为比特，然后将这些比特映射到电磁波。这一令人惊讶的结果是现代数字信息时代的基石，在这个时代里，作为信息通用货币的比特无所不在。</p>
-<p>香农的通用信息理论是如此自然，以至于他似乎发现了宇宙的通信定律，而不是发明了它们。他的理论与自然界的物理定律一样基本。从这个意义上说，他是一名科学家。</p>
-<p>香农发明了新的数学来描述通信定律。他引入了一些新思想，比如概率模型的熵率，这些新思想已应用于研究动力学系统长期行为的遍历数学等广泛的数学分支。从这个意义上说，香农是一个数学家。</p>
-<p>但最重要的是，香农是一名工程师。他的理论受到实际工程问题的启发。尽管对当时的工程师来说是深奥的，但香农的理论现已成为所有现代通信系统（光学、水下、甚至行星际）基础的标准框架。就我个人而言，我很幸运地参与了将香农的理论应用和扩展到无线通信的全球性努力中，历经几代标准将通信速度提高了两个数量级。确实，当前推出的5G标准使用的不是一种而是两种实用的编码，它们被证明可以达到香农的速度上限。</p>
-<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Shannon-Saturn_v1.jpg" />
-<p style="text-align: center;">
-晚年香农手持土星的照片
-</p>
-<p>香农在70多年前就为所有这一切奠定了基础。他是怎么做到的？通过不懈地专注于问题的根本特征，忽略所有其它方面。他的通信模型的简单性就是这种风格的很好例证。他还知道要专注于可能，而不是立即可行的事情。</p>
-<p>香农的工作说明了顶级科学研究的真正作用。当我开始读研究生时，我的导师告诉我，最好的工作是修剪知识树，而不是扩张知识树。那时候我不知道该怎么做；我一直认为研究人员的工作就是添加自己的树枝。但是在我的职业生涯中，由于我有机会在自己的工作中运用这种思想，我开始理解了。</p>
-<p>当香农开始研究通信时，工程师已经掌握了大量技术。正是他的统一工作，将所有这些知识枝条修剪成了一棵贯通而优美的树 — 这棵树为几代科学家、数学家和工程师带来了累累硕果。</p>
+<p><em>贡献者 – Ming Chong 和 Santa Chowdhury (octoScope公司)</em></p>
+<p><em>我们特别感谢 Nilesh Doshi（高级无线AP经理）的指导。</em></p>
+<p>由于前导码和其它机制产生的附加开销趋向于占主导地位，使用非Wi-Fi 6为许多传输小数据包的客户端提供服务是低效的。OFDMA<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>是这种情况下的理想解决方案，因为它将信道划分以同时服务多达37个用户（对应于80MHz带宽），开销也得到均摊。OFDMA提高了系统效率，但不一定能提高吞吐量。</p>
+<p>MU-MIMO（多用户、多输入、多输出）在发送器和小数量接收器中的每一个之间创建空间分离的独立信道，这样每个接收器只会收听到针对自己的信息，而非针对其它接收器的信息. 这意味着发送器可以通过叠加方式同时向几个接收器发送数据，从而提高总吞吐量，而增加的比例取决于接收器的数量。</p>
+<p>思科Catalyst 9800系列无线局域网控制器即将发布的IOS XE 17.6.1版本（当前处于Beta测试阶段）引入了新潮的接入点调度器设计，可同时高效地为多个客户端提供服务。系统激活此功能时生成最低水平的探测开销，由此即使在密集的用户环境中，也能收益接近物理层速率的数据速率。目前这些新特性在Catalyst 9130和Catalyst 9124系列接入点上得到支持。以下让我们先了解MU-MIMO的概念，然后评估其性能。</p>
+<h3 id="波束成形和mu-mimo">波束成形和MU-MIMO</h3>
+<p>应用相控天线阵列的无线电波束成形技术已为人所知数十年。最近，这些技术理论已用于设计MU-MIMO，其中就包含了使用多个同时波束为每个用户提供独立信道的思想。</p>
+<p>类似的原理适用于音频领域，可以对扬声器定相以将声音引导到特定位置。想法是调整每个扬声器的相位，使声音在收听者所在的点构造性地增加，而在所有其它位置则解构性消减。</p>
+<p>考虑一个声源<span class="math inline">\(Sr\)</span>通过四个扬声器的阵列播放，每个扬声器的声音各自由相量<span class="math inline">\(Q_{1r}\sim Q_{4r}\)</span>调整，以使红色收听者的信号强度<span class="math inline">\(L_r\)</span>最大化，并且在蓝色收听者处<span class="math inline">\(L_b\)</span>被最小化。</p>
+<p><img src="redphasor.png" /></p>
+<p>相似地，我们选择一组相量<span class="math inline">\(Q_{1b}\sim Q_{4b}\)</span>最大化蓝色收听者处的信号，同时最小化红色收听者处的信号。</p>
+<p><img src="bluephasor.png" /></p>
+<p>使用叠加，我们可以对每条消息施加适当的相位调整，并在信号进入扬声器之前聚合。通过这种方式，我们可以同时发送两条不同的消息，但每个听众只会听到针对他们的消息。</p>
+<p><img src="superposition.png" /></p>
+<p>请注意空间分离的重要性—<span class="math inline">\(L_b\)</span>和<span class="math inline">\(L_r\)</span>听到他们各自的消息，因为相量经过优化以将每种声音传送到它们的特定位置。如果其中一位收听者离开他的位置，他将不再能收听到他的信息。</p>
+<p>如果第三个人进入图中的场景并站在靠近扬声器的位置，他将同时听到两条消息的乱声。</p>
+<p>对应于Wi-Fi环境中，扬声器被天线取代，相量控制由信号处理实现，数字消息以特定数据速率生成，这一切都在AP中完成。由于两个消息可以同时传输，理论上可以使聚合数据速率加倍。同样的方法可以用来同时服务更多的客户端，那么上限在哪里呢？实际上，可设置相量的精度存在限制，还有导致“串扰”的反射和其它限制都制约了可获得的吞吐量增益。</p>
+<p>空间位置的重要性决定了MU-MIMO环境中的嗅探更加复杂。请注意，将嗅探器靠近AP将得到我们之前提到的乱码效果。嗅探探头必须放置在靠近被嗅探设备的物理位置，通常每个设备都需要一个嗅探探头。</p>
+<h3 id="系统概述和测试基础设施">系统概述和测试基础设施</h3>
+<p>在这个MU-MIMO测试中，我们使用了octoScope（现在已并入思博伦[^Spirent]）STACK-MAX 测试台。在基础设施方面，使用运行IOS-XE 17.6.1（Beta测试版代码）的Catalyst 9800无线局域网控制器和Catalyst 9130接入点。C9130 AP支持最多8×8上行链路和下行链路MU-MIMO，以及8个空间流。Pal-6E支持Wi-Fi 6，最多可仿真256个站点或充当嗅探器探头。</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture1-4.png" /></p>
+<p>STApal是基于Intel AX210芯片组的具有完整功能STA<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>，运行在自己的硬件平台上。所有测试室都与外界完全隔离，它们之间的信号路径由全屏蔽衰减器控制，因此可以进行可靠且可重复的测量。腔室内衬射频（RF）吸收泡沫，以显著减少内部反射并防止驻波。</p>
+<p>对于此MU-MIMO测试，我们使用多达4个STA。RF路径将来自C9130 AP的信号连接到各个STA。我们在LOS或IEEE通道模型A模式下使用多路径仿真器 (MPE)。每对天线都馈入一组四个客户端，如下图所示。我们已经看到空间分离是MU-MIMO操作成功的必要条件。通过将天线放置在消声测试室的角落，实现了最佳空间分离。这允许四个独立的MU-MIMO流发送到四组、每组四个的STA。</p>
+<p><img srcset="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1-300x186.png 300w, https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png 592w" sizes="(max-width: 592px) 100vw, 592px" loading="lazy" class="aligncenter wp-image-366831 size-full" src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png" alt="" width="592" height="368"></p>
+<h3 id="实际测试">实际测试</h3>
+<p>为了演示MU-MIMO增益效果，我们将C9130 AP放置在腔室的中心，并传输下行链路UDP数据到连接到角落天线上的STA。</p>
+<p>首先，我们关闭MU-MIMO并且只开启一个STA。我们注意到吞吐量仅略高于1000 Mbps，略低于1200 Mbps的物理层速率。20秒后，我们引入了另一个STA，看到总吞吐量保持在1000 Mbps，但两个STA共享信道，每个STA达到了500 Mbps。20秒后，我们引入了第三个STA。同样，总吞吐量保持为1000 MBps，三个STA共享信道，每个STA的速度略高于300 Mbps。第四个STA的引入遵循相同的模式，聚合保持不变，每个STA得到250 Mbps。</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture3.png" /></p>
+<p>我们重复了这个实验，这次开启了MU-MIMO。</p>
+<p>从一个STA开始，我们实现了熟悉的1000 Mbps。20秒后，我们引入了第二个STA，并观察到聚合速率已增加到2000 Mbps，这明显高于物理层速率。我们还注意到，每个STA的接收速度仍接近之前的1000 Mbps。与之前的STA共享信道的实验不同，在本实验中，它们每个都能够相互独立地充分利用自己的信道。</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture4.png" /></p>
+<p>添加第三个STA将聚合速度增加到2200 Mbps。三个STA中的每一个仍接收730 Mbps。添加第四个STA导致总吞吐量2100 Mbps的，每个STA接收525 Mbps，比单用户操作增加了两倍。</p>
+<p>下图总结了测试结果：</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture5-468x200.png" /></p>
+<h3 id="结论">结论</h3>
+<p>MU-MIMO利用接收器的空间分离引导独立的消息同时发送到每个接收器。这样可以更有效地使用介质，并提升网络可以实现的聚合数据率。Catalyst 9130 AP的开创性调度程序设计，在多用户传输场景中提供了卓越的吞吐量增益。这是更高MCS速率、低探测开销和高效动态分组调度的结果。</p>
+<p>WLAN上默认启用DL和UL MU-MIMO以及OFDMA。这些功能在现有版本的9800系列无线控制器上可用，但上述增强功能将从 17.6.1版本开始提供。</p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>正交频分多址（英文Orthogonal Frequency Division Multiple Access，缩写OFDMA），是无线通信系统中的一种多重接入技术，其结合频域和时域的多路访问机制非常适合宽带无线网络。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>IEEE 802.11 (Wi-Fi) 标准术语，通指运行802.11协议功能的站点（Station，缩写STA)。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 
     </div>
 
@@ -425,7 +433,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://packetmania.github.io/2021/01/03/How-Shannon-invent-future/" title="克劳德·香农如何发明未来">https://packetmania.github.io/2021/01/03/How-Shannon-invent-future/</a>
+      <a href="https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/" title="思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情">https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
@@ -434,21 +442,18 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F/" rel="tag"><i class="fa fa-tag"></i> 通信系统</a>
+              <a href="/tags/%E6%80%9D%E7%A7%91%E6%8A%80%E6%9C%AF/" rel="tag"><i class="fa fa-tag"></i> 思科技术</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/12/01/AES-CBC-PaddingOracleAttack/" rel="prev" title="AES-CBC密文填充攻击—深入理解和编程实现">
-                  <i class="fa fa-chevron-left"></i> AES-CBC密文填充攻击—深入理解和编程实现
+                <a href="/2021/05/30/PGITVW-1-bitcount/" rel="prev" title="程序员面试题精解（1）— 比特位计数">
+                  <i class="fa fa-chevron-left"></i> 程序员面试题精解（1）— 比特位计数
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/02/14/Fermats-Little-Theorem/" rel="next" title="费马小定理的归纳法证明和应用">
-                  费马小定理的归纳法证明和应用 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -659,9 +664,9 @@ if (document.querySelectorAll('.mermaid').length) {
 
 <script>
   var disqus_config = function() {
-    this.page.url = "https://packetmania.github.io/2021/01/03/How-Shannon-invent-future/";
-    this.page.identifier = "2021/01/03/How-Shannon-invent-future/";
-    this.page.title = "克劳德·香农如何发明未来";
+    this.page.url = "https://packetmania.github.io/2021/06/05/Cisco-WiFi6-MuMIMO/";
+    this.page.identifier = "2021/06/05/Cisco-WiFi6-MuMIMO/";
+    this.page.title = "思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情";
     };
   NexT.utils.loadComments('#disqus_thread', () => {
     if (window.DISQUS) {
@@ -689,7 +694,7 @@ NexT.utils.loadComments('.gitalk-container', () => {
       repo        : 'packetmania.github.io',
       owner       : 'packetmania',
       admin       : ['packetmania'],
-      id          : 'c98ea97a25f7b5bb523eea4591254050',
+      id          : 'ddfabd87ff8c7fdc27c094934fbc442b',
         language: 'zh-CN',
       distractionFreeMode: true
     });
@@ -701,7 +706,7 @@ NexT.utils.loadComments('.gitalk-container', () => {
 <script>
 NexT.utils.loadComments('#lv-container', () => {
   window.livereOptions = {
-    refer: "2021/01/03/How-Shannon-invent-future/"
+    refer: "2021/06/05/Cisco-WiFi6-MuMIMO/"
   };
   (function(d, s) {
     var j, e = d.getElementsByTagName(s)[0];

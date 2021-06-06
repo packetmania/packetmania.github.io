@@ -127,9 +127,9 @@
 <p>对应于Wi-Fi环境中，扬声器被天线取代，相量控制由信号处理实现，数字消息以特定数据速率生成，这一切都在AP中完成。由于两个消息可以同时传输，理论上可以使聚合数据速率加倍。同样的方法可以用来同时服务更多的客户端，那么上限在哪里呢？实际上，可设置相量的精度存在限制，还有导致“串扰”的反射和其它限制都制约了可获得的吞吐量增益。</p>
 <p>空间位置的重要性决定了MU-MIMO环境中的嗅探更加复杂。请注意，将嗅探器靠近AP将得到我们之前提到的乱码效果。嗅探探头必须放置在靠近被嗅探设备的物理位置，通常每个设备都需要一个嗅探探头。</p>
 <h3 id="系统概述和测试基础设施">系统概述和测试基础设施</h3>
-<p>在这个MU-MIMO测试中，我们使用了octoScope（现在已并入思博伦[^Spirent]）STACK-MAX 测试台。在基础设施方面，使用运行IOS-XE 17.6.1（Beta测试版代码）的Catalyst 9800无线局域网控制器和Catalyst 9130接入点。C9130 AP支持最多8×8上行链路和下行链路MU-MIMO，以及8个空间流。Pal-6E支持Wi-Fi 6，最多可仿真256个站点或充当嗅探器探头。</p>
+<p>在这个MU-MIMO测试中，我们使用了octoScope（现在已并入思博伦<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>）STACK-MAX 测试台。在基础设施方面，使用运行IOS-XE 17.6.1（Beta测试版代码）的Catalyst 9800无线局域网控制器和Catalyst 9130接入点。C9130 AP支持最多8×8上行链路和下行链路MU-MIMO，以及8个空间流。Pal-6E支持Wi-Fi 6，最多可仿真256个站点或充当嗅探器探头。</p>
 <p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture1-4.png" /></p>
-<p>STApal是基于Intel AX210芯片组的具有完整功能STA<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>，运行在自己的硬件平台上。所有测试室都与外界完全隔离，它们之间的信号路径由全屏蔽衰减器控制，因此可以进行可靠且可重复的测量。腔室内衬射频（RF）吸收泡沫，以显著减少内部反射并防止驻波。</p>
+<p>STApal是基于Intel AX210芯片组的具有完整功能STA<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>，运行在自己的硬件平台上。所有测试室都与外界完全隔离，它们之间的信号路径由全屏蔽衰减器控制，因此可以进行可靠且可重复的测量。腔室内衬射频（RF）吸收泡沫，以显著减少内部反射并防止驻波。</p>
 <p>对于此MU-MIMO测试，我们使用多达4个STA。RF路径将来自C9130 AP的信号连接到各个STA。我们在LOS或IEEE通道模型A模式下使用多路径仿真器 (MPE)。每对天线都馈入一组四个客户端，如下图所示。我们已经看到空间分离是MU-MIMO操作成功的必要条件。通过将天线放置在消声测试室的角落，实现了最佳空间分离。这允许四个独立的MU-MIMO流发送到四组、每组四个的STA。</p>
 <p><img srcset="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1-300x186.png 300w, https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png 592w" sizes="(max-width: 592px) 100vw, 592px" loading="lazy" class="aligncenter wp-image-366831 size-full" src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png" alt="" width="592" height="368"></p>
 <h3 id="实际测试">实际测试</h3>
@@ -149,7 +149,8 @@
 <hr />
 <ol>
 <li id="fn1" role="doc-endnote"><p>正交频分多址（英文Orthogonal Frequency Division Multiple Access，缩写OFDMA），是无线通信系统中的一种多重接入技术，其结合频域和时域的多路访问机制非常适合宽带无线网络。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>IEEE 802.11 (Wi-Fi) 标准术语，通指运行802.11协议功能的站点（Station，缩写STA)。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>思博伦通信公司（Spirent Communications plc)，一家全球化网络自动化测试和质量保障方案提供商。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>IEEE 802.11 (Wi-Fi) 标准术语，通指运行802.11协议功能的站点（Station，缩写STA)。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 ]]></content>

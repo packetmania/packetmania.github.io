@@ -222,10 +222,10 @@
   
   <entry>
     <title>克劳德·香农如何发明未来</title>
-    <link href="https://www.packetmania.net/2021/01/04/How-Shannon-invent-future/"/>
-    <id>https://www.packetmania.net/2021/01/04/How-Shannon-invent-future/</id>
-    <published>2021-01-04T22:15:00.000Z</published>
-    <updated>2021-11-28T19:28:36.622Z</updated>
+    <link href="https://www.packetmania.net/2021/01/03/How-Shannon-invent-future/"/>
+    <id>https://www.packetmania.net/2021/01/03/How-Shannon-invent-future/</id>
+    <published>2021-01-03T22:15:00.000Z</published>
+    <updated>2021-11-28T19:38:24.874Z</updated>
     
     
     <summary type="html">&lt;p&gt;2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表&lt;a href=&quot;https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/&quot;&gt;专栏文章&lt;/a&gt;，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。</summary>
@@ -365,9 +365,9 @@
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
     <category term="软件测试" scheme="https://www.packetmania.net/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/"/>
     
@@ -388,9 +388,9 @@
     <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
     
     
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
   </entry>
   

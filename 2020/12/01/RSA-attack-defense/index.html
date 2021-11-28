@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="RSA加密算法是一种非对称加密算法，1977年由麻省理工学院的三位密码学家和计算机科学家共同发明。RSA公钥加密算法和加密系统提供了数据保密和签名验证功能，在互联网中得到广泛使用。从诞生时起，RSA就开始成为现代密码学的一个主要研究对象。许多密码分析学家和信息安全专家一直在研究其可能的理论缺陷和技术漏洞 ，以保障实际应用中的安全性和可靠性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RSA的攻与防（一）">
+<meta property="og:url" content="https://www.packetmania.net/2020/12/01/RSA-attack-defense/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="RSA加密算法是一种非对称加密算法，1977年由麻省理工学院的三位密码学家和计算机科学家共同发明。RSA公钥加密算法和加密系统提供了数据保密和签名验证功能，在互联网中得到广泛使用。从诞生时起，RSA就开始成为现代密码学的一个主要研究对象。许多密码分析学家和信息安全专家一直在研究其可能的理论缺陷和技术漏洞 ，以保障实际应用中的安全性和可靠性。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-01T20:15:48.000Z">
+<meta property="article:modified_time" content="2021-11-28T05:50:08.975Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="网络安全">
+<meta property="article:tag" content="Python编程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2020/12/01/RSA-attack-defense/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2020/12/01/RSA-attack-defense/","path":"2020/12/01/RSA-attack-defense/","title":"RSA的攻与防（一）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RSA的攻与防（一） | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E5%88%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">大数分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E7%BA%A7%E6%94%BB%E5%87%BB"><span class="nav-number">2.</span> <span class="nav-text">初级攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8E%E5%85%AC%E9%92%A5%E6%8C%87%E6%95%B0%E6%94%BB%E5%87%BB"><span class="nav-number">3.</span> <span class="nav-text">低公钥指数攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E6%94%BB%E5%87%BB"><span class="nav-number">3.1.</span> <span class="nav-text">广播攻击</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2020/12/01/RSA-attack-defense/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RSA的攻与防（一）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-01 12:15:48" itemprop="dateCreated datePublished" datetime="2020-12-01T12:15:48-08:00">2020-12-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 21:50:08" itemprop="dateModified" datetime="2021-11-27T21:50:08-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>10k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>RSA加密算法是一种非对称加密算法，1977年由麻省理工学院的三位密码学家和计算机科学家共同发明。RSA公钥加密算法和加密系统提供了数据保密和签名验证功能，在互联网中得到广泛使用。从诞生时起，RSA就开始成为现代密码学的一个主要研究对象。许多密码分析学家和信息安全专家一直在研究其可能的理论缺陷和技术漏洞 ，以保障实际应用中的安全性和可靠性。</p>
+<span id="more"></span>
+<div class="note success no-icon"><p><strong>今有物不知其数，三三数之剩二；五五数之剩三；七七数之剩二。问物几何?</strong><br> <strong>— <em>《孙子算经》卷下·二十六</em></strong></p>
+</div>
+<p>幸运的是，历经40多年的广泛研究和现实应用的考验，虽然发现了不少精巧的攻击手段，总体上RSA是安全的。这些攻击手段都是利用RSA的不当使用或软硬件实现中脆弱性，并不能动摇其加密算法的安全性根基。另一方面，对这些攻击手段的研究表明，实现一个安全而牢固的RSA应用并不是一个简单的任务。实际上，密码学和网络安全软硬件工程实践中的一个共识就是：<strong>不要试图从头开始实现RSA！</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> 恰当的方案，是使用现有的、久经测试并有可靠维护的库或API，去实现RSA算法和协议的应用。</p>
+<p>这里将常见的攻击RSA的手段、攻击所基于的数学机理和相应的防护措施做一个简要的调研。参考<a target="_blank" rel="noopener" href="https://packetmania.github.io/2020/12/01/DH-and-RSA/">前文</a>，开始我们先复习一下RSA的工作机制和流程：</p>
+<ol type="1">
+<li>选择两个大的素数 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，计算 <span class="math inline">\(N=pq\)</span></li>
+<li>计算 <span class="math inline">\(N\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/卡邁克爾函數">卡迈克尔函数</a> <span class="math inline">\(\lambda(N)\)</span>
+<ul>
+<li>当 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 都为素数时，通常 <span class="math inline">\(\lambda(pq)=lcm(p − 1, q − 1)\)</span></li>
+<li><span class="math inline">\(lcm\)</span> 是求最小公倍数的函数，可以用欧几里得算法得出</li>
+</ul></li>
+<li>选择一个小于 <span class="math inline">\(\lambda(N)\)</span> 且与之互素的数 <span class="math inline">\(e\)</span>，并求得 <span class="math inline">\(e\)</span> 关于 <span class="math inline">\(\lambda(N)\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/模反元素">模逆元</a> <span class="math inline">\(d\equiv e^{-1}\pmod {\lambda(N)}\)</span>
+<ul>
+<li>模逆元的定义是，找到 <span class="math inline">\(d\)</span> 使得 <span class="math inline">\((d⋅e)\bmod\lambda(N)=1\)</span></li>
+<li>模逆元可以用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/扩展欧几里得算法">扩展的欧几里得算法</a>得出</li>
+</ul></li>
+<li><span class="math inline">\(\pmb{(N,e)}\)</span> <strong>是公钥</strong>，<span class="math inline">\(\pmb{(N,d)}\)</span> <strong>是私钥</strong>
+<ul>
+<li>公钥公开，私钥必须密藏</li>
+<li>销毁所有 <span class="math inline">\(p,q,\lambda(N)\)</span> 的记录</li>
+</ul></li>
+<li>发送方先按照双方约定好的编码格式将消息转化为一个小于<span class="math inline">\(N\)</span>的正整数<span class="math inline">\(m\)</span>，然后使用接收方的公钥计算出密文<span class="math inline">\(c\)</span>，计算公式是 <span class="math inline">\(\pmb{c\equiv m^e\pmod N}\)</span></li>
+<li>接收方收到密文后，使用自己的私钥计算出明文<span class="math inline">\(m\)</span>，计算公式是 <span class="math inline">\(\pmb{m\equiv c^d\pmod N}\)</span>，然后解码成原始消息</li>
+<li>使用私钥加密的消息也可以由公钥解密，即如果 <span class="math inline">\(\pmb{s\equiv m^d\pmod N}\)</span>，则 <span class="math inline">\(\pmb{m\equiv s^e\pmod N}\)</span>。这就是所支持的数字签名功能</li>
+</ol>
+<p>注意，<a target="_blank" rel="noopener" href="http://people.csail.mit.edu/rivest/Rsapaper.pdf">原始的RSA论文</a>里第二步和第三步采用 <span class="math inline">\(N\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/欧拉函数">欧拉函数</a> <span class="math inline">\(\varphi(N)\)</span>。这两个函数之间的关系是： <span class="math display">\[\varphi(N)=\lambda(N)⋅gcd(p-1,d-1)\]</span> 这里 <span class="math inline">\(gcd\)</span> 为最大公约数函数。使用 <span class="math inline">\(\lambda(N)\)</span> 可以求得最小可用的私钥指数 <span class="math inline">\(d\)</span>，有利于高效的解密和签名运算。无论是使用欧拉函数还是卡迈克尔函数，遵循以上流程的实现常常被称为“<strong>教科书RSA</strong>”。</p>
+<p>教科书RSA是不安全的，有许多简单而有效的攻击手段。在详细讨论教科书RSA的安全漏洞之前，有必要审视一下人所共知的首要攻击方法 — 大数分解！</p>
+<h3 id="大数分解">大数分解</h3>
+<p>RSA加密算法安全性的理论基石，就是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/整数分解"><strong>大数素因数分解问题</strong></a>。如果能从已知的<span class="math inline">\(N\)</span>里面分离出 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，就可以马上推导出私钥指数<span class="math inline">\(d\)</span>，从而完全破解RSA。大数分解是公认的计算难题，已知最好的渐近线运行时间算法是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/普通数域筛选法">普通数域筛选法</a> (General Number Field Sieve，简写GNFS)，其时间复杂度是<span class="math inline">\({\displaystyle \exp \left(\left(c+o(1)\right)(\ln N)^{\frac {1}{3}}(\ln \ln N)^{\frac {2}{3}}\right)}\)</span>，这里常数 <span class="math inline">\(c = 4/\sqrt[3]{9}\)</span>，<span class="math inline">\(\displaystyle \exp\)</span>为自然常数 (2.718) 的幂函数。</p>
+<p>对于给定的大数，精确地估计应用GNFS算法的实际复杂度是困难的。但是依据启发式的复杂性经验估计，我们可以粗略看出计算时间复杂性的增长趋势：</p>
+<ul>
+<li>对于1024比特的大数，有两个各约500比特的素因数，分解需要 <span class="math inline">\(2^{70}\)</span> 数量级的基本运算操作</li>
+<li>对于2048比特的大数，有两个各约1000比特的素因数，分解需要 <span class="math inline">\(2^{90}\)</span> 数量级的基本运算操作，比1024比特数慢一百万倍</li>
+</ul>
+<p>计算机软硬件技术的飞速发展，让许多过去看似不可能的任务成为现实。查询<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RSA_Factoring_Challenge">RSA大数分解挑战</a>网站公布的最新纪录，2020二月法国计算数学家保罗·齐默尔曼 (Paul Zimmermann) 领导的团队成功分解了250位十进制数字 (<strong>829比特</strong>) 的大数 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RSA_numbers#RSA-250">RSA-250</a>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">RSA-250 = 6413528947707158027879019017057738908482501474294344720811685963202453234463</span><br><span class="line">          0238623598752668347708737661925585694639798853367</span><br><span class="line">        × 3337202759497815655622601060535511422794076034476755466678452098702384172921</span><br><span class="line">          0037080257448673296881877565718986258036932062711</span><br></pre></td></tr></table></figure>
+<p>齐默尔曼发布的通告表示，以英特尔 Xeon Gold 6130 主频 2.1GHz 的处理器为参照，完成这一任务总的计算时间约为2700处理器核年 (core-year)。这一数字好像很大，但在当今集群计算、网格计算和云计算普及到大众的时代，拥有强大财力支持的组织机构将计算时间缩减到以小时乃至分钟计并非天方夜谭。作为例子，去免费开源数学软件系统 <a target="_blank" rel="noopener" href="https://sagecell.sagemath.org">SageMath 的在线工具网站</a>，输入以下前5行Sage Python代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">p=random_prime(<span class="number">2</span>**<span class="number">120</span>)</span><br><span class="line">q=random_prime(<span class="number">2</span>**<span class="number">120</span>)</span><br><span class="line">n=p*q</span><br><span class="line"><span class="built_in">print</span>(n)</span><br><span class="line">factor(n)</span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="number">28912520751034191277571809785701738245635791077300278534278526509273423</span></span><br><span class="line"><span class="number">38293227899687810929829874029597363</span> * <span class="number">755029605411506802434801930237797621</span></span><br></pre></td></tr></table></figure>
+<p>在几分钟之内就得到了结果，一个72位十进制数字 (240比特) 的大数被分解出来了。要知道，在1977年的RSA论文里，提到分解一个75位十进制数字大约需要104天。人类的技术进步是如此惊人！</p>
+<p>当攻方的矛越来越锋利时，守方的盾就必须越来越厚重。所以，1024比特RSA已经不安全，应用系统不应该使用少于2048比特的公钥 <span class="math inline">\(N\)</span>值。而当需要高安全性时，选择4096比特RSA。</p>
+<h3 id="初级攻击">初级攻击</h3>
+<p>虽然大数分解是所有人都知道的攻击方方式，但是在RSA的应用中常见的一些低级错误所造成的安全漏洞，使得使用简单的攻击手段就可以得逞，下面对一些典型的初级攻击方式加以说明。</p>
+<ul>
+<li><p>在RSA的发展初期，基于当时计算能力的落后，找寻大的素数需要不少时间。因此，一些系统实现试图共用模数<span class="math inline">\(N\)</span>。想法是只生成一组<span class="math inline">\((p,q)\)</span>，然后所有的用户使用同样的<span class="math inline">\(N=pq\)</span>值，由大家都信任的中心机构为每个用户 <span class="math inline">\(i\)</span> 分配密钥对<span class="math inline">\((e_i,d_i)\)</span>，只要各自的私钥 <span class="math inline">\(d_i\)</span>保存好就不会出问题。很不幸，这是一个灾难性的错误！这种实现方案有两个巨大的安全漏洞：</p>
+<ol type="1">
+<li><p>用户 <span class="math inline">\(i\)</span> 可以用自己的密钥对<span class="math inline">\((e_i,d_i)\)</span>分解出<span class="math inline">\(N\)</span>。无论<span class="math inline">\(d\)</span>是使用欧拉函数<span class="math inline">\(\varphi(N)\)</span>还是卡迈克尔函数<span class="math inline">\(\lambda(N)\)</span>生成的，都有很快地从给定的<span class="math inline">\(d\)</span>推导出素因数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>的算法<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。而一旦知晓了<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>，用户 <span class="math inline">\(i\)</span> 可以用任何其他用户的公钥<span class="math inline">\((N,e_j)\)</span>计算出其私钥<span class="math inline">\(d_j\)</span>。至此，所用其他用户对用户 <span class="math inline">\(i\)</span> 毫无秘密可言。</p></li>
+<li><p>即使所有用户都没有知识和技能去分解<span class="math inline">\(N\)</span>，或者“好心”地不去了解其他用户的私钥，黑客还是可以实施<mark>共模攻击</mark>破解用户的消息。设定两个用户爱丽丝和鲍勃的公钥分别为<span class="math inline">\(e_1\)</span>和<span class="math inline">\(e_2\)</span>，而且<span class="math inline">\(e_1\)</span>和<span class="math inline">\(e_2\)</span>恰好互素 (这是非常可能的)，那么根据<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/貝祖等式">裴蜀定理</a> (Bézout's identity)，窃听者伊芙可以找到 <span class="math inline">\(s\)</span> 和 <span class="math inline">\(t\)</span> 满足：<span class="math display">\[e_{1}s+e_{2}t=gcd(e_1,e_2)=1\]</span>这时如果有人给爱丽丝和鲍勃发出同样的消息<span class="math inline">\(m\)</span>，伊芙记录两段密文<span class="math inline">\(c_1\)</span>和<span class="math inline">\(c_2\)</span>后，执行下面的运算就可以解密出<span class="math inline">\(m\)</span>：<span class="math display">\[c_1^s⋅c_2^t\equiv(m^{e_1})^s⋅(m^{e_2})^t\equiv m^{e_{1}s+e_{2}t}\equiv m\pmod N\]</span>对应的Python函数代码如下：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">common_modulus</span>(<span class="params">e1, e2, N, c1, c2</span>):</span></span><br><span class="line">    <span class="comment"># 调用扩展的欧几里得算法函数</span></span><br><span class="line">    g, s, t = gymp2.gcdext(e1, e2)</span><br><span class="line">    <span class="keyword">assert</span> g == <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> s &lt; <span class="number">0</span>:</span><br><span class="line">        <span class="comment"># 求c1的模逆元</span></span><br><span class="line">        re = <span class="built_in">int</span>(gmpy2.invert(c1, N))</span><br><span class="line">        c1 = <span class="built_in">pow</span>(re, s*(-<span class="number">1</span>), N)</span><br><span class="line">        c2 = <span class="built_in">pow</span>(c2, t, N)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># t为负数, 求c2的模逆元</span></span><br><span class="line">        re = <span class="built_in">int</span>(gmpy2.invert(c2, N))</span><br><span class="line">        c2 = <span class="built_in">pow</span>(re, t*(-<span class="number">1</span>), N)</span><br><span class="line">        c1 = <span class="built_in">pow</span>(c1, a, N)</span><br><span class="line">    <span class="keyword">return</span> (c1*c2) % n</span><br></pre></td></tr></table></figure> 这里调用了gmpy2<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>两个库函数：gcdext()实现扩展的欧几里得算法，invert()求模逆元。注意，Python的指数函数pow()支持模幂运算，但是指数不可为负数。因为<span class="math inline">\(s\)</span>或<span class="math inline">\(t\)</span>必然有一个为负数，所以要先调用invert()将<span class="math inline">\(c_1\)</span>或<span class="math inline">\(c_2\)</span>转化为对应的模逆元，再将负数取反求模幂。比如上面第7、8行就实现了<span class="math inline">\(c_1^s=(c_1^{-1})^{-s}\bmod N\)</span>。</p></li>
+</ol></li>
+<li><p>共用模数<span class="math inline">\(N\)</span>被证明是不安全的，那么只重复使用<span class="math inline">\(p\)</span>或<span class="math inline">\(q\)</span>可以吗？这样似乎避免了共模攻击又保证每个用户的公钥<span class="math inline">\(N\)</span>值唯一。大错特错了！这是一个更糟糕的主意！攻击者拿到所有用户的公开<span class="math inline">\(N\)</span>值，只要两两组合<span class="math inline">\((N_1,N_2)\)</span>执行欧几里得算法 (辗转相除法) 求解最大公约数，求解成功就得到一个素因数<span class="math inline">\(p\)</span>，再简单地用除法就得出另一个素因数<span class="math inline">\(q\)</span>。有了<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>，攻击者就可以马上算出用户的私钥<span class="math inline">\(d\)</span>。这就是<mark>模不互素攻击</mark>。</p></li>
+<li><p>应用教科书RSA时，如果公钥指数<span class="math inline">\(e\)</span>和明文<span class="math inline">\(m\)</span>都很小，乃至<span class="math inline">\(c=m^e&lt;N\)</span>，直接对密文<span class="math inline">\(c\)</span>开<span class="math inline">\(e\)</span>次方即可得到明文<span class="math inline">\(m\)</span>。即使<span class="math inline">\(m^e&gt;N\)</span>但不是足够大，则因为 <span class="math inline">\(m^e=c+k⋅N\)</span>，可以循环尝试小的<span class="math inline">\(k\)</span>值进行<mark>暴力开方破解</mark>。下面是Python例程：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crack_small</span>(<span class="params">c, e, N, repeat</span>)</span></span><br><span class="line"><span class="function">    <span class="title">times</span> = 0</span></span><br><span class="line"><span class="function">    <span class="title">msg</span> = 0</span></span><br><span class="line"><span class="function">    <span class="title">for</span> <span class="title">k</span> <span class="title">in</span> <span class="title">range</span>(<span class="params">repeat</span>):</span></span><br><span class="line">        m, is_exact = gmpy2.iroot(c + times, e)</span><br><span class="line">        <span class="keyword">if</span> is_exact <span class="keyword">and</span> <span class="built_in">pow</span>(m, e, N) == c:</span><br><span class="line">            msg = <span class="built_in">int</span>(m)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        times += N</span><br><span class="line">    <span class="keyword">return</span> msg</span><br></pre></td></tr></table></figure> 这里调用了gmpy2库函数iroot()，以求得<span class="math inline">\(e\)</span>次方根。</p></li>
+<li><p>教科书RSA是<strong>确定性</strong>的，意即同样的明文<span class="math inline">\(m\)</span>总是生成同样的密文<span class="math inline">\(c\)</span>。这就使<mark>密码本攻击</mark>成为可能：攻击者预先计算出全部或部分的 <span class="math inline">\(m\to c\)</span> 对照表保存，然后搜索截获的密文匹配即可。确定性也意味着教科书RSA不是语义安全的，密文会泄露明文的某些信息。密文重复出现，表明发送方在重复发送相同的消息。</p></li>
+<li><p>教科书RSA具有<strong>延展性</strong> (malleable)，对密文进行特定形式的代数运算，结果会反映到解密的明文中。比如有两段明文 <span class="math inline">\(m_1\)</span>和 <span class="math inline">\(m_2\)</span>，加密后产生 <span class="math inline">\(c_1=m_1^e\bmod N\)</span> 和 <span class="math inline">\(c_2=m_2^e\bmod N\)</span>，那么 <span class="math inline">\((c_1⋅c_2)\)</span> 解密会得到什么？看如下等式： <span class="math display">\[(c_1⋅c_2)^d\equiv m_1^{ed}⋅m_2^{ed}\equiv m_1⋅m_2\pmod N\]</span> 所以两段密文的乘积解密后得到的明文，等于两段明文的乘积。这一特性对一般的RSA加密系统是有害的，它为<mark>选择密文攻击</mark> (chosen-ciphertext attack) 提供了机会。下面举例两种攻击场景：</p>
+<ol type="1">
+<li><p>设想有一个RSA解密机可以用内部保存的私钥<span class="math inline">\((N,d)\)</span>解密消息。基于安全考虑，解密机会拒绝同样的密文重复输入。攻击者马文发现一段密文<span class="math inline">\(c\)</span>，直接输入到解密机被拒绝，因为密文<span class="math inline">\(c\)</span>以前被解密过。马文找到一种办法破解。他自己准备一段明文<span class="math inline">\(r\)</span>，用公钥<span class="math inline">\((N,e)\)</span>加密生成新的密文<span class="math inline">\(c&#39;={r^e}c\bmod N\)</span>，然后将密文<span class="math inline">\(c&#39;\)</span>输入到解密机。解密机没有解过这一段新的密文，所以不会拒绝。解密的结果是<span class="math display">\[m&#39;\equiv (c&#39;)^d\equiv r^{ed}c^d\equiv rm\pmod N\]</span>现在马文有了<span class="math inline">\(m&#39;\)</span>，他用公式 <span class="math inline">\(m\equiv m&#39;r^{-1}\pmod N\)</span>就可以计算出<span class="math inline">\(m\)</span>。</p></li>
+<li><p>假设马文想让鲍勃在一段消息<span class="math inline">\(m\)</span>上签名，但是鲍勃在看过消息内容后拒绝了。马文可以使用称为<mark>盲签名</mark><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>的攻击手段可以达成他的目标。他挑选一段随机的消息<span class="math inline">\(r\)</span>，生成 <span class="math inline">\(m&#39;={r^e}m\bmod N\)</span>，然后把<span class="math inline">\(m&#39;\)</span>拿给鲍勃签名。鲍勃可能觉得<span class="math inline">\(m&#39;\)</span>无关紧要，就签了。鲍勃签名的结果是 <span class="math inline">\(s&#39;=(m&#39;)^d\bmod N\)</span>。现在马文用公式 <span class="math inline">\(s=s&#39;r^{-1}\bmod N\)</span> 就拿到了鲍勃对原来消息<span class="math inline">\(m\)</span>的签名。为什么？原因是<span class="math display">\[s^e\equiv (s&#39;)^er^{-e}\equiv (m&#39;)^{ed}r^{-e}\equiv m&#39;r^{-e}\equiv m\pmod N\]</span></p></li>
+</ol></li>
+</ul>
+<p>以上这些绝非完整的初级攻击方法清单，但已经可以说明问题了。在实际RSA应用中，我们必须非常小心，应该做到：</p>
+<ul>
+<li>单独给每个用户生成唯一的公钥模数<span class="math inline">\(N\)</span>，防止共模攻击</li>
+<li>不可重复使用素因数生成公钥模数<span class="math inline">\(N\)</span>，杜绝模不互素攻击</li>
+</ul>
+<p>对于教科书RSA的确定性和延展性缺陷，及可能的暴力开方破解漏洞，可采用随机元素填充 (padding with random elements) 方法防护，其机理是：</p>
+<ul>
+<li>填充可确保被加密的消息数值比特数接近<span class="math inline">\(N\)</span>，同时不使用小的<span class="math inline">\(e\)</span>值，让暴力开方破解失效</li>
+<li>随机填充使得同样的明文产生不一样的密文，保障语义安全性，使得密码本攻击成为不可能</li>
+<li>严格格式定义的填充破坏了延展性，降低了选择密文攻击可能性。比如填充后开头几个字节必须为给定值，那对相应的密文进行代数运算后，解密出的数据极大可能不符合预定的格式，这就瓦解了选择密文攻击</li>
+</ul>
+<h3 id="低公钥指数攻击">低公钥指数攻击</h3>
+<p>使用小的公钥指数是危险的，在不填充或不当填充的情况下，即使暴力开方破解不能成功，也还有一些高级的攻击手段。</p>
+<h4 id="广播攻击">广播攻击</h4>
+<p>由瑞典理论计算科学家约翰·霍斯塔德<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>发现，因此也被称为<mark>霍斯塔德广播攻击</mark>。考虑这样一种简化的场景，假设爱丽丝需要发送同一条消息<span class="math inline">\(m\)</span>给鲍伯、卡罗尔和戴夫。三位接收者的公钥分别为<span class="math inline">\((N_1,3)\)</span>、<span class="math inline">\((N_2,3)\)</span>和<span class="math inline">\((N_3,3)\)</span>，即公钥指数都为3，公钥模数各不相同。消息不填充，爱丽丝直接用其他三人的公钥加密并发出三段密文<span class="math inline">\(c_1,c_2,c_3\)</span>： <span class="math display">\[\begin{cases}
+c_1=m^3\bmod N_1\\
+c_2=m^3\bmod N_2\\
+c_3=m^3\bmod N_3
+\end{cases}\]</span> 这时伊芙偷偷记下三段密文，标记<span class="math inline">\(M=m^3\)</span>，如果她可以恢复<span class="math inline">\(M\)</span>，开三次方根自然就得到明文<span class="math inline">\(m\)</span>。显然这里共模攻击不成立，我们也可以假设模数两两互素，否则使用模不互素攻击分解模数就可以了。那么伊芙有办法算出<span class="math inline">\(M\)</span>吗？答案是肯定的。</p>
+<p>实际上，这里求解<span class="math inline">\(M\)</span>的等同问题是：已知某个数分别除以三个数的余数，而且这三个数两两互素，有没有有效的算法解出这个数？这个有效的算法就是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/中国剩余定理"><strong>中国余数定理</strong></a>！</p>
+<p>中国余数定理给出了一元线性同余方程组有解的准则以及求解方法。对于以下的一元线性同余方程组 (注意不要与上面描述攻击场景的数学符号混淆)： <span class="math display">\[(S) : \quad \left\{ 
+\begin{matrix} x \equiv a_1 \pmod {m_1} \\
+x \equiv a_2 \pmod {m_2} \\
+\vdots \qquad\qquad\qquad \\
+x \equiv a_n \pmod {m_n} \end
+{matrix} \right.\]</span> 假设整数<span class="math inline">\(m_1,m_2,\ldots,m_n\)</span>其中任两数互素，则对任意的整数<span class="math inline">\(a_1,a_2,\ldots,a_n\)</span>，方程组<span class="math inline">\((S)\)</span>有解，并且通解可以用如下四步构造： <span class="math display">\[\begin{align}
+M &amp;= m_1 \times m_2 \times \cdots \times m_n = \prod_{i=1}^n m_i \tag{1}\label{eq1}\\
+M_i &amp;= M/m_i, \; \; \forall i \in \{1, 2, \cdots , n\}\tag{2}\label{eq2}\\
+t_i M_i &amp;\equiv 1\pmod {m_i},  \; \; \forall i \in \{1, 2, \cdots , n\}\tag{3}\label{eq3}\\
+x &amp;=kM+\sum_{i=1}^n a_i t_i M_i\tag{4}\label{eq4}
+\end{align}\]</span> 以上最后一行 (4) 式给出了方程组的通解形式。在模<span class="math inline">\(M\)</span>的意义下，唯一解为 <span class="math inline">\(\sum_{i=1}^n a_i t_i M_i \bmod M\)</span>。</p>
+<details class="note primary"><summary><p>试试用中国剩余定理解出本文开头的“物不知其数”问题</p>
+</summary>
+<p>首先将变量符号与数值对应： <span class="math display">\[m_1=3,a_1=2;\quad m_2=5,a_2=3;\quad m_3=7,a_3=2\]</span> 然后算出<span class="math inline">\(M=3\times5\times7=105\)</span>，进而推导出： <span class="math display">\[\begin{align}
+M_1 &amp;=M/m_1=105/3=35,\quad t_1=35^{-1}\bmod 3 = 2\\
+M_2 &amp;=M/m_2=105/5=21,\quad t_2=21^{-1}\bmod 5 = 1\\
+M_3 &amp;=M/m_3=105/7=15,\quad t_3=15^{-1}\bmod 7 = 1\\
+\end{align}\]</span> 最后带入通解公式： <span class="math display">\[x=k⋅105+(2⋅35⋅2+3⋅21⋅1+2⋅15⋅1)=k⋅105+233\]</span> 所以在模105内的最小正整数解为 <span class="math inline">\(233\bmod 105=23\)</span>。</p>
+<p>明朝数学家程大位在《算法统宗》中，将宋朝数学家秦九韶记载在《数书九章》中的解法编成易于上口的《孙子歌诀》：<em>三人同行七十希，五树梅花廿一支，七子团圆正半月，除百零五便得知。</em></p>
+<p>这里我们必须佩服中国古人的智慧，在没有现代数学符号系统的条件下，能够推导总结出如此巧妙的解法，为人类贡献了一个重要的数学定理。</p>
+
+</details>
+<p>所以伊芙只要套用中国余数定理的解法，算出<span class="math inline">\(M\)</span>，然后求得其立方根就得到了明文<span class="math inline">\(m\)</span>，攻击成功。更一般地，设定接收者的数目为<span class="math inline">\(k\)</span>，如果全部接收者使用同样的<span class="math inline">\(e\)</span>，那么只要<span class="math inline">\(k\ge e\)</span>，这种广播攻击都是可行的。</p>
+<p>霍斯塔德还进一步证明，即便使用填充来预防广播攻击，如果填充方案产生的消息相互之间有线性关系，比如用公式<span class="math inline">\(m_i=i2^b+m\)</span> (<span class="math inline">\(b\)</span>为<span class="math inline">\(m\)</span>的比特数)生成发给接收者 <span class="math inline">\(i\)</span> 的消息，那么只要<span class="math inline">\(k&gt;e\)</span>，广播攻击仍然可以恢复明文<span class="math inline">\(m\)</span>。这种情况下的广播攻击还是基于中国余数定理，但具体的破解方法有赖于线性关系的信息。</p>
+<p>总结以上的分析，为了避免广播攻击，我们必须使用大一些的公钥指数<span class="math inline">\(e\)</span>，同时应用随机填充。现在通用的公钥指数<span class="math inline">\(e\)</span>为65536 (<span class="math inline">\(2^{16}+1\)</span>)，可以兼顾消息加密或签名验证运算的效率和安全性。</p>
+<p>最后，给出仿真广播攻击的Python例程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solve_crt</span>(<span class="params">ai: <span class="built_in">list</span>, mi: <span class="built_in">list</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;中国余数定理求解函数，参考https://zh.wikipedia.org/zh-cn/中国剩余定理</span></span><br><span class="line"><span class="string">    mi,ai分别表示模数和取模后的余数，都为列表结构。函数工作的前提是mi两两互素&#x27;&#x27;&#x27;</span></span><br><span class="line">    M = reduce(<span class="keyword">lambda</span> x, y: x * y, mi)</span><br><span class="line">    ti = [a * (M//m) * <span class="built_in">int</span>(gmpy2.invert(M//m, m)) <span class="keyword">for</span> (m, a) <span class="keyword">in</span> <span class="built_in">zip</span>(mi, ai)]</span><br><span class="line">    <span class="keyword">return</span> reduce(<span class="keyword">lambda</span> x, y: x + y, ti) % M</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rsa_broadcast_attack</span>(<span class="params">ctexts: <span class="built_in">list</span>, moduli: <span class="built_in">list</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;RSA广播攻击：应用中国余数定理破解e=3&#x27;&#x27;&#x27;</span></span><br><span class="line">    c0, c1, c2 = ctexts[<span class="number">0</span>], ctexts[<span class="number">1</span>], ctexts[<span class="number">2</span>]</span><br><span class="line">    n0, n1, n2 = moduli[<span class="number">0</span>], moduli[<span class="number">1</span>], moduli[<span class="number">2</span>]</span><br><span class="line">    m0, m1, m2 = n1 * n2, n0 * n2, n0 * n1</span><br><span class="line">    t0 = (c0 * m0 * <span class="built_in">int</span>(gmpy2.invert(m0, n0)))</span><br><span class="line">    t1 = (c1 * m1 * <span class="built_in">int</span>(gmpy2.invert(m1, n1)))</span><br><span class="line">    t2 = (c2 * m2 * <span class="built_in">int</span>(gmpy2.invert(m2, n2)))</span><br><span class="line">    c = (t0 + t1 + t2) % (n0 * n1 * n2)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(gmpy2.iroot(c, <span class="number">3</span>)[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uint_to_bytes</span>(<span class="params">x: <span class="built_in">int</span></span>) -&gt; <span class="built_in">bytes</span>:</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;转换无符号整数到字节数组&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">bytes</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> x.to_bytes((x.bit_length() + <span class="number">7</span>) // <span class="number">8</span>, <span class="string">&#x27;big&#x27;</span>)</span><br><span class="line"></span><br><span class="line">quote = <span class="string">b&#x27;The cosmos is within us. We are made of star-stuff. - Carl Sagan&#x27;</span></span><br><span class="line">bob = RSA(<span class="number">1024</span>, <span class="number">3</span>)</span><br><span class="line">carol = RSA(<span class="number">1024</span>, <span class="number">3</span>)</span><br><span class="line">dave = RSA(<span class="number">1024</span>, <span class="number">3</span>)</span><br><span class="line">cipher_list = [bob.encrypt(quote), carol.encrypt(quote), dave.encrypt(quote)]</span><br><span class="line">modulus_list = [bob.n, carol.n, dave.n]</span><br><span class="line"></span><br><span class="line">cracked_cipher = solve_crt(cipher_list, modulus_list)</span><br><span class="line">cracked_int = <span class="built_in">int</span>(gmpy2.iroot(cracked_cipher, <span class="number">3</span>)[<span class="number">0</span>])</span><br><span class="line"><span class="keyword">assert</span> cracked_int == rsa_broadcast_attack(cipher_list, modulus_list)</span><br><span class="line"></span><br><span class="line">hacked_quote = uint_to_bytes(cracked_int)</span><br><span class="line"><span class="keyword">assert</span> hacked_quote == quote</span><br></pre></td></tr></table></figure>
+<p>程序使用了两种方法仿真广播攻击。一种调用通用的中国余数定理求解函数solve_crt()，再将结果开立方根；另一种调用专门的针对公钥指数<span class="math inline">\(e=3\)</span>的广播攻击函数rsa_broadcast_attack()，直接输出破解的明文数值。这两个函数内部实现都是基于中国余数定理的通解公式，输出结果应该完全一致。破解的明文数值再输入到uint_to_bytes()函数，转换成字节数组与原文quote比较。注意，程序中使用了RSA类生成的对象模拟接收者鲍伯、卡罗尔和戴夫，鉴于篇幅所限RSA类的实现代码这里省略了。</p>
+<blockquote>
+<p>未完待续，敬请期待下篇：RSA的攻与防（二）</p>
+</blockquote>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>美国计算机科学家和安全技术专家加里·麦格劳(Gary McGraw)对软件开发者的一句著名忠告是 “<a target="_blank" rel="noopener" href="http://web.archive.org/web/20030629085904/http://www-106.ibm.com/developerworks/library/s-everything.html#author1">never roll your own cryptography</a>”<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>RSA原始论文 (第IX节C部分) 就提到了由已知<span class="math inline">\(d\)</span>分解<span class="math inline">\(N\)</span>的<a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf">米勒算法</a>。这一算法同样适用于由卡迈克尔函数<span class="math inline">\(\lambda(N)\)</span>生成的<span class="math inline">\(d\)</span>。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>gmpy2是一个用C语言写的Python扩展模块，支持多精度算术。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>在一些特殊情况下，盲签名可用来有效地保护隐私。比如电子选举和数字现金应用中，签名者和消息作者可以是不同的。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>约翰·霍斯塔德 (Johan Håstad) ，瑞典理论计算科学家，皇家理工学院教授，美国数学学会 (AMS) 和计算机协会 (ACM)双会士。<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2020/12/01/RSA-attack-defense/" title="RSA的攻与防（一）">https://www.packetmania.net/2020/12/01/RSA-attack-defense/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 网络安全</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/01/DH-and-RSA/" rel="prev" title="迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？">
+                  <i class="fa fa-chevron-left"></i> 迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/01/IPv6-Addressing/" rel="next" title="IPv6动态地址分配机制详解">
+                  IPv6动态地址分配机制详解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"9a230bb5f2af09a04e4128d328f4063c"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

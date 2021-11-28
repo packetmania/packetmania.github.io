@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="在数学的发展史上，皮埃尔·德·费马（Pierre de Fermat）是一位特别的人物。他的正式职业是律师，却格外爱好数学。虽然是业余的，费马在数学上的成就不低于同时代的职业数学家。他对于现代微积分、解析几何、概率论和数论都有贡献。尤其是在数论领域，费马最有兴趣也成果最突出。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="费马小定理的归纳法证明和应用">
+<meta property="og:url" content="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="在数学的发展史上，皮埃尔·德·费马（Pierre de Fermat）是一位特别的人物。他的正式职业是律师，却格外爱好数学。虽然是业余的，费马在数学上的成就不低于同时代的职业数学家。他对于现代微积分、解析几何、概率论和数论都有贡献。尤其是在数论领域，费马最有兴趣也成果最突出。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/Fermat-on-stamp.jpg">
+<meta property="article:published_time" content="2021-02-14T22:55:53.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.685Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/Fermat-on-stamp.jpg">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/","path":"2021/02/14/Fermats-Little-Theorem/","title":"费马小定理的归纳法证明和应用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>费马小定理的归纳法证明和应用 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E7%90%86%E5%92%8C%E6%8E%A8%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">定理和推论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%92%E7%BA%B3%E6%B3%95%E8%AF%81%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">归纳法证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E7%90%86%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">定理应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AB%9E%E8%B5%9B%E9%A2%98%E8%A7%A3"><span class="nav-number">3.1.</span> <span class="nav-text">竞赛题解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A0%E6%80%A7%E6%A3%80%E6%B5%8B"><span class="nav-number">3.2.</span> <span class="nav-text">素性检测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%81%E6%98%8Ersa%E7%AE%97%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">证明RSA算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E9%80%9Frsa%E8%A7%A3%E5%AF%86"><span class="nav-number">3.4.</span> <span class="nav-text">加速RSA解密</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          费马小定理的归纳法证明和应用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-02-14 14:55:53" itemprop="dateCreated datePublished" datetime="2021-02-14T14:55:53-08:00">2021-02-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/" itemprop="url" rel="index"><span itemprop="name">学习体会</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>在数学的发展史上，皮埃尔·德·费马（Pierre de Fermat）是一位特别的人物。他的正式职业是律师，却格外爱好数学。虽然是业余的，费马在数学上的成就不低于同时代的职业数学家。他对于现代微积分、解析几何、概率论和数论都有贡献。尤其是在数论领域，费马最有兴趣也成果最突出。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Logic is the foundation of the certainty of all the knowledge we acquire.</strong><br> <strong>— <em>Leonhard Euler</em>（莱昂哈德·欧拉，瑞士数学家和物理学家，近代数学先驱之一）</strong></p>
+</div>
+<p>作为“业余数学家之王”，费马提出了一些著名的数论上的论断，但却没有给出强有力的证明。最著名的莫过于<strong>费马大定理</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。尽管费马声称他已找到一个精妙的证明，只是页边没有足够的空位写下来，但实际上历经350多年数学家们的不懈努力，直至1995年才由英国数学家安德鲁·怀尔斯（Andrew John Wiles）和其学生理查·泰勒（Richard Taylor）发布广为认可的证明。</p>
+<img src="Fermat-on-stamp.jpg" />
+<p style="text-align: center;">
+邮票上的费马和费马大定理
+</p>
+<p>与之相区别地，还有一个<strong>费马小定理</strong>。1640年10月，费马在一封给友人的信中第一次写下了与下面同义的文字：</p>
+<blockquote>
+<p><em>如果 <span class="math inline">\(p\)</span> 是素数且 <span class="math inline">\(a\)</span> 是任意不可被 <span class="math inline">\(p\)</span> 整除的整数, 那么 <span class="math inline">\(a^{p−1}−1\)</span> 可被 <span class="math inline">\(p\)</span>整除。</em></p>
+</blockquote>
+<p>同样地，费马也没有在信中给出证明。将近百年后，完整的证明第一次由大数学家欧拉于1736年公开发表。而后来，人们从另一位大数学家莱布尼茨未发表的手稿中，发现他在1683年以前已经得到几乎是相同的证明。</p>
+<p>费马小定理是初等数论的一个基本结论。这一定理可以用来生成素数判定法则和相应验证算法。进入20世纪七十年代末，公钥密码学兴起，费马小定理辅助证明了RSA加密算法的正确性。之后，研究者将其与中国余数定理相结合，还发现了一种RSA快速解密方法。以下对这些作一些展开介绍。</p>
+<h3 id="定理和推论">定理和推论</h3>
+<p>费马小定理的完整表述是：<strong>设定 <span class="math inline">\(\pmb{p}\)</span> 为素数，对于任意整数 <span class="math inline">\(\pmb{a}\)</span>，<span class="math inline">\(\pmb{a^p−a}\)</span> 是 <span class="math inline">\(\pmb{p}\)</span> 的倍数，用模算数等式表示为 <span class="math inline">\(\pmb{a^p\equiv a\pmod p}\)</span>，如果 <span class="math inline">\(\pmb{a}\)</span> 不是 <span class="math inline">\(\pmb{p}\)</span> 的倍数，则有 <span class="math inline">\(\pmb{a^{p-1}\equiv 1\pmod p}\)</span>。</strong></p>
+<p>从 <span class="math inline">\(a^{p-1}\equiv 1\pmod p\)</span> 可以推导出 <strong><span class="math inline">\(\pmb{a^{p-2}\equiv a^{-1}\pmod p}\)</span></strong>，这个新的同余等式正好给出了求 <span class="math inline">\(a\)</span> 对同余 <span class="math inline">\(p\)</span> 之模逆元的一种方法。这是费马小定理的一个直接推论。</p>
+<p>另一个重要的推论是：<strong>如果 <span class="math inline">\(\pmb{a}\)</span> 不是 <span class="math inline">\(\pmb{p}\)</span> 的倍数且 <span class="math inline">\(\pmb{n=m\bmod {(p-1)}}\)</span>，那么 <span class="math inline">\(\pmb{a^n\equiv a^m\pmod p}\)</span>。</strong>这一推论看起来不是很直观，但其实证明很简单：</p>
+<ol type="1">
+<li>因为 <span class="math inline">\(n=m\bmod {(p-1)}\)</span>，得出 <span class="math inline">\(m = k⋅(p-1)+n\)</span></li>
+<li>将第一步的结果代入幂运算，<span class="math inline">\(a^m=a^{k⋅(p-1)+n}=(a^{(p-1)})^k⋅a^n\)</span></li>
+<li>再代入模幂运算，并依据费马小定理，<span class="math inline">\(a^m=(a^{(p-1)})^k⋅a^n\equiv (1)^ka^n\equiv a^n\pmod p\)</span></li>
+<li>所以 <span class="math inline">\(a^n\equiv a^m\pmod p\)</span>，证毕。</li>
+</ol>
+<h3 id="归纳法证明">归纳法证明</h3>
+<p>有多种方法证明费马小定理，其中基于二项式定理的数学归纳法最为直观。首先，对于 <span class="math inline">\(a=1\)</span>，很显然 <span class="math inline">\(1^p \equiv 1\pmod{p}\)</span> 成立。现在假设 <span class="math inline">\(a^p \equiv a \pmod{p}\)</span> 为真，只要在此条件下证明 <span class="math inline">\((a+1)^p\equiv a+1\pmod{p}\)</span>，则命题成立。</p>
+<p>根据二项式定理 <span class="math display">\[(a+1)^p = a^p + {p \choose 1} a^{p-1} + {p \choose 2} a^{p-2} + \cdots + {p \choose p-1} a + 1\]</span> 其中二项式系数的定义为 <span class="math inline">\({p \choose k}= \frac{p!}{k! (p-k)!}\)</span>。注意到因为 <span class="math inline">\(p\)</span> 为素数，对于 <span class="math inline">\(1 \le k \le p-1\)</span>，每个系数 <span class="math inline">\({p \choose k}\)</span> 都是 <span class="math inline">\(p\)</span> 的倍数。</p>
+<p>这样再取模<span class="math inline">\(\bmod p\)</span>，所有的中间项都消失了，只剩下 <span class="math inline">\(a^p+1\)</span>， <span class="math display">\[(a+1)^p \equiv a^p + 1 \pmod{p}\]</span> 依据前面的假设 <span class="math inline">\(a^p \equiv a\pmod{p}\)</span>，得出 <span class="math inline">\((a+1)^p \equiv a+1 \pmod{p}\)</span>，证毕。</p>
+<h3 id="定理应用">定理应用</h3>
+<h4 id="竞赛题解">竞赛题解</h4>
+<p>费马小定理为一些看似繁杂的计算问题提供了简明的解法。先看一个简单的例子：如果今天是星期日，问 <span class="math inline">\(2^{100}\)</span> 天以后是星期几？一周有 7 天，根据费马小定理有 <span class="math inline">\(2^{7−1}≡1\bmod 7\)</span>，由此可以得到 <span class="math display">\[2^{100}=2^{16×6+4} ≡ 1^{16}×2^4≡16≡2\pmod 7\]</span> 所以答案是星期二。这实际上就是以具体的数字重复了上面第二个推论的证明过程。运用此推论可以极大地加快模幂运算，比如要求计算 <span class="math inline">\(49^{901}\bmod 151\)</span>，由于 <span class="math inline">\(901\bmod(151-1)=1\)</span>，据此马上可以得出 <span class="math display">\[49^{901}\equiv 49^1\equiv 49\pmod {151}\]</span> 这当然比将 <span class="math inline">\(901\)</span> 转化为二进制数再应用平方模幂运算快得多。</p>
+<p>现在看一道似乎难一点的题：给定等式 <span class="math inline">\(133^5+110^5+84^5+27^5=n^{5}\)</span>，求 <span class="math inline">\(n\)</span> 的数值。</p>
+<p>初看起来好像没有头绪，那就从基础的奇偶性检查开始。等式左边两项为奇两项为偶，所以总和为偶数，这也决定了<span class="math inline">\(n\)</span>一定为偶数。再看指数<span class="math inline">\(5\)</span>为一个素数，联想到费马小定理得出 <span class="math inline">\(n^5≡n\pmod 5\)</span>，因此 <span class="math display">\[133^5+110^5+84^5+27^5≡n\pmod 5\]</span> <span class="math display">\[3+0+4+2≡4≡n\pmod 5\]</span> 继续再对<span class="math inline">\(3\)</span>取模，同样依据费马小定理的推论有 <span class="math inline">\(n^5≡n^{5\mod(3-1)}≡n\pmod 3\)</span>，所以 <span class="math display">\[133^5+110^5+84^5+27^5≡n\pmod 3\]</span> <span class="math display">\[1+2+0+0≡0≡n\pmod 3\]</span> 好了，到此总结一下：</p>
+<ol type="1">
+<li><span class="math inline">\(n\)</span> 应该大于<span class="math inline">\(133\)</span>，且 <span class="math inline">\(n\)</span> 为偶数</li>
+<li><span class="math inline">\(n\)</span> 为<span class="math inline">\(3\)</span>的倍数，因此所有数位相加为<span class="math inline">\(3\)</span>的倍数</li>
+<li><span class="math inline">\(n\)</span> 除以<span class="math inline">\(5\)</span>余<span class="math inline">\(4\)</span>，个位应为<span class="math inline">\(4\)</span> (<span class="math inline">\(9\)</span>不满足偶数条件)</li>
+</ol>
+<p>综合得出 <span class="math inline">\(n = 144\)</span> 或 <span class="math inline">\(n\geq 174\)</span>，显然 174 太大了，所以 <span class="math inline">\(n\)</span> 只能是 <span class="math inline">\(\boxed{144}\)</span>。</p>
+<p>此题实际上出现在1989年美国数学邀请赛中，这是一项面向中学生的数学竞赛。有趣的是，题目的解答正好反证了<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/欧拉猜想">欧拉猜想</a>不成立。</p>
+<h4 id="素性检测">素性检测</h4>
+<p>许多加密算法的应用需要“随机”的大素数，而大素数的生成，常用的方法是随机生成一个整数，然后对其进行素性测试。 由于费马小定理成立的前提条件是 <span class="math inline">\(p\)</span> 为素数，这就提供了一种素数判定法则，称为费马素性检验。检验的算法为：</p>
+<blockquote>
+<p><strong>输入：</strong><span class="math inline">\(n\)</span> - 需要检验的数，<span class="math inline">\(n&gt;3\)</span>；<span class="math inline">\(k\)</span> - 检验重复次数<br />
+<strong>输出：</strong><span class="math inline">\(n\)</span>是<u>合数</u>，否则<u>可能是素数</u><br />
+重复<span class="math inline">\(k\)</span>次：<br />
+<span class="math inline">\(\quad\quad\)</span>在<span class="math inline">\([2, n − 2]\)</span>范围内随机选取 <span class="math inline">\(a\)</span><br />
+<span class="math inline">\(\quad\quad\)</span>如果 <span class="math inline">\(a^{n-1}\not \equiv 1{\pmod n}\)</span>，返回<u>合数</u><br />
+返回<u>可能是素数</u></p>
+</blockquote>
+<p>可以看出，费马素性检验并非确定性的，它利用随机化算法判断一个数是合数还是可能是素数。输出为合数时，结果一定正确；但是那些检验出可能为素数的数，也许实际为合数，这样的数被称为费马伪素数。最小的费马伪素数是<span class="math inline">\(341\)</span>，<span class="math inline">\(2^{340}\equiv1\pmod {341}\)</span>，而 <span class="math inline">\(341=11×31\)</span>。所以事实上，<strong>费马小定理给出的是关于素数判定的必要但不充分条件</strong>。只能说检验重复次数越多，则被检验数是素数的概率越大。</p>
+<p>还有一类费马伪素数 <span class="math inline">\(n\)</span>，它们本身为合数，但是对于所有跟之互素的整数 <span class="math inline">\(x\)</span>，都满足费马小定理 <span class="math inline">\(x^{n-1}\equiv 1\pmod n\)</span>。数论上称它们为卡迈克尔数 (Carmichael number) 或绝对伪素数。最小的卡迈克尔数是 <span class="math inline">\(561\)</span>，等于 <span class="math inline">\(3\times11\times17\)</span>。卡迈克尔数可能骗过费马素性检验，使得检验变得不可靠。幸好这样的数很稀少，统计表明，在前<span class="math inline">\(10^{12}\)</span>个自然数中只有<span class="math inline">\(8241\)</span>个卡迈克尔数。</p>
+<p>加密通讯程序PGP在算法当中使用了费马素性检验。在需要大素数的网络通信应用中，常常先用费马素性检验方法作预测试，而后调用效率更高的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/米勒-拉宾检验">米勒-拉宾素性测试</a> (Miller–Rabin primality test) 以保证高准确度。</p>
+<h4 id="证明rsa算法">证明RSA算法</h4>
+<p>费马小定理也可以用来证明RSA加密算法的正确性，即解密计算公式可以完整无误地从密文 <span class="math inline">\(c\)</span> 还原出明文 <span class="math inline">\(m\)</span>： <span class="math display">\[c^d=(m^{e})^{d}\equiv m\pmod {pq}\]</span> 这里 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 为不同的素数，<span class="math inline">\(e\)</span> 和 <span class="math inline">\(d\)</span> 是满足 <span class="math inline">\(ed≡1\pmod {λ(pq)}\)</span> 的正整数，而 <span class="math inline">\(λ(pq)=lcm(p − 1, q − 1)\)</span>，<span class="math inline">\(lcm\)</span> 为最小公倍数函数。</p>
+<p>在证明开始前，先介绍一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/中国余数定理">中国余数定理</a>的推论：<strong>如果整数 <span class="math inline">\(\pmb{n_1,n_2,...,n_k}\)</span> 两两互素，并且 <span class="math inline">\(\pmb{n=n_{1}n_{2}...n_{k}}\)</span>，那么对于任意整数 <span class="math inline">\(\pmb x\)</span> 和 <span class="math inline">\(\pmb y\)</span>，当且仅当 <span class="math inline">\(\pmb{x≡y\pmod{n_i}}\)</span> 对每个 <span class="math inline">\(\pmb{i=1,2,...k}\)</span> 都成立时，有 <span class="math inline">\(\pmb{x≡y\pmod n}\)</span>。</strong>这个推论的证明不难，可留待读者思考解答<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。依据此推论，如果 <span class="math inline">\(m^{ed}≡m\pmod p\)</span> 和 <span class="math inline">\(m^{ed}≡m\pmod q\)</span> 都为真，则一定有 <span class="math inline">\(m^{ed}≡m\pmod{pq}\)</span>。</p>
+<p>现在看证明的第一步，从 <span class="math inline">\(e\)</span> 和 <span class="math inline">\(d\)</span> 的关系得到 <span class="math inline">\(ed-1\)</span> 可以被 <span class="math inline">\(p-1\)</span> 和 <span class="math inline">\(q-1\)</span> 整除，即存在非负整数 <span class="math inline">\(h\)</span> 和 <span class="math inline">\(k\)</span> 满足等式：<span class="math display">\[ed-1=h(p-1)=k(q-1)\]</span></p>
+<p>第二步目标 <span class="math inline">\(m^{ed}≡m\pmod p\)</span>，考虑两种情况：</p>
+<ol type="1">
+<li>如果 <span class="math inline">\(m≡ 0\pmod p\)</span>，即 <span class="math inline">\(m\)</span> 是 <span class="math inline">\(p\)</span> 的整数倍，自然 <span class="math inline">\(m^{ed}≡0≡m\pmod p\)</span></li>
+<li>如果 <span class="math inline">\(m\not \equiv 0\pmod p\)</span>，则可以推导出 <span class="math display">\[m^{ed}=m^{ed-1}m=m^{h(p-1)}m=(m^{p-1})^{h}m\equiv 1^{h}m\equiv m{\pmod {p}}\]</span> 这里应用了费马小定理 <span class="math inline">\(m^{p−1}≡1\pmod p\)</span></li>
+</ol>
+<p>第三步目标 <span class="math inline">\(m^{ed}≡m\pmod q\)</span>，和上一步的推导过程相似，一样可得出</p>
+<ol type="1">
+<li>如果 <span class="math inline">\(m≡ 0\pmod q\)</span>，即 <span class="math inline">\(m\)</span> 是 <span class="math inline">\(q\)</span> 的整数倍，自然 <span class="math inline">\(m^{ed}≡0≡m\pmod q\)</span></li>
+<li>如果 <span class="math inline">\(m\not \equiv 0\pmod q\)</span>，则可以推导出 <span class="math display">\[m^{ed}=m^{ed-1}m=m^{k(q-1)}m=(m^{q-1})^{k}m\equiv 1^{k}m\equiv m{\pmod {q}}\]</span></li>
+</ol>
+<p>既然 <span class="math inline">\(m^{ed}≡m\pmod p\)</span> 和 <span class="math inline">\(m^{ed}≡m\pmod q\)</span> 都被证实，<span class="math inline">\(m^{ed}≡m\pmod{pq}\)</span> 成立，证毕！</p>
+<h4 id="加速rsa解密">加速RSA解密</h4>
+<p>费马小定理和中国余数定理相结合，不仅可以验证RSA加密算法的正确性，还能推演出一种加速解密的方法。</p>
+<p>RSA加密算法里模数<span class="math inline">\(N\)</span>是两个素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>的乘积，所以对于小于<span class="math inline">\(N\)</span>的任何数<span class="math inline">\(m\)</span>，设定 <span class="math inline">\(m_1=m\bmod p\)</span> 和 <span class="math inline">\(m_2=m\bmod q\)</span>，则<span class="math inline">\(m\)</span>由<span class="math inline">\((m_1,m_2)\)</span>唯一确定。根据中国余数定理，我们可以使用通解公式从<span class="math inline">\((m_1,m_2)\)</span>推算出<span class="math inline">\(m\)</span>。因为<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>各自的比特数只有<span class="math inline">\(N\)</span>的一半，模运算将比直接计算<span class="math inline">\(c^d\equiv m\pmod N\)</span>快得多。而在计算<span class="math inline">\((m_1,m_2)\)</span>的过程中，应用费马小定理的推论得到： <span class="math display">\[\begin{align}
+m_1&amp;=m\bmod p=(c^d\bmod N)\bmod p\\
+&amp;=c^d\bmod p=c^{d\mod(p-1)}\bmod p\tag{1}\label{eq1}\\
+m_2&amp;=m\bmod q=(c^d\bmod N)\bmod q\\
+&amp;=c^d\bmod q=c^{d\mod(q-1)}\bmod q\tag{2}\label{eq2}\\
+\end{align}\]</span> 很明显，在上面<span class="math inline">\((1)\)</span>和<span class="math inline">\((2)\)</span>式里，指数从<span class="math inline">\(d\)</span>分别降阶到 <span class="math inline">\(d_P=d\bmod (p-1)\)</span> 和 <span class="math inline">\(d_Q=d\bmod (q-1)\)</span>，这进一步加快运算。最后，计算<span class="math inline">\(m\)</span>的步骤再运用加纳算法<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>(Garner Algorithm)优化： <span class="math display">\[\begin{align}
+q_{\text{inv}}&amp;=q^{-1}\pmod {p}\\
+h&amp;=q_{\text{inv}}(m_{1}-m_{2})\pmod {p}\\
+m&amp;=m_{2}+hq\pmod {pq}\tag{3}\label{eq3}
+\end{align}\]</span> 注意到给定<span class="math inline">\((p,q,d)\)</span>，就确定了<span class="math inline">\((d_P,d_Q,q_\text{inv})\)</span>的数值，所以可以预先算出它们保存好，解密时只要计算<span class="math inline">\((m_1,m_2,h)\)</span>代入到以上的<span class="math inline">\((3)\)</span>式就行了。</p>
+<p>这其实正是RSA密码技术规程 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8017">RFC 8017</a> (PKCS #1 v2.2) 所指定的解密算法，该规程定义的ASN.1格式的密钥数据序列与上面描述的完全对应 (<span class="math inline">\(d_P\)</span> - exponent1，<span class="math inline">\(d_Q\)</span> - exponent2，<span class="math inline">\(q_{\text{inv}}\)</span> - coefficient)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">RSAPrivateKey ::= SEQUENCE &#123;</span><br><span class="line">    version           Version,</span><br><span class="line">    modulus           INTEGER,  -- n</span><br><span class="line">    publicExponent    INTEGER,  -- e</span><br><span class="line">    privateExponent   INTEGER,  -- d</span><br><span class="line">    prime1            INTEGER,  -- p</span><br><span class="line">    prime2            INTEGER,  -- q</span><br><span class="line">    exponent1         INTEGER,  -- d mod (p-1)</span><br><span class="line">    exponent2         INTEGER,  -- d mod (q-1)</span><br><span class="line">    coefficient       INTEGER,  -- (inverse of q) mod p</span><br><span class="line">    otherPrimeInfos   OtherPrimeInfos OPTIONAL</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>广泛应用的开源软件库包<a target="_blank" rel="noopener" href="https://www.openssl.org/">OpenSSL</a>实现了这种高效实用的解密算法。如下所示，用OpenSSL命令行工具产生的密钥数据与PKCS #1标准一致：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generate 512-bit RSA keys saved in PEM format file.</span></span><br><span class="line"><span class="comment"># For demo only, DON&#x27;T USE 512-bit KEYS IN PRODUCTION!</span></span><br><span class="line">$ openssl genrsa -out private-key.pem 512</span><br><span class="line">Generating RSA private key, 512 bit long modulus</span><br><span class="line">.++++++++++++</span><br><span class="line">......................++++++++++++</span><br><span class="line">e is 65537 (0x10001)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Inspect RSA keys saved in a PEM format file.</span></span><br><span class="line">$ openssl pkey -<span class="keyword">in</span> private-key.pem -text</span><br><span class="line">-----BEGIN PRIVATE KEY-----</span><br><span class="line">MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEA7HwgswSjqvDRPWj3</span><br><span class="line">vVIxMZDAtXJCa7Qx+2jFv7e7GXB8+fa3MTBL36YjIcAgLeCHAyIzWkPndxvTJE2l</span><br><span class="line">WvYzRQIDAQABAkBCUp2pF0f/jQJhwqqYQhDh4cLqIF1Yb3UFGWE8X37tpwCifAqg</span><br><span class="line">t8NEpaXWkct5M+YxqjKfdOKYy0TVcJRlyS+RAiEA9xujHmh+bOvl0xWDFoARDAHw</span><br><span class="line">v94qRCpeRNveHFpNvPsCIQD0/qFpeSjRWj/4vjCkIOv1RbbhDHVsgsF9HRJNW2Rc</span><br><span class="line">vwIgaGIAUcQKQ7CScMxRh5upl8zqCeKrMAhFsgi+lnN/CykCIDMdAL4Jmht7ccdK</span><br><span class="line">nslPWQs1/T6co878xLN+ojfjbl/vAiEAhmp4YDX1g8kFh6cVtTIDT5AGtzqwB2Jw</span><br><span class="line">cCq+IoKDYBc=</span><br><span class="line">-----END PRIVATE KEY-----</span><br><span class="line">Private-Key: (512 bit)</span><br><span class="line">modulus:</span><br><span class="line">    00:ec:7c:20:b3:04:a3:aa:f0:d1:3d:68:f7:bd:52:</span><br><span class="line">    31:31:90:c0:b5:72:42:6b:b4:31:fb:68:c5:bf:b7:</span><br><span class="line">    bb:19:70:7c:f9:f6:b7:31:30:4b:df:a6:23:21:c0:</span><br><span class="line">    20:2d:e0:87:03:22:33:5a:43:e7:77:1b:d3:24:4d:</span><br><span class="line">    a5:5a:f6:33:45</span><br><span class="line">publicExponent: 65537 (0x10001)</span><br><span class="line">privateExponent:</span><br><span class="line">    42:52:9d:a9:17:47:ff:8d:02:61:c2:aa:98:42:10:</span><br><span class="line">    e1:e1:c2:ea:20:5d:58:6f:75:05:19:61:3c:5f:7e:</span><br><span class="line">    ed:a7:00:a2:7c:0a:a0:b7:c3:44:a5:a5:d6:91:cb:</span><br><span class="line">    79:33:e6:31:aa:32:9f:74:e2:98:cb:44:d5:70:94:</span><br><span class="line">    65:c9:2f:91</span><br><span class="line">prime1:</span><br><span class="line">    00:f7:1b:a3:1e:68:7e:6c:eb:e5:d3:15:83:16:80:</span><br><span class="line">    11:0c:01:f0:bf:de:2a:44:2a:5e:44:db:de:1c:5a:</span><br><span class="line">    4d:bc:fb</span><br><span class="line">prime2:</span><br><span class="line">    00:f4:fe:a1:69:79:28:d1:5a:3f:f8:be:30:a4:20:</span><br><span class="line">    eb:f5:45:b6:e1:0c:75:6c:82:c1:7d:1d:12:4d:5b:</span><br><span class="line">    64:5c:bf</span><br><span class="line">exponent1:</span><br><span class="line">    68:62:00:51:c4:0a:43:b0:92:70:cc:51:87:9b:a9:</span><br><span class="line">    97:cc:ea:09:e2:ab:30:08:45:b2:08:be:96:73:7f:</span><br><span class="line">    0b:29</span><br><span class="line">exponent2:</span><br><span class="line">    33:1d:00:be:09:9a:1b:7b:71:c7:4a:9e:c9:4f:59:</span><br><span class="line">    0b:35:fd:3e:9c:a3:ce:<span class="built_in">fc</span>:c4:b3:7e:a2:37:e3:6e:</span><br><span class="line">    5f:ef</span><br><span class="line">coefficient:</span><br><span class="line">    00:86:6a:78:60:35:f5:83:c9:05:87:a7:15:b5:32:</span><br><span class="line">    03:4f:90:06:b7:3a:b0:07:62:70:70:2a:be:22:82:</span><br><span class="line">    83:60:17</span><br></pre></td></tr></table></figure>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>也被称为“费马猜想”，其概要为：当整数<span class="math inline">\(n &gt; 2\)</span>时，关于<span class="math inline">\(x,y,z\)</span>的不定方程 <span class="math inline">\(x^{n}+y^{n}=z^{n}\)</span> 无正整数解。在1995年被最终证明其正确性之后，它就被称为“费马最后的定理”。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>提示：如果两个数同余，那么它们之间的差值一定可以整除模数。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Garner, H., "<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/5219515">The Residue Number System</a>", IRE Transactions on Electronic Computers, Volume EC-8, Issue 2, pp.140-147, DOI 10.1109/TEC.1959.5219515, June 1959<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/" title="费马小定理的归纳法证明和应用">https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/01/AES-CBC-PaddingOracleAttack/" rel="prev" title="AES-CBC密文填充攻击—深入理解和编程实现">
+                  <i class="fa fa-chevron-left"></i> AES-CBC密文填充攻击—深入理解和编程实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/01/Python-Textbook-RSA/" rel="next" title="Python编程实现的教科书RSA">
+                  Python编程实现的教科书RSA <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"59f9331f0b8121e718f1565daf053257"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

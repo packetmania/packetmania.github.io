@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="遇到面试题“实现开平方根的函数”时，如果回答调用库函数sqrt()就可以了，那你就会错意了。很显然，面试官要求你实现自己的平方根运算函数。这时，如果再问为什么要自己写，那你的这次面试就危险了😌。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员面试题精解（2）— 平方根运算">
+<meta property="og:url" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="遇到面试题“实现开平方根的函数”时，如果回答调用库函数sqrt()就可以了，那你就会错意了。很显然，面试官要求你实现自己的平方根运算函数。这时，如果再问为什么要自己写，那你的这次面试就危险了😌。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/Newton_iteration.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/Float_example.svg">
+<meta property="og:image" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/IEEE754-Pi.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/log-plots.png">
+<meta property="article:published_time" content="2021-07-23T23:28:43.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.678Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta property="article:tag" content="系统编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/Newton_iteration.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/","path":"2021/07/23/PGITVW-2-sqrt/","title":"程序员面试题精解（2）— 平方根运算"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>程序员面试题精解（2）— 平方根运算 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E5%B9%B3%E6%96%B9%E6%A0%B9"><span class="nav-number">1.</span> <span class="nav-text">整数平方根</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">二分查找法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">牛顿迭代法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E4%BD%8D%E7%9B%B8%E5%87%8F%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">移位相减法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E5%B9%B3%E6%96%B9%E6%A0%B9"><span class="nav-number">2.</span> <span class="nav-text">浮点数平方根</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ieee-754"><span class="nav-number">2.1.</span> <span class="nav-text">IEEE 754</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">二分搜索法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%B4%E6%AF%94%E4%BC%A6%E8%A7%A3%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">巴比伦解法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E6%96%B9%E6%A0%B9%E5%80%92%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">平方根倒数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9F%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.1.</span> <span class="nav-text">速算法实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9F%E7%AE%97%E6%B3%95%E8%A7%A3%E6%9E%90"><span class="nav-number">3.2.</span> <span class="nav-text">速算法解析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3"><span class="nav-number">3.2.1.</span> <span class="nav-text">牛顿迭代</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E5%8C%96"><span class="nav-number">3.2.2.</span> <span class="nav-text">类型转化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E8%BF%91%E4%BC%BC"><span class="nav-number">3.2.3.</span> <span class="nav-text">线性近似</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%AD%94%E6%9C%AF%E6%95%B0%E5%AD%97"><span class="nav-number">3.2.4.</span> <span class="nav-text">魔术数字</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">单元测试</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员面试题精解（2）— 平方根运算
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-23 16:28:43" itemprop="dateCreated datePublished" datetime="2021-07-23T16:28:43-07:00">2021-07-23</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">面试指南</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>15k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>13 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>遇到面试题“实现开平方根的函数”时，如果回答调用库函数<code>sqrt()</code>就可以了，那你就会错意了。很显然，面试官要求你实现自己的平方根运算函数。这时，如果再问为什么要自己写，那你的这次面试就危险了😌。<span id="more"></span>因为你忘记了，电子计算机最初就是为了因应科学计算的需求才发明出来的。掌握基本科学计算的算法，是程序员必备的技能。</p>
+<div class="note success no-icon"><p><strong>The purpose of computing is insight, not numbers.</strong><br> <strong>— <em>Richard Hamming</em>（理查德·汉明，美国数学家，在计算机科学和通信工程领域贡献突出，美国计算机协会（ACM）的创立人之一，1968年图灵奖得主）</strong></p>
+</div>
+<h3 id="整数平方根">整数平方根</h3>
+<p>理解这道面试题的意义之后，我们先来看看较简单的求整数的平方根问题。数学上，“整数平方根”函数定义为<span class="math inline">\(\lfloor\sqrt{x}\rfloor\)</span>，即对给定正整数的平方根执行向下取整操作，得出不大于该值的最大正整数。如果这样的定义读着有点拗口，那么就来看看刷题网站<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/sqrtx/">力扣</a>（<a target="_blank" rel="noopener" href="https://leetcode.com/problems/sqrtx/">LeetCode</a>）上的问题描述：</p>
+<blockquote>
+<p>实现 int sqrt(int x) 函数。<br />
+计算并返回 x 的平方根，其中 x 是非负整数。<br />
+由于返回类型是整数，结果只保留整数的部分，小数部分将被舍去。<br />
+<strong>示例 1:</strong><br />
+<span class="math inline">\(\quad\)</span> <strong>输入:</strong> x = 4<br />
+<span class="math inline">\(\quad\)</span> <strong>输出:</strong> 2<br />
+<strong>示例 2:</strong><br />
+<span class="math inline">\(\quad\)</span> <strong>输入:</strong> x = 8<br />
+<span class="math inline">\(\quad\)</span> <strong>输出:</strong> 2<br />
+<span class="math inline">\(\quad\)</span> <strong>说明:</strong> 8 的平方根是 2.82842..., 由于返回类型是整数，小数部分将被舍去。</p>
+</blockquote>
+<p>这道题的难度级别是“容易”，但是现实中发现不少求职者都在此栽倒。一个不需要思考的解法就是暴力搜索：从数值1开始自乘再比较，如果小于输入值就逐次加一重复此过程，直到结果相等或大于输入值。结果相等就直接输出当前值，结果大于输入值就输出当前值减一。暴力搜索解法的时间复杂度是<span class="math inline">\(\mathrm {O} (\sqrt{n})\)</span>。对于一个32位整数，可能需要64万多次乘法，这无疑太慢了。</p>
+<p>另一个看起来似乎很机智的方法，是利用等差数列的求和公式 <span class="math display">\[\sum_{i=1}^n (2i-1)=1+3+5+\cdots+(2n-1)=n^2\]</span> 这样简单地从1开始累加奇数并比较，循环往复就可以找到整数平方根。它的好处是每次都用到了上一轮的结果，而且移位加减显然比乘法快。可惜，它的时间复杂度仍然是 <span class="math inline">\(\mathrm {O} (\sqrt{n})\)</span>，面试官还是会拒绝这样的答案，要求更有时间效率的解法。</p>
+<h4 id="二分查找法">二分查找法</h4>
+<p>整数序列本身是有序的，所以一定可以应用二分查找算法。具体应用到这个问题，我们需要首先设定上下两个边界，然后将猜测值设置为二者之间的中点。若中点的平方大于输入参数，将上界移到中点，否则将下界移到中点。循环重复直到上下边界值差1时，算法结束，下界数值就是我们要的输出。</p>
+<p>虽然二分查找法仍然要执行乘法操作，但是其时间复杂度缩减为<span class="math inline">\(\mathrm {O}(\log n)\)</span>。32位整数输入最多需要16次乘法，这是非常快的。要注意的是初始值的选择，必须保证每次循环时有：</p>
+<ul>
+<li>下界 <span class="math inline">\(low\leqslant \lfloor\sqrt{x}\rfloor+1\)</span></li>
+<li>上界 <span class="math inline">\(high\geqslant \lfloor\sqrt{x}\rfloor\)</span></li>
+</ul>
+<p>不然算法不能收敛。一个合理且实用的选择是：<span class="math inline">\(low=1，high=x\div32+8\)</span>。据此，二分查找法的完整C语言代码如下（提交LeetCode后通过无误）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* integer square root - bisection method */</span></span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">isqrt_bist</span><span class="params">(<span class="keyword">uint32_t</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> low, high, mid;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (a &lt;= <span class="number">1</span>) <span class="keyword">return</span> a;</span><br><span class="line"></span><br><span class="line">    low = <span class="number">1</span>;</span><br><span class="line">    high = (a &gt;&gt; <span class="number">5</span>) + <span class="number">8</span>;</span><br><span class="line">    <span class="keyword">if</span> (high &gt; <span class="number">65535</span>) high = <span class="number">65535</span>; <span class="comment">/* adjust upper bound */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (high &gt;= low) &#123;</span><br><span class="line">        mid = (low + high) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (mid * mid &gt; a) &#123;</span><br><span class="line">            high = mid - <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> high;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="牛顿迭代法">牛顿迭代法</h4>
+<p>第二种知名的高效解法就是牛顿迭代法，是基于数值分析中在实数域上近似求解方程的牛顿-拉弗森方法（Newton-Raphson method）。这里概要介绍一下其原理：假定一个可导的实变量函数 <span class="math inline">\(f(x)\)</span>，求满足 <span class="math inline">\(f(x)=0\)</span> 的 <span class="math inline">\(x\)</span> 值，即函数的零点。只要先估计一个与零点相近的值 <span class="math inline">\(x_n\)</span>，代入下面的公式，就可以得到下一个更为接近的估算值 <span class="math inline">\(x_{n+1}\)</span>： <span class="math display">\[x_{n+1}=x_n-{\frac {f(x_n)}{f&#39;(x_n)}}\tag{1}\]</span> 这个公式是怎么得出来的呢？很简单！我们知道导数 <span class="math inline">\(f&#39;(x_n)\)</span> 的数值就是函数 <span class="math inline">\(f(x)\)</span> 在 <span class="math inline">\(x=x_n\)</span>处切线的斜率。如下图所示，将切线与 <span class="math inline">\(x\)</span> 轴的交点记为 <span class="math inline">\(x_{n+1}\)</span>，可以看到 <span class="math inline">\(x_{n+1}\)</span>比 <span class="math inline">\(x=x_n\)</span>更接近零点。</p>
+<p><img src="Newton_iteration.png" /></p>
+<p>依据斜率的定义有： <span class="math display">\[f&#39;(x_n)=\frac {f(x_n)}{x_n-x_{n+1}}\tag{2}\]</span></p>
+<p>显然公式（1）就是上式（2）的变体，证毕。</p>
+<p>初等数学的知识告诉我们，计算实数 <span class="math inline">\(a\)</span> 的平方根等同于求函数 <span class="math inline">\(f(x)=x^2-a\)</span> 的零点。套用公式（1）推导出： <span class="math display">\[x_{n+1}=x_{n}-\frac{x_n^2-a}{2x_n}=\frac{1}{2}(x_n+\frac{a}{x_n})\tag{3}\]</span></p>
+<p>这就是计算 <span class="math inline">\(\sqrt a\)</span> 的迭代公式。此牛顿迭代式呈平方收敛，每轮迭代之后，精确数位的个数翻倍。</p>
+<p>令人惊喜的是，数学家证明了牛顿迭代法对求整数平方根一样有效。这时的迭代公式是： <span class="math display">\[x_{n+1}=\lfloor(x_n+\lfloor a/x_n\rfloor)/2\rfloor\tag{4}\]</span> 其中 <span class="math inline">\(x_{n+1}\)</span>、<span class="math inline">\(x_n\)</span> 和 <span class="math inline">\(a\)</span> 均为正整数，而收敛的条件是：以 <span class="math inline">\(x_0\geqslant\lfloor\sqrt a\rfloor\)</span> 开始，当 <span class="math inline">\(x_{n+1}\geqslant x_n\)</span> 时序列收敛，<span class="math inline">\(x_n\)</span> 就是我们要的整数平方根。实现牛顿迭代法求整数平方根时的难点，在于要确保首次估值满足以上的初始条件。一个有效的办法，是将首次估值 <span class="math inline">\(x_0\)</span> 设成不小于 <span class="math inline">\(\sqrt a\)</span> 且值最小的2的幂。下面给出C函数代码实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* integer square root - Newton iteration */</span></span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">isqrt_nwtn</span><span class="params">(<span class="keyword">uint32_t</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> a1;</span><br><span class="line">    <span class="keyword">int</span> s, x0, x1;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (a &lt;= <span class="number">1</span>) <span class="keyword">return</span> a;</span><br><span class="line"></span><br><span class="line">    s = <span class="number">1</span>;</span><br><span class="line">    a1 = a - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (a1 &gt; <span class="number">65535</span>) &#123; s += <span class="number">8</span>; a1 &gt;&gt;= <span class="number">16</span>; &#125;</span><br><span class="line">    <span class="keyword">if</span> (a1 &gt; <span class="number">255</span>)   &#123; s += <span class="number">4</span>; a1 &gt;&gt;= <span class="number">8</span>; &#125;</span><br><span class="line">    <span class="keyword">if</span> (a1 &gt; <span class="number">15</span>)    &#123; s += <span class="number">2</span>; a1 &gt;&gt;= <span class="number">4</span>; &#125;</span><br><span class="line">    <span class="keyword">if</span> (a1 &gt; <span class="number">3</span>)     &#123; s += <span class="number">1</span>; &#125;</span><br><span class="line"></span><br><span class="line">    x0 = <span class="number">1</span> &lt;&lt; s;                <span class="comment">/* first guess 2**s */</span></span><br><span class="line">    x1 = (x0 + (a &gt;&gt; s)) &gt;&gt; <span class="number">1</span>;  <span class="comment">/* x1 = (x0+a/x0)/2 */</span></span><br><span class="line">    <span class="keyword">while</span> (x1 &lt; x0) &#123;</span><br><span class="line">        x0 = x1;</span><br><span class="line">        x1 = (x0 + (a/x0)) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>说明几点：</p>
+<ol type="1">
+<li>第9到16行实现首次估值的设置，这是一个利用比较和移位操作的精巧设计！变量<code>s</code>保存不小于 <span class="math inline">\(\sqrt a\)</span> 且值最小的2的幂指数，<code>1 &lt;&lt; s</code>（<span class="math inline">\(2^s\)</span>）就是首次估值！</li>
+<li>如果存在快速的前导0计数指令或函数<code>nlz()</code>，第9到14行可以用<code>s = 16 - nlz(a - 1)/2</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>代替。</li>
+<li>如第17行所示，因为首次估值是2的幂，第一次迭代里的除法用移位代替。</li>
+<li>此算法最多执行5次除法，当 <span class="math inline">\(a\leqslant(2^{24}-1)\)</span> 时，最多4次。</li>
+</ol>
+<h4 id="移位相减法">移位相减法</h4>
+<p>求平方根的解法其实很多，有一种<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Digit-by-digit_calculation">逐个数位的计算方法</a>特别适合于手算（或心算），而且还适用于任意进位制。这种方法包括内在的搜索和测试循环，从高到低逐级判定单个数位。其基本的计算公式是二项平方展开式： <span class="math display">\[(r+e)^2=r^2+2re+e^2\le x\]</span> 给定当前的 <span class="math inline">\(r\)</span>，找到下一个数位 <span class="math inline">\(e\)</span>，使得结果最接近 <span class="math inline">\(x\)</span>。</p>
+<p>应用到二进制数位系统，搜索和测试的过程变得更高效，因为单个比特位都是2的幂，所有乘积都可以用快速比特移位操作实现。James Ulery写过一篇短文<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>，详细地推演了计算整数平方根的二进制算法。下面以整数200为例，演绎计算过程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">a0=200 (0xC8), x0=0, m0=0x40</span><br><span class="line">b_n=x_n+m_n, x_&#123;n+1&#125;=x_n&gt;&gt;1</span><br><span class="line"><span class="keyword">if</span> a_n&gt;b_n; a_&#123;n+1&#125;=a_n-b_n, x_&#123;n+1&#125;=x_&#123;n+1&#125;+m_n</span><br><span class="line"><span class="keyword">else</span> a_&#123;n+1&#125;=a_n, x_&#123;n+1&#125; no change</span><br><span class="line">m_&#123;n+1&#125;=m_n&gt;&gt;2</span><br><span class="line"></span><br><span class="line">  1100 1000 a0    0000 0000 x0  0100 0000 m0</span><br><span class="line">-  1        b0    0000 0000 x1  (x0&gt;&gt;1)</span><br><span class="line">-----------</span><br><span class="line">  1000 1000 a1    0100 0000 x1  0001 0000 m1</span><br><span class="line">-  101      b1    0010 0000 x2  (x1&gt;&gt;1)</span><br><span class="line">-----------</span><br><span class="line">  0011 1000 a2    0011 0000 x2  0000 0100 m2</span><br><span class="line">-   11 01   b2    0001 1000 x3  (x2&gt;&gt;1)</span><br><span class="line">-----------</span><br><span class="line">  0000 0100 a3    0001 1100 x3  0000 0001 m3</span><br><span class="line">-    1 1101 b3    0000 1110 x4  (x3&gt;&gt;1)</span><br><span class="line">----------- (Cannot substract)</span><br><span class="line">  0000 0100 a4    0000 1110 x4 (stop since m=0)</span><br><span class="line">  </span><br><span class="line">x4 = 14 (<span class="built_in">integer</span> square root), a4 = 4 (remainder)</span><br></pre></td></tr></table></figure>
+<p>最后一轮 <span class="math inline">\(x\)</span> 保存的就是整数平方根，<span class="math inline">\(a\)</span> 为余数。如果应用64位寄存器组合变量 <span class="math inline">\(x\)</span> 和 <span class="math inline">\(a\)</span>，可以用硬件辅助实现快速求解。以下为对应使用C语言的软件实现，注意到整个过程需要16次迭代：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* integer square root - shift-and-substract method */</span></span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">isqrt_sfsb</span><span class="params">(<span class="keyword">uint32_t</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> m, x, b;</span><br><span class="line"></span><br><span class="line">    m = <span class="number">0x40000000</span>;</span><br><span class="line">    x = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (m != <span class="number">0</span>) &#123;</span><br><span class="line">        b = x | m;</span><br><span class="line">        x &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (a &gt;= b) &#123;</span><br><span class="line">            a -= b;</span><br><span class="line">            x |= m;</span><br><span class="line">        &#125;</span><br><span class="line">        m &gt;&gt;= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种解法不太直观，迭代次数恒定，效率亦并非最高。但是了解其原理并写出正确的代码，展示了应聘者深厚的数学功底和熟练的编程技能，一定会给面试加分。</p>
+<h3 id="浮点数平方根">浮点数平方根</h3>
+<p>比求整数平方根更普遍的是求任意实数的平方根。这时输入值可能有小数位，输出值也会是带小数点的实数。准备这样的面试题，需要先复习浮点数的概念和应用。</p>
+<h4 id="ieee-754">IEEE 754</h4>
+<p>浮点数是计算机对实数的近似值数值表现法。IEEE 754是现今最广泛使用的二进制浮点数运算标准。它定义了表示浮点数的格式、反常值、特殊数值、以及这些数值的“浮点数运算符”。IEEE 754标准指定的浮点数格式建立于二进制科学计数法的基础之上，其数值表示式为： <span class="math display">\[\mathrm{Value}=(-1)^s2^{e}(1+m)\]</span> 这里 <span class="math inline">\(s\)</span> 为符号位，<span class="math inline">\(e\)</span> 是指数，<span class="math inline">\(m\)</span> 被称为尾数。以IEEE 754标准规定的32位单精度浮点数为例，如下图，从右到左第31位为符号位表示正负，中间8位（第23到30位）表示指数加偏移量127后的数值，后23位储存尾数的有效数位（最高的第22位对应 <span class="math inline">\(2^{-1}\)</span>，最低的第0位对应 <span class="math inline">\(2^{-23}\)</span>）：</p>
+<img src="Float_example.svg" />
+<p style="text-align: center;">
+（来源：英文维基百科条目“IEEE 754”）
+</p>
+<p>由此可以算出实际数值 <span class="math inline">\((-1)^02^{124-127}(1+2^{-2})=0.15625\)</span>。从十进制实数转换为浮点数也不难，具体过程可参考<a target="_blank" rel="noopener" href="https://sandbox.mc.edu/~bennet/cs110/flt/dtof.html">此网页</a>。还可以使用一些<a target="_blank" rel="noopener" href="https://www.h-schmidt.net/FloatConverter/IEEE754.html">在线转换工具</a>验证手算的结果。</p>
+<p>值得注意的是，<strong>浮点数并非实数</strong>，它所表示的数会与实际的数值存在偏差。<strong>32位单精确度浮点数只可以保证7位十进制有效数字，而64位双精度浮点数可以保证15位十进制有效数字</strong>。在下面的在线工具截图中，我们输入精确到小数点后八位的 <span class="math inline">\(\pi\)</span> 值3.14159265，转换后得到单精确度浮点数0x40490fdb，此数字实际代表的值为3.1415927410...。这证实了单精确度浮点数的精确度判断。</p>
+<p><img src="IEEE754-Pi.jpg" /></p>
+<p>C语言的<code>float</code>类型对应IEEE 754标准规定的32位单精确度浮点数，<code>double</code>类型对应64位双精确度浮点数。</p>
+<h4 id="二分搜索法">二分搜索法</h4>
+<p>基于实数和其浮点数表示法的特点，应用二分搜索法计算平方根的过程与整数平方根有一些不同：</p>
+<ul>
+<li>初始值设定：这里要区分输入参数大于或小于等于1的情况
+<ul>
+<li>如果输入参数小于1，其平方根比自身要大，所以要将上界设为1，下界为其自身。</li>
+<li>输入参数小于1的情况正好相反，可将上界设为自身，下界为1。</li>
+</ul></li>
+<li>循环结束条件：为避免出现死循环，要注意以下两点
+<ul>
+<li>由于上下界都为浮点数，必须要定义一个误差范围，比如 <span class="math inline">\(10^{-6}\)</span>。当上下界差值不超过此值时，立即结束循环。</li>
+<li>浮点数的精度是有限的。32位浮点数<code>float</code>只可以保证7位十进制有效数字。比如当下界为141.421356、上界为141.421371时，计算出来的中间值还是141.421356。所以还必须加上强制退出的判定。</li>
+</ul></li>
+</ul>
+<p>考虑上述这些，我们的浮点数平方根二分搜索法实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERROR_BOUND 1e-6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* real number square root - bisection method */</span></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">rsqrt_bist</span><span class="params">(<span class="keyword">float</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> low, high, <span class="keyword">float</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* set initial lower and upper bounds */</span></span><br><span class="line">    <span class="keyword">if</span> (x &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        low = <span class="number">1</span>;</span><br><span class="line">        high = x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* square root of any number less than 1 is bigger</span></span><br><span class="line"><span class="comment">         * than the number itself, e.g. 0.01^0.5 = 0.1 */</span></span><br><span class="line">        low = x;</span><br><span class="line">        high = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> ((high - low) &gt; ERROR_BOUND) &#123;</span><br><span class="line">        mid = (high + low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (mid == low) &#123;</span><br><span class="line">            <span class="keyword">break</span>; <span class="comment">/* force exit */</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (mid * mid &gt; x) &#123;</span><br><span class="line">            high = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            low = mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="巴比伦解法">巴比伦解法</h4>
+<p>面试者要掌握的第二种计算浮点数平方根的方法是巴比伦解法。这是发源于古典世界的、有悠久历史的算法。据信将近四千年前的巴比伦人就知晓了这种求平方根的方法<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>，但是直到公元一世纪才由古希腊数学家希罗给出明确的描述。</p>
+<p>巴比伦解法的朴素思想是：如果估计值 <span class="math inline">\(x\)</span> 大于非负实数 <span class="math inline">\(a\)</span> 的平方根 <span class="math inline">\(r\)</span>，那么 <span class="math inline">\(a/x\)</span> 一定是小于 <span class="math inline">\(r\)</span> 的，而二者的均值将更接近 <span class="math inline">\(r\)</span>。因为算术平均数总是大于或等于几何平均值，所以这一算法一定收敛。巴比伦解法的实际流程可写为：</p>
+<ol type="1">
+<li>预测一个平方根值 <span class="math inline">\(x\)</span>（优选接近实际平方根的数值），初始 <span class="math inline">\(y=a/x\)</span></li>
+<li>计算 <span class="math inline">\(x=(x+y)/2\)</span>（使用算术平均值近似几何平均值）</li>
+<li>比较 <span class="math inline">\(x\)</span> 和 <span class="math inline">\(y\)</span>，如果差值达不到精度，重复以上步骤</li>
+</ol>
+<p>仔细观察上面第2步，这不就是前面讲到的牛顿迭代法公式（3）么！所以巴比伦解法与牛顿迭代法本质上是等同的。想想在牛顿发明微积分之前还早两千多年时，古巴比伦人已经会熟练地应用此方法计算出平方根了，这样的智慧实在是让人佩服。</p>
+<p>明白了巴比伦解法的原理和流程，我们就能写出简洁的代码实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* real number square root - Newton/Babylonian */</span></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">rsqrt_nwtn</span><span class="params">(<span class="keyword">float</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> val = x;</span><br><span class="line">    <span class="keyword">float</span> last = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">fabs</span>(val - last) &gt; ERROR_BOUND) &#123;</span><br><span class="line">        val = (val + last) / <span class="number">2</span>;</span><br><span class="line">        last = x / val;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="平方根倒数">平方根倒数</h3>
+<p>在3D游戏程序开发中，依据计算机图形学的原理，需要使用规一化向量来实现光照和投影效果。由此可能每秒要做上百万次平方根倒数运算，所以找到一种快速平方根倒数的计算方法至关重要。此外，平方根倒数也广泛应用在量化神经网络、深度学习、气象数据处理及基准测试（benchmarking）软件中。</p>
+<h4 id="速算法实现">速算法实现</h4>
+<p>很明显，直接使用1去除以浮点数平方根函数的输出是低效的。幸运的是，早在上个世纪80年代后期，工作于一些3D图形显示软硬件公司的程序员（们）就发明了“平方根倒数速算法”（Fast Inverse Square Root，简称“Fast InvSqrt()”）。对于同一精度的近似值，此算法比直接使用浮点数除法要快四倍！</p>
+<p>下面就是对应于32位单精度浮点数的“平方根倒数速算法”C语言实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* fast inverse square root function for 32-bit IEEE 754</span></span><br><span class="line"><span class="comment"> * standard floating-point numerical value */</span></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">fast_inv_sqrt</span><span class="params">(<span class="keyword">float</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> halfx = <span class="number">0.5f</span> * x;</span><br><span class="line">    <span class="keyword">int</span> i = *(<span class="keyword">int</span> *)&amp;x; <span class="comment">/* transfer bits of float to int */</span></span><br><span class="line">    i = <span class="number">0x5f375a86</span> - (i &gt;&gt; <span class="number">1</span>); <span class="comment">/* initial guess with magic */</span></span><br><span class="line">    x = *(<span class="keyword">float</span> *)&amp;i; <span class="comment">/* bit transfer back to float */</span> </span><br><span class="line">    x = x * (<span class="number">1.5f</span> - halfx * x * x); <span class="comment">/* Newton step */</span></span><br><span class="line">    x = x * (<span class="number">1.5f</span> - halfx * x * x); <span class="comment">/* Repeat (optional) */</span></span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然平方根倒数速算法不太可能在面试中被问到，但是理解这个精巧的算法会极大地巩固和加深程序员的知识面。如果你有机会能准确而清晰地讲述其机理，一定会给面试官留下深刻印象。</p>
+<h4 id="速算法解析">速算法解析</h4>
+<p>那么该如何理解这段简短的程序呢？它又是如何以令人意想不到的速度完成平方根倒数运算的呢？让我们来条分缕析。</p>
+<h5 id="牛顿迭代">牛顿迭代</h5>
+<p>先从最后两行看起。第9行和第10行完全一样，注释标明是牛顿（迭代）步骤。我们来验证一下它是否符合迭代公式。计算实数 <span class="math inline">\(a\)</span> 的平方根倒数等同于求函数 <span class="math inline">\(f(x)=x^{-2}-a\)</span> 的零点。套用公式（1）推导出： <span class="math display">\[\begin{align}
+x_{n+1}&amp;=x_{n}-\frac{x_n^2-a}{-2x_n^{-3}}\\
+&amp;=x_n+\frac{1}{2}x_n-\frac 1 2ax_n^3\\
+&amp;=x_n(1.5-\frac a 2 x_n^2)\tag{5}
+\end{align}\]</span> 公式（5）和代码正好对上！所以程序在此执行了两步牛顿迭代。由此也可推断出第8行的变量<code>x</code>储存着平方根倒数的初始估计值。进一步，我们可以判定程序的第6、7、8三行应该就是用来生成这个预估值的。问题是整数<code>i</code>是做什么用的？那个0x5f375a86被称为魔术数字，它又是从哪里冒出来的呢？</p>
+<h5 id="类型转化">类型转化</h5>
+<p>要弄懂这三行代码，就需要了解将IEEE 754格式的浮点数转化为整数时发生了什么。如第6行的代码所示，转化通过取别名存储的方式实现。原浮点数的所有比特都保留不动，只是被重新解析为整数<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。回顾前述“IEEE 754”一节讲到的浮点数数值表示法，不考虑符号位，如果标记原浮点数为<span class="math inline">\(x=2^{e_x}(1+m_x)\)</span>，则转化后的整数可表示为<span class="math inline">\(I_x=E_xL+M_x\)</span>。这些参数之间的关系为（括弧内为单精度时的取值）： <span class="math display">\[\begin{align}
+E_x&amp;=e_x+B &amp;(B=127)\\
+M_x&amp;=m_xL &amp;(L=2^{23})
+\end{align}
+\]</span> 还是以0.15625为例，从其浮点数表达式 <span class="math inline">\(2^{-3}(1+0.25)\)</span> 得出 <span class="math inline">\({e_x}=-3\)</span>、<span class="math inline">\(m_x=0.25\)</span>。由此导出 <span class="math inline">\({E_x}=-3+127\)</span>、<span class="math inline">\(M_x=0.25\cdot2^{23}\)</span> 及 <span class="math inline">\(I_x=124\cdot2^{23}+2^{21}=1042284544\)</span>，这正好对应浮点数0.15625存储数据的十六进制数值0x3e200000。</p>
+<h5 id="线性近似">线性近似</h5>
+<p>另一个要用到的知识点，是特定对数函数的线性近似。如下图所示，在<span class="math inline">\([0,1]\)</span>区间内，<span class="math inline">\(\log _{2}{(1+x)}\)</span> 与 <span class="math inline">\({x}\)</span> 很接近。事实上，越接近端点相差越小。为了使平均误差最小，可以考虑将 <span class="math inline">\({x}\)</span> 加上一个矫正值 <span class="math inline">\(\sigma\)</span>。从图形上看，这等同于将直线上移，平均误差确实变小了。 由此得到关系式 <span class="math inline">\(\log_{2}{(1+x)}\cong x+\sigma\)</span>。记住这一式子，因为我们马上就要用到。</p>
+<img src="log-plots.png" />
+<p style="text-align: center;">
+蓝线为 <span class="math inline">\(\log_2(1+x)\)</span>，绿线为 <span class="math inline">\(x\)</span>，红线为 <span class="math inline">\(x+\sigma\)</span>
+</p>
+<h5 id="魔术数字">魔术数字</h5>
+<p>有了以上这些预备知识，魔术数字就可以推到出来了。首先，如果将浮点数 <span class="math inline">\(x\)</span> 的平方根倒数的结果记为 <span class="math inline">\(y\)</span>，则有 <span class="math display">\[y=\frac{1}{\sqrt{x}}\]</span> 对等式的两边取以2为底的对数，得到 <span class="math display">\[\log_2{(y)}=-\frac{1}{2}\log_2{(x)}\]</span> 因为 <span class="math inline">\(x\)</span> 和 <span class="math inline">\(y\)</span> 都是浮点数，下一步用它们各自的浮点数标记 <span class="math inline">\(2^{e}(1+m)\)</span> 代入 <span class="math display">\[\log_2(1+m_y)+e_y=-\frac{1}{2}\log_2{(1+m_x)}-\frac{1}{2}e_x\]</span> 注意，这里应用对数的运算性质，乘方运算已化为加法运算。接下来将上一节的线性近似关系式代入，得出 <span class="math display">\[m_y+\sigma+e_y=-\frac{1}{2}m_x-\frac{1}{2}\sigma-\frac{1}{2}e_x\]</span> 下面一步非常关键，参考“类型转化”一节提到的关系式，用 <span class="math inline">\(E\)</span> 及 <span class="math inline">\(M\)</span> 替换 <span class="math inline">\(e\)</span> 及 <span class="math inline">\(m\)</span> <span class="math display">\[M_y+(E_y-B)L=-\frac{3}{2}\sigma{L}-\frac{1}{2}M_x-\frac{1}{2}(E_x-B)L\]</span> 移项整理后变成 <span class="math display">\[E_yL+M_y=\frac{3}{2}(B-\sigma)L-\frac{1}{2}(E_xL+M_x)\]</span> 仔细观察上式，左边不就是浮点数 <span class="math inline">\(y\)</span> 转化为整数 <span class="math inline">\(I_y\)</span> 的表达式 吗？而右边也包含 <span class="math inline">\(I_x\)</span>。标记 <span class="math inline">\(R=\frac{3}{2}(B-\sigma)L\)</span>，得到整数 <span class="math inline">\(I_y\)</span> 与 <span class="math inline">\(I_x\)</span> 的关系式： <span class="math display">\[I_y=R-\frac{1}{2}I_x\tag{6}\]</span> 再看看函数代码的第7行<code>i = 0x5f375a86 - (i &gt;&gt; 1);</code>，BINGO！给定线性近似的矫正值 <span class="math inline">\(\sigma\)</span>，就可以从公式（6）确定整数 <span class="math inline">\(R\)</span>，即魔术数字。而第8行<code>x = *(float *)&amp;i;</code>所做的只是将预估值转化回浮点数，即从 <span class="math inline">\(I_y\)</span> 到 <span class="math inline">\(y\)</span>， 以便下面的牛顿迭代。</p>
+<p>平方根倒数速算法，本质上是对输入浮点数做整数转化再进行一次移位操作，然后从一个精心挑选的整数常数中减去，结果转化回浮点数后就是其平方根倒数的近似值，最后根据精度需要进行一次或两次牛顿迭代。</p>
+<p>余下的问题是，怎么找到一个合适的 <span class="math inline">\(\sigma\)</span> 以计算出 <span class="math inline">\(R\)</span>，从而提供有足够精度初始估计值？</p>
+<p>早在2003年，当平方根倒数速算法的源码开始在某些网络论坛上出现时，普渡大学的数学博士Chris Lomont就对此做过专门研究<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>。那时流传的经典代码用到的 <span class="math inline">\(R\)</span> 值是0x5f3759df（对应 <span class="math inline">\(\sigma=0.045046568\)</span>），这个数值已经提供了相当好的精确度。Chris最初理论推导出一个的<span class="math inline">\(R\)</span> 值，但是实测结果竟然比经典 <span class="math inline">\(R\)</span> 值要差！Chris无奈在暴力搜索后终于得出最优值为0x5f375a86（对应 <span class="math inline">\(\sigma=0.045033296\)</span>），在牛顿迭代后所得的结果比经典值更精确。2018年，乌克兰、波兰和印度的几位科学家联名发表了期刊文章<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>，全面分析了单精度浮点数平方根倒数速算法中魔术数字的搜寻过程。他们通过缜密的计算证明0x5f375a86确实是最优值，并推导出了一次牛顿迭代后相对误差不超过 <span class="math inline">\(1.75\cdot 10^{-3}\)</span>、二次迭代后上界为 <span class="math inline">\(4.60\cdot 10^{-6}\)</span>。</p>
+<p>但是，迄今为止谁也不知道最初是由谁找到0x5f3759df的。想象在1980年代末，一个或几个程序员在嘈杂、幽闷的机房里，面对现在看来奇慢无比的计算机和分辨率极低的显示器，一遍又一遍孜孜不倦地推演和编程计算、实验平方根倒数速算法并寻找一个最优减法常数，最后终于找到这个魔术数字，之后二、三十年计算机图形和图像技术的发展都受益于此。这注定成为一段程序员的传奇故事！</p>
+<h3 id="单元测试">单元测试</h3>
+<p>单元测试是是保障软件开发质量的重要环节，是程序员的职责。面试者应该知道如何测试所写的代码。</p>
+<p>对于整数平方根，参考前述函数实现，我们要专门测试二分法的上界条件，确保其收敛性。此外，测试必须涵盖完全平方数（perfect square）和非完全平方数。因为没有标准的整数平方根库函数，我们可以先随机产生一个16位无符号整数，再自乘生成完全平方数保存。然后随机产生第二个16位无符号整数并对第一个整数取余，余数与完全平方数相加另存。这样保存的两个数的整数平方根都是第一个整数，可以用来测试。基于此的整数平方根测试代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* test integer square root */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_isqrt</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> num, offset, isqr1, isqr2, i;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* test a special boundary case */</span></span><br><span class="line">    num = <span class="number">4294838221</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nInteger Square Root of %u:\n\tNewton iteration\t%u&quot;</span></span><br><span class="line">           <span class="string">&quot;\n\tBisection method\t%u\n\tShift-and-substract\t%u\n&quot;</span>,</span><br><span class="line">           num, isqrt_nwtn(num), isqrt_bist(num), isqrt_sfsb(num));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* test perfect and non-perfect square numbers, 1000 each */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</span><br><span class="line">        num = random() &amp; <span class="number">0xFFFF</span>; <span class="comment">/* random 16-bit integer */</span></span><br><span class="line">        offset = (random() &amp; <span class="number">0xFFFF</span>) % num;</span><br><span class="line">        isqr1 = num * num; <span class="comment">/* test perfect square */</span></span><br><span class="line">        isqr2 = num * num + offset;</span><br><span class="line">        assert(isqrt_nwtn(isqr1) == num);</span><br><span class="line">        assert(isqrt_nwtn(isqr2) == num);</span><br><span class="line">        assert(isqrt_bist(isqr1) == num);</span><br><span class="line">        assert(isqrt_bist(isqr2) == num);</span><br><span class="line">        assert(isqrt_sfsb(isqr1) == num);</span><br><span class="line">        assert(isqrt_sfsb(isqr2) == num);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Integer Square Root function test passes!\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试浮点数平方根函数则方便得多，可以调用平方根库函数<code>sqrt()</code>，然后比较结果是否在给定的精度之内。下面的程序使用熟知的2的平方根及其标准倍数实现测试：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* test real number square root */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_rsqrt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> num, r0, r1, r2;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Number\t\tGlibc library sqrt\tNewton iteration\tBisection method\n&quot;</span>);</span><br><span class="line">    num = <span class="number">0.0002</span>; <span class="comment">/* test sequence: 0.0002, 0.02, 2, 200, 20000 */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;<span class="number">6</span>; i++) &#123;</span><br><span class="line">        r0 = <span class="built_in">sqrt</span>(num);</span><br><span class="line">        r1 = rsqrt_nwtn(num);</span><br><span class="line">        r2 = rsqrt_bist(num);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%-10.4f\t%.15f\t%.15f\t%.15f\n&quot;</span>, num, r0, r1, r2);</span><br><span class="line">        assert(r0 - r1 &lt; ERROR_BOUND);</span><br><span class="line">        assert(r0 - r2 &lt; ERROR_BOUND);</span><br><span class="line">        num *= <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Real Number Square Root function test passes!\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>快速平方根倒数的测试代码也不复杂。值得一提的是如何生成指定范围内的随机浮点数（可能成为单独的面试问题），这由下面程序段的第11行完成。测试也调用了<code>sqrt()</code>，以计算相对误差，如第15行所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> REAL_RANGE 1000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* measure fast inverse square root accuracy */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">measure_invsqrt</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> real, rt, ir1, ir2, acu;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nInverse Square Root accuracy test:\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Real Number\t1/sqrt()\tFast-InvSqrt\tError\n&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</span><br><span class="line">        real = (<span class="keyword">float</span>)random()/(<span class="keyword">float</span>)(RAND_MAX/REAL_RANGE);</span><br><span class="line">        rt = <span class="built_in">sqrt</span>(real);</span><br><span class="line">        ir1 = <span class="number">1</span> / rt;</span><br><span class="line">        ir2 = fast_inv_sqrt(real);</span><br><span class="line">        acu = <span class="built_in">fabs</span>(ir2 * rt - <span class="number">1</span>); <span class="comment">/* relative error */</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%f\t%.8f\t%.8f\t%.8f\n&quot;</span>, real, ir1, ir2, acu);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>单元测试的运行结果记录如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">$ ./sqrts</span><br><span class="line"></span><br><span class="line">Integer Square Root of 4294838221:</span><br><span class="line">Newton iteration    65535</span><br><span class="line">Bisection method    65535</span><br><span class="line">Shift-and-substract 65535</span><br><span class="line">Integer Square Root <span class="keyword">function</span> <span class="built_in">test</span> passes!</span><br><span class="line"></span><br><span class="line">Number     Glibc library sqrt  Newton iteration    Bisection method</span><br><span class="line">0.0002     0.014142135158181   0.014142150059342   0.014142313972116</span><br><span class="line">0.0200     0.141421347856522   0.141421347856522   0.141421005129814</span><br><span class="line">2.0000     1.414213538169861   1.414213538169861   1.414213657379150</span><br><span class="line">200.0000   14.142135620117188  14.142135620117188  14.142135620117188</span><br><span class="line">20000.0000 141.421356201171875 141.421356201171875 141.421356201171875</span><br><span class="line">Real Number Square Root <span class="keyword">function</span> <span class="built_in">test</span> passes!</span><br><span class="line"></span><br><span class="line">Inverse Square Root accuracy <span class="built_in">test</span>:</span><br><span class="line">Real Number 1/sqrt()   Fast-InvSqrt Error</span><br><span class="line">625.969788  0.03996900 0.03996884   0.00000405</span><br><span class="line">35.369572   0.16814545 0.16814519   0.00000149</span><br><span class="line">607.420593  0.04057469 0.04057455   0.00000340</span><br><span class="line">863.205933  0.03403633 0.03403633   0.00000000</span><br><span class="line">878.772766  0.03373352 0.03373352   0.00000000</span><br><span class="line">248.785355. 0.06339975 0.06339949   0.00000417</span><br><span class="line">498.417389  0.04479230 0.04479229   0.00000036</span><br><span class="line">142.394669  0.08380176 0.08380162   0.00000167</span><br><span class="line">24.309278   0.20282148 0.20282085   0.00000310</span><br><span class="line">299.332336  0.05779938 0.05779938   0.00000006</span><br></pre></td></tr></table></figure>
+<p>可以看到，计算浮点数平方根时，与库函数<code>sqrt()</code>的输出相比，巴比伦解法（牛顿迭代法）的结果精度比二分搜索法更高一些，但二者都在程序设定的绝对误差范围（<span class="math inline">\(10^{-6}\)</span>）之内。对于快速平方根倒数算法，其结果精度真的很高，计算出来的相对误差确实在理论的上界 （<span class="math inline">\(4.60\cdot10^{-6}\)</span>） 之内。这就是算法的力量！</p>
+<p>完整程序（包含以上所有函数及测试代码）的压缩包在此下载：<a href="sqrts.c.gz">sqrts.c.gz</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>这是因为“nlz”本质上就是以2为底的整数对数函数。对于大于0的整数 <span class="math inline">\(a\)</span>，有 <span class="math inline">\(\lceil\log_2(x)\rceil=32-\mathrm{nlz}(x-1)\)</span>，由此导出 <span class="math inline">\(\lceil\log_2(\sqrt x)\rceil=16-\mathrm{nlz}(x-1)/2\)</span>。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>James Ulery, <a target="_blank" rel="noopener" href="http://www.azillionmonkeys.com/qed/ulerysqroot.pdf">Computing Integer Square Roots</a>, University of Toronto, 2006<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>耶鲁大学收藏的一块古巴比伦黏土板（编号YBC 7289），上面以六十进制记载了单位正方形对角线长的准确估计值<span class="math inline">\({\textstyle 1;24,51,10}\)</span>。这个数的估算误差小于两百万分之一。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>注意这种类型转化与C语言的强制类型转换不同，后者会直接舍弃小数位。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>Chris Lomont. Fast inverse square root. Technical report, Indiana: Purdue University, 2003.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>Moroz, Leonid V., et al. "Fast calculation of inverse square root with the use of magic constant–analytical approach." Applied Mathematics and Computation 316 (2018): 245-255.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/" title="程序员面试题精解（2）— 平方根运算">https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> 系统编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/05/Cisco-WiFi6-MuMIMO/" rel="prev" title="思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情">
+                  <i class="fa fa-chevron-left"></i> 思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/03/ASAN-intro/" rel="next" title="AddressSanitizer — 程序员检测内存访问错误的利器">
+                  AddressSanitizer — 程序员检测内存访问错误的利器 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"9fe72bbac001a182a06ae1e71096a26d"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

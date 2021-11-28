@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="ISIC是一个开放源码的IP协议栈健壮性测试工具集。许多网络设备的安全漏洞 (比如拒绝服务等) 源于IP协议栈的软件设计或实现错误，应用此工具集可以及时发现和修复这些差错，确保系统运行的稳定性和可靠性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用ISIC测试网络设备IP协议栈的健壮性">
+<meta property="og:url" content="https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="ISIC是一个开放源码的IP协议栈健壮性测试工具集。许多网络设备的安全漏洞 (比如拒绝服务等) 源于IP协议栈的软件设计或实现错误，应用此工具集可以及时发现和修复这些差错，确保系统运行的稳定性和可靠性。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-26T05:15:51.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.633Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="网络安全">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta property="article:tag" content="TCP&#x2F;IP">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/","path":"2020/11/25/ISIC-test-IP-stack/","title":"用ISIC测试网络设备IP协议栈的健壮性"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>用ISIC测试网络设备IP协议栈的健壮性 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E6%A6%82%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">工具概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">安装过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97"><span class="nav-number">3.</span> <span class="nav-text">用户指南</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E9%80%89%E9%A1%B9"><span class="nav-number">3.1.</span> <span class="nav-text">命令行选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.2.</span> <span class="nav-text">命令行示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%BB%8F%E9%AA%8C"><span class="nav-number">3.3.</span> <span class="nav-text">使用经验</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E6%89%A9%E5%B1%95"><span class="nav-number">4.</span> <span class="nav-text">工具扩展</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用ISIC测试网络设备IP协议栈的健壮性
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-25 21:15:51" itemprop="dateCreated datePublished" datetime="2020-11-25T21:15:51-08:00">2020-11-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">工具使用</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>ISIC是一个开放源码的IP协议栈健壮性测试工具集。许多网络设备的安全漏洞 (比如拒绝服务等) 源于IP协议栈的软件设计或实现错误，应用此工具集可以及时发现和修复这些差错，确保系统运行的稳定性和可靠性。 <span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Testing leads to failure, and failure leads to underatanding.</strong><br> <strong>— <em>Burt Rutan</em>（伯特·鲁坦，美国航空工程师，2004年首次率领民间团队制造载人航天器飞上太空）</strong></p>
+</div>
+<h3 id="工具概要">工具概要</h3>
+<p><a target="_blank" rel="noopener" href="http://isic.sourceforge.net/">ISIC</a>是英文全称 <strong>I</strong>P <strong>S</strong>tack <strong>I</strong>ntegrity <strong>C</strong>hecker 的首字母缩写，翻译过来就是“IP协议栈完整性检查器”。这是一个用于测试IPv4和IPv6及其附属协议族 (TCP，UDP，ICMP等) 软硬件实现的工具集。其思想是产生目标协议的部分参数可控的随机数据包，然后将数据包发送到指定的被测试设备，观察设备的输出结果和运行状态。被测试设备可以是路由器、交换机、网络防火墙、入侵检测/预防系统 (IDS/IPS) 或者任何联网主机。ISIC也包含一个产生原始以太网帧的工具，用于检验以太网底层的软硬件实现。</p>
+<p>ISIC工具集包含的十个可执行的命令行工具如下，它们覆盖了几乎所有的TCP/IP核心协议：</p>
+<ul>
+<li>isic：IPv4协议栈完整性检查器</li>
+<li>tcpsic：TCP协议栈完整性检查器</li>
+<li>udpsic：UDP协议栈完整性检查器</li>
+<li>esic：以太网协议栈完整性检查器</li>
+<li>icmpsic：ICMP协议栈完整性检查器</li>
+<li>multisic: 组播UDP协议栈完整性检查器</li>
+<li>isic6：IPv6协议栈完整性检查器</li>
+<li>tcpsic6：IPv6 TCP协议栈完整性检查器</li>
+<li>udpsic6：IPv6 UDP协议栈完整性检查器</li>
+<li>icmpsic6：ICMPv6协议栈完整性检查器</li>
+</ul>
+<p>ISIC支持Unix类 (Linux/BSD/macOS) 系统，其编译和运行都需要<a target="_blank" rel="noopener" href="https://github.com/libnet/libnet">Libnet库</a> (版本1.1以上) 。Libnet是一个可移植的底层网络数据包构造和注入框架，ISIC调用它的应用程序接口 (API) 来创建和发送网络层数据包和链路层数据帧。ISIC在其主页上以源代码的压缩包发布，也可以使用RPM安装。ISIC的最后版本是0.07，它以BSD风格的许可证发布，对使用者的限制很少。</p>
+<p>ISIC最早的0.01版在1999年由迈克·弗兰岑 (Mike Frantzen) 在Redhat Linux 5.1上用了两周的时间写成。一开始弗兰岑用它来检测防火墙的漏洞，但是意外地发现它竟然造成许多设备崩溃。弗兰岑把ISIC放到网上后，得到了很好反响，许多IDS/IPS研发和测试工程师都在工作中使用它。直到0.05版，ISIC一直由弗兰岑自己维护和更新。2004年初，Libnet的作者迈克·希夫曼 (Mike Schiffman) 重写了这一API库，新的1.1.x版本不再向后兼容。至此，ISIC无法再与最新的Libnet库编译和链接。</p>
+<p>2004年晚些时候，思科公司的安全测试工程师<a target="_blank" rel="noopener" href="https://www.linkedin.com/in/shu-xiao-7925a3/">Shu Xiao</a>将一份补丁发送给弗兰岑，使ISIC能够工作于新版Libnet之上，补丁也包含了对其它一些错误的修复。这成为了弗兰岑移交责任给Xiao的完美时机，0.06版就此诞生。Xiao继续进一步增强ISIC的功能。他添加了新的IPv6协议测试工具 (*sic6)，以及组播测试工具 (multisic)，同时还改进了随机性和发送效率。最终的0.07版由Xiao于2006年12月发布。</p>
+<p>虽然原来的开发目的是做防火墙的功能测试，但ISIC在发现IP协议栈完整性漏洞方面的惊人表现，使得它成为一个网络系统安全评估的一个重要工具。<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/isic/">ISIC在Sourceforge的项目页面</a>显示，截止到2020年一月0.07版下载量接近两万。如果包含RPM的下载安装，实际的使用量应该远远大于这个数目。搜索网上<u>公共漏洞和暴露</u> (Common Vulnerabilities and Exposures，缩写CVE) 数据库，可以找到下面由ISIC工具集披露的安全漏洞：</p>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 29%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">编号 (CVE-ID)</th>
+<th style="text-align: center;">CVSS<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> 评分</th>
+<th style="text-align: center;">相关产品/系统</th>
+<th style="text-align: left;">问题描述</th>
+<th style="text-align: center;">ISIC工具</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">CVE-2000-0451</td>
+<td style="text-align: center;">5.0 MEDIUM</td>
+<td style="text-align: center;">英特尔 Express 8100 ISDN 路由器</td>
+<td style="text-align: left;">允许远程攻击者使用过大或分片ICMP数据包进行拒绝服务攻击</td>
+<td style="text-align: center;">icmpsic</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CVE-2000-0463</td>
+<td style="text-align: center;">5.0 MEDIUM</td>
+<td style="text-align: center;">BeOS 5.0 操作系统</td>
+<td style="text-align: left;">允许远程攻击者使用分片TCP数据包进行拒绝服务攻击</td>
+<td style="text-align: center;">tcpsic</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CVE-2008-1746</td>
+<td style="text-align: center;">7.8 HIGH</td>
+<td style="text-align: center;">思科统一通信管理器 (CUCM)</td>
+<td style="text-align: left;">允许远程攻击者通过一系列格式错误的UDP数据包导致拒绝服务 (核心转储和服务重启)</td>
+<td style="text-align: center;">udpsic</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CVE-2013-7470</td>
+<td style="text-align: center;">7.1 HIGH</td>
+<td style="text-align: center;">Linux 内核 &lt;3.11.7版本</td>
+<td style="text-align: left;">允许攻击者造成拒绝服务 (无限循环和崩溃)</td>
+<td style="text-align: center;">icmpsic</td>
+</tr>
+</tbody>
+</table>
+<p>由于存在被黑客利用的风险，大量CVE都不给出所使用工具的信息。所以，有理由相信用ISIC找到的安全弱点及漏洞也远不止上面这些。比如，在网上对<a target="_blank" rel="noopener" href="https://attackerkb.com/topics/12890azSfK/cve-2019-12256-vxworks-ipv4-options-buffer-overflow">2019年风河系统VxWorks的IPv4选项堆栈溢出漏洞</a>的讨论中，就有人问到为什么VxWorks没有做“isic"：</p>
+<blockquote>
+<p><em>In this particular case, it’s really surprising however that <strong>VxWorks did not just isic</strong>, which has been around for years and years to find a vulnerability like this: http://isic.sourceforge.net/</em></p>
+</blockquote>
+<p>从计算机科学和工程的学术研究上看，ISIC可被归类为自动软件测试技术中的模糊 (fuzzing) 测试。<a target="_blank" rel="noopener" href="https://scholar.google.com/scholar?hl=en&amp;as_sdt=0%2C5&amp;q=%22IP+Stack+Integrity+Checker%22&amp;oq=I">许多研究文献</a>都提及对ISIC的直接应用或间接参考。这种技术的基本思想是将无效、未被考虑或随机的数据输入到计算机程序，然后监视程序运行是否发生异常，例如崩溃、死循环、内置代码断言失败 (assert) 或潜在的内存泄漏等。从缓冲区溢出到跨站点脚本攻击的大多数安全漏洞，通常是对用户提供的输入数据验证不足的结果。模糊测试发现的网络系统安全漏洞常常是严重的，如果不及时发现和清除，会给用户造成重大损失。有证据显示，一些主要的网络设备厂商都集成了ISIC到质量控制的测试工程实践中。</p>
+<h3 id="安装过程">安装过程</h3>
+<p>这里以树莓派 (Respberry Pi 4 Model B) 目标系统为例，说明ISIC的安装过程。首先，使用几个命令查看系统软硬件和GCC编译器版本信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ cat /proc/device0tree/model</span><br><span class="line">Raspberry Pi 4 Model B Rev 1.4</span><br><span class="line">pi@raspberrypi:~ $ uname -a</span><br><span class="line">Linux raspberrypi 4.19.118-v7l+ <span class="comment">#1311 SMP Mon Apr 27 14:26:42 BST 2020 armv7l GNU/Linux</span></span><br><span class="line">pi@raspberrypi:~ $ gcc --version</span><br><span class="line">gcc (Raspbian 8.3.0-6+rpi1) 8.3.0</span><br><span class="line">Copyright (C) 2018 Free Software Foundation, Inc.</span><br><span class="line">This is free software; see the <span class="built_in">source</span> <span class="keyword">for</span> copying conditions.  There is NO</span><br><span class="line">warranty; not even <span class="keyword">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span><br></pre></td></tr></table></figure>
+<p>如前所述，ISIC的编译和运行需要Libnet库的支持。最新的Libnet 1.2版可以从其<a target="_blank" rel="noopener" href="https://github.com/libnet/libnet/releases">GitHub项目发布主页下载</a>，然后执行以下步骤编译和安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tar xf libnet-1.2.tar.gz</span><br><span class="line"><span class="built_in">cd</span> libnet-x.y.z/</span><br><span class="line">./configure &amp;&amp; make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>安装完可以在<code>/usr/local/lib</code>目录下找到Libnet的静态库文件<code>libnet.a</code>和动态链接库文件<code>libnet.so</code>，而所有的编程需要的头文件位于<code>/usr/local/include</code>目录下。这些验证无误后，接下来就可以开始ISIC的安装：</p>
+<ol type="1">
+<li><p>从ISIC的主页 (<a target="_blank" rel="noopener" href="http://isic.sourceforge.net/">http://isic.sourceforge.net/</a>) 下载压缩的打包文件<strong>isic-0.07.tgz</strong></p></li>
+<li><p>用<code>tar xzvf isic-0.07.tgz</code>命令解压展开：</p></li>
+<li><p>进入<code>isic-0.07</code>目录，执行<code>./configure</code>命令配置编译环境：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ ./configure </span><br><span class="line">creating cache ./config.cache</span><br><span class="line">checking <span class="keyword">for</span> gcc... gcc</span><br><span class="line">checking whether the C compiler (gcc  ) works... yes</span><br><span class="line">checking whether the C compiler (gcc  ) is a cross-compiler... no</span><br><span class="line">checking whether we are using GNU C... yes</span><br><span class="line">checking whether gcc accepts -g... yes</span><br><span class="line">checking <span class="keyword">for</span> a BSD compatible install... /usr/bin/install -c</span><br><span class="line">checking <span class="keyword">for</span> /usr/<span class="built_in">local</span>/lib/libnet.a... no</span><br><span class="line">checking <span class="keyword">for</span> -lnet... no</span><br><span class="line">checking <span class="keyword">for</span> libnet_init <span class="keyword">in</span> -lnet... yes</span><br><span class="line">checking how to run the C preprocessor... gcc -E</span><br><span class="line">checking <span class="keyword">for</span> ANSI C header files... no</span><br><span class="line">checking <span class="keyword">for</span> u_int16_t... yes</span><br><span class="line">checking <span class="keyword">for</span> u_int32_t... yes</span><br><span class="line">checking <span class="keyword">for</span> in_addr_t... no</span><br><span class="line">checking whether gcc needs -traditional... no</span><br><span class="line">updating cache ./config.cache</span><br><span class="line">creating ./config.status</span><br><span class="line">creating Makefile</span><br></pre></td></tr></table></figure></p></li>
+<li><p>执行<code>make</code>命令编译和链接：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ make</span><br><span class="line">gcc -o isic isic.c -Wall -W -g -O2 -I/usr/<span class="built_in">local</span>/include `libnet-config --cflags` -DHAVE_LIBNET=1 -Din_addr_t=u_int32_t  `libnet-config --defines` -DVERSION=\&quot;0.07\&quot; -lnet -L/usr/<span class="built_in">local</span>/lib  `libnet-config --libs` </span><br><span class="line">gcc -o tcpsic tcpsic.c -Wall -W -g -O2 -I/usr/<span class="built_in">local</span>/include `libnet-config --cflags` -DHAVE_LIBNET=1 -Din_addr_t=u_int32_t  `libnet-config --defines` -DVERSION=\&quot;0.07\&quot; -lnet -L/usr/<span class="built_in">local</span>/lib  `libnet-config --libs` </span><br><span class="line">tcpsic.c: In <span class="keyword">function</span> ‘main’:</span><br><span class="line">tcpsic.c:274:7: error: dereferencing pointer to incomplete <span class="built_in">type</span> ‘struct tcphdr’</span><br><span class="line">    tcp-&gt;th_off = rand() &amp; 0xf;</span><br><span class="line">       ^~</span><br><span class="line">make: *** [Makefile:27: tcpsic] Error 1</span><br></pre></td></tr></table></figure> 糟糕！有一个编译错误！不必惊慌，这是Linux系统的TCP/IP头文件的变化造成的 (毕竟从最后的0.07版发布到现在已经十多年了)。如下修改<code>isic.h</code>文件就可以清除这个错误：</p>
+<p><figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ git diff isic.h.bak isic.h</span><br><span class="line"><span class="comment">diff --git a/isic.h.bak b/isic.h</span></span><br><span class="line"><span class="comment">index c12f716..8a8641c 100644</span></span><br><span class="line"><span class="comment">--- a/isic.h.bak</span></span><br><span class="line"><span class="comment">+++ b/isic.h</span></span><br><span class="line"><span class="meta">@@ -10,6 +10,8 @@</span></span><br><span class="line"> #include &lt;netinet/icmp6.h&gt;</span><br><span class="line"> #include &lt;netinet/ip6.h&gt;</span><br><span class="line"> #include &lt;netinet/if_ether.h&gt;</span><br><span class="line"><span class="addition">+#include &lt;netinet/tcp.h&gt;</span></span><br><span class="line"><span class="addition">+#include &lt;netinet/udp.h&gt;</span></span><br><span class="line"></span><br><span class="line"> #ifndef ETHER_FRAME_SIZE</span><br><span class="line"> #define ETHER_FRAME_SIZE 1500</span><br></pre></td></tr></table></figure></p></li>
+<li><p>下一步执行<code>sudo make install</code>，将可执行文件安装到<code>/usr/local/bin</code>目录，同时将用户手册安装到<code>/usr/local/man/man1</code>目录：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~/Downloads/isic-0.07 $ sudo make install</span><br><span class="line">/usr/bin/install -c -m 0755 -d /usr/<span class="built_in">local</span>/bin</span><br><span class="line">/usr/bin/install -c -m 0755 -c isic tcpsic udpsic icmpsic esic multisic isic6 tcpsic6 udpsic6 icmpsic6 /usr/<span class="built_in">local</span>/bin</span><br><span class="line">/usr/bin/install -c -m 0755 -d /usr/<span class="built_in">local</span>/man/man1</span><br><span class="line">/usr/bin/install -c -m 0755 -c isic.1 /usr/<span class="built_in">local</span>/man/man1</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<p>至此安装过程结束，运行<code>man isic</code>可以在终端直接在线查询<a target="_blank" rel="noopener" href="https://linux.die.net/man/1/isic">用户手册</a>。<strong>注意，因为ISIC工具集调用原始套接字 (raw socket) 发送数据包，运行命令行需要超级用户权限，或者授予普通用户特殊权限以<code>sudo</code>方式运行。</strong></p>
+<h3 id="用户指南">用户指南</h3>
+<h4 id="命令行选项">命令行选项</h4>
+<p>下表给出了通用的命令行选项的使用说明：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">选项字符</th>
+<th style="text-align: center;">相关参数</th>
+<th style="text-align: center;">说明</th>
+<th style="text-align: center;">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">c</td>
+<td style="text-align: center;">数据包数目</td>
+<td style="text-align: center;">只适用于esic</td>
+<td style="text-align: center;"><span class="math inline">\(2^{32}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">目的MAC/IP地址</td>
+<td style="text-align: center;">对esic可选，对其它为必需。设为“rand”选择随机地址</td>
+<td style="text-align: center;">对esic为FF:FF:FF:FF:FF:FF</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">i</td>
+<td style="text-align: center;">接口标识</td>
+<td style="text-align: center;">对esic和multisic为必需，其它不适用</td>
+<td style="text-align: center;">由系统路由选定</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">k</td>
+<td style="text-align: center;">跳过的数据包数目</td>
+<td style="text-align: center;">指定跳过（不发送）的初始数据包数目</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">l</td>
+<td style="text-align: center;">数据包长度</td>
+<td style="text-align: center;">只适用于esic</td>
+<td style="text-align: center;">1500</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">m</td>
+<td style="text-align: center;">打印速率或最大速率</td>
+<td style="text-align: center;">指定esic的打印间隙，对其它为最大速率 (kB/s)</td>
+<td style="text-align: center;">对esic为1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">p</td>
+<td style="text-align: center;">协议号或数据包数目</td>
+<td style="text-align: center;">指定esic的上层协议号，对其它为数据包数目</td>
+<td style="text-align: center;">对esic为0x0800 (IP)，对其它为<span class="math inline">\(2^{32}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">随机数种子</td>
+<td style="text-align: center;">指定伪随机序列的种子</td>
+<td style="text-align: center;">当前进程标识 (ID)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">s</td>
+<td style="text-align: center;">源MAC/IP地址</td>
+<td style="text-align: center;">对esic可选，对其它为必需。设为“rand”选择随机地址</td>
+<td style="text-align: center;">对esic为接口的MAC地址</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">x</td>
+<td style="text-align: center;">重复次数</td>
+<td style="text-align: center;">适用于esic以外的全部工具，设置数据包的重复次数</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">v</td>
+<td style="text-align: center;">无</td>
+<td style="text-align: center;">打印当前版本号</td>
+<td style="text-align: center;">无</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">z</td>
+<td style="text-align: center;">源MAC地址</td>
+<td style="text-align: center;">只适用于multisic，设置源MAC地址</td>
+<td style="text-align: center;">指定接口的MAC地址</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">D</td>
+<td style="text-align: center;">无</td>
+<td style="text-align: center;">适用于esic以外的全部工具，打印调试输出</td>
+<td style="text-align: center;">无</td>
+</tr>
+</tbody>
+</table>
+<p>有几点要特别解释一下：</p>
+<ol type="1">
+<li><span class="math inline">\(p/k/x\)</span>三个参数决定了总计发送多少个数据包。假设数据包总数为<span class="math inline">\(N\)</span>，那么 <span class="math inline">\(N＝(p-k)\cdot x\)</span>。所以<span class="math inline">\(k\)</span>一定要小于<span class="math inline">\(p\)</span>，不然就没有数据包发出。</li>
+<li>如果<span class="math inline">\(r\)</span>参数固定，伪随机序列的种子不变，那么ISICI构造和发送的数据包集合就完全一致。应用这一点可以重复测试序列。</li>
+<li>实际的数据包传输速率由网络接口卡决定，ISIC不能控制，但是它可以指定每秒生成和发送数据包的数量。</li>
+</ol>
+<p>此外，除esic以外的全部工具还支持特定的百分比选项，说明如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">选项字符</th>
+<th style="text-align: center;">相关百分比参数</th>
+<th style="text-align: center;">说明</th>
+<th style="text-align: center;">默认值 (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">i</td>
+<td style="text-align: center;">错误的ICMP校验和</td>
+<td style="text-align: center;">只用于icmpsic和icmpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">t</td>
+<td style="text-align: center;">错误的TCP校验和</td>
+<td style="text-align: center;">只用于tcpsic和tcpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">u</td>
+<td style="text-align: center;">TCP高优先级 (URG) 标志符置位</td>
+<td style="text-align: center;">只用于tcpsic和tcpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">F</td>
+<td style="text-align: center;">分片的数据包</td>
+<td style="text-align: center;">对isic6意味着包括随机的分片扩展报头</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">I</td>
+<td style="text-align: center;">IP选项或随机长度值</td>
+<td style="text-align: center;">对isic为IP报头随机长度值，对其它为IP选项</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">T</td>
+<td style="text-align: center;">有TCP选项的数据包</td>
+<td style="text-align: center;">只用于tcpsic和tcpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">U</td>
+<td style="text-align: center;">错误的UDP校验和</td>
+<td style="text-align: center;">只用于udpsic和udpsic6</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">V</td>
+<td style="text-align: center;">错误的IP版本号</td>
+<td style="text-align: center;">适用于全部工具</td>
+<td style="text-align: center;">10</td>
+</tr>
+</tbody>
+</table>
+<h4 id="命令行示例">命令行示例</h4>
+<ul>
+<li><p>使用esic生成具有首部包含随机协议编号的以太网帧，并通过eth0接口发送出去；在帧中，源MAC地址固定为01:02:34:56:07:89，目的MAC地址是默认的广播地址；每5000帧会有一条打印输出行：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">esic -i eth0 -s 01:02:34:56:07:89 -p rand -m 5000</span><br></pre></td></tr></table></figure></p></li>
+<li><p>指定isic生成带有随机源地址的100个IP数据包，目的地址固定为10.11.12.13；随机种子设置为10；一半的数据包将是分片报文；发送时，将跳过前20个数据包，从第21个数据包开始：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">isic -s rand -d 10.11.12.13 -F 50 -p 100 -k 20 -r 10</span><br></pre></td></tr></table></figure></p></li>
+<li><p>指定tcpsic生成源地址为1.2.3.4和源TCP端口69，目的地址21.22.23.24和随机目的TCP端口的数据包；每个数据包将被发送两次；整体最大速度为1000kB/s；在所有生成的TCP数据包中，30％的数据包将具有随机的TCP选项；而50％的TCP校验和将不正确。</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcpsic -s 1.2.3.4,69 -d 21.22.23.24 -x 2 -m 1000 -T 30 -t 50</span><br></pre></td></tr></table></figure></p></li>
+<li><p>使用以下multisic命令向组播地址224.0.0.5发送50000个UDP数据包；随机源地址和源/目的UDP端口；输出接口被强制为eth2；50％的传出数据包将是分片报文；并且源MAC地址设置为ff:ff:ff:ff:ff:ff：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multisic -s rand -d 224.0.0.5 -i eth2 -p 50000 -F 50 -z 	ff:ff:ff:ff:ff:ff</span><br></pre></td></tr></table></figure></p></li>
+<li><p>使用以下udpsic6命令发送100万个具有随机源地址和源UDP端口的IPv6 UDP数据包；目的地址为2001:1:2:3:4::2，目的UDP端口161 (SNMP端口)；90％的传出数据包将具有随机的IPv6目的选项标头，而总数据包中的20％将包含不正确的UDP校验和：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">udpsic6 -s rand -d 2001:1:2:3:4::2,161 -p 1000000 -I 90 -U 20</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<div class="note danger"><p>当心：请务必谨慎使用ISIC工具集，尽量在封闭的实验网络中运行，以避免给共享的工作环境造成破坏，否则可能要为给团体或他人所带来的损失负责！</p>
+</div>
+<p>最后，给出一段完整的<code>isic</code>工具运行记录及解读：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ sudo isic -v</span><br><span class="line">Version 0.07 </span><br><span class="line">pi@raspberrypi:~ $ sudo isic -s rand -d 10.0.23.1 -p 5000</span><br><span class="line">Using random <span class="built_in">source</span> IP<span class="string">&#x27;s</span></span><br><span class="line"><span class="string">Compiled against Libnet 1.2</span></span><br><span class="line"><span class="string">Installing Signal Handlers.</span></span><br><span class="line"><span class="string">Seeding with 1445</span></span><br><span class="line"><span class="string">No Maximum traffic limiter</span></span><br><span class="line"><span class="string">Bad IP Version = 10% Odd IP Header Length = 10% Frag&#x27;</span>d Pcnt = 10%</span><br><span class="line"> 1000 @ 18317.7 pkts/sec and 11797.1 k/s</span><br><span class="line"> 2000 @ 20195.5 pkts/sec and 12885.9 k/s</span><br><span class="line"> 3000 @ 26723.7 pkts/sec and 17110.4 k/s</span><br><span class="line"> 4000 @ 27171.0 pkts/sec and 17936.8 k/s</span><br><span class="line"></span><br><span class="line">Wrote 5000 packets <span class="keyword">in</span> 0.22s @ 23122.03 pkts/s</span><br></pre></td></tr></table></figure>
+<p>从上面的记录可以看到，该<code>isic</code>命令指定发送5000个的IP数据包。数据包源地址随机，目的地址为10.0.23.1。输出显示<code>isic</code>工具使用Libnet 1.2版编译和链接，随机数种子默认为进程号1445。之后是三个百分比选项：错误的IP版本号、IP报头随机长度值和分片数据包，都取默认值10%。每一千个数据包会打印一行，显示累计数据包发送速率和当前一千个数据包的字节发送速率，单位分别为pkt/s和k(B)/s。全部数据包发送完毕，打印总计运行时间0.22秒和累计数据包发送速率约23k pkts/s。</p>
+<h4 id="使用经验">使用经验</h4>
+<ul>
+<li>ISIC的基本应用场景总结如下：
+<ul>
+<li>检验防火墙是否有数据包泄漏</li>
+<li>IDS/IPS 的穿透性测试</li>
+<li>路由器、交换机和主机协议栈的健壮性测试</li>
+</ul></li>
+<li>ISIC的主要延伸应用，是对网络安全极为重要的脆弱性/漏洞审查。可以运行下面的测试，并观察是否会发生系统崩溃或死机状态：
+<ul>
+<li>模糊 (fuzzing) 测试</li>
+<li>充溢 (flooding) 测试</li>
+<li>拒绝服务 (DoS) 攻击</li>
+</ul></li>
+<li>另外还可以在测试进行中，并行监测被测设备的健康性，主要指标为：
+<ul>
+<li>CPU和内/外存资源利用率</li>
+<li>响应SNMP查询的能力</li>
+<li>命令行接口/图形用户界面的访问性能</li>
+</ul></li>
+<li>当出现问题时，可以使用同样的<code>-r</code>参数，然后组合<code>-p/c/k</code>选项运用二分查找算法定位相关的数据包。比如，假定发<code>isic</code>送1000个数据包造成被测设备异常，那么将<code>-p</code>减半为500运行。如果发生同样的异常，则继续减半搜索；如果异常没有出现，就将<code>-p</code>改回1000并设定<code>-k 500</code>跳过前半段数据包运行。重复这一过程，不超过10步就可以找到造成问题的单个 IP数据包。</li>
+</ul>
+<h3 id="工具扩展">工具扩展</h3>
+<p>未来如果有需求且有开源开发者愿意贡献，可以考虑加入以下功能扩展：</p>
+<ul>
+<li>新的选项指定isic或isic6报文首部IP协议号 (建议为<code>-P</code>)</li>
+<li>开发前端图形用户界面 (GUI)，参考<a target="_blank" rel="noopener" href="https://nmap.org/zenmap/">Zenmap</a></li>
+<li>支持多协议标签交换 (MPLS) 的帧格式</li>
+<li>支持因特网组管理协议 (IGMP) 的报文</li>
+<li>支持IEEE 802.1Q以及虚拟局域网标签 (VLAN Tagging) 的帧格式</li>
+<li>支持调试打印输出的详细程度 (verbosity) 分级</li>
+<li>支持加载预先捕获的<a target="_blank" rel="noopener" href="https://gitlab.com/wireshark/wireshark/-/wikis/Development/LibpcapFileFormat">pcap格式</a>的网络数据包文件</li>
+<li>与其它的测试工具集成为完整的网络安全测试方案</li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>公共漏洞评分系统 (Common Vulnerability Scoring System，缩写CVSS) 是一种用于评估计算机系统安全漏洞严重性的开放行业标准。CVSS为每一个漏洞的严重性评分，分数范围是0到10，其中最严重的是10。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/" title="用ISIC测试网络设备IP协议栈的健壮性">https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 网络安全</a>
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+              <a href="/tags/TCP-IP/" rel="tag"><i class="fa fa-tag"></i> TCP/IP</a>
+              <a href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/" rel="tag"><i class="fa fa-tag"></i> 软件测试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/24/Analyze-IPv4-IPv6-checksum/" rel="prev" title="解析IPv4和IPv6报文首部校验和算法">
+                  <i class="fa fa-chevron-left"></i> 解析IPv4和IPv6报文首部校验和算法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/11/25/CC-simulate-DV-routing/" rel="next" title="C++编程实现的距离矢量路由协议仿真程序">
+                  C++编程实现的距离矢量路由协议仿真程序 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"92cc182301e64ff9b3fd2d01bbbd7785"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

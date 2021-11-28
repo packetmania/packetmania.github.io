@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="RSA加密算法是现代公钥密码学的核心技术之一，在互联网中应用广泛。作为公钥密码学的经典算法，教科书RSA的编程实现可以帮助我们迅速掌握其数学机理和设计思想，并积累重要的密码技术软件实现经验。这里详述Python3.8编程环境下教科书RSA的实现示例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python编程实现的教科书RSA">
+<meta property="og:url" content="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="RSA加密算法是现代公钥密码学的核心技术之一，在互联网中应用广泛。作为公钥密码学的经典算法，教科书RSA的编程实现可以帮助我们迅速掌握其数学机理和设计思想，并积累重要的密码技术软件实现经验。这里详述Python3.8编程环境下教科书RSA的实现示例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/finding-prime.jpg">
+<meta property="article:published_time" content="2021-03-01T19:08:51.000Z">
+<meta property="article:modified_time" content="2021-11-28T06:19:56.061Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="Python编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/finding-prime.jpg">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/","path":"2021/03/01/Python-Textbook-RSA/","title":"Python编程实现的教科书RSA"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python编程实现的教科书RSA | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%A4%A7%E7%B4%A0%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">生成大素数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">工具函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0rsa%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text">实现RSA类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">功能测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text">性能测试</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python编程实现的教科书RSA
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-01 11:08:51" itemprop="dateCreated datePublished" datetime="2021-03-01T11:08:51-08:00">2021-03-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 22:19:56" itemprop="dateModified" datetime="2021-11-27T22:19:56-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>RSA加密算法是现代公钥密码学的核心技术之一，在互联网中应用广泛。作为公钥密码学的经典算法，教科书RSA的编程实现可以帮助我们迅速掌握其数学机理和设计思想，并积累重要的密码技术软件实现经验。这里详述Python3.8编程环境下教科书RSA的实现示例。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Random numbers should not be generated with a method chosen at random.</strong><br> <strong>— <em>Donald Knuth</em>（高德纳，著名计算机科学家，现代计算机科学的先驱人物，1974年图灵奖得主）</strong></p>
+</div>
+<h3 id="生成大素数">生成大素数</h3>
+<p>RSA加密算法的安全性建立在大数素因数分解的数学难题之上。构造RSA加密系统的第一步，就是生成两个大的素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>并计算模数<span class="math inline">\(N=pq\)</span>。<span class="math inline">\(N\)</span>就是RSA的密钥长度，越大越安全。现在实用的系统要求密钥长度不小于2048比特，对应的 <span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>各为1024比特左右。生成如此大的随机素数，一种通用的实效方法是基于概率的随机化算法，其过程如下：</p>
+<ol type="1">
+<li>预选择设定比特长度的随机数</li>
+<li>用小素数做初级素性检测 (<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/埃拉托斯特尼筛法">埃拉托斯特尼筛法</a>)
+<ul>
+<li>如果通过，继续第三步</li>
+<li>如果失败，返回第一步</li>
+</ul></li>
+<li>执行高级素性检测 (<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/米勒-拉宾检验">米勒-拉宾算法</a>)
+<ul>
+<li>如果通过，输出认定的素数</li>
+<li>如果失败，返回第一步</li>
+</ul></li>
+</ol>
+<p>在这里的软件实现中，第一步可以直接生成奇数。同时出于演示的目的，第二步采用大于2的前50个素数做初级素性检测。整个过程如下面的流程图所示： <img src="finding-prime.jpg" style="width:35.0%;height:35.0%" /></p>
+<p>第一步的Python函数编程，需要从<code>random</code>库导入库函数<code>randrange()</code>。函数将输入的比特数n设置为2的指数，用来指定<code>randrange()</code>的起始和结束值，并把步长定为2以确保只输出n比特数随机奇数值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> randrange</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_n_bit_odd</span>(<span class="params">n: <span class="built_in">int</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Generate a random odd number in the range [2**(n-1)+1, 2**n-1]&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">assert</span> n &gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> randrange(<span class="number">2</span> ** (n - <span class="number">1</span>) + <span class="number">1</span>, <span class="number">2</span> ** n, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>第二步的代码很简单。先定义一个数组，元素是2以后的50个素数。然后在函数中用双循环实现在初级素性检测，内部<code>for</code>循环用素数数组的元素逐个筛选，失败就马上中止回到外循环，再调用第一步的函数生成下一个候选奇数重新测试：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># The first 50 prime numbers after 2</span></span><br><span class="line">first_50_primes = [<span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">23</span>, <span class="number">29</span>, <span class="number">31</span>,</span><br><span class="line">                   <span class="number">37</span>, <span class="number">41</span>, <span class="number">43</span>, <span class="number">47</span>, <span class="number">53</span>, <span class="number">59</span>, <span class="number">61</span>, <span class="number">67</span>, <span class="number">71</span>, <span class="number">73</span>,</span><br><span class="line">                   <span class="number">79</span>, <span class="number">83</span>, <span class="number">89</span>, <span class="number">97</span>, <span class="number">101</span>, <span class="number">103</span>, <span class="number">107</span>, <span class="number">109</span>, <span class="number">113</span>, <span class="number">127</span>,</span><br><span class="line">                   <span class="number">131</span>, <span class="number">137</span>, <span class="number">139</span>, <span class="number">149</span>, <span class="number">151</span>, <span class="number">157</span>, <span class="number">163</span>, <span class="number">167</span>, <span class="number">173</span>, <span class="number">179</span>,</span><br><span class="line">                   <span class="number">181</span>, <span class="number">191</span>, <span class="number">193</span>, <span class="number">197</span>, <span class="number">199</span>, <span class="number">211</span>, <span class="number">223</span>, <span class="number">227</span>, <span class="number">229</span>, <span class="number">233</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lowlevel_prime</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Generate a prime candidate not divisible by first primes&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="comment"># Obtain a random odd number</span></span><br><span class="line">        c = generate_n_bit_odd(n)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Test divisibility by pre-generated primes</span></span><br><span class="line">        <span class="keyword">for</span> divisor <span class="keyword">in</span> first_50_primes:</span><br><span class="line">            <span class="keyword">if</span> c % divisor == <span class="number">0</span> <span class="keyword">and</span> divisor ** <span class="number">2</span> &lt;= c:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># The for loop did not encounter a break statement,</span></span><br><span class="line">            <span class="comment"># so it passes low level primality test.</span></span><br><span class="line">            <span class="keyword">return</span> c</span><br></pre></td></tr></table></figure>
+<p>第三步的米勒-拉宾素性检验<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>，是当前普遍使用的一种素数判定法则。它利用随机化算法判断一个数是合数还是可能是素数。虽然同样基于<a target="_blank" rel="noopener" href="https://packetmania.github.io/2021/02/14/Fermats-Little-Theorem/">费马小定理</a>，米勒-拉宾素性检验比费马素性检验效率高得多。在展示米勒-拉宾素性检验的Python实现之前，简要介绍一下其工作原理。</p>
+<p>根据费马小定理 ，对于一个素数<span class="math inline">\(n\)</span> ，如果整数<span class="math inline">\(a\)</span>不是<span class="math inline">\(n\)</span>的倍数，则有<span class="math inline">\(a^{n-1}\equiv 1\pmod n\)</span>。从这里出发，如果<span class="math inline">\(n&gt;2\)</span>，<span class="math inline">\(n-1\)</span>是一个偶数，一定可以被表示为<span class="math inline">\(2^{s}*d\)</span>的形式，<span class="math inline">\(s\)</span>和<span class="math inline">\(d\)</span>都是正整数且<span class="math inline">\(d\)</span>是奇数。由此得到 <span class="math display">\[a^{2^{s}*d}\equiv 1\pmod n\]</span> 这时如果不断对上式左边取平方根再取模，总会得到<span class="math inline">\(1\)</span>和<span class="math inline">\(-1\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。如果得到了<span class="math inline">\(-1\)</span> ，意味着下面②式成立；如果从未得到<span class="math inline">\(-1\)</span>，则①式成立： <span class="math display">\[a^{d}\equiv 1{\pmod {n}}{\text{ ①}}\]</span> <span class="math display">\[a^{2^{r}d}\equiv -1{\pmod {n}}{\text{ ②}}\]</span> 其中<span class="math inline">\(r\)</span>是位于<span class="math inline">\([0, s-1]\)</span>区间的某个整数。所以，如果<span class="math inline">\(n\)</span>是大于<span class="math inline">\(2\)</span>的素数，一定有①或②式成立。这一规律的<u>逆否命题</u>也为真，即<strong>如果我们能找到这样一个<span class="math inline">\(\pmb{a}\)</span>，使得对任意<span class="math inline">\(\pmb{0\leq r\leq s-1}\)</span>以下两个式子均满足： <span class="math display">\[\pmb{a^{d}\not \equiv 1\pmod n}\]</span> <span class="math display">\[\pmb{a^{2^{r}d}\not \equiv -1\pmod n}\]</span> 那么<span class="math inline">\(\pmb{n}\)</span>一定不是一个素数</strong>。这就是米勒-拉宾素性测试的机理。对于待测数<span class="math inline">\(n\)</span>，算出<span class="math inline">\(s\)</span>和<span class="math inline">\(d\)</span>的值后，随机选取基数<span class="math inline">\(a\)</span>，迭代检测以上两式。如果都不成立，<span class="math inline">\(n\)</span>为合数，否则<span class="math inline">\(n\)</span>可能为素数。重复这一过程，<span class="math inline">\(n\)</span>为真素数的概率会越来越大。计算表明，经过<span class="math inline">\(k\)</span>轮测试，米勒-拉宾素性检验的差错率最高不超过<span class="math inline">\(4^{-k}\)</span>。</p>
+<p>Python实现的米勒-拉宾素性检验函数如下，代码中的变量<code>n,s,d,k</code>与上面的说明对应：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">miller_rabin_primality_check</span>(<span class="params">n, k=<span class="number">20</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Miller-Rabin Primality Test wwith specified round of test </span></span><br><span class="line"><span class="string">    Input:</span></span><br><span class="line"><span class="string">        n - n &gt; 3, an odd integer to be tested for primality</span></span><br><span class="line"><span class="string">        k - the number of rounds of testing to perfor</span></span><br><span class="line"><span class="string">    Output:</span></span><br><span class="line"><span class="string">        True  - passed (n is a strong probable prime)</span></span><br><span class="line"><span class="string">        False - failed (n is a composite)&#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># For a given odd integer n &gt; 3, write n as (2^s)*d+1,</span></span><br><span class="line">    <span class="comment"># where s and d are positive integers and d is odd.</span></span><br><span class="line">    <span class="keyword">assert</span> n &gt; <span class="number">3</span></span><br><span class="line">    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    s, d = <span class="number">0</span>, n - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> d % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        d &gt;&gt;= <span class="number">1</span></span><br><span class="line">        s += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">        a = randrange(<span class="number">2</span>, n - <span class="number">1</span>)</span><br><span class="line">        x = <span class="built_in">pow</span>(a, d, n)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> x == <span class="number">1</span> <span class="keyword">or</span> x == n - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(s):</span><br><span class="line">            x = <span class="built_in">pow</span>(x, <span class="number">2</span>, n)</span><br><span class="line">            <span class="keyword">if</span> x == n - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># The for loop did not encounter a break statement,</span></span><br><span class="line">            <span class="comment"># so it fails the test, it must be a composite</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Passed the test, it is a strong probable prime</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>综合以上所有，可以将整个过程包装到以下的函数，函数输入为比特数，输出为认定的随机大素数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_random_prime</span>(<span class="params">num_bits</span>):</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        pp = get_lowlevel_prime(num_bits)</span><br><span class="line">        <span class="keyword">if</span> miller_rabin_primality_check(pp):</span><br><span class="line">            <span class="keyword">return</span> pp</span><br></pre></td></tr></table></figure>
+<h3 id="工具函数">工具函数</h3>
+<ol type="1">
+<li><p><strong>最大公约数函数<code>gcd(a,b)</code>和最小公倍数函数<code>lcm(a,b)</code>：</strong><br />
+RSA加密算法需要计算模数<span class="math inline">\(N\)</span>的卡迈克尔函数<span class="math inline">\(\lambda(N)\)</span>，其公式是<span class="math inline">\(\lambda(pq)=\operatorname{lcm}(p − 1, q − 1)\)</span>，这里用到了最小公倍数函数。最小公倍数与最大公约数的关系是：<span class="math display">\[\operatorname{lcm}(a,b)={\frac{(a\cdot b)}{\gcd(a,b)}}\]</span> 而求最大公约数有高效的欧几里得算法 (辗转相除法)，其原理是：两个整数的最大公约数等于其中较小的数和两数相除余数的最大公约数。欧几里得算法的具体实现可以使用迭代或递归方法。这里应用迭代实现最大公约数函数，两个函数的Python代码如下：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Computes the Great Common Divisor using the Euclid&#x27;s algorithm&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">while</span> b:</span><br><span class="line">        a, b = b, a % b</span><br><span class="line">    <span class="keyword">return</span> a</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lcm</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Computes the Lowest Common Multiple using the GCD method.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> a // gcd(a, b) * b</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>扩展欧几里得算法<code>exgcd(a,b)</code>和模逆元函数<code>invmod(e,m)</code>：</strong><br />
+RSA密钥对满足等式<span class="math inline">\((d⋅e)\bmod \lambda(N)=1\)</span>，即二者互为关于<span class="math inline">\(\lambda(N)\)</span>的模逆元。应用扩展欧几里得算法可以快速求解公钥指数<span class="math inline">\(e\)</span>的模逆元<span class="math inline">\(d\)</span>。算法原理是给定整数<span class="math inline">\(a、b\)</span>，可以在求得<span class="math inline">\(a、b\)</span>的最大公约数的同时，找到整数<span class="math inline">\(x、y\)</span> (其中一个很可能是负数)，使它们满足裴蜀等式：<span class="math display">\[a⋅x+b⋅y=\gcd(a, b)\]</span>代入RSA加密算法的参数<span class="math inline">\(a=e\)</span>，<span class="math inline">\(b=m=\lambda(N)\)</span>，又由于<span class="math inline">\(e\)</span>与<span class="math inline">\(\lambda(N)\)</span>互素，可以得到：<span class="math display">\[e⋅x+m⋅y=1\]</span>这样解出的<span class="math inline">\(x\)</span>就是<span class="math inline">\(e\)</span>的模逆元<span class="math inline">\(d\)</span>。下面给出这两个函数的Python实现：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exgcd</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Extended Euclidean Algorithm that can give back all gcd, s, t </span></span><br><span class="line"><span class="string">    such that they can make Bézout&#x27;s identity: gcd(a,b) = a*s + b*t</span></span><br><span class="line"><span class="string">    Return: (gcd, s, t) as tuple&quot;&quot;&quot;</span></span><br><span class="line">    old_s, s = <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    old_t, t = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> b:</span><br><span class="line">        q = a // b</span><br><span class="line">        s, old_s = old_s - q * s, s</span><br><span class="line">        t, old_t = old_t - q * t, t</span><br><span class="line">        a, b = b, a % b</span><br><span class="line">    <span class="keyword">return</span> a, old_s, old_t</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">invmod</span>(<span class="params">e, m</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Find out the modular multiplicative inverse x of the input integer</span></span><br><span class="line"><span class="string">    e with respect to the modulus m. Return the minimum positive x&quot;&quot;&quot;</span></span><br><span class="line">    g, x, y = exgcd(e, m)</span><br><span class="line">    <span class="keyword">assert</span> g == <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Now we have e*x + m*y = g = 1, so e*x ≡ 1 (mod m).</span></span><br><span class="line">    <span class="comment"># The modular multiplicative inverse of e is x.</span></span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">0</span>:</span><br><span class="line">        x += m</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure> 同样地，这里应用了迭代方法实现扩展欧几里得算法，模逆元函数调用了前者。</p></li>
+<li><p><strong>整数与字节序列相互转换函数：</strong><br />
+RSA加解密算法本身是操作于整数的模幂运算，而要加密的消息明文通常以字节序列表示，所以需要两个转换函数。加密时调用<code>uint_from_bytes()</code>先将字节序列转换为整数，再用公钥指数进行模幂运算；解密时次序相反，先用私钥指数进行模幂运算，再调用<code>uint_to_bytes()</code>将整数结果转换为字节序列，这样就可以恢复消息明文。Python实现的转换函数如下：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uint_from_bytes</span>(<span class="params">xbytes: <span class="built_in">bytes</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;This works only for unsigned (non-negative) integers.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>.from_bytes(xbytes, <span class="string">&#x27;big&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uint_to_bytes</span>(<span class="params">x: <span class="built_in">int</span></span>) -&gt; <span class="built_in">bytes</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;This works only for unsigned (non-negative) integers.</span></span><br><span class="line"><span class="string">    It does not work for 0.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">bytes</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> x.to_bytes((x.bit_length() + <span class="number">7</span>) // <span class="number">8</span>, <span class="string">&#x27;big&#x27;</span>)</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<h3 id="实现rsa类">实现RSA类</h3>
+<div class="note danger"><p><strong>注意</strong>：教科书RSA有内在的安全漏洞。这里给出的Python语言参考实现仅用于学习和演示目的，不可用在实际的应用系统中，否则可能会造成严重的信息安全事故，切记！</p>
+</div>
+<p>基于面向对象的编程思想，可以设计将RSA的密钥数据和所有运算操作封装到一个Python类中。RSA类的解密和签名生成各自实现了常规和快速两种方法。快速方法基于中国余数定理和费马小定理 (参考《<a target="_blank" rel="noopener" href="https://packetmania.github.io/2021/02/14/Fermats-Little-Theorem/">费马小定理的归纳法证明和应用</a>》)。以下描述了RSA类的实现细节：</p>
+<ol type="1">
+<li><p><strong>对象初始化函数</strong><br />
+初始化函数<code>__init__()</code>的用户自定义参数和缺省值如下：</p>
+<ul>
+<li>密钥长度：2048 (<span class="math inline">\(N\)</span>)</li>
+<li>公钥指数：65537 (<span class="math inline">\(e\)</span>)</li>
+<li>快速解密/签名：False (不设定)</li>
+</ul>
+<p>函数内部调用<code>get_random_prime()</code>函数生成两个大约为密钥长度一半的随机大素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>，计算它们的卡迈克尔函数值并验证其是否与<span class="math inline">\(e\)</span>互素，不是就重复直到找到为止。然后计算模数<span class="math inline">\(N\)</span>和使用模逆元函数<code>invmod()</code>算出私钥指数<span class="math inline">\(d\)</span>。如果需要快速解密/签名，还要计算出三个额外的参数： <span class="math display">\[\begin{align}
+d_P&amp;=d\bmod (p-1)\\
+d_Q&amp;=d\bmod (q-1)\\
+q_{\text{inv}}&amp;=q^{-1}\pmod {p}
+\end{align}\]</span></p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">RSA_DEFAULT_EXPONENT = <span class="number">65537</span></span><br><span class="line">RSA_DEFAULT_MODULUS_LEN = <span class="number">2048</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RSA</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Implements the RSA public key encryption/decryption with default</span></span><br><span class="line"><span class="string">    exponent 65537 and default key size 2048&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, key_length=RSA_DEFAULT_MODULUS_LEN,</span></span></span><br><span class="line"><span class="params"><span class="function">                 exponent=RSA_DEFAULT_EXPONENT, fast_decrypt=<span class="literal">False</span></span>):</span></span><br><span class="line">        self.e = exponent</span><br><span class="line">        self.fast = fast_decrypt</span><br><span class="line">        t = <span class="number">0</span></span><br><span class="line">        p = q = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> gcd(self.e, t) != <span class="number">1</span>:</span><br><span class="line">            p = get_random_prime(key_length // <span class="number">2</span>)</span><br><span class="line">            q = get_random_prime(key_length // <span class="number">2</span>)</span><br><span class="line">            t = lcm(p - <span class="number">1</span>, q - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        self.n = p * q</span><br><span class="line">        self.d = invmod(self.e, t)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (fast_decrypt):</span><br><span class="line">            self.p, self.q = p, q</span><br><span class="line">            self.d_P = self.d % (p - <span class="number">1</span>)</span><br><span class="line">            self.d_Q = self.d % (q - <span class="number">1</span>)</span><br><span class="line">            self.q_Inv = invmod(q, p)</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>加解密成员函数</strong><br />
+RSA加密和常规解密公式为 <span class="math display">\[\begin{align}
+c\equiv m^e\pmod N\\
+m\equiv c^d\pmod N
+\end{align}\]</span> Python的内建指数函数<code>pow()</code>支持模幂运算，只需要先做相应的整数与字节序列转换，再使用公钥指数或私钥指数调用<code>pow()</code>就可以实现上面两式：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encrypt</span>(<span class="params">self, binary_data: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    int_data = uint_from_bytes(binary_data)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(int_data, self.e, self.n)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt</span>(<span class="params">self, encrypted_int_data: <span class="built_in">int</span></span>):</span></span><br><span class="line">    int_data = <span class="built_in">pow</span>(encrypted_int_data, self.d, self.n)</span><br><span class="line">    <span class="keyword">return</span> uint_to_bytes(int_data)</span><br></pre></td></tr></table></figure> 对于快速解密，需要一些额外的步骤 <span class="math display">\[\begin{align}
+m_1&amp;=c^{d_P}\pmod {p}\tag{1}\label{eq1}\\
+m_2&amp;=c^{d_Q}\pmod {q}\tag{2}\label{eq2}\\
+h&amp;=q_{\text{inv}}(m_1-m_2)\pmod {p}\tag{3}\label{eq3}\\
+m&amp;=m_{2}+hq\pmod {pq}\tag{4}\label{eq4}
+\end{align}\]</span> 实际中，如果上面<span class="math inline">\((3)\)</span>式中的<span class="math inline">\(m_1-m_2&lt;0\)</span>，需要加上<span class="math inline">\(p\)</span>调整为正数。还可以看到，由于快速解密方法的模数和指数都降阶大致一半，加速比理论上会接近<span class="math inline">\(4\)</span>。考虑额外计算步骤，实际的加速比估计值要减掉一个修正值 <span class="math inline">\(\varepsilon\)</span>，记为 <span class="math inline">\(4-\varepsilon\)</span>。快速解密函数的代码如下：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt_fast</span>(<span class="params">self, encrypted_int_data: <span class="built_in">int</span></span>):</span></span><br><span class="line">    <span class="comment"># Use Chinese Remaider Theorem + Fermat&#x27;s Little Theorem to</span></span><br><span class="line">    <span class="comment"># do fast RSA description</span></span><br><span class="line">    <span class="keyword">assert</span> self.fast == <span class="literal">True</span></span><br><span class="line">    m1 = <span class="built_in">pow</span>(encrypted_int_data, self.d_P, self.p)</span><br><span class="line">    m2 = <span class="built_in">pow</span>(encrypted_int_data, self.d_Q, self.q)</span><br><span class="line">    t = m1 - m2</span><br><span class="line">    <span class="keyword">if</span> t &lt; <span class="number">0</span>:</span><br><span class="line">        t += self.p</span><br><span class="line">    h = (self.q_Inv * t) % self.p</span><br><span class="line">    m = (m2 + h * self.q) % self.n</span><br><span class="line">    <span class="keyword">return</span> uint_to_bytes(m)</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>签名生成和验证成员函数</strong><br />
+RSA数字签名的生成和验证函数与加密和常规解密很相似，不同的只是将公钥指数和私钥指数对调使用而已。签名生成使用私钥指数，而验证函数使用公钥指数。快速签名的实现与快速解密步骤一致，但是输入和输出的数据要做相应的转换调整。具体的实现如下：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_signature</span>(<span class="params">self, encoded_msg_digest: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Use RSA private key to generate Digital Signature for given</span></span><br><span class="line"><span class="string">    encoded message digest&quot;&quot;&quot;</span></span><br><span class="line">    int_data = uint_from_bytes(encoded_msg_digest)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(int_data, self.d, self.n)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_signature_fast</span>(<span class="params">self, encoded_msg_digest: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    <span class="comment"># Use Chinese Remaider Theorem + Fermat&#x27;s Little Theorem to</span></span><br><span class="line">    <span class="comment"># do fast RSA signature generation</span></span><br><span class="line">    <span class="keyword">assert</span> self.fast == <span class="literal">True</span></span><br><span class="line">    int_data = uint_from_bytes(encoded_msg_digest)</span><br><span class="line">    s1 = <span class="built_in">pow</span>(int_data, self.d_P, self.p)</span><br><span class="line">    s2 = <span class="built_in">pow</span>(int_data, self.d_Q, self.q)</span><br><span class="line">    t = s1 - s2</span><br><span class="line">    <span class="keyword">if</span> t &lt; <span class="number">0</span>:</span><br><span class="line">        t += self.p</span><br><span class="line">    h = (self.q_Inv * t) % self.p</span><br><span class="line">    s = (s2 + h * self.q) % self.n</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">verify_signature</span>(<span class="params">self, digital_signature: <span class="built_in">int</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Use RSA public key to decrypt given Digital Signature&quot;&quot;&quot;</span></span><br><span class="line">    int_data = <span class="built_in">pow</span>(digital_signature, self.e, self.n)</span><br><span class="line">    <span class="keyword">return</span> uint_to_bytes(int_data)</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<h3 id="功能测试">功能测试</h3>
+<p>完成了RSA类，就可以进行测试了。为测试基本的加解密功能，先初始化一个RSA对象，初始化参数为：</p>
+<ul>
+<li>密钥长度：512比特 (模数<span class="math inline">\(N\)</span>)</li>
+<li>公钥指数：3</li>
+<li>快速解密/签名：True (设定)</li>
+</ul>
+<p>接下来就可以调用RSA对象实例的加密函数<code>encrypt()</code>加密定义好的消息，然后将密文分别输入到解密函数<code>decrypt()</code>和快速解密函数<code>decrypt_fast()</code>，并用<code>assert</code>语句比较结果和消息原文。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ---- Test RSA class ----</span></span><br><span class="line">alice = RSA(<span class="number">512</span>, <span class="number">3</span>, <span class="literal">True</span>)</span><br><span class="line">msg = <span class="string">b&#x27;Textbook RSA in Python&#x27;</span></span><br><span class="line">ctxt = alice.encrypt(msg)</span><br><span class="line"><span class="keyword">assert</span> alice.decrypt(ctxt) == msg</span><br><span class="line"><span class="keyword">assert</span> alice.decrypt_fast(ctxt) == msg</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;RSA message encryption/decryption test passes!&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>同理，还可以测试签名功能。这时需要把下面<code>import</code>语句添加到文件首部</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> sha1</span><br></pre></td></tr></table></figure>
+<p>这样就可以用库函数<code>sha1()</code>生成消息摘要，然后分别调用RSA对象实例的<code>generate_signature()</code> 函数和<code>generate_signature_fast()</code>函数产生签名。两个签名输入到验证函数<code>verify_signature()</code>得到的结果应该都与原消息摘要一致。如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mdg = sha1(msg).digest()</span><br><span class="line">sign1 = alice.generate_signature(mdg)</span><br><span class="line">sign2 = alice.generate_signature_fast(mdg)</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> alice.verify_signature(sign1) == mdg</span><br><span class="line"><span class="keyword">assert</span> alice.verify_signature(sign2) == mdg</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;RSA signature generation/verification test passes!&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>如果没有看到报告<code>AssertionError</code>，就会得到下面的输出，表明加解密和签名测试都通过了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RSA message encryption/decryption <span class="built_in">test</span> passes!</span><br><span class="line">RSA signature generation/verification <span class="built_in">test</span> passes!</span><br></pre></td></tr></table></figure>
+<h3 id="性能测试">性能测试</h3>
+<p>功能测试通过之后，可以来看看快速解密的性能如何。我们关心的是实际能达到的加速比是多少，这就需要对代码的执行计时。计时测量要从Python内建库<code>os</code>和<code>timeit</code>分别导入库函数<code>urandom()</code>和<code>timeit()</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> os <span class="keyword">import</span> urandom</span><br><span class="line"><span class="keyword">from</span> timeit <span class="keyword">import</span> timeit</span><br></pre></td></tr></table></figure>
+<p><code>urandom()</code>用于产生随机字节序列，<code>timeit()</code>提供了对给定代码段的执行计时功能。作为辅助，先将要计时的RSA解密函数打包在两个函数中:</p>
+<ul>
+<li><code>decrypt_norm()</code> - 常规解密方法</li>
+<li><code>decrypt_fast()</code> - 快速解密方法</li>
+</ul>
+<p>两个函数都用<code>assert</code>语句核对结果，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt_norm</span>(<span class="params">tester, ctxt: <span class="built_in">bytes</span>, msg: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    ptxt = tester.decrypt(ctxt)</span><br><span class="line">    <span class="keyword">assert</span> ptxt == msg</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt_fast</span>(<span class="params">tester, ctxt: <span class="built_in">bytes</span>, msg: <span class="built_in">bytes</span></span>):</span></span><br><span class="line">    ptxt = tester.decrypt_fast(ctxt)</span><br><span class="line">    <span class="keyword">assert</span> ptxt == msg</span><br></pre></td></tr></table></figure>
+<p>计时代码设置两个嵌套的<code>for</code>循环：</p>
+<ul>
+<li><p>外层循环遍历不同的密钥长度<code>klen</code>，从512比特到4096比特共5级，相应的RSA对象<code>obj</code>初始化为：</p>
+<ul>
+<li>密钥长度：<code>klen</code> (模数<span class="math inline">\(N\)</span>)</li>
+<li>公钥指数：65537</li>
+<li>快速解密/签名：True (设定)</li>
+</ul>
+<p>外层循环里也设定变量<code>rpt</code>为密钥长度的平方根，并清零计时变量<code>t_n</code>和<code>t_f</code>。</p></li>
+<li><p>内层也循环5次，每次执行的操作是：</p>
+<ul>
+<li>调用<code>urandom()</code>生成比特长度为密钥长度一半、内容随机的字节序列<code>mg</code></li>
+<li>调用加密函数<code>obj.encrypt()</code>生成密文<code>ct</code></li>
+<li>调用<code>timeit()</code>并分别输入打包函数<code>decrypt_norm()</code>和<code>decrypt_fast()</code>及解密相关的参数<code>obj</code>、<code>ct</code>和<code>mg</code>，同时设置代码重复运行次数为<code>rpt</code></li>
+<li><code>timeit()</code>函数的返回值累加保存到<code>t_n</code>和<code>t_f</code></li>
+</ul></li>
+</ul>
+<p>每次内层循环结束，就打印当前的密钥长度、计时统计的均值和计算出来的加速比<code>t_n/t_f</code>。对应的实际程序段如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Start RSA fast decryption profiling...&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> klen <span class="keyword">in</span> [<span class="number">512</span>, <span class="number">1024</span>, <span class="number">2048</span>, <span class="number">3072</span>, <span class="number">4096</span>]:</span><br><span class="line">    rpt = <span class="built_in">int</span>(klen ** <span class="number">0.5</span>)</span><br><span class="line">    obj = RSA(klen, <span class="number">65537</span>, <span class="literal">True</span>)</span><br><span class="line">    t_n = t_f = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        mg = urandom(<span class="built_in">int</span>(klen/<span class="number">16</span>))</span><br><span class="line">        ct = obj.encrypt(mg)</span><br><span class="line">        t_n += timeit(<span class="keyword">lambda</span>: decrypt_norm(obj, ct, mg), number=rpt)</span><br><span class="line">        t_f += timeit(<span class="keyword">lambda</span>: decrypt_fast(obj, ct, mg), number=rpt)      </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Key size %4d =&gt; norm %.4fs, fast %.4fs\tSpeedup: %.2f&quot;</span></span><br><span class="line">          % (klen, t_n/<span class="number">5</span>/rpt, t_f/<span class="number">5</span>/rpt, t_n/t_f))</span><br></pre></td></tr></table></figure>
+<p>下面是在Macbook Pro上的运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Start RSA fast decryption profiling...</span><br><span class="line">Key size  512 =&gt; norm 0.0008s, fast 0.0003s  Speedup: 2.43</span><br><span class="line">Key size 1024 =&gt; norm 0.0043s, fast 0.0015s  Speedup: 2.88</span><br><span class="line">Key size 2048 =&gt; norm 0.0273s, fast 0.0085s  Speedup: 3.19</span><br><span class="line">Key size 3072 =&gt; norm 0.0835s, fast 0.0240s  Speedup: 3.48</span><br><span class="line">Key size 4096 =&gt; norm 0.1919s, fast 0.0543s  Speedup: 3.53</span><br></pre></td></tr></table></figure>
+<p>测试结果证实了快速解密方法的有效性。随着密钥长度的增加，计算强度逐渐加大，核心解密运算所占的运行时间比重也更突出，所以加速比对应增长。但最终加速比趋于稳定值3.5左右，这与理论估计的上界 (<span class="math inline">\(4-\varepsilon\)</span>) 相一致。</p>
+<p>教科书RSA的Python编程实现，帮我们强化了所学的基础数论知识，也有助于深入理解RSA加密算法的机理。在此基础上，参考前文《<a target="_blank" rel="noopener" href="https://packetmania.github.io/2020/12/01/RSA-attack-defense/">RSA的攻与防（一）</a>》，还可以扩展试验一些RSA初级攻防技巧，进一步掌握这一公钥密码学的关键技术。完整的程序点击这里下载：<a href="textbook-rsa.py.gz">textbook-rsa.py.gz</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>卡内基梅隆大学的计算机系教授加里·米勒 (Gary Lee Miller) 首先提出了基于广义黎曼猜想的确定性算法，由于广义黎曼猜想并没有被证明，其后由以色列耶路撒冷希伯来大学的迈克尔·拉宾 (Michael O. Rabin) 教授作出修改，提出了不依赖于该假设的随机化算法。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>这是因为从 <span class="math inline">\(x^2\equiv 1\pmod n\)</span> 可以推导出 <span class="math inline">\((x-1)(x+1)=x^{2}-1\equiv 0\pmod n\)</span>，又由于<span class="math inline">\(n\)</span>是素数，根据<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/欧几里得引理">欧几里得引理</a>，它必然整除 <span class="math inline">\(x-1\)</span> 和 <span class="math inline">\(x+1\)</span>其中的一个，所以 <span class="math inline">\(x\bmod n\)</span> 一定是 <span class="math inline">\(1\)</span> 或 <span class="math inline">\(-1\)</span>。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/" title="Python编程实现的教科书RSA">https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/14/Fermats-Little-Theorem/" rel="prev" title="费马小定理的归纳法证明和应用">
+                  <i class="fa fa-chevron-left"></i> 费马小定理的归纳法证明和应用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/06/Internet-in-space/" rel="next" title="勇踏IP未至之境">
+                  勇踏IP未至之境 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"7dae5eb181b68e7cc4a1750f0f468c95"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

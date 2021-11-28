@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="距离矢量 (Distance-vector) 和链路状态 (Link-state) 是路由协议的两大分类。距离矢量路由协议在互联网早期得到广泛应用，之后一些协议实现逐渐演变成为标准化的“路由信息协议” (Routing Information Protocol，缩写 RIP)。由于其简单和实用性，RIP 现今仍旧是小型网络配置的首选。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++编程实现的距离矢量路由协议仿真程序">
+<meta property="og:url" content="https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="距离矢量 (Distance-vector) 和链路状态 (Link-state) 是路由协议的两大分类。距离矢量路由协议在互联网早期得到广泛应用，之后一些协议实现逐渐演变成为标准化的“路由信息协议” (Routing Information Protocol，缩写 RIP)。由于其简单和实用性，RIP 现今仍旧是小型网络配置的首选。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-26T05:16:24.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.651Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta property="article:tag" content="路由与交换">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/","path":"2020/11/25/CC-simulate-DV-routing/","title":"C++编程实现的距离矢量路由协议仿真程序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C++编程实现的距离矢量路由协议仿真程序 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">路由算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%94%B9%E8%BF%9B"><span class="nav-number">2.</span> <span class="nav-text">算法改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BF%E7%9C%9F%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">仿真设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%A6%81%E6%B1%82%E5%92%8C%E5%BB%BA%E8%AE%AE"><span class="nav-number">3.1.</span> <span class="nav-text">项目要求和建议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E5%91%98%E8%BF%9B%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">管理员进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E8%BF%9B%E7%A8%8B"><span class="nav-number">3.3.</span> <span class="nav-text">路由器进程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C"><span class="nav-number">4.</span> <span class="nav-text">程序运行</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++编程实现的距离矢量路由协议仿真程序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-25 21:16:24" itemprop="dateCreated datePublished" datetime="2020-11-25T21:16:24-08:00">2020-11-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>16k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>15 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>距离矢量 (Distance-vector) 和链路状态 (Link-state) 是路由协议的两大分类。距离矢量路由协议在互联网早期得到广泛应用，之后一些协议实现逐渐演变成为标准化的“<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc2453">路由信息协议</a>” (Routing Information Protocol，缩写 RIP)。由于其简单和实用性，RIP 现今仍旧是小型网络配置的首选。</p>
+<span id="more"></span>
+<p>许多年以前，笔者在南加州大学 (University of Southern California，缩写USC) 攻读计算机工程硕士学位时，选修了编号<em>CS551: Computer Communication</em> 的课程。这是一门面向研究生的计算机网络通信课程，非常受到学生欢迎<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。但是CS551也以其难度较大的软件课件项目而著称，让不少缺乏编程经验的非EE/CS专业的学生望而却步。笔者那一学期的两个项目，第一个就是用C/C++编程实现距离矢量路由协议的仿真。完成这一课件作业，的确让自己增长了不少网络编程的经验，也加深了对距离矢量路由协议的理解。现在总结共享出来，希望对其他人有所帮助。</p>
+<div class="note success no-icon"><p><strong>Mathematicians makes natural questions precise.</strong><br> <strong>— <em>Richard Bellman</em>（理查德·贝尔曼，美国应用数学家，动态规划的创始人）</strong></p>
+</div>
+<h3 id="路由算法">路由算法</h3>
+<p>距离矢量路由协议的核心是贝尔曼-福特算法 (Bellman–Ford algorithm)，以美国两位数学家理查德·贝尔曼(Richard Bellman) 和小莱斯特·福特 (Lester Ford Jr.) 命名。贝尔曼1958年发布最短路径路由算法的论文，而福特与另一位美国数学家德尔伯特·富尔克森 (Delbert Fulkerson) 先于1956年在他们的网络流著作中提出了计算最大流通量的分布式贪心算法。二者相结合就产生了距离矢量路由协议，用于计算网络的最佳路由。全球互联网的鼻祖ARPANET就是使用的距离矢量路由协议。</p>
+<p>先来看看这一算法是如何工作的。对于给定的网络拓扑图及其顶点集合 <span class="math inline">\(V\)</span> 和带权重的边集合 <span class="math inline">\(E\)</span>，目的是要求得从每一个顶点到其它顶点的最短路径。贝尔曼-福特算法以松弛操作为基础，先预估到其它顶点的路径最大值，然后逐次计算出更加准确的最短路径值替换原来的估计值，重复迭代最终得到最优解。算法的伪代码描述如下：</p>
+<figure class="highlight pascal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">BellmanFord</span><span class="params">(list vertices, list edges, vertex source)</span></span></span><br><span class="line"><span class="function">    <span class="comment">// 输入由n个顶点(vertice)和边(edge)的列表构成的图，执行算法找到从源点到</span></span></span><br><span class="line"><span class="function">    <span class="comment">// 其它顶点的最短路径，保存到距离(distance)和前向顶点(predecessor)数组</span></span></span><br><span class="line"><span class="function">    <span class="title">distance</span> :</span>= list <span class="keyword">of</span> size n</span><br><span class="line">    predecessor := list <span class="keyword">of</span> size n</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第一步：初始化图</span></span><br><span class="line">    <span class="keyword">for</span> each vertex v <span class="keyword">in</span> vertices:</span><br><span class="line">        distance[v] := infinity</span><br><span class="line">        predecessor[v] := null</span><br><span class="line">        </span><br><span class="line">    distance[source] := <span class="number">0</span> <span class="comment">// 源点到自身的距离为0</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">// 第二步：重复松弛操作</span></span><br><span class="line">   <span class="keyword">for</span> i from <span class="number">1</span> <span class="keyword">to</span> size(vertices)-<span class="number">1</span>:</span><br><span class="line">       <span class="keyword">for</span> each edge (u, v) <span class="keyword">with</span> weight w <span class="keyword">in</span> edges:</span><br><span class="line">           <span class="keyword">if</span> distance[u] + w &lt; distance[v]:</span><br><span class="line">               distance[v] := distance[u] + w</span><br><span class="line">               predecessor[v] := u</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 第三步：检查是否有负权重的回路</span></span><br><span class="line">   <span class="keyword">for</span> each edge (u, v) <span class="keyword">with</span> weight w <span class="keyword">in</span> edges:</span><br><span class="line">       <span class="keyword">if</span> distance[u] + w &lt; distance[v]:</span><br><span class="line">           error &quot;图包含负权重的回路&quot;</span><br><span class="line">           </span><br><span class="line">   return distance, predecessor</span><br></pre></td></tr></table></figure>
+<p>在以上的算法描述中，松弛操作循环每次都是作用于所有边，重复次数实际上对应所得到的最短路径的深度。以 <span class="math inline">\(|V|\)</span> 和 <span class="math inline">\(|E|\)</span> 分别代表节点和边的数量，则贝尔曼-福特算法的时间复杂度可以表示为 <span class="math inline">\(O(|V|\cdot|E|)\)</span>。另外还注意到，算法的基本操作实质上是在广度上探寻，所以负权重的边不会影响运算结果。</p>
+<p>那么距离矢量在哪里？其实对于计算机网络这样的分布式系统，每个网络节点 (就是图中的顶点) 最初只有与自己相邻节点的距离 (就是图中边的权重) 信息。所以要执行贝尔曼-福特算法，节点就必须向其邻接点发送路由信息，这样邻接点才能实现松弛操作运算。路由信息包括<strong>本节点到达所有其它节点的最短路径值序列，也就是距离矢量</strong>。每当节点收到邻接点发来距离矢量，就执行一轮松弛操作运算。如果运算结果产生了新的最短距离，就更新路由表并发出新的距离矢量给所有邻接点。如此往复，直到收敛得到最短距离，算法结束。</p>
+<p>下面以一个6节点的网络来说明距离矢量路由协议的执行细节：</p>
+<pre class="mermaid">
+graph LR
+
+subgraph 网络拓扑图
+    G((A)) --- |1| H((B))
+    G((A)) --- |4| I((C))
+    G((A)) --- |6| J((D))
+    H --- |1| I
+    I --- |1| J
+    J --- |1| K((E))
+    I --- |1| K
+    K --- |1| L((F))
+    I --- |4| L
+    H --- |5| L
+end
+
+</pre>
+<p>上图由6个节点 <span class="math inline">\(A-F\)</span> 和 <span class="math inline">\(10\)</span> 条链路构成网络连接拓扑。每个节点的距离矢量组合成一个 <span class="math inline">\(6\times6\)</span> 距离矩阵。如下第一个表 (Init) 所示，链路的权重值确定了距离矩阵的初始化状态。矩阵是沿着左上到右下对角线对称的，对角线上的元素代表源点到自身的距离，所以全为0。第一行元素为节点 <span class="math inline">\(A\)</span> 到其它节点的距离，即它的距离矢量。因为 <span class="math inline">\(A\)</span>只与 <span class="math inline">\(B/C/D\)</span> 相邻，距离为 <span class="math inline">\(1/4/6\)</span>。<span class="math inline">\(A\)</span> 到 <span class="math inline">\(E/F\)</span> 的距离初始设置为无穷大。</p>
+<p><span class="math display">\[
+% outer vertical array of arrays
+\begin{array}{c}
+% inner horizontal array of arrays
+\begin{array}{cc}
+% inner array of minimum values
+\begin{array}{c|ccccc}
+\text{Init} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; 4 &amp; 6 &amp; \infty &amp; \infty\\
+B &amp; 1 &amp; 0 &amp; 1 &amp; \infty &amp; \infty &amp; 5\\
+C &amp; 4 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 4\\
+D &amp; 6 &amp; \infty &amp; 1 &amp; 0 &amp; 1 &amp; \infty\\
+E &amp; \infty &amp; \infty &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; \infty &amp; 5 &amp; 4 &amp; \infty &amp; 1 &amp; 0
+\end{array}
+&amp;
+&amp;
+&amp;
+% inner array of maximum values
+\begin{array}{c|ccccc}
+\text{No.1} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; \color{fuchsia}{2} &amp; \color{fuchsia}{5} &amp; \color{fuchsia}{5} &amp; \color{fuchsia}{6}\\
+B &amp; 1 &amp; 0 &amp; 1 &amp; \color{fuchsia}{2}  &amp; \color{fuchsia}{2} &amp; 5\\
+C &amp; \color{fuchsia}{2}  &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; \color{fuchsia}{2}\\
+D &amp; \color{fuchsia}{5}  &amp; \color{fuchsia}{2}  &amp; 1 &amp; 0 &amp; 1 &amp; \color{fuchsia}{2} \\
+E &amp; \color{fuchsia}{5} &amp; \color{fuchsia}{2} &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; \color{fuchsia}{6} &amp; 5 &amp; \color{fuchsia}{2}  &amp; \color{fuchsia}{2}  &amp; 1 &amp; 0
+\end{array}
+\end{array}
+\\[2ex]
+\\
+% inner horizontal array of arrays
+\begin{array}{cc}
+% inner array of minimum values
+\begin{array}{c|ccccc}
+\text{No.2} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; 2 &amp; \color{fuchsia}{3} &amp; \color{fuchsia}{3} &amp; 6 \\
+B &amp; 1 &amp; 0 &amp; 1 &amp; 2  &amp; 2 &amp; \color{fuchsia}{3}\\
+C &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 2\\
+D &amp; \color{fuchsia}{3}  &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 2\\
+E &amp; \color{fuchsia}{3} &amp; 2 &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; 6 &amp; \color{fuchsia}{3} &amp; 2 &amp; 2 &amp; 1 &amp; 0
+\end{array}
+&amp;
+&amp;
+&amp;
+% inner array of maximum values
+\begin{array}{c|ccccc}
+\text{No.3} &amp; A &amp; B &amp; C &amp; D &amp; E &amp; F\\
+\hline
+A &amp; 0 &amp; 1 &amp; 2 &amp; 3 &amp; 3 &amp; \color{fuchsia}{4}\\
+B &amp; 1 &amp; 0 &amp; 1 &amp; 2  &amp; 2 &amp; 3\\
+C &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 2 \\
+D &amp; 3 &amp; 2 &amp; 1 &amp; 0 &amp; 1 &amp; 2\\
+E &amp; 3 &amp; 2 &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+F &amp; \color{fuchsia}{4} &amp; 3 &amp; 2 &amp; 2 &amp; 1 &amp; 0
+\end{array}
+\end{array}
+\end{array}
+\]</span></p>
+<p>接下来第一轮路由信息交换，<span class="math inline">\(A\)</span> 收到 <span class="math inline">\(B\)</span> 的距离矢量。<span class="math inline">\(B\)</span> 到 <span class="math inline">\(C/F\)</span> 的距离为 <span class="math inline">\(1/5\)</span>，<span class="math inline">\(A\)</span> 执行松弛操作运算，得到新的距离值 <span class="math inline">\(2/6\)</span>。这小于 <span class="math inline">\(A\)</span> 当前到 <span class="math inline">\(C/F\)</span> 的距离 <span class="math inline">\(4/\infty\)</span>，所以 <span class="math inline">\(A\)</span> 更新它的距离矢量。同理，<span class="math inline">\(A\)</span> 在处理完收到的 <span class="math inline">\(C\)</span> 的距离矢量之后，将它到 <span class="math inline">\(D/E\)</span> 的最短距离更新为 <span class="math inline">\(5/5\)</span>。这就是以上表No.1里第一行颜色高亮所示的变化。第一轮里其它节点也同时执行松弛操作运算，其距离矢量的变化也由颜色高亮显示。</p>
+<p>重复这一过程，每一轮的最短距离变化都由颜色高亮显示。至第三轮(No.3)结束，距离矩阵不再变化，算法收敛完毕。最后生成的最短路径如下图中的粗实线所示：</p>
+<pre class="mermaid">
+graph LR
+
+subgraph 最短路径图
+    A((A)) &#x3D;&#x3D;&#x3D; |1| B((B))
+    A((A)) --- |4| C((C))
+    A((A)) --- |6| D((D))
+    B &#x3D;&#x3D;&#x3D; |1| C
+    C &#x3D;&#x3D;&#x3D; |1| D
+    D &#x3D;&#x3D;&#x3D; |1| E((E))
+    C &#x3D;&#x3D;&#x3D; |1| E
+    E &#x3D;&#x3D;&#x3D; |1| F((F))
+    C --- |4| F
+    B --- |5| F
+end
+
+</pre>
+<p>这时节点 <span class="math inline">\(A\)</span> 的路由表如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">目的节点</th>
+<th style="text-align: center;">下一跳</th>
+<th style="text-align: center;">链路开销</th>
+<th style="text-align: center;">路径</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">A-B</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">C</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">A-B-C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">D</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">A-B-C-D</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">E</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">A-B-C-E</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">F</td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">A-B-C-E-F</td>
+</tr>
+</tbody>
+</table>
+<h3 id="算法改进">算法改进</h3>
+<p>贝尔曼-福特算法本身是无瑕的，应用于距离矢量路由协议也发挥了有效的路由功能。然而，在现实的网络部署中，由于系统的动态和分布式特质，距离矢量路由协议在实际运行中暴露出来了一些问题。下面对两个突出的问题做一些简单讨论：</p>
+<ul>
+<li><strong>反弹效应</strong>：参考下图的4节点网络，最短路径为A-B-C-D。现在C和D之间的链路突然中断，C马上检测到这一故障，并把到D的距离改为无穷大。但是在C发出新的距离矢量之前，先收到来自B的距离矢量。这是很常见的，因为许多协议实现规定周期性的发送距离矢量报文，以防丢失。由于B的距离矢量里到D的距离为2，所以C将到D的距离更新为3，并把B设为到D的下一跳。然后C又发出路由更新到B。B随之更新到D的距离为4，并依然将C设为下一跳。这就形成了一个循环，A/B/C所有到D的数据包将在B和C间反复传输，直至“存活时间” (TTL) 超时而被抛弃。这就是“反弹效应”。只有当B计算出通过C到达D的距离大于7时，B才将D直接设为下一跳，循环中止。</li>
+</ul>
+<pre class="mermaid">
+graph LR
+
+subgraph 反弹效应
+    E((A)) --- |1| F((B))
+    F --- |1| G((C))
+    F --- |7| H((D))
+    G -.- |1| H
+end
+
+</pre>
+<ul>
+<li><strong>计数到无穷大</strong>：同样的4节点网络，假定现在B到C和D之间的链路同时中断了，网络被完全分隔成两个独立子网A/B及C/D。当反弹效应产生时，因为不存在到达另一个子网中任何节点的真正可达路径，每个子网里的循环都不会中止。由于无法收敛，在A和B的路由表里到C和D距离会一直增大下去。C和D之间也可能出现类似的现象，它们到A和B距离会一直循环往复增大。这种过程被称为“计数到无穷大”。当出现这一情况时，网路数据传输处于极度混乱状态，大量数据包被循环发送，链路拥塞，路由更新也会因此而丢失。</li>
+</ul>
+<pre class="mermaid">
+graph LR
+
+subgraph 计数到无穷大
+    A((A)) --- |1| B((B))
+    B -.- |1| C((C))
+    B -.- |7| D((D))
+    C --- |1| D
+end
+</pre>
+<p>反弹效应和计数到无穷大问题，对距离矢量路由协议在实际网络中的功效带来了困扰。对此，研究人员采纳了一些技术措施来将这些不利影响降低至最小。具体应用到RIP协议中的有“水平分割” (split-horizon) 和“触发更新” (triggered-updates)等。</p>
+<p>水平分割的思想是，如果节点A到目的地X的下一跳是节点B，那么A不应该告知B它有一条更短的路径到达X。在实现上，A可以从它发给B的距离矢量消息中拿掉到X的路由。还有一种更积极的方法，称为“毒性反转水平分割” (split-horizon with poisonous reverse)，是让A继续发出到X的路由，但是将其距离设定为无穷大。这样就可以立即消除两个节点间的循环。触发更新指定节点在察觉到链路中断时，立即发出更新消息，而不用等到下一个发送周期开始。这当然可以加快收敛速度，大幅减少路由循环的出现。</p>
+<p>然而，即使使用毒性反转水平分割和触发更新，也不能完全消除路由循环。在以上的4节点网络中，如果A到B的连接掉线，在出现路由更新丢失或不对等时延的情况下，B/C/D仍然可能会形成B-D-C-B的三点路由循环。所以，距离矢量路由协议还是必须设置一个路径距离的上限，以及时认定计数到无穷大的发生并马上中止循环。对于以跳转次数作为距离度量的RIP协议，规定最大距离值为15，超过15即被视为不可达。</p>
+<p>还有其他的研究者给出了不同的环路解构方案。在1989年的ACM SIGCOMM会议上，陈俊祥 (Chunhsiang Cheng) 等人<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>提出了一种<strong>扩展的贝尔曼-福特算法</strong>以消除环路。新算法在贝尔曼-福特算法的基础上添加了“源跟踪”功能。其设想是在路由表和路由更新里加入路径头 (head) 信息，在他们的论文中对路径头的定义是：</p>
+<blockquote>
+<p>The <em>head</em> of a path <span class="math inline">\(R_{ij}\)</span> is defined to be the last node preceding node j in the sequence of nodes in <span class="math inline">\(R_{ij}\)</span> (i.e., if <span class="math inline">\(R_{ij}=(i,n_1,n_2,..,n_r,j)\)</span>, then head of <span class="math inline">\(R_{ij}\)</span> is <span class="math inline">\(n_r\)</span> if r &gt; 0, and equal to i if r=0).</p>
+</blockquote>
+<p>显然路径头就是到目的地的路径中逆向的第一个节点。如果目的地是直接相邻的节点，本地节点就是路径头。将路径头加入到路由更新里，就会在网络中随着距离矢量一直传播到所有节点。那么如何检测环路呢？论文给出名为<strong>IN_PATH</strong>的函数伪代码：</p>
+<blockquote>
+<p><strong>Function</strong> IN_PATH(<span class="math inline">\(Node,Neighbor,Dest\)</span>);<br />
+(* return true or false *)<br />
+<span class="math inline">\(\qquad\)</span> <strong>begin</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <span class="math inline">\(h \gets HEAD_{Node}(Dest)\)</span>;<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* find head from Node to Dest *)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>if</strong> <span class="math inline">\(h=Node\)</span> <strong>then</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* Neighbor is not in <span class="math inline">\(R_{NodeDest}\)</span> *)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>return</strong>(false)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>else if</strong> <span class="math inline">\(h=Neighbor\)</span> <strong>then</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* Neighbor is in <span class="math inline">\(R_{NodeDest}\)</span> *)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>return</strong>(true)<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> <strong>else</strong><br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> IN_PATH(<span class="math inline">\(Node,Neighbor, HEAD_{Node}(h)\)</span>);<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span> (* cannot determine yet,try again *)<br />
+<span class="math inline">\(\qquad\)</span> <strong>end;</strong></p>
+</blockquote>
+<p>当节点 (Node) 想要向邻接点 (Neighbor) 发布去往目的地 Dest 的路由消息时，就执行IN_PATH函数。函数先取出目的地的路径头节点，检查其是否为节点本身，是就返回false；否则看看其是否为邻接点，是就返回true；两者都不是，就将路径头节点作为目的地，取出新的路径头节点，递归调用函数自身。所以当函数返回true时，表明路由消息的接收者就是路径头，节点完全没有必要发布此路由。换而言之，我们检测到一个环路，此时节点应该将距离值设为无穷大。当函数返回false时，节点正常发布路由消息。</p>
+<p>“源跟踪”算法可以更有效的解构环路，但是却增加了不少计算量，这与RIP协议简单通用和易于实现的设计原则相违背。此外，实际局域网的路由广播特性和子网聚合配置，不能保证提供和传播准确的路径头信息。所以这一类扩展的贝尔曼-福特算法并没有投入实用。然而，它却是很好的网络路由协议学习和实验素材，CS551 软件课件项目就是要求仿真实现<strong>扩展的贝尔曼-福特算法</strong>！</p>
+<h3 id="仿真设计">仿真设计</h3>
+<h4 id="项目要求和建议">项目要求和建议</h4>
+<p>以下是 CS551 任课教师 <a target="_blank" rel="noopener" href="https://nsl.usc.edu/people/ramesh/">Ramesh Govindan</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> 教授给出的课件项目要求和参考建议：</p>
+<ol type="1">
+<li>写一个简单的<strong>管理员</strong>程序读入网络连接描述文件，然后生成几个子进程。每个子进程仿真一个路由器。
+<ul>
+<li>网络连接描述文件的格式是：
+<ul>
+<li>第一行包含单个整数<span class="math inline">\(N\)</span>，表示网络中有<span class="math inline">\(N\)</span>个节点，地址从<span class="math inline">\(0\)</span>到<span class="math inline">\(N-1\)</span></li>
+<li>后面每一行描述一个网络中的点对点链路。每一行有三个空格分开的整数：<span class="math inline">\(X\)</span>、<span class="math inline">\(Y\)</span>和<span class="math inline">\(C\)</span>。<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>是<span class="math inline">\([0,N-1]\)</span>范围内的节点编号，<span class="math inline">\(C\)</span>是一个代表<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>之间链路开销的正整数</li>
+</ul></li>
+</ul></li>
+</ol>
+<ul>
+<li>每个路由器都开启一个UDP套接字 (socket)，用以与邻接路由器交换路由信息；在此之前，路由器必须知道其地址和邻接表信息</li>
+<li>你必须实现一个简单的协议，让管理员告知路由器这一信息。建议的方法是：
+<ul>
+<li>在每个路由器启动之后，建立一个TCP连接到管理员 (想想如何实现）</li>
+<li>路由器向管理员发送消息，消息包含它的UDP端口号</li>
+<li>管理员回复路由器的地址和邻接表信息 (使用自己定义的消息格式)</li>
+</ul></li>
+</ul>
+<ol start="2" type="1">
+<li>在每个仿真路由器收到它的邻接表后，开始执行<strong>扩展的贝尔曼-福特算法</strong> (参见陈俊祥的论文)：
+<ul>
+<li>每个路由器都需要与邻接路由器交换距离矢量信息，设计你的路由表和距离矢量消息格式</li>
+<li>你可以假定不会出现节点失误或链路断线的情况，不需要仿真由此触发的路由更新</li>
+<li>你必须仔细阅读和理解协议处理规则，先在简单的拓扑图上熟悉算法</li>
+<li>每个路由器在收到邻接表后，发出第一个路由更新，之后只在路由表变化才发出路由更新</li>
+<li>你可以设置一定时长的定时器，以决定仿真结束时刻，结束后所有进程都必须及时终止</li>
+</ul></li>
+<li>仿真结束输出两类文件：
+<ul>
+<li>一个名为 ports 的文件，有<span class="math inline">\(N\)</span>行。每行列出以空格分开的两个数字<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>，<span class="math inline">\(X\)</span>为节点地址，<span class="math inline">\(Y\)</span>为其UDP端口号。全部行以地址从低到高排序。</li>
+<li>每个路由器的路由表文件，文件名为路由器地址 (<span class="math inline">\([0,N-1]\)</span>)，总共有<span class="math inline">\(N\)</span>个文件
+<ul>
+<li>每个路由表文件有<span class="math inline">\(N\)</span>行，每行对应一条到目标路由器的路由</li>
+<li>路由格式是：“X Y C P1,P2,P3”</li>
+<li>X是目标路由器地址，Y是到从本路由器到X的下一跳地址，C是链路开销</li>
+<li>P1,P2,P3是从X到本路由器的 (逆向) 路径，以逗号分隔</li>
+</ul></li>
+</ul></li>
+</ol>
+<p>以上的要求和建议其实给出了仿真程序设计的框架和运行流程，在此基础上可以进一步考虑管理员和路由器进程的许多设计细节。</p>
+<h4 id="管理员进程">管理员进程</h4>
+<p>从流程上看，管理员进程是主进程，负责读入网络连接信息；同时它也是父进程，为每个路由器生成子进程。管理员要开启TCP套接字，以接收每个路由器所监听的UDP端口号。那么路由器怎么知道管理员的TCP端口号呢？答案就在生成子进程的过程里。当管理员调用<code>fork()</code>生成子进程时，立即传递自己的TCP套接字文件描述符和总节点数目给路由器函数。而当路由器连接到管理员后，管理员也会从<code>accept()</code>的返回值得到路由器的TCP套接字文件描述符，这样管理员就可以发送后续的邻接表信息。</p>
+<p>理清了这一过程之后，整个管理员进程的运行时序就很清晰了。以下列出穿插关键数据结构定义的完整流程：</p>
+<ol type="1">
+<li><p>启动，读入命令行参数<code>argv[1]</code>，也就是网络连接描述文件名。</p></li>
+<li><p>初始化网络节点邻接表：一个结构类型<code>source</code>的数组，记录节点地址<code>id</code>、相邻节点数<code>numNeighbor</code>以及邻接点信息的链表<code>link</code>；邻接点信息定义为另一个结构类型<code>neighbor</code>，包含节点地址<code>id</code>、链路开销<code>cost</code>和下一个邻接点指针：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">neighbor</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">int</span> cost;</span><br><span class="line">    neighbor *next;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">source</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">int</span> numNeighbor;</span><br><span class="line">    neighbor *link;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>读入网络连接描述文件，分析后构造网络节点邻接表。</p></li>
+<li><p>创建TCP套接字，然后调用绑定<code>bind()</code>和监听<code>listen()</code>函数。</p></li>
+<li><p>循环调用<code>fork()</code>生成全部路由器子进程，传递TCP套接字文件描述符和总节点数目给路由器启动函数：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fork the routers</span></span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;numNode; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> ((childpid = fork())==<span class="number">0</span>) &#123;</span><br><span class="line">          <span class="built_in">router</span>(i, listenfd, numNode);</span><br><span class="line">          <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>循环调用<code>accept()</code>接收每个路由器发过来的UDP端口号，保存到 ports 文件；同时记录每个路由器的TCP连接文件描述符。</p></li>
+<li><p>循环给每个路由器发送邻接信息：</p>
+<ul>
+<li><p>先是路由器地址和相邻节点总数：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This is header message to each router to tell it its own</span></span><br><span class="line"><span class="comment">// ID and how many neighbors it has.</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">message</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> routerId;</span><br><span class="line">    <span class="keyword">int</span> numNeighbor;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>后面是每一个邻接点的<em>&lt;节点地址，链路开销，UDP端口号&gt;</em>信息三元组：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This message is used for the manager to tell each router</span></span><br><span class="line"><span class="comment">// its neighbor information including &lt;id, cost, UDP_port&gt;.</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nb_tuple</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> neighborId;</span><br><span class="line">    <span class="keyword">int</span> cost;</span><br><span class="line">    <span class="keyword">int</span> UDP_port;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+</ul></li>
+<li><p>循环调用<code>wait()</code>等待每个路由器子进程结束，然后整个仿真过程结束。</p></li>
+</ol>
+<h4 id="路由器进程">路由器进程</h4>
+<p>路由器进程的设计和实现要复杂得多。这里要创建距离矢量矩阵和路由表、实现节点间距离矢量的交换，还要处理距离矢量信息、更新路由表并重发距离矢量。这是一个典型的异步多进程软件设计的问题。另外还要记得必须实现<strong>扩展的贝尔曼-福特算法</strong>的环路解构功能。</p>
+<p>先来看看核心数据结构的定义和初始化代码：</p>
+<ul>
+<li>距离矢量结构及其二维矩阵初始化
+<ul>
+<li><p>距离矢量包含距离度量值和环路解构需要的路径头节点地址：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Dis_matrix</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> distance;</span><br><span class="line">    <span class="keyword">int</span> headId;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>初始化 [总节点数] <span class="math inline">\(\times\)</span> [本节点的相邻节点数] 的二维矩阵 (-1代表不可达)：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// create distance matrix entries</span></span><br><span class="line">Dis_matrix **entry;</span><br><span class="line">entry = <span class="keyword">new</span> Dis_matrix*[numNode];</span><br><span class="line"></span><br><span class="line"><span class="comment">// initialize distance matrix</span></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numNode; i++) &#123;</span><br><span class="line">    entry[i] = <span class="keyword">new</span> Dis_matrix[msg.numNeighbor];</span><br><span class="line">    <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;msg.numNeighbor; j++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (tup[j].neighborId==i) &#123;</span><br><span class="line">            entry[i][j].distance=tup[j].cost;</span><br><span class="line">            entry[i][j].headId=id;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            entry[i][j].distance=<span class="number">-1</span>;</span><br><span class="line">            entry[i][j].headId=<span class="number">-1</span>;</span><br><span class="line">        &#125;   </span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+</ul></li>
+<li>路由表结构及其初始化
+<ul>
+<li><p>路由表项是一个<em>&lt;目的节点，链路开销，下一跳，路径头节点&gt;</em>的四元组：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RtableEntry</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> dest;</span><br><span class="line">    <span class="keyword">int</span> cost;</span><br><span class="line">    <span class="keyword">int</span> nexthop;</span><br><span class="line">    <span class="keyword">int</span> head;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>初始化为 [总节点数] 一维数组：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// initialize routing table</span></span><br><span class="line">RtableEntry *table = <span class="keyword">new</span> RtableEntry[numNode];</span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numNode; i++) &#123;</span><br><span class="line">    <span class="keyword">int</span> tmp_cost = <span class="number">-1</span>; </span><br><span class="line">    <span class="keyword">int</span> tmp_next = tup[<span class="number">0</span>].neighborId; </span><br><span class="line">    <span class="keyword">int</span> tmp_head = <span class="number">-1</span>; </span><br><span class="line">    <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;msg.numNeighbor; j++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (entry[i][j].distance != <span class="number">-1</span>) &#123;</span><br><span class="line">            tmp_cost = entry[i][j].distance;</span><br><span class="line">            tmp_head = entry[i][j].headId;</span><br><span class="line">            tmp_next = tup[j].neighborId;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;   </span><br><span class="line">    &#125;   </span><br><span class="line">    table[i].dest = i;</span><br><span class="line">    table[i].cost = tmp_cost;</span><br><span class="line">    table[i].nexthop = tmp_next;</span><br><span class="line">    table[i].head = tmp_head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+</ul></li>
+</ul>
+<p>接下来一个重要设计是实现论文中的IN_PATH函数以检测环路。原文的伪代码用到了递归，是为了说明的方便。所有的递归都可以转化为迭代，从性能上考虑迭代更好。仿真程序实现的IN_PATH函数如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IN_PATH</span> <span class="params">(<span class="keyword">int</span> NB, <span class="keyword">int</span> dest, RtableEntry *table, <span class="keyword">int</span> id)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> head=table[dest].head;</span><br><span class="line">    <span class="keyword">if</span> (head==<span class="number">-1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> ((head!=id) &amp;&amp; (head!=NB) &amp;&amp; (head!=<span class="number">-1</span>))</span><br><span class="line">        head=table[head].head;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (head==id || head==<span class="number">-1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>函数里的变量名与论文中的的基本一致。可以看到，其实这是一个简单的代码实现，但是其中蕴含的思想却很重要。如论文中所述，这个函数在每次向邻接点发送路由更新时都要被调用。</p>
+<p>在以上这些都就绪后，整个路由器的运行流程就可以清楚地表述如下：</p>
+<ol type="1">
+<li><p>创建TCP套接字，连接到管理员进程。</p></li>
+<li><p>创建UDP套接字，绑定<code>bind()</code>后调用<code>getsockname()</code>取得端口号并发给管理员。</p></li>
+<li><p>从管理员接收相邻节点信息，包括链路开销和UDP端口号</p></li>
+<li><p>初始化距离矢量矩阵和路由表，开始路由。</p></li>
+<li><p>先发送第一个距离矢量消息给每个邻接点，消息是字符串格式：</p>
+<ul>
+<li>开头："<本节点地址>[空格]<邻节点地址>[空格]<总节点数><strong>*</strong>"</li>
+<li>然后对每一个目的地重复："<目的节点地址>[空格]<链路开销>[空格]<路径头节点地址><strong>#</strong>"</li>
+</ul></li>
+<li><p>调用<code>select()</code>开始事件循环，并设置定时为三倍总节点数的秒数。当在超时前收到邻接点发来的距离矢量时，<code>select()</code>返回大于0的值，路由器作如下处理：</p>
+<ul>
+<li><p>分析收到的距离矢量，更新自身距离矢量矩阵，然后生成新的路由表，原始的贝尔曼-福特算法的实现就在这里：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">UpdateDisMatrix</span> <span class="params">(<span class="keyword">char</span>* recv, Dis_matrix **Entry,<span class="keyword">int</span> numNode, <span class="keyword">int</span> id,</span></span></span><br><span class="line"><span class="params"><span class="function">                      <span class="keyword">int</span> numNeighbor, nb_tuple *tup)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sour, dest, tempDest, tempDist, tempHead, i, j, k;</span><br><span class="line">    <span class="keyword">char</span> *temp;</span><br><span class="line">    </span><br><span class="line">    temp=<span class="built_in">strchr</span>(recv,<span class="string">&#x27;*&#x27;</span>)+<span class="number">1</span>;</span><br><span class="line">    <span class="built_in">sscanf</span>(recv,<span class="string">&quot;%d %d %d*&quot;</span>,&amp;sour,&amp;dest,&amp;numNode);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>;i&lt;numNode;i++) &#123;</span><br><span class="line">        <span class="built_in">sscanf</span>(temp,<span class="string">&quot;%d %d %d&quot;</span>,&amp;tempDest,&amp;tempDist,&amp;tempHead);</span><br><span class="line">        temp=<span class="built_in">strchr</span>(temp,<span class="string">&#x27;#&#x27;</span>)+<span class="number">1</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> ((tempDest==id)||(tempDest==sour))</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">            </span><br><span class="line">	    <span class="keyword">for</span> (j=<span class="number">0</span>; j&lt;numNode; j++) &#123;</span><br><span class="line">	        <span class="keyword">if</span> (j==tempDest) &#123;</span><br><span class="line">	            <span class="keyword">for</span> (k=<span class="number">0</span>;k&lt;numNeighbor; k++)</span><br><span class="line">	                <span class="keyword">if</span> (tup[k].neighborId==sour)</span><br><span class="line">	                    <span class="keyword">break</span>;</span><br><span class="line">	            <span class="keyword">if</span> (tempDist==<span class="number">-1</span>) &#123;</span><br><span class="line">	                Entry[j][k].distance=<span class="number">-1</span>;</span><br><span class="line">	                Entry[j][k].headId=<span class="number">-1</span>;</span><br><span class="line">	            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	                Entry[j][k].distance=tempDist+tup[k].cost;</span><br><span class="line">	                Entry[j][k].headId=tempHead;</span><br><span class="line">	            &#125;</span><br><span class="line">	            <span class="keyword">break</span>;</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CreateRTfromDM</span> <span class="params">(RtableEntry *rtEntry_new, Dis_matrix **Entry,</span></span></span><br><span class="line"><span class="params"><span class="function">                     nb_tuple *tup, <span class="keyword">int</span> numDest, <span class="keyword">int</span> numNB)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i,j, tmp, k;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numDest; i++) &#123;</span><br><span class="line">        tmp=Entry[i][<span class="number">0</span>].distance;</span><br><span class="line">        k=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (j=<span class="number">1</span>;j&lt;numNB; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (Entry[i][j].distance==<span class="number">-1</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (tmp==<span class="number">-1</span>||Entry[i][j].distance&lt;tmp) &#123;</span><br><span class="line">                tmp=Entry[i][j].distance;</span><br><span class="line">                k=j;</span><br><span class="line">            &#125;</span><br><span class="line">    	&#125;</span><br><span class="line">        rtEntry_new[i].dest=i;</span><br><span class="line">        rtEntry_new[i].cost=tmp;</span><br><span class="line">        rtEntry_new[i].nexthop=tup[k].neighborId;</span><br><span class="line">        rtEntry_new[i].head=Entry[i][k].headId;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>比较新旧路由表，如果有变化就替换掉旧的，并发送新的距离矢量给所有邻节点。发送代码调用IN_PATH函数实现<strong>扩展的贝尔曼-福特算法</strong>：</p>
+<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;numNode; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">IN_PATH</span>(tup[j].neighborId, i, table, id)) &#123;</span><br><span class="line">        tmpRT[i].cost=<span class="number">-1</span>;</span><br><span class="line">        tmpRT[i].head=<span class="number">-1</span>;</span><br><span class="line">        tmpRT[i].dest=i;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        tmpRT[i].cost=table[i].cost;</span><br><span class="line">        tmpRT[i].head=table[i].head;</span><br><span class="line">        tmpRT[i].dest=i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>重新开始定时的事件循环。</p></li>
+</ul></li>
+<li><p>如果<code>select()</code>返回0，事件循环超时，这时假定网络路由已收敛，输出自己的路由表。</p></li>
+<li><p>路由器进程结束。</p></li>
+</ol>
+<h3 id="程序运行">程序运行</h3>
+<p>原始的仿真程序当年在Sun SPARK工作站中编译，通过了教师提供的10节点网络测试用例。之后又测试自己编写的6节点 (就是前面路由算法举例的网络图) 和12节点测试用例，才最后提交。几天后从教学助理那里得知，仿真程序获得了满分！</p>
+<p>现在将仿真程序重新拿出来，在Red Hat Linux和macOS系统中编译链接，两个系统的编译运行环境如下：</p>
+<ul>
+<li>Red Hat Enterprise Linux 8.1 (Ootpa)：
+<ul>
+<li>内核: Linux 4.18.0-147.3.1.el8_1.x86_64</li>
+<li>体系结构: x86-64</li>
+<li>处理器: Intel(R) Xeon(R) CPU E5-2667 v4 @ 3.20GHz</li>
+<li>编译器: g++ (GCC) 8.3.1 20190507 (Red Hat 8.3.1-4)</li>
+</ul></li>
+<li>macOS Catalina Version 10.15.7：
+<ul>
+<li>内核: Darwin 19.6.0: Tue Nov 10 00:10:30 PST 2020</li>
+<li>体系结构: x86_64</li>
+<li>处理器: 2.2 GHz 6-Core Intel Core i7</li>
+<li>编译器: Apple clang version 12.0.0 (clang-1200.0.32.28)</li>
+</ul></li>
+</ul>
+<p>在macOS上需要对程序原文件做一个小改动<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>才编译成功。而在链接阶段发现在两个系统上都不需要原来的socket和nsl目标库文件，因为它们都已经被包含在缺省加载的标准libc库中。清除这些障碍后，运行时却发现路由器收不到相邻节点的距离矢量消息，而发送方调用<code>sendto()</code>时并没有报错，在两个系统中的症状一样。</p>
+<p>困扰了一天半后，终于找到原因了。原来的代码里，路由器从管理员收到相邻节点的UDP端口号后，保存时做了一个Endianness转换：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neibaddr[i].sin_port = <span class="built_in">htons</span>(tup[i].UDP_port);</span><br></pre></td></tr></table></figure>
+<p>Sun SPARK是<code>Big Endian</code>系统，而现在运行Red Hat Linux和macOS的系统是用的Intel x86_64体系结构，它们都是<code>Little Endian</code>的。注意到UDP端口号是从网络数据包中直接取出来的，所以这里可能不需要转换。果然，拿掉<code>htons()</code>之后，路由器之间的消息传递恢复正常，同样的三个测试用例全部通过。</p>
+<p>参考前面的路由算法讨论例图，以下是6节点网络的测试输入用例。节点A-F对应路由器ID 0-5：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cc-simulate-dv:9 &gt; cat test6.txt </span><br><span class="line">6</span><br><span class="line">0 1 1</span><br><span class="line">0 2 4</span><br><span class="line">1 2 1</span><br><span class="line">0 3 6</span><br><span class="line">2 3 1</span><br><span class="line">3 4 1</span><br><span class="line">2 4 1</span><br><span class="line">5 1 5</span><br><span class="line">2 5 4</span><br><span class="line">4 5 1</span><br></pre></td></tr></table></figure>
+<p>仿真程序编译和运行的记录如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">cc-simulate-dv:10 &gt; make</span><br><span class="line">g++ -O2 -c manager.cc</span><br><span class="line">g++ -O2 -c router.cc </span><br><span class="line">g++ -O2 -o manager manager.o router.o  </span><br><span class="line">cc-simulate-dv:11 &gt; manager test6.txt</span><br><span class="line">numnode is: 6</span><br><span class="line">0 3: 3.6 2.4 1.1 </span><br><span class="line">1 3: 5.5 2.1 0.1 </span><br><span class="line">2 5: 5.4 4.1 3.1 1.1 0.4 </span><br><span class="line">3 3: 4.1 2.1 0.6 </span><br><span class="line">4 3: 5.1 2.1 3.1 </span><br><span class="line">5 3: 4.1 2.4 1.5 </span><br><span class="line">R1 begin routing</span><br><span class="line">R2 begin routing</span><br><span class="line">R3 begin routing</span><br><span class="line">R4 begin routing</span><br><span class="line">R0 begin routing</span><br><span class="line">R5 begin routing</span><br><span class="line">R4 timeout!</span><br><span class="line">R2 timeout!</span><br><span class="line">R3 timeout!</span><br><span class="line">R5 timeout!</span><br><span class="line">R0 timeout!</span><br><span class="line">R1 timeout!</span><br></pre></td></tr></table></figure>
+<p>运行结果显示节点A与F的路由表与逆向路径完全正确：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">cc-simulate-dv:11 &gt; cat ports </span><br><span class="line">0 37352</span><br><span class="line">1 24551</span><br><span class="line">2 45772</span><br><span class="line">3 33265</span><br><span class="line">4 38391</span><br><span class="line">5 36583</span><br><span class="line">cc-simulate-dv:12 &gt; cat 0</span><br><span class="line">0 -1 0</span><br><span class="line">1 1 1 1,0</span><br><span class="line">2 1 2 2,1,0</span><br><span class="line">3 1 3 3,2,1,0</span><br><span class="line">4 1 3 4,2,1,0</span><br><span class="line">5 1 4 5,4,2,1,0</span><br><span class="line">cc-simulate-dv:13 &gt; cat 5</span><br><span class="line">0 4 4 0,1,2,4,5</span><br><span class="line">1 4 3 1,2,4,5</span><br><span class="line">2 4 2 2,4,5</span><br><span class="line">3 4 2 3,4,5</span><br><span class="line">4 4 1 4,5</span><br><span class="line">5 -1 0</span><br></pre></td></tr></table></figure>
+<p>完整的修正过的仿真程序打包下载链接在此：<a href="cc-simulate-dv.tgz">cc-simulate-dv.tgz</a></p>
+<p>总结这一项目的完成，加深了对距离矢量路由协议的深刻理解，也熟悉了Unix类系统上的网络编程的许多规范和细节，笔者收获很大。另一方面，从课程设计上看，此软件项目还可以做一些优化和扩展实验：</p>
+<ul>
+<li>创建面向对象的路由器类，实现完全模块化的路由器</li>
+<li>处理距离矢量时直接更新原来的路由表，不必生成新的路由表再比较</li>
+<li>设计仿真节点失误或链路断线的情况，验证协议实现的收敛性</li>
+<li>在同样的仿真架构下，实现链路状态路由协议 (<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Open_Shortest_Path_First">OSPF</a>)</li>
+<li>修改仿真架构，实现路径矢量路由协议 (<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Border_Gateway_Protocol">BGP</a>)</li>
+</ul>
+<p>回顾起来，CS551讲解的计算机网络知识点和软件作业都让人受益良多。总体上看，CS551可能是笔者在USC上的最具有挑战性、但也学到最多东西的一门课程。这样的学习和训练为笔者之后长期的网络研发工作打下了坚实的基础。非常感谢任课教师 Ramesh Govindan 教授！</p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>时至今日，CS551依然如当年一样火热，报名需要资格审批 (Clearance) ，之后可能还要通过一个预考 (Placement Exam) 才能正式注册。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>C. Cheng, R. Riley, S. P. R. Kumar, and J. J. Garcia-Luna-Aceves. <em><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/75247.75269">A loop-free Bellman-Ford routing protocol without bouncing effect</a></em>. In ACM SIGCOMM '8g, pages 224-237, September 1989<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Govindan教授专注于大型网络路由基础设施和无线及移动网络体系结构研究。他是IEEE和ACM双会士 (Fellow)，曾任 IEEE <em>移动计算</em> 会刊主编。Govindan教授2018年荣获 IEEE Internet Award。他现今依然活跃在科研和教学的一线。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>在macOS系统中，socket系列API的接口定义使用<code>socklen_t *restrict address_len</code>。这要求调用者传递严格类型定义的变量给地址长度参数<code>address_len</code>。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/" title="C++编程实现的距离矢量路由协议仿真程序">https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+              <a href="/tags/%E8%B7%AF%E7%94%B1%E4%B8%8E%E4%BA%A4%E6%8D%A2/" rel="tag"><i class="fa fa-tag"></i> 路由与交换</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/25/ISIC-test-IP-stack/" rel="prev" title="用ISIC测试网络设备IP协议栈的健壮性">
+                  <i class="fa fa-chevron-left"></i> 用ISIC测试网络设备IP协议栈的健壮性
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/01/DH-and-RSA/" rel="next" title="迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？">
+                  迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？ <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"81250b56f09e99e7de8f04440c8ff7fd"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

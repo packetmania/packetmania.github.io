@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="近日在一次研发小组内部的 WPA3 技术介绍会上，演讲者提到加密无线开放网络的 OWE 技术基于迪菲—赫尔曼密钥交换，并随口说迪菲—赫尔曼密钥交换是使用和 RSA 相似的技术。这种说法是错误的！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？">
+<meta property="og:url" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="近日在一次研发小组内部的 WPA3 技术介绍会上，演讲者提到加密无线开放网络的 OWE 技术基于迪菲—赫尔曼密钥交换，并随口说迪菲—赫尔曼密钥交换是使用和 RSA 相似的技术。这种说法是错误的！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/acm-turing-2015.jpeg">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/acm-turing-2002.jpeg">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/dtls-server-hello.png">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/dtls-server-key.png">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/dtls-client-key.png">
+<meta property="article:published_time" content="2020-12-01T16:55:44.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.684Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/acm-turing-2015.jpeg">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2020/12/01/DH-and-RSA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2020/12/01/DH-and-RSA/","path":"2020/12/01/DH-and-RSA/","title":"迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？ | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%AA%E8%8F%B2%E8%B5%AB%E5%B0%94%E6%9B%BC%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2"><span class="nav-number">1.</span> <span class="nav-text">迪菲—赫尔曼密钥交换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rsa%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">RSA加密算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB"><span class="nav-number">3.</span> <span class="nav-text">区别与联系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dhe-rsa%E5%8A%A0%E5%AF%86%E5%A5%97%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">DHE-RSA加密套件</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2020/12/01/DH-and-RSA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-01 08:55:44" itemprop="dateCreated datePublished" datetime="2020-12-01T08:55:44-08:00">2020-12-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/" itemprop="url" rel="index"><span itemprop="name">学习体会</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>近日在一次研发小组内部的 WPA3 技术介绍会上，演讲者提到加密无线开放网络的 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8110">OWE</a> 技术基于迪菲—赫尔曼密钥交换，并随口说迪菲—赫尔曼密钥交换是使用和 RSA 相似的技术。这种说法是错误的！<span id="more"></span>虽然迪菲—赫尔曼密钥交换和 RSA 加密算法都属于公钥密码技术，它们的工作机理和应用场景是不同的。作为网络安全相关的研发工程技术人员，有必要清楚地了解两者的工作机制和所基于的数学原理，以及它们之间的区别和联系。</p>
+<div class="note success no-icon"><p><strong>A cryptographic system should be secure even if everything about the system, except the key, is public knowledge.</strong><br> <strong>— <em>Auguste Kerckhoffs</em>（奥古斯特·柯克霍夫，荷兰语言学家和密码学家，提出密码学的“柯克霍夫原则”）</strong></p>
+</div>
+<h2 id="迪菲赫尔曼密钥交换">迪菲—赫尔曼密钥交换</h2>
+<p>迪菲—赫尔曼密钥交换 (Diffie–Hellman key exchange，缩写为DH) 是一种保密通信协议，通过它可以让通信双方在没有任何预知信息的情况下，在不安全的公共信道上交换消息以创建共享密码。这个密码可以用于产生后续双方使用对称加密技术 (如 AES) 通信的密钥。</p>
+<p>这种公钥分配以达成共享秘密的思想最早由斯坦福大学教授马丁·赫尔曼 (Martin Hellman) 的博士研究生瑞夫·墨克 (Ralph Merkle) 提出，而后赫尔曼教授的研究助理惠特菲尔德·迪菲 (Whitfield Diffie) 和赫尔曼教授共同发明了实用的密钥交换协议。迪菲与赫尔曼于1976在 IEEE 信息论会刊上受邀共同发表了论文《<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/1055638">密码学的新方向</a>》，为公开密钥密码学体制奠基，也正式宣告了迪菲—赫尔曼密钥交换这一新技术的诞生。</p>
+<p>迪菲—赫尔曼密钥交换的工作原理，是基于数论中的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/整数模n乘法群">整数模 <em>n</em> 乘法群</a>及其<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/原根">原根</a>的模幂 (modular exponentiation) 运算。下面以一个简单而具体的例子来描述：</p>
+<ol type="1">
+<li>爱丽丝选定一个素数 <span class="math inline">\(p=71\)</span>，再选定整数模 <span class="math inline">\(p\)</span> 乘法群的一个原根 <span class="math inline">\(g=7\)</span></li>
+<li>爱丽丝选定一个小于 <span class="math inline">\(p\)</span> 的随机数 <span class="math inline">\(a=17\)</span>，计算 <span class="math inline">\(A=g^a\;mod\;p=7^{17}\;mod\;71 = 62\)</span></li>
+<li>爱丽丝将 <span class="math inline">\((p,g,A)\)</span> 一起发给鲍勃</li>
+<li>鲍勃也选定一个小于 <span class="math inline">\(p\)</span> 的随机数 <span class="math inline">\(b=39\)</span>，计算 <span class="math inline">\(B=g^b\;mod\;p=7^{39}\;mod\;71 = 13\)</span></li>
+<li>鲍勃将 <span class="math inline">\(B\)</span> 发回给爱丽丝</li>
+<li>爱丽丝计算 <span class="math inline">\(s=B^a\;mod\;p=13^{17}\;mod\;71 = 42\)</span></li>
+<li>鲍勃计算 <span class="math inline">\(s=A^b\;mod\;p=62^{39}\;mod\;71 = 42\)</span></li>
+</ol>
+<details class="note primary"><summary><p><strong>计算 <span class="math inline">\(\color{#93F}{\bf62^{39}\;mod\;71}\)</span> 很麻烦吗？其实很容易……</strong></p>
+</summary>
+<p>记住模算数有保持基本运算的性质： <span class="math display">\[(a⋅b)\;mod\;m = [(a\;mod\;m)⋅(b\;mod\;m)]\;mod\;m\]</span> 结合<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/平方求幂">平方求幂</a>原理，可以应用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/模幂#从右到左二位算法">从右到左二进制位算法</a>快速计算： <span class="math display">\[\begin{align}
+62^{39}\;mod\;71 &amp; = (62^{2^0}⋅62^{2^1}⋅62^{2^2}⋅62^{2^5})\;mod\;71\\
+&amp; = (62⋅10⋅(62^{2^1}⋅62^{2^1})⋅(62^{2^4}⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅(10⋅10)⋅(62^{2^3}⋅62^{2^3}⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅(29⋅29⋅62^{2^3}⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅(60⋅60⋅62^{2^4}))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅(50⋅50))\;mod\;71\\
+&amp; = (62⋅10⋅29⋅15)\;mod\;71\\
+&amp; = 42
+\end{align}\]</span></p>
+
+</details>
+<p>如同魔法一般，爱丽丝和鲍勃都得到了同样的 <span class="math inline">\(s\)</span> 值 <span class="math inline">\(42\)</span>，这就是两个人的共享秘密！此后，爱丽丝和鲍勃就可用 <span class="math inline">\(s\)</span> 的哈希值作为对称密钥进行加密通讯，第三者无法知晓。</p>
+<p>为什么会这样？因为乘法群模幂运算的性质，在模 <span class="math inline">\(p\)</span> 下 <span class="math inline">\(g^{ab}\)</span> 和 <span class="math inline">\(g^{ba}\)</span> 相等：</p>
+<p><span class="math display">\[A^b\;mod\;p=g^{ab}\;mod\;p=g^{ba}\;mod\;p=B^a\;mod\;p\]</span></p>
+<p>所以计算出来的 <span class="math inline">\(s\)</span> 值一定相同。当然，真正的应用中会使用大得多的 <span class="math inline">\(p\)</span>，否则攻击者可以穷举其所有的余数，去试图破解对称加密的密文。</p>
+<p>注意 <span class="math inline">\((p,g,A,B)\)</span> 是公开的，<span class="math inline">\((a,b,s)\)</span> 是秘密的。现在假定一个窃听者伊芙可以看到爱丽丝和鲍伯之间的全部消息，那么她可以推导出 <span class="math inline">\(s\)</span> 吗？答案是只有当 <span class="math inline">\((p,a,b)\)</span> 值很小时才是实际可能的。伊芙首先必须从她知道的 <span class="math inline">\((p,g,A,B)\)</span> 倒推出 <span class="math inline">\((a,b)\)</span> :</p>
+<ul>
+<li><span class="math inline">\(A=g^a\;mod\;p\Rightarrow \color{fuchsia}{a = log_g A\;mod\;p}\)</span></li>
+<li><span class="math inline">\(B=g^b\;mod\;p\Rightarrow \color{fuchsia}{b = log_g B\;mod\;p}\)</span></li>
+</ul>
+<p>这就是著名的<strong>离散对数问题</strong>。这是一个公认的计算难题，当前并没有找到多项式时间效率的算法来计算离散对数。所以只要选择了合适的 <span class="math inline">\((p,a,b)\)</span>，这个协议被认为是窃听安全的。<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc3526">RFC 3526</a> 推荐了6个大素数的模幂 DH 群可供实际应用，其中最小的素数就有1536比特位！</p>
+<p>还要强调的一点是，迪菲－赫尔曼密钥交换本身并不要求通信双方的身份验证，因此它很容易受到中间人攻击。如果攻击者可以在信道的中央窜改两边收发的消息，就可以假扮身份完成两次迪菲－赫尔曼密钥交换。这样攻击者就可以解密全部的信息。因此，通常实际应用中需要加入身份验证机制来防止这类攻击。</p>
+<p>迪菲－赫尔曼密钥交换技术是对现代密码学至关重要的贡献。2015年，在这项发明公布39年后，迪菲和赫尔曼共同荣获被誉为“计算机界的诺贝尔奖” 的 ACM 图灵奖。ACM 的颁奖海报上直接称他们“发明了公钥密码技术”。</p>
+<p><img src="acm-turing-2015.jpeg" /></p>
+<h2 id="rsa加密算法">RSA加密算法</h2>
+<p>RSA 是一种公钥加密算法，以此为核心技术构成的同名公钥加密系统，被广泛应用于保密数据传输。今天，互联网的全面发展已经在社会的各个层面为大众提供极大便利。不论你是在网上冲浪、游戏、娱乐、购物、还是与亲友即时通讯、管理银行账户、投资买卖金融证券，或者只是简单地收发电子邮件，都有 RSA 在幕后运行保障你的隐私和数据安全。</p>
+<p>RSA 实际上是三个人姓氏的缩写，他们是美国密码学家罗纳德·李维斯特 (Ronald <strong>R</strong>ivest)、以色列密码学家阿迪·沙米尔 (Adi <strong>S</strong>hamir) 和美国计算机科学家伦纳德·阿德曼 (Leonard Max <strong>A</strong>dleman) 。1977年，李维斯特、沙米尔和阿德曼三人在麻省理工学院 (MIT) 合作共同发明了 RSA 加密算法。算法最先发布在MIT的公开技术报告里，后来整理发表在1978年二月的 <em>ACM 通讯</em> 杂志，标题为《<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/359340.359342">一种获取数字签名和公钥密码系统的方法</a>》。</p>
+<p>RSA 的基本思想是使用者创建由一个公钥和一个私钥组成的密钥对。公钥自由发布，私钥必须秘密保存。任何人都可以用公钥来加密消息，而生成的密文只有私钥持有者才能解读。另一方面，以私钥加密的信息，公钥都可以解开。由于我们假定私钥只是特定对象才能持有，所以使用私钥加密相当于生成数字签名，用公钥解密等效于验证签名。</p>
+<p>RSA 加密算法包括四步操作过程：密钥生成、密钥分配、加密和解密。下面也举一个简单而具体的例子来说明：</p>
+<ol type="1">
+<li>爱丽丝随机选择两个素数 <span class="math inline">\(p=127\)</span> 和 <span class="math inline">\(q=5867\)</span>，计算 <span class="math inline">\(N=pq=745109\)</span></li>
+<li>爱丽丝计算 <span class="math inline">\(N\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/卡邁克爾函數">卡迈克尔函数</a> <span class="math inline">\(\lambda(N)=\lambda(745109)=52794\)</span>
+<ul>
+<li>当 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 都为素数时，通常 <span class="math inline">\(\lambda(pq)=lcm(p − 1, q − 1)\)</span></li>
+<li><span class="math inline">\(lcm\)</span> 是求最小公倍数的函数，可以用欧几里得算法得出</li>
+<li><span class="math inline">\(lcm(126,5866)=52794\)</span></li>
+</ul></li>
+<li>爱丽丝选择一个小于 <span class="math inline">\(\lambda(N)\)</span> 且与之互素的数 <span class="math inline">\(e=5\)</span>，并求得 <span class="math inline">\(e\)</span> 关于 <span class="math inline">\(\lambda(N)\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/模反元素">模逆元</a> <span class="math inline">\(d\equiv e^{-1}\pmod {\lambda(N)}\)</span>，得到 <span class="math inline">\(d=10559\)</span>
+<ul>
+<li>模逆元的定义是，找到 <span class="math inline">\(d\)</span> 使得 <span class="math inline">\((d⋅e)\;mod\;\lambda(N)=1\)</span></li>
+<li><span class="math inline">\(d=10559\equiv 5^{-1}\pmod {52794}\)</span></li>
+</ul></li>
+<li><span class="math inline">\(\pmb{(N,e)}\)</span> <strong>就是爱丽丝的公钥</strong>，<span class="math inline">\(\pmb{(N,d)}\)</span> <strong>是她的私钥</strong>
+<ul>
+<li>爱丽丝将她的公钥 <span class="math inline">\((745109,5)\)</span> 发给鲍勃</li>
+<li>爱丽丝密藏她的私钥 <span class="math inline">\((745109,10559)\)</span></li>
+<li>爱丽丝销毁所有 <span class="math inline">\(p,q,\lambda(N)\)</span> 的记录</li>
+</ul></li>
+<li>当鲍勃想给爱丽丝送一个消息 <span class="math inline">\(M\)</span> 时，先按照双方约定好的编码格式将 <span class="math inline">\(M\)</span> 转化为一个或多个小于 <span class="math inline">\(N\)</span> 的正整数 <span class="math inline">\(m\)</span>，然后使用爱丽丝的公钥逐个计算出密文 <span class="math inline">\(c\)</span>。计算公式是 <span class="math inline">\(\pmb{c\equiv m^e\pmod N}\)</span>
+<ul>
+<li>假定 <span class="math inline">\(M\)</span> 为“<em>CACC 9678</em>”，编码格式是空格为0、a-z/A-Z（忽略大小写）为1-26、0-9为27-36</li>
+<li>转化后得到正整数串 “030103 030036 333435”，注意每个都小于745109</li>
+<li>加密后的密文整数串 “184539 741303 358095”
+<ul>
+<li><span class="math inline">\(184539 \equiv 30103^5\pmod {745109}\)</span></li>
+<li><span class="math inline">\(741303 \equiv 30036^5\pmod {745109}\)</span></li>
+<li><span class="math inline">\(358095 \equiv 333435^5\pmod {745109}\)</span></li>
+</ul></li>
+</ul></li>
+<li>爱丽丝收到密文整数串后，使用自己的私钥逐个计算出明文 <span class="math inline">\(m\)</span>，计算公式是 <span class="math inline">\(\pmb{m\equiv c^d\pmod N}\)</span>
+<ul>
+<li><span class="math inline">\(30103 \equiv 184539^{10559}\pmod {745109}\)</span></li>
+<li><span class="math inline">\(30036 \equiv 741303^{10559}\pmod {745109}\)</span></li>
+<li><span class="math inline">\(333435 \equiv 358095^{10559}\pmod {745109}\)</span></li>
+</ul></li>
+</ol>
+<details class="note primary"><summary><p><strong>以上第三步从 <span class="math inline">\(\color{#93F}{\bf(d\cdot 5)\;mod\;52794=1}\)</span> 算出 <span class="math inline">\(d\)</span>，这是怎么做到的？</strong></p>
+</summary>
+<p>应用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/扩展欧几里得算法">扩展欧几里得算法</a>可以快速求解模逆元。参考该网页，根据互素的前提条件，可以写下关系式 (<span class="math inline">\(gcd\)</span> 为最大公约数函数)：</p>
+<p><span class="math display">\[52794s+5t=gcd(5, 52794)=1\]</span></p>
+<p>我们要求满足上式的最小正整数 <span class="math inline">\(t\)</span>。下表演示算法的迭代过程：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">序号 <span class="math inline">\(i\)</span></th>
+<th style="text-align: left;">商 <span class="math inline">\(q_{i-1}\)</span></th>
+<th style="text-align: left;">余数 <span class="math inline">\(r_i\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(s_i\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(t_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><span class="math inline">\(52794\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><span class="math inline">\(5\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: left;"><span class="math inline">\(52794 \div5 = 10558\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(4\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1 - 10558\times 0 = 1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0 - 10558\times 1 = -10558\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: left;"><span class="math inline">\(5 \div4 = 1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(0-1\times1 = -1\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(1 - 1\times (-10558) = \bf10559\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>只需要两步迭代就得到余数<span class="math inline">\(1\)</span>，算法结束。最后的 <span class="math inline">\(t\)</span> 就是我们要的 <span class="math inline">\(5^{-1}\pmod {52794}\)</span>。</p>
+
+</details>
+<p>解码后串起来得到同样的信息“<em>CACC 9678</em>”。为什么爱丽丝解密后的消息会与鲍勃发送的完全一致呢？原因就在模幂运算里。首先因为 <span class="math inline">\(c\equiv m^e\pmod N\)</span>，可以得到 <span class="math inline">\(c^d\equiv (m^e)^d \equiv m^{ed} \pmod N\)</span>。由于 <span class="math inline">\((d⋅e)\;mod\;\lambda(N)=1\)</span>，推导出 <span class="math inline">\(ed = 1 + h\lambda(N)\)</span> (<span class="math inline">\(h\)</span> 为非负整数）。综合两式</p>
+<p><span class="math display">\[\Rightarrow m^{ed} = m^{(1+h\lambda(N))} = \color{fuchsia}{m(m^{\lambda(N)})^h \equiv m(1)^h}\equiv m\pmod N\]</span></p>
+<p>以上倒数第二个同余等式 (符号 <span class="math inline">\(\equiv\)</span>) 的依据是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/欧拉定理_(数论)">欧拉定理</a>。这样就证明了解密公式 <span class="math inline">\({m\equiv c^d\pmod N}\)</span> 的正确性！还可以看到，<span class="math inline">\(e\)</span> 和 <span class="math inline">\(d\)</span> 的次序对于 <span class="math inline">\(m^{ed}\;mod\;N\)</span> 的结果无关，所以爱丽丝用私钥加密的消息，鲍勃可以拿爱丽丝的公钥解开。这也证明了数字签名的可行性。</p>
+<p>安全性方面，如果第三方能从爱丽丝的公钥 <span class="math inline">\((N,e)\)</span> 推算出 <span class="math inline">\(d\)</span>，那就破解了这一算法。但是破解的前提是先要从 <span class="math inline">\(N\)</span> 里面分离出 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，这在 <span class="math inline">\(N\)</span> 很大时是非常困难的。实际上，这就是著名的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/整数分解"><strong>大数素因数分解问题</strong></a>，另一个公认的计算难题。迄今为止，“已知最好的算法比指数数量级时间要快，比多项式数量级时间要慢”。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RSA_Factoring_Challenge">RSA 大数分解挑战</a> 网站公布的最新纪录，是2020二月破解了 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RSA_numbers#RSA-250">RSA-250</a>，一个829比特的大数。这一进展表明1024比特 <span class="math inline">\(N\)</span> 值公钥的安全性已经岌岌可危。有鉴于此，美国国家标准技术研究所 (National Institute of Standards and Technology，简写为NIST) 建议实际应用中的 RSA 密钥长度不少于2048比特。</p>
+<p>另一方面，虽然公钥不需要保密传送，但却要求可靠地分配。否则，伊芙可以假扮爱丽丝，将自己的公钥发给鲍勃。如果鲍勃信以为真，伊芙就可以拦截所有鲍勃传递给爱丽丝的消息，用她自己的私钥解密。伊芙再将这个消息用爱丽丝的公钥加密后传给她。爱丽丝和鲍勃无法发现这样的中间人攻击。解决这一问题的方案，是建立可信赖的第三方机构签发证书来确保公钥的可靠性。这就是公钥基础架构 (Public Key Infrastructure，缩写 PKI) 的由来。</p>
+<p>RSA 公钥加密算法，是三位密码学家和计算机科学家的天才创造。它的发明是公钥密码技术新的里程碑，也成为现代互联网安全通信的基石。李维斯特、沙米尔和阿德曼的杰出贡献，为他们赢得了2002 年的 ACM 图灵奖，比迪菲和赫尔曼早了足足13年！</p>
+<p><img src="acm-turing-2002.jpeg" /></p>
+<h2 id="区别与联系">区别与联系</h2>
+<p>下表总结了迪菲－赫尔曼密钥交换与 RSA 公钥加密算法的对比：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">密码技术</th>
+<th style="text-align: center;">迪菲－赫尔曼密钥交换</th>
+<th style="text-align: center;">RSA加密算法</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">技术类型</td>
+<td style="text-align: center;">非对称，公钥技术</td>
+<td style="text-align: center;">非对称，公钥技术</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">数学原理</td>
+<td style="text-align: center;">整数模 <span class="math inline">\(n\)</span> 乘法群，原根</td>
+<td style="text-align: center;">卡迈克尔函数，模逆元，欧拉定理</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">数学运算</td>
+<td style="text-align: center;">模幂，平方求幂</td>
+<td style="text-align: center;">模幂，平方求幂，扩展欧几里得算法</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">公开密钥</td>
+<td style="text-align: center;"><span class="math inline">\((p,g,A,B)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((N,e)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">私有密钥</td>
+<td style="text-align: center;"><span class="math inline">\((a,b,s)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((N,d)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">安全保障</td>
+<td style="text-align: center;">离散对数难题</td>
+<td style="text-align: center;">大数素因数分解难题</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">典型应用</td>
+<td style="text-align: center;">密钥交换</td>
+<td style="text-align: center;">加密/解密，数字签名</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">密钥长度</td>
+<td style="text-align: center;"><span class="math inline">\(\ge2048\)</span> 比特</td>
+<td style="text-align: center;"><span class="math inline">\(\ge2048\)</span> 比特</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">身份验证</td>
+<td style="text-align: center;">需要外部支持</td>
+<td style="text-align: center;">需要 PKI 支持公钥分配</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">前向保密</td>
+<td style="text-align: center;">支持</td>
+<td style="text-align: center;">不支持</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，两者都属于非对称的公钥技术，都有一个公钥和私钥密钥对。它们都用到了模幂和平方求幂数学运算，RSA 公钥加密算法还需要应用扩展欧几里得算法求解模逆元。尽管有这些相似点，它们所基于数学原理是不同的，其安全性对应的计算难题也是性质相异的。这些特质决定了迪菲－赫尔曼密钥交换可用于密钥交换，但是不能用来加密/解密；而 RSA 公钥加密算法既可以加密/解密，又能支持数字签名。所以，综合来看二者使用相似的技术的说法不能成立。</p>
+<div class="note info"><p>基于迪菲-赫尔曼密钥交换演化出来的 ElGamal 加密算法，可以用来加密/解密消息，但是由于一些历史原因以及 RSA 公钥加密算法的巨大商业成功，ElGamal 加密算法并不流行。</p>
+</div>
+<p>在现代密码学中，密钥长度定义为加密算法使用的密钥的比特数。理论上，因为所有的算法都可能会被暴力破解，所以密钥长度确定了一个加密算法的安全性上限。密码分析学研究表明，迪菲-赫尔曼密钥交换和 RSA 公钥加密算法的密钥强度大致相同。破解离散对数和分解大数素因子的计算强度是可比拟的。因此，在实际应用中对这两种密码技术的推荐密钥长度都是至少2048比特。</p>
+<p>对于身份验证，迪菲-赫尔曼密钥交换需要外部支持，否则无法抗击中间人攻击。RSA 公钥加密算法虽然可以用于验证数字签名，但前提是有 PKI 支持可靠的公钥分配。当前 PKI 的体系已经相当成熟，有专门的证书认证机构 (Certificate Authority，缩写 CA) 承担公钥体系中公钥合法性检验的责任，发放和管理 X.509 格式的公钥数字证书。</p>
+<p>RSA 公钥加密算法在实际应用中存在一个问题，即它没有<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/前向保密">前向保密</a>的功能。前向保密 (Forward Secrecy)，有时也被称为完全前向保密 (Perfect Forward Secrecy)，是保密通信协议的一种安全属性，指的是长期使用的主密钥泄漏不会导致过去的会话信息泄漏。如果系统具有前向保密性，就可以保护在私钥泄露时历史通信纪录的安全。设想一下这样的情况，虽然伊芙无法破解爱丽丝与鲍勃之间用 RSA 加密的消息，伊芙可以存档全部的过往消息密文。未来某一天，爱丽丝的私钥因为某种原因被泄漏，那么伊芙就可以解密所有的消息记录。</p>
+<p>解决这个问题的办法，就是迪菲-赫尔曼密钥交换！记得迪菲-赫尔曼密钥交换的公钥里的 <span class="math inline">\((A,B)\)</span> 由双方从各自的私钥 <span class="math inline">\((a,b)\)</span> 生成，那么如果每次会话时都产生随机的 <span class="math inline">\((a,b)\)</span> 值，未来的密钥泄漏并不会破解之前的会话密钥。这说明迪菲-赫尔曼密钥交换是支持前向保密的！如果我们结合迪菲-赫尔曼密钥交换的前向保密性与 RSA 公钥加密算法的数字签名功能，就可以实现带有身份验证保护的密钥交换。这一过程可以简化示例如下：</p>
+<ol type="1">
+<li>爱丽丝与鲍勃双方交换经过认证的 RSA 公钥证书</li>
+<li>爱丽丝与鲍勃各自产生随机的 <span class="math inline">\((a,b)\)</span> 值，用共享的迪菲-赫尔曼 <span class="math inline">\((p,g)\)</span> 计算出 <span class="math inline">\((A,B)\)</span></li>
+<li>爱丽丝用自己的 RSA 私钥加密 <span class="math inline">\(A\)</span> 生成数字签名，将之与 <span class="math inline">\(A\)</span> 一起发给鲍勃</li>
+<li>鲍勃用自己的 RSA 私钥加密 <span class="math inline">\(B\)</span> 生成数字签名，将之与 <span class="math inline">\(B\)</span> 一起发给爱丽丝</li>
+<li>爱丽丝用鲍勃的 RSA 公钥验证签名，确认 <span class="math inline">\(B\)</span> 来自鲍勃，用 <span class="math inline">\((p,a,B)\)</span> 算出 <span class="math inline">\(s\)</span></li>
+<li>鲍勃用爱丽丝的 RSA 公钥验证签名，确认 <span class="math inline">\(A\)</span> 来自爱丽丝，用 <span class="math inline">\((p,b,A)\)</span> 算出 <span class="math inline">\(s\)</span></li>
+<li>爱丽丝和鲍勃达成共享秘密，生成后续对称加密 (AES) 的会话密钥，进行保密通信</li>
+</ol>
+<p>这里 RSA 数字签名保障了密钥交换不受中间人攻击。另外以上的第二步中，如果每次会话都产生新的随机数，那么即使有一天爱丽丝或鲍勃的RSA 私钥泄漏，也不会威胁以前会话的安全性，因为窃密者还是必须要去求解离散对数的难题。我们也实现了前向保密。实际上，这就是无处不在的传输层安全性协议 (Transport Layer Security，缩写 TLS) 所定义的 DHE-RSA 密码套件的工作机理。</p>
+<h2 id="dhe-rsa加密套件">DHE-RSA加密套件</h2>
+<p>传输层安全性协议 (TLS) 及其前身安全套接层协议 (Secure Sockets Layer，缩写 SSL) 是一种为互联网通信提供安全及数据完整性保障的安全协议。TLS 广泛使用在浏览器、电子邮件、即时通信、VoIP、虚拟专用网 (VPN) 等应用程序中，已成为事实上的互联网保密通信工业标准。目前 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246">TLS 1.2</a> 是得到普遍支持的协议版本，支持建立于 TCP 之上的安全连接 。针对 UDP 的应用也定义了数据报传输层安全性协议 (Datagram Transport Layer Security，缩写 DTLS)。DTLS 与 TLS 大同小异，主要在可靠性和安全性方面为无连接的 UDP 传输做了一些扩展。<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6347">DTLS 1.2</a> 与 TLS 1.2 功能相匹配。</p>
+<p>TLS 协议采用主从式（客户机/服务器）架构模型。它的工作模式，是使用 X.509 认证和非对称加密算法对通信方做身份认证，之后交换密钥生成对称加密的会话密钥。这个会话密钥就用来加密通信双方交换的数据，保证信息的保密性和可靠性，不必担心被第三方攻击或窃听。为了标识方便，TLS 1.2 协议将使用的<em>身份验证、密钥交换、批量加密和消息认证码算法</em> 组合成<strong>密码套件 (Cipher Suite) </strong>名称。每个密码套件被赋予一个双字节的编码。<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4">TLS 密码套件注册表</a>提供了全部登记在录的密码套件命名参考表，参考表以编码值从小到大排序。</p>
+<div class="note info"><p>由于非对称加密算法 (RSA 等) 计算强度远远高于对称加密算法 (AES 等)，从性能上考虑实际应用几乎总是使用对称加密算法批量加密消息。</p>
+</div>
+<p>TLS 1.2 协议支持一系列组合迪菲-赫尔曼密钥交换与 RSA 公钥加密算法的密码套件。它们都以<code>TLS_DH_RSA</code>或<code>TLS_DHE_RSA</code>作为开头。DHE 中的 “E” 代表 “Ephemeral” (临时的)，其意义是要求每次会话都要产生随机的 <span class="math inline">\((a,b)\)</span> 值。所以<code>TLS_DHE_RSA</code>密码套件能提供前向保密，而<code>TLS_DH_RSA</code>不可以，实际应用中应该优先选择前者。</p>
+<p>这里以典型的<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code>(编码 0x00,0x33) 密码套件为例，解析迪菲-赫尔曼与 RSA 协同工作建立 DTLS 会话的过程。首先解释一下密码套件的构成：</p>
+<ul>
+<li><code>DHE</code>：临时 DH 实现密钥交换</li>
+<li><code>RSA</code>：签名认证 DHE 的公钥</li>
+<li><code>AES_128_CBC</code>：128比特密码分组链接模式 AES 加密</li>
+<li><code>SHA</code>：160比特 <code>HMAC-SHA1</code> 散列消息认证码</li>
+</ul>
+<p>参考从网络端口截取的数据包文件 <a href="dtls-dhe-rsa.pcap">dtls-dhe-rsa.pcap</a>，可得到以下握手协议消息时序图：</p>
+<pre class="mermaid">
+sequenceDiagram
+
+autonumber
+participant C as 客户机 (Client)
+participant S as 服务器 (Server)
+Note over C,S: 握手协议
+rect rgb(230, 250, 255)
+C-&gt;&gt;S: Client Hello (Cr, Cipher Suites))
+S--&gt;&gt;C: Hello Verify Request (Cookie)
+C-&gt;&gt;S: Client Hello (Cr, Cookie, Cipher Suites)
+S--&gt;&gt;C: Server Hello (Sr, Cipher Suite), Certificate (Sn, Se)
+S--&gt;&gt;C: Server Key Exchange (p,g,A,Ss)
+S--&gt;&gt;C: Certificate Request, Server Hello Done
+C-&gt;&gt;S: Certificate (Cn, Ce)
+C-&gt;&gt;S: Client Key Exchange (B)
+C-&gt;&gt;S: Certificate Verify (Cs)
+end
+Note over C,S: 加密通道建立
+rect rgb(239, 252, 202)
+C-&gt;&gt;S: Change Cipher Spec, Encrypted Handshake Message
+S--&gt;&gt;C: Change Cipher Spec, Encrypted Handshake Message
+C-&gt;&gt;S: Application Data
+S--&gt;&gt;C: Application Data
+end
+ 
+</pre>
+<p>参考时序图中数据包编号解析如下：</p>
+<ul>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{1}-\enclose{circle}{3}\)</span> 实现初始握手信息交换：
+<ul>
+<li>客户机先发出问候消息，消息包含随机数 <span class="math inline">\(C_r\)</span> 和所支持的密码套件列表</li>
+<li>服务器回应一个问候验证请求消息，消息包含一个信息块 (Cookie)</li>
+<li>客户机收到验证请求后重发问候消息，包括上次的全部内容外加复制的信息块</li>
+</ul></li>
+</ul>
+<div class="note info"><p>问候验证是 DTLS 特有的，目的是防止拒绝服务攻击。协议规定，服务器只有在收到包含复制的信息块的问候消息后，才会继续为该客户机提供服务。</p>
+</div>
+<ul>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{4}-\enclose{circle}{6}\)</span> 显示服务器进入验证和密钥交换阶段：
+<ul>
+<li>服务器先发出问候消息回应，消息包含了随机数 <span class="math inline">\(S_r\)</span> 和所选定的密码套件
+<ul>
+<li>如下图所示，服务器选择了<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code><img src="dtls-server-hello.png" /></li>
+</ul></li>
+<li>同一数据包还包含了服务器证书消息，证书一般较大，会分成多个分片 (fragment)</li>
+<li>服务器证书提供了可验证其签名的 RSA 公钥 <span class="math inline">\((S_N,\;S_e)\)</span></li>
+<li>接下来服务器发出密钥交换消息，消息包含了其 DH 公钥 <span class="math inline">\((p,g,A)\)</span> 和签名<span class="math inline">\(Ss\)</span>
+<ul>
+<li>下图中 <span class="math inline">\(p\)</span> 的长度256字节，说明密钥长度为2048比特，<span class="math inline">\(Pubkey\)</span> 就是 <span class="math inline">\(A\)</span></li>
+<li>图中也可看到签名选用算法是 SHA512 和 RSA，</li>
+<li>操作是先计算 <span class="math inline">\(SHA512(Cr,Sr,p,g,A)\)</span>，再用服务器 RSA 私钥加密<img src="dtls-server-key.png" /></li>
+</ul></li>
+<li>之后是服务器发的证书请求消息和问候结束消息
+<ul>
+<li>服务器请求客户机发送可验证其签名的 RSA 公钥证书</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="note warning"><p><strong>注意：</strong>如果是使用 DH-RSA 密码套件，则服务器端的 DH 公钥参数 <span class="math inline">\((p,g,A)\)</span> 都是不变的，会直接包含在其证书消息中， 这时服务器不会发出密钥交换消息<span class="math inline">\(\require{enclose}\enclose{circle}{5}\)</span>。对于 DHE-RSA，每次会话的 <span class="math inline">\(A\)</span> 值都不一样。</p>
+</div>
+<ul>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{7}-\enclose{circle}{9}\)</span> 显示客户机进入验证和密钥交换阶段：
+<ul>
+<li>客户机先发出证书消息，证书包括 RSA 公钥 <span class="math inline">\((C_N,\;C_e)\)</span>，也会分成多个分片</li>
+<li>客户机再发出密钥交换消息，消息包含了其 DH 公钥 <span class="math inline">\(B\)</span>
+<ul>
+<li>下图中的<span class="math inline">\(Pubkey\)</span> 就是 <span class="math inline">\(B\)</span><img src="dtls-client-key.png" /></li>
+</ul></li>
+<li>客户机最后发出证书验证消息，消息包含了签名 <span class="math inline">\(Cs\)</span>
+<ul>
+<li>签名覆盖除最开始的客户机问候 <span class="math inline">\(\require{enclose}\enclose{circle}{1}\)</span> 及问候验证请求 <span class="math inline">\(\require{enclose}\enclose{circle}{2}\)</span> 之外的全部过往消息</li>
+<li>签名操作同样是先计算 <span class="math inline">\(SHA512\)</span>，再用客户机 RSA 私钥加密</li>
+</ul></li>
+</ul></li>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{10}-\enclose{circle}{11}\)</span> 完成握手并建立加密通道：
+<ul>
+<li>双方先各自验证对方发过来的签名</li>
+<li>验证成功后运行 DH 算法生成同样的预备主密钥 (<code>pre_master_secret</code>)</li>
+<li>双方调用<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246#page-14">伪随机函数(PRF)</a>从预备主密钥生成48字节主密钥 (<code>master_secret</code>)： <span class="math display">\[master\_secret = PRF(pre\_master\_secret,\unicode{x201C}master\;secret\unicode{x201D},Cr+Sr)[0..47]\]</span></li>
+<li>双方再次调用 PRF 从主密钥生成72字节密钥块 (<code>key_block</code>)： <span class="math display">\[key\_block = PRF(master\_secret,\unicode{x201C}key\;expansion\unicode{x201D},Sr+Cr)[0,71]\]</span></li>
+<li>密钥块分配给<code>HMAC-SHA1</code>和<code>AES_128_CBC</code>功能模块：
+<ul>
+<li>客户机写消息验证码 (MAC) 密钥：20字节</li>
+<li>服务器写消息验证码 (MAC) 密钥：20字节</li>
+<li>客户机写加密密钥：16字节</li>
+<li>服务器写加密密钥：16字节</li>
+</ul>
+注意TLS/DTLS 1.2规定此密码套件使用显式初始向量 (IV)，不需要分配密钥块</li>
+<li>客户机产生更新密码规范 (Change Cipher Spec) 消息，表明开始使用加密和 MAC 模块</li>
+<li>客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块： <span class="math display">\[PRF(master\_secret,finished\_label,SHA256(handshake\_messages)[0,11]\]</span></li>
+<li>客户机发送更新密码规范消息和加密后的握手结束消息到服务器</li>
+<li>服务器验证收到的客户机握手结束消息后，重复上面三步，生成自己的更新密码规范消息和加密后的握手结束消息，发送给客户机</li>
+<li>客户机验证收到的服务器握手结束消息完成握手，加密通道建成</li>
+</ul></li>
+<li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{12}-\enclose{circle}{13}\)</span> 显示加密的应用数据交换正式开始</li>
+</ul>
+<p>这就是使用<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code>(编码 0x00,0x33) 密码套件建立安全信息通道的完整过程。DHE 实现了有前向保密保护的密钥交换，而 RSA 数字签名为 DHE 提供了身份验证功能，二者结合打造了一种安全通信的解决方案。清楚了解了这些之后，我们就会更好地掌握迪菲-赫尔曼与 RSA 的工作机理，有效应用于实际工作中并避免不必要的失误。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2020/12/01/DH-and-RSA/" title="迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？">https://www.packetmania.net/2020/12/01/DH-and-RSA/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 网络安全</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/25/CC-simulate-DV-routing/" rel="prev" title="C++编程实现的距离矢量路由协议仿真程序">
+                  <i class="fa fa-chevron-left"></i> C++编程实现的距离矢量路由协议仿真程序
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/01/RSA-attack-defense/" rel="next" title="RSA的攻与防（一）">
+                  RSA的攻与防（一） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"0e4445362490161a3668f1a8a876e650"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

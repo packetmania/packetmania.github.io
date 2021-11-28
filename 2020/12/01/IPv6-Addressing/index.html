@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="IPv6支持多个地址，地址分配更加灵活方便。与 IPv4 仅仅依赖 DHCP 协议的地址分配方法不同，IPv6 加入了原生的无状态地址自动配置 (Sateless Address Autoconfiguration，简写 SLAAC) 协议。SLAAC 既可以单独工作为主机提供 IPv6 地址，又能与 DHCPv6 协同运作产生新的分配方案。这里对 IPv6 动态地址分配机制做一个全面分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPv6动态地址分配机制详解">
+<meta property="og:url" content="https://www.packetmania.net/2020/12/01/IPv6-Addressing/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="IPv6支持多个地址，地址分配更加灵活方便。与 IPv4 仅仅依赖 DHCP 协议的地址分配方法不同，IPv6 加入了原生的无状态地址自动配置 (Sateless Address Autoconfiguration，简写 SLAAC) 协议。SLAAC 既可以单独工作为主机提供 IPv6 地址，又能与 DHCPv6 协同运作产生新的分配方案。这里对 IPv6 动态地址分配机制做一个全面分析。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/IPv6-Addressing/ipv6-addr-format.png">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/IPv6-Addressing/ipv6-addr-alloc.png">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/IPv6-Addressing/ipv6-multicast-addr.png">
+<meta property="article:published_time" content="2020-12-01T21:59:19.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.686Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="TCP&#x2F;IP">
+<meta property="article:tag" content="思科技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2020/12/01/IPv6-Addressing/ipv6-addr-format.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2020/12/01/IPv6-Addressing/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2020/12/01/IPv6-Addressing/","path":"2020/12/01/IPv6-Addressing/","title":"IPv6动态地址分配机制详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>IPv6动态地址分配机制详解 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ipv6-%E5%9C%B0%E5%9D%80%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">IPv6 地址概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E6%9E%84%E6%88%90"><span class="nav-number">1.1.</span> <span class="nav-text">地址构成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">地址类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%88%86%E9%85%8D%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">动态分配方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ndp-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.</span> <span class="nav-text">NDP 协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E6%97%B6%E5%BA%8F"><span class="nav-number">2.2.</span> <span class="nav-text">消息时序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slaac"><span class="nav-number">2.3.</span> <span class="nav-text">SLAAC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slaac-%E6%97%A0%E7%8A%B6%E6%80%81-dhcpv6"><span class="nav-number">2.4.</span> <span class="nav-text">SLAAC + 无状态 DHCPv6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E7%8A%B6%E6%80%81-dhcpv6"><span class="nav-number">2.5.</span> <span class="nav-text">有状态 DHCPv6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E6%AF%94%E8%BE%83"><span class="nav-number">2.6.</span> <span class="nav-text">总结比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E9%94%99%E6%8C%87%E5%8D%97"><span class="nav-number">3.</span> <span class="nav-text">排错指南</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ipv6-%E4%BA%A7%E5%93%81%E8%AE%A4%E8%AF%81%E6%B5%8B%E8%AF%95"><span class="nav-number">4.1.</span> <span class="nav-text">IPv6 产品认证测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ipv6-%E6%A0%B8%E5%BF%83%E5%8D%8F%E8%AE%AE-rfc-%E5%88%97%E8%A1%A8"><span class="nav-number">4.2.</span> <span class="nav-text">IPv6 核心协议 RFC 列表</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2020/12/01/IPv6-Addressing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IPv6动态地址分配机制详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-01 13:59:19" itemprop="dateCreated datePublished" datetime="2020-12-01T13:59:19-08:00">2020-12-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/" itemprop="url" rel="index"><span itemprop="name">学习体会</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>13 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>IPv6支持多个地址，地址分配更加灵活方便。与 IPv4 仅仅依赖 DHCP 协议的地址分配方法不同，IPv6 加入了原生的无状态地址自动配置 (<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4862">Sateless Address Autoconfiguration</a>，简写 SLAAC) 协议。SLAAC 既可以单独工作为主机提供 IPv6 地址，又能与 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8415">DHCPv6</a> 协同运作产生新的分配方案。这里对 IPv6 动态地址分配机制做一个全面分析。 <span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Who the hell knew how much address space we needed?</strong><br> <strong>— <em>Vint Cerf</em>（温特·瑟夫，美国互联网先驱，公认的“互联网之父”之一）</strong></p>
+</div>
+<h2 id="ipv6-地址概述">IPv6 地址概述</h2>
+<h3 id="地址构成">地址构成</h3>
+<p>IPv6 与 IPv4 最显著的不同，就是其超大的地址空间。IPv4 有32比特 (4字节)，允许大约42.9亿（2<sup>32</sup>）个地址。而 IPv6 定义了128比特 (16字节)，支持大约340 x 10<sup>36</sup>个地址。这是一个相当可观的数字，在可预见的未来都不会出现地址枯竭的问题。典型的 IPv6 地址可被划分成两部分。如下图所示，开头的64比特用来代表网络，后面的64比特用作接口标识：<img src="ipv6-addr-format.png" />接口标识可以有多种方式产生：</p>
+<ul>
+<li>静态手工设置</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/IPv6_address#Modified_EUI-64">链路层地址 (MAC) 转化为64比特 EUI-64</a></li>
+<li>由 DHCPv6 指定</li>
+<li>由隐私扩展或加密协议生成</li>
+</ul>
+<p>为了便于书写，IPv6 推荐末端加上网络前缀长度的压缩格式标记，据此上面的地址可以缩短表示为： 2001:db8:130f<strong>::</strong>7000:<strong>0</strong>:140b/<strong>64</strong></p>
+<h3 id="地址类型">地址类型</h3>
+<p><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4291">RFC 4291</a> 区分了三种 IPv6 地址类型：</p>
+<ol type="1">
+<li>单播 (unicast)：网络地址和网络节点一一对应，点对点连接</li>
+<li>任播 (anycast)：发送地址对应一群接收节点，但只有最近一个接收到</li>
+<li>组播 (multicast)：发送地址对应一群接收可以复制信息的节点</li>
+</ol>
+<p>留意到 IPv6 取消了广播 (broadcast) 地址类型，对应的 IPv4 广播功能可以更好地由组播实现。任播地址与单播并无不同，应用场景非常有限。任播的一个典型应用是设定 DNS 根服务器，以便让主机就近查询域名。对于单播和组播地址，它们之间可由不同的网络前缀所辨认：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">地址类型</th>
+<th style="text-align: left;">英文名称</th>
+<th style="text-align: left;">二进制</th>
+<th style="text-align: left;">16进制</th>
+<th style="text-align: left;">应用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">链路本地地址（单播）</td>
+<td style="text-align: left;">Link-local address</td>
+<td style="text-align: left;">1111 1110 10</td>
+<td style="text-align: left;">fe80::/10</td>
+<td style="text-align: left;">单链路通信</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">唯一本地地址（单播）</td>
+<td style="text-align: left;">Unique local address</td>
+<td style="text-align: left;">1111 1101</td>
+<td style="text-align: left;">fd00::/8</td>
+<td style="text-align: left;">本地网络通信</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">全局单播地址</td>
+<td style="text-align: left;">Global unicast address</td>
+<td style="text-align: left;">001</td>
+<td style="text-align: left;">2000::/3</td>
+<td style="text-align: left;">互联网通信</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">组播地址</td>
+<td style="text-align: left;">Multicast address</td>
+<td style="text-align: left;">1111 1111</td>
+<td style="text-align: left;">ff00::/8</td>
+<td style="text-align: left;">群组通信，流媒体视频</td>
+</tr>
+</tbody>
+</table>
+<p>主机的每个接口都必须有一个链路本地地址，此外接口还可以以手工或动态自动配置方式获得唯一本地地址和全局单播地址。这样 IPv6 接口很自然地就拥有多个单播地址。唯一本地地址由本地网管管理，全局单播地址则需要 IANA 指定的地区注册中心负责分配。参考下图，当前所有的全局单播地址都从2000::/3地址块里分配，地址前面48比特标识服务提供商的全局路由网络，之后的16比特标识企业或校园内部子网： <img src="ipv6-addr-alloc.png" /> 因为 IPv6 组播地址只能用作目的地址，所以其比特位定义与单播不同。参见 RFC 4291，组播地址包含4比特特征标志位、4比特应用范围标志及最后112比特群组标识： <img src="ipv6-multicast-addr.png" />另外同一协议还规定了一些<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4291#page-15">预留的 IPv6 组播地址</a>，其中最重要的有：</p>
+<ul>
+<li>本地网段所有节点 — ff02::1</li>
+<li>本地网段所有路由器 — ff02::2</li>
+<li>本地请求节点地址: ff02::1:ffxx:xxxx</li>
+</ul>
+<h2 id="动态分配方案">动态分配方案</h2>
+<h3 id="ndp-协议">NDP 协议</h3>
+<p>IPv6 动态地址分配依赖于邻居发现协议 (<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4861">Neighbor Discovery Protocol</a>，简称NDP)。NDP作用于数据链路层，负责在链路上发现其他节点和相应的 IPv6 地址，并确定可用路由和维护其他活动节点的信息可达性。它为 IPv6 网络提供了等效于 IPv4 网络中地址解析协议 (ARP) 与 ICMP 路由器发现和重定向协议的功能。然而，NDP加入了许多改进以及新的功能。 NDP 定义了五种 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4443">ICMPv6</a> 消息类型：</p>
+<ol type="1">
+<li>路由器请求 (Router Solicitation，简称 RS)</li>
+<li>路由器通告 (Router Advertisement，简称 RA)</li>
+<li>邻居请求 (Neighbor Solicitation)</li>
+<li>邻居通告 (Neighbor Advertisement)</li>
+<li>重定向 (Redirect)</li>
+</ol>
+<p>这里的头二个消息类型 RS 和 RA，就是实现 IPv6 动态地址分配的关键。主机会发送 RS 消息到本地网段所有路由器组播地址 ff02::2，请求路由信息。当路由器收到网络节点发出的 RS 时，会即时发送 RA 回应。RA 的消息格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|     Type      |     Code      |          Checksum             |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| Cur Hop Limit |M|O|  Reserved |       Router Lifetime         |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                         Reachable Time                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                          Retrans Timer                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|   Options ...</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-</span><br></pre></td></tr></table></figure>
+<p>它定义了两个特殊比特位 M 和 O，其意义如下：</p>
+<ul>
+<li>M — 受监管的地址配置标志，设为1时地址从 DHCPv6 获取。</li>
+<li>O — 其他配置标志，设为1时指示其他配置信息从 DHCPv6 获取</li>
+</ul>
+<p>RA 消息的最后是选项部分 (Options)，最初有源链路层地址、MTU 和前缀信息三个选项。后来，<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8106">RFC 8106</a> (取代 RFC 6106) 又加上了递归域名服务器 (RDNSS) 和域名服务搜索列表 (DNSSL) 两个选项。这其中前缀信息选项直接决定了主机接口的动态地址配置，它的格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|     Type      |    Length     | Prefix Length |L|A| Reserved1 |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                         Valid Lifetime                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                       Preferred Lifetime                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                           Reserved2                           |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+                            Prefix                             +</span><br><span class="line">|                                                               |</span><br><span class="line">+                                                               +</span><br><span class="line">|                                                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<p>这里前缀长度 (Prefix Length) 和前缀 (Prefix) 联合决定了 IPv6 地址的网络前缀。此外，前缀信息选项也定义了两个特殊比特位 L 和 A：</p>
+<ul>
+<li>L — “在链路” (on-link) 标志，设为1时指示前缀可用于“在链路”判定</li>
+<li>A — 自动地址配置标志，设为1时指示前缀可用于 SLAAC</li>
+</ul>
+<p>类似于 IPv4 的子网掩码功能，“在链路”判定的意义在于让主机确定某个接口可以接入哪些网络。缺省情况下，主机只将链路本地地址所在的网络视为“在链路”。如果无法判定一个目的地址的“在链路”状态，主机默认将 IPv6 数据报转发给默认网关（或缺省路由器）。当主机收到 RA 消息时，如果一个前缀信息选项的“在链路”标志设为1，并且有效使用期限 (Valid Lifetime) 也是非0值，那么主机就会在前缀列表中为之创建一个新的前缀网络条目。所有未过期的前缀网络条目都是“在链路”的。</p>
+<h3 id="消息时序">消息时序</h3>
+<p>了解了 NDP 协议及 RA 消息所传递的信息之后，来看看它们是如何引导网络节点实现动态地址分配的。</p>
+<p>网络中的路由器会周期性的发送 RA 消息到本地网段所有节点组播地址 (ff02::1)。但是，为了避免时延，主机启动完成后会马上发送一个或多个 RS 消息到本地网段所有路由器。协议规定路由器要在0.5秒内回应 RA 消息。之后，根据所收到的 RA 消息中的 M/O/A 比特位的取值，主机会决定如何动态配置接口的唯一本地地址和全局单播地址，以及如何获取其他配置信息。在某些比特位取值组合下，主机需要运行 DHCPv6 客户端软件，连接到服务器以获取地址分配和/或其他配置信息。整个过程如以下消息时序图所示：</p>
+<pre class="mermaid">
+sequenceDiagram
+
+participant R as 路由器
+participant H as 主机
+participant S as DHCPv6 服务器
+Note over R,H: 路由器请求
+rect rgb(239, 252, 202)
+H-&gt;&gt;R: Router Solitication
+R--&gt;&gt;H: Router Advertisement
+end
+Note over H,S: 地址请求
+rect rgb(230, 250, 255)
+H-&gt;&gt;S: DHCPv6 Solicit
+S--&gt;&gt;H: DHCPv6 Advertise
+H-&gt;&gt;S: DHCPv6 Request
+S--&gt;&gt;H: DHCPv6 Reply
+end
+Note over H,S: 其他信息请求
+rect rgb(230, 250, 255)
+H-&gt;&gt;S: DHCPv6 Information-request
+S--&gt;&gt;H: DHCPv6 Reply
+end
+
+</pre>
+<div class="note warning"><p><strong>注意：</strong> 与 IPv4 DHCP 协议不同，DHCPv6 客户端使用 UDP 端口546，服务器使用 UDP 端口547。</p>
+</div>
+<p>以下详细解释由 M/O/A 比特位的取值组合所确定的三种动态分配方案：</p>
+<ul>
+<li>SLAAC</li>
+<li>SLAAC + 无状态 DHCPv6</li>
+<li>有状态 DHCPv6</li>
+</ul>
+<h3 id="slaac">SLAAC</h3>
+<p>SLAAC是最简单的 IPv6 地址自动分配方案，不需要任何服务器。其工作原理是主机启动后发送 RS 消息请求，路由器回送 RA 消息至本地网段所有节点。如果 RA 消息包含如下设置：</p>
+<ul>
+<li><strong><mark>首部的 M 比特和 O 比特都清零</mark></strong></li>
+<li><strong>前缀信息选项的 L 比特和 A 比特置为1</strong></li>
+</ul>
+<p>那么主机收到这个 RA 消息后，执行如下操作实现 SLAAC：</p>
+<ol type="1">
+<li>组合网络前缀与本地接口标识，生成唯一本地地址或全局单播地址</li>
+<li>安装默认网关（或缺省路由）指向路由器地址 (RA消息的源地址)</li>
+<li>将此接口设为对应网络前缀的“在链路”，也是以上默认网关的下一跳接口</li>
+<li>如果包含 RDNSS 和/或 DNSSL 选项，安装域名服务器和域名后缀</li>
+</ol>
+<p>这样，主机就获得了一个或多个 IPv6 唯一本地地址或全局单播地址，以及默认网关和域名服务信息，可以完成各种互联网连接。</p>
+<p>下面是思科 Catalyst 9300 多层接入交换机上的 SLAAC 配置示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ipv6 unicast-routing</span><br><span class="line">interface Vlan10</span><br><span class="line">    ipv6 enable</span><br><span class="line">    ipv6 address 2001:ABCD:1000::1/64</span><br><span class="line">    ipv6 nd ra dns server 2001:4860:4860::8888 infinite</span><br><span class="line">    ipv6 nd ra dns search-list example.com</span><br></pre></td></tr></table></figure>
+<p>思科多层交换机的第三层接口提供路由功能。可以看到，当在 VLAN 10 的第三层接口激活 IPv6 之后，其默认的地址自动分配方案就是 SLAAC。从该接口发出的 RA 消息的控制比特位全部按照 SLAAC 方案设置，其配置的每个 IPv6 地址的网络前缀都会被自动加入到 RA 前缀信息选项列表中。当然，网络管理员也可以用单独的接口配置命令排除某些网络前缀。示例的最后两行配置命令指定了 RDNSS 和 DNSSL，它们也被加入到 RA 消息选项中。</p>
+<p>这时如果主机接入 VLAN 10 的端口，就会马上获得一个网络前缀为 2001:ABCD:1000::/64 全局单播地址，同时其默认网关的地址被设定为 2001:ABCD:1000::1。打开浏览器输入一个网址，它就会向指定的域名服务器 2001:4860:4860::8888（谷歌的公共域名服务器地址）发出域名解析请求，以获取目的网址的 IPv6 地址建立连接。</p>
+<h3 id="slaac-无状态-dhcpv6">SLAAC + 无状态 DHCPv6</h3>
+<p>SLAAC 自动地址分配快捷方便，为中小型网络部署提供了即插即用的 IPv6 部署方案。但是如果网络节点需要获得其他一些配置信息，比如 NTP/SNTP 服务器、TFTP 服务器和 SIP 服务器地址，或者其功能依赖某些厂商特定的信息选项 (Vendor-specific Information Option) 时，就必须选择 <u>SLAAC + 无状态 DHCPv6</u> 的方案。</p>
+<p>这一方案依然使用 SLAAC 自动地址分配，但是路由器会指示主机去连接 DHCPv6 服务器以获取其他配置信息。这时路由器回送的 RA 消息设置变为：</p>
+<ul>
+<li><strong>首部的 M 比特清零，<mark>O 比特置为1</mark></strong></li>
+<li><strong>前缀信息选项的 L 比特和 A 比特置为1</strong></li>
+</ul>
+<p>主机收到这个 RA 消息后，执行如下操作：</p>
+<ol type="1">
+<li>组合网络前缀与本地接口标识，生成唯一本地地址或全局单播地址</li>
+<li>安装默认网关（或缺省路由）指向路由器地址 (RA消息的源地址)</li>
+<li>将此接口设为对应网络前缀的“在链路”，也是以上默认网关的下一跳接口</li>
+<li>如果包含 RDNSS 和/或 DNSSL 选项，安装域名服务器和域名后缀</li>
+<li><mark>启动 DHCPv6 客户端，连接 DHCPv6 服务器请求其他配置信息</mark></li>
+<li><mark>保存 DHCPv6 服务器回复的其他配置信息</mark></li>
+</ol>
+<p>可以看到，<u>SLAAC + 无状态 DHCPv6</u> 在地址分配上与 SLAAC 并没有什么不同。DHCPv6 只是提供附加配置信息，不会分配 IPv6 地址。所以 DHCPv6 服务器不会追踪网络节点的地址分配状况，这就是“无状态”的含义。</p>
+<p>相应的 Catalyst 9300 交换机上的配置命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ipv6 unicast-routing</span><br><span class="line">ipv6 dhcp pool vlan-10-clients</span><br><span class="line">    dns-server 2001:4860:4860::8888</span><br><span class="line">    domain-name example.com</span><br><span class="line">    sntp address 2001:DB8:2000:2000::33</span><br><span class="line">interface Vlan10</span><br><span class="line">    ipv6 enable</span><br><span class="line">    ipv6 address 2001:ABCD:1000::1/64</span><br><span class="line">    ipv6 nd other-config-flag</span><br><span class="line">    ipv6 dhcp server vlan-10-clients</span><br><span class="line">    # ipv6 dhcp relay destination 2001:9:6:40::1</span><br></pre></td></tr></table></figure>
+<p>与 SLAAC 的例子不同点在于，VLAN 10 接口配置命令<code>ipv6 nd other-config-flag</code>明确指定置位 RA 消息的 O 比特。其下一条命令<code>ipv6 dhcp server vlan-10-clients</code>激活接口的 DHCPv6 服务器响应功能，对应服务器的共用资源名称为<code>vlan-10-clients</code>。DHCPv6 服务器的配置在接口配置的上方，从<code>ipv6 dhcp pool vlan-10-clients</code>处开始，包含了 DNS 服务器地址、DNS 域名和 SNTP 服务器地址。</p>
+<p>如果使用交换机之外的位于其他网段的 DHCPv6 服务器，可以删除<code>ipv6 dhcp server</code>命令，启用示例中下一行的<code>ipv6 dhcp relay destination</code>命令指定转发 DHCPv6 请求至外部服务器的地址。</p>
+<h3 id="有状态-dhcpv6">有状态 DHCPv6</h3>
+<p>许多大型企业应用 DHCP 管理设备的 IPv4 地址，所以部署 DHCPv6 集中分配和管理 IPv6 地址是自然的优先选择。这就是<u>有状态 DHCPv6</u>的用武之地。这一方案同样需要路由器发送的 RA 消息，但是不会仅仅依靠网络前缀进行自动地址分配。RA 消息的控制比特位设置是：</p>
+<ul>
+<li><strong><mark>首部的 M 比特置为1</mark>，O 比特无所谓</strong></li>
+<li><strong>前缀信息选项的 L/A 比特可按需要设为1或0</strong></li>
+</ul>
+<p>收到这个 RA 消息后，主机执行操作如下：</p>
+<ol type="1">
+<li>如果有前缀信息选项 A 比特设为1，则组合生成唯一本地地址或全局单播地址</li>
+<li>安装默认网关（或缺省路由）指向路由器地址 (RA消息的源地址)</li>
+<li>如果有前缀信息选项 L 比特设为1，将此接口设为对应网络前缀的“在链路”</li>
+<li>如果包含 RDNSS 和/或 DNSSL 选项，安装域名服务器和域名后缀</li>
+<li><mark>启动 DHCPv6 客户端，连接服务器请求地址和其他配置信息</mark></li>
+<li><mark>将 DHCPv6 服务器分配的地址设置到此接口</li>
+<li><mark>保存 DHCPv6 服务器回复的其他配置信息</mark></li>
+</ol>
+<p>Catalyst 9300 交换机上的<u>有状态 DHCPv6</u> 配置命令示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ipv6 unicast-routing</span><br><span class="line">ipv6 dhcp pool vlan-10-clients</span><br><span class="line">    address prefix FD09:9:5:90::/64</span><br><span class="line">    address prefix 2001:9:5:90::/64</span><br><span class="line">    dns-server 2001:9:5:90::115</span><br><span class="line">    domain-name test.com</span><br><span class="line">interface Vlan10</span><br><span class="line">    ipv6 enable</span><br><span class="line">    ipv6 address 2001:ABCD:1:1::1/64</span><br><span class="line">    ipv6 nd prefix 2001:ABCD:1:1::/64 no-advertise</span><br><span class="line">    ipv6 nd managed-config-flag</span><br><span class="line">    ipv6 dhcp server vlan-10-clients</span><br></pre></td></tr></table></figure>
+<p>与 <u>SLAAC + 无状态 DHCPv6</u> 相比，这里接口配置去掉了<code>ipv6 nd other-config-flag</code>，改用<code>ipv6 nd managed-config-flag</code>命令。这对应于将 RA 消息首部的 M 比特置为1。DHCPv6 服务器的配置加入了两条<code>address prefix</code>命令设置网络前缀。同时接口配置的<code>ipv6 nd prefix 2001:ABCD:1:1::/64 no-advertise</code>指定路由器不包含 2001:ABCD:1:1::/64 前缀信息选项到 RA 中。所以，这个例子主机接口不会生成 SLAAC 地址，只会产生来自 DHPCv6 的两个地址：一个是网络前缀为 FD09:9:5:90::/64 的唯一本地地址，另一个是网络前缀为 2001:9:5:90::/64 的全局单播地址。这两个地址的接口标识也分别由 DHPCv6 指定。</p>
+<p>如何分辨主机接口动态分配的地址来源？方法很简单。要记住的一点是，DHPCv6 不会发送网络前缀长度给请求者，所以从 DHPCv6 拿到的地址的网络前缀长度都是128。而 SLAAC 生成的地址网络前缀长度不会是128的。请看下面 Linux 主机上 wired0 接口实例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ifconfig wired0</span><br><span class="line">wired0    Link encap:Ethernet  HWaddr A0:EC:F9:6C:D9:30  </span><br><span class="line">          inet6 addr: 2001:20::53c7:1364:a4d8:fd91/128 Scope:Global</span><br><span class="line">          inet6 addr: 2001:20::a2ec:f9ff:fe6c:d930/64 Scope:Global</span><br><span class="line">          inet6 addr: fe80::a2ec:f9ff:fe6c:d930/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:510 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:1213 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:93670 (91.4 KiB)  TX bytes:271979 (265.6 KiB)</span><br></pre></td></tr></table></figure>
+<p>我们马上可以判定，该接口使用的是<u>有状态 DHCPv6</u> 地址分配，但也用收到的相同的网络前缀2001:20::/64生成了 SLAAC 地址：</p>
+<ul>
+<li>2001:20::53c7:1364:a4d8:fd91/128 — DHCPv6 地址，接口标识为随机数</li>
+<li>2001:20::a2ec:f9ff:fe6c:d930/64 — SLAAC 地址，接口标识为 MAC EUI-64 格式</li>
+<li>fe80::a2ec:f9ff:fe6c:d930/64 — 链路本地地址，接口标识为 MAC EUI-64 格式</li>
+</ul>
+<div class="note warning"><p><strong>注意：</strong>DHPCv6 服务器也不提供任何 IPv6 默认网关信息，主机需要从 RA 消息获知动态默认网关。</p>
+</div>
+<h3 id="总结比较">总结比较</h3>
+<p>下表列出了 RA 消息的控制比特组合与地址分配和其他配置获取方式的关系：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">M-比特</th>
+<th style="text-align: center;">O-比特</th>
+<th style="text-align: center;">A-比特</th>
+<th style="text-align: center;">主机地址</th>
+<th style="text-align: center;">其他配置</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">静态设置</td>
+<td style="text-align: center;">手工配置</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">前缀由 RA 指定，自动生成</td>
+<td style="text-align: center;">手工配置</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">静态设置</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">前缀由 RA 指定，自动生成</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">有状态 DHCPv6</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">有状态 DHCPv6 和/或 自动生成</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">有状态 DHCPv6</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">有状态 DHCPv6 和/或 自动生成</td>
+<td style="text-align: center;">DHCPv6</td>
+</tr>
+</tbody>
+</table>
+<p>总结三种动态分配方案:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">分配方案</th>
+<th style="text-align: center;">特点</th>
+<th style="text-align: center;">适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">SLAAC</td>
+<td style="text-align: center;">简单实用，快速部署</td>
+<td style="text-align: center;">中小企业、消费类产品联网、物联网 (IoT)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">SLAAC + 无状态 DHCPv6</td>
+<td style="text-align: center;">自动配置，扩展服务</td>
+<td style="text-align: center;">中小企业需要附加网络服务</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">有状态 DHCPv6</td>
+<td style="text-align: center;">集中管理和控制</td>
+<td style="text-align: center;">大型企业、事业单位和校园网</td>
+</tr>
+</tbody>
+</table>
+<div class="note warning"><p><strong>注意：</strong>由于 IPv6 网络接口可以有多个地址（一个链路本地地址，加上一个或多个唯一本地地址和/或全局单播地址），在建立外部连接时，如何选择源地址变得非常重要。<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6724">RFC 6724</a> 给出了详细的 IPv6 源地址选择规则。在嵌入式系统的开发中，与同一远端设备连接的控制平面和数据平面常常由不同的功能组件实现。比如控制平面直接调用 Linux 用户空间套接字建立连接，连接使用的 IPv6 源地址由 TCP/IP 协议栈选定，而数据平面直接在内核空间实现数据封装处理和传输。这时要及时将控制平面所选择的 IPv6 源地址同步到数据平面，否则用户数据无法送达同一目的地。</p>
+</div>
+<h2 id="排错指南">排错指南</h2>
+<p>在思科路由器和交换机上通用的 IPv6 动态地址分配调试和排错命令如下表所示：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令行</th>
+<th style="text-align: left;">用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>show ipv6 interface brief</code></td>
+<td style="text-align: left;">显示全部接口 IPv6 地址信息简表</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show ipv6 interface [type] [num]</code></td>
+<td style="text-align: left;">显示单个接口 IPv6 和 NDP 配置和状态信息</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show ipv6 interface [type] [num] prefix</code></td>
+<td style="text-align: left;">显示单个接口 IPv6 网络前缀信息</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show ipv6 dhcp pool</code></td>
+<td style="text-align: left;">显示 DHCPv6 共用资源配置信息</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show ipv6 dhcp binding</code></td>
+<td style="text-align: left;">显示 DHCPv6 服务器保存的 IPv6 与主机绑定信息</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show ipv6 dhcp interface [type] [num]</code></td>
+<td style="text-align: left;">显示单个接口 DHCPv6 配置和状态信息</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>debug ipv6 nd</code></td>
+<td style="text-align: left;">调试 IPv6 NDP 协议</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>debug ipv6 dhcp</code></td>
+<td style="text-align: left;">调试 DHCPv6 服务器</td>
+</tr>
+</tbody>
+</table>
+<p>下面这个控制终端 NDP 协议调试记录显示路由器收到来自主机 FE80::5850:6D61:1FB:EF3A 的 RS 消息，回应 RA 消息到本网络全部节点组播地址 FF02::1：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Router# debug ipv6 nd</span><br><span class="line">  ICMP Neighbor Discovery events debugging is on</span><br><span class="line">Router# show logging | include RS</span><br><span class="line">  ICMPv6-ND: Received RS on GigabitEthernet0/0/0 from FE80::5850:6D61:1FB:EF3A</span><br><span class="line">Router# show logging | include RA</span><br><span class="line"> ICMPv6-ND: Sending solicited RA on GigabitEthernet0/0/0</span><br><span class="line"> ICMPv6-ND: Request to send RA for FE80::C801:EFFF:FE5A:8</span><br><span class="line"> ICMPv6-ND: Setup RA from FE80::C801:EFFF:FE5A:8 to FF02::1 on GigabitEthernet0/0/0</span><br></pre></td></tr></table></figure>
+<p>而下一段记录显示输入<code>debug ipv6 dhcp</code>调试命令之后，观察到的<u>无状态 DHCPv6</u> 的例子。主机 FE80::5850:6D61:1FB:EF3A 向 DHCPv6 服务器发出信息请求 (INFORMATION-REQUEST) 消息，服务器选择源地址 FE80::C801:B9FF:FEF0:8 发出回应消息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Router#debug ipv6 dhcp</span><br><span class="line">   IPv6 DHCP debugging is on</span><br><span class="line"></span><br><span class="line">IPv6 DHCP: Received INFORMATION-REQUEST from FE80::5850:6D61:1FB:EF3A on FastEthernet0/0</span><br><span class="line">IPv6 DHCP: Option VENDOR-CLASS(16) is not processed</span><br><span class="line">IPv6 DHCP: Using interface pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Source Address from SAS FE80::C801:B9FF:FEF0:8</span><br><span class="line">IPv6 DHCP: Sending REPLY to FE80::5850:6D61:1FB:EF3A on FastEthernet0/0</span><br></pre></td></tr></table></figure>
+<p>以下是一段<u>有状态 DHCPv6</u> 的调试记录，第1、15、16和26行显示两次消息交换 (SOLICIT/ADVERTISE，REQUEST/REPLY) 的完整过程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">IPv6 DHCP: Received SOLICIT from FE80::5850:6D61:1FB:EF3A on FastEthernet0/0</span><br><span class="line">IPv6 DHCP: Option UNKNOWN(39) is not processed</span><br><span class="line">IPv6 DHCP: Option VENDOR-CLASS(16) is not processed</span><br><span class="line">IPv6 DHCP: Using interface pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Creating binding for FE80::5850:6D61:1FB:EF3A in pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Binding for IA_NA 0E000C29 not found</span><br><span class="line">IPv6 DHCP: Allocating IA_NA 0E000C29 in binding for FE80::5850:6D61:1FB:EF3A</span><br><span class="line">IPv6 DHCP: Looking up pool 2001:ABCD::/64 entry with username &#x27;000100011F3E8772000C29806CCC0E000C29&#x27;</span><br><span class="line">IPv6 DHCP: Poolentry for user not found</span><br><span class="line">IPv6 DHCP: Allocated new address 2001:ABCD::D9F7:61C:D803:DCF1</span><br><span class="line">IPv6 DHCP: Allocating address 2001:ABCD::D9F7:61C:D803:DCF1 in binding for FE80::5850:6D61:1FB:EF3A, IAID 0E000C29</span><br><span class="line">IPv6 DHCP: Updating binding address entry for address 2001:ABCD::D9F7:61C:D803:DCF1</span><br><span class="line">IPv6 DHCP: Setting timer on 2001:ABCD::D9F7:61C:D803:DCF1 for 60 seconds</span><br><span class="line">IPv6 DHCP: Source Address from SAS FE80::C801:B9FF:FEF0:8</span><br><span class="line">IPv6 DHCP: Sending ADVERTISE to FE80::5850:6D61:1FB:EF3A on FastEthernet0/0</span><br><span class="line">IPv6 DHCP: Received REQUEST from FE80::5850:6D61:1FB:EF3A on FastEthernet0/0</span><br><span class="line">IPv6 DHCP: Option UNKNOWN(39) is not processed</span><br><span class="line">IPv6 DHCP: Option VENDOR-CLASS(16) is not processed</span><br><span class="line">IPv6 DHCP: Using interface pool LAN_POOL</span><br><span class="line">IPv6 DHCP: Looking up pool 2001:ABCD::/64 entry with username &#x27;000100011F3E8772000C29806CCC0E000C29&#x27;</span><br><span class="line">IPv6 DHCP: Poolentry for user found</span><br><span class="line">IPv6 DHCP: Found address 2001:ABCD::D9F7:61C:D803:DCF1 in binding for FE80::5850:6D61:1FB:EF3A, IAID 0E000C29</span><br><span class="line">IPv6 DHCP: Updating binding address entry for address 2001:ABCD::D9F7:61C:D803:DCF1</span><br><span class="line">IPv6 DHCP: Setting timer on 2001:ABCD::D9F7:61C:D803:DCF1 for 172800 seconds</span><br><span class="line">IPv6 DHCP: Source Address from SAS FE80::C801:B9FF:FEF0:8</span><br><span class="line">IPv6 DHCP: Sending REPLY to FE80::5850:6D61:1FB:EF3A on FastEthernet0/0</span><br></pre></td></tr></table></figure>
+<p>对于难以厘清是主机、路由器还是 DHCPv6 服务器问题的复杂情况，推荐使用免费开源网络数据包分析软件 <a target="_blank" rel="noopener" href="https://www.wireshark.org">Wireshark</a> 截取整个流程的数据包作分析。在用 Wireshark 分析数据包时，可以应用关键词过滤功能：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">过滤关键词</th>
+<th style="text-align: left;">只显示</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">icmpv6.type=133</td>
+<td style="text-align: left;">ICMPv6 RS</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">icmpv6.nd.ra.flag</td>
+<td style="text-align: left;">ICMPv6 RA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dhcpv6</td>
+<td style="text-align: left;">DHCPv6 数据包</td>
+</tr>
+</tbody>
+</table>
+<p>我们可以直接在主机端运行 Wireshark，也可以在网络侧用交换机提供的交换端口分析器 (Switched Port Analyzer，简写 SPAN) 将指定端口数据包集中重定向到运行 Wireshark 的监控端口截取。思科 Catalyst 9300 系列交换机还直接<a target="_blank" rel="noopener" href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-4/configuration_guide/nmgmt/b_174_nmgmt_9300_cg/configuring_packet_capture.html">集成了 Wireshark 软件</a>，能够在线截取和分析过滤数据包，使用起来十分方便。</p>
+<p>这里提供三种分配方案的样例数据包文件供下载学习： <a href="slaac.pcap">slaac.pcap</a>，<a href="stateless-dhcpv6.pcap">stateless-dhcpv6.pcap</a>，<a href="stateful-dhcpv6.pcap">stateful-dhcpv6.pcap</a></p>
+<h2 id="参考资料">参考资料</h2>
+<h3 id="ipv6-产品认证测试">IPv6 产品认证测试</h3>
+<p>精准而实效的 IPv6 产品测试是确保 IPv6 基础架构高互操作性、安全性和可靠性部署的关键。 <strong>IPv6 Ready</strong> 标识是 <a target="_blank" rel="noopener" href="https://www.ipv6forum.com">IPv6 论坛</a> 创立的 IPv6 测试和认证项目。它的目标是定义 IPv6 的一致性和互操作测试规范、提供自测试工具集、建立<a target="_blank" rel="noopener" href="https://www.ipv6ready.org.cn">全球IPv6测试中心</a>并提供产品验证服务，以及最后颁发认证证书。</p>
+<p>2020年5月 <a target="_blank" rel="noopener" href="https://www.ipv6ready.org">IPv6 Ready 标识项目</a>发布新的<a target="_blank" rel="noopener" href="https://www.ipv6ready.org/resources.html">5.0版测试规范</a>：</p>
+<ul>
+<li>IPv6 核心协议一致性测试规范（Conformance）</li>
+<li>IPv6 核心协议互操作测试规范（Interoperability）</li>
+</ul>
+<p>伴随着这两个新的测试序列，项目组还申明了两个永久变化：</p>
+<ol type="1">
+<li>测试在纯 IPv6 环境下完成，不会提供任何 IPv4 网络环境</li>
+<li>被测设备必须在缺省态激活系统及所有接口的 IPv6 功能</li>
+</ol>
+<p>不出意外地，在新的5.0版测试规范中有专门的章节定义 SLAAC 测试用例，以验证这一 IPv6 核心协议。</p>
+<h3 id="ipv6-核心协议-rfc-列表">IPv6 核心协议 RFC 列表</h3>
+<p>粗体显示的部分由 IPv6 Ready 5.0版核心协议测试规范直接覆盖：</p>
+<ul>
+<li>RFC 4191 Default Router Preferences and More-Specific Routes</li>
+<li>RFC 4193 Unique Local IPv6 Unicast Addresses</li>
+<li><strong>RFC 4291 IP Version 6 Addressing Architecture</strong></li>
+<li><strong>RFC 4443 Internet Control Message Protocol (ICMPv6) for the Internet Protocol Version 6 (IPv6) Specification</strong></li>
+<li><strong>RFC 4861 Neighbor Discovery for IP version 6 (IPv6)</strong></li>
+<li><strong>RFC 4862 IPv6 Stateless Address Autoconfiguration</strong></li>
+<li>RFC 4941 Privacy Extensions for Stateless Address Autoconfiguration in IPv6</li>
+<li>RFC 5095 Deprecation of Type 0 Routing Headers in IPv6</li>
+<li>RFC 6724 Default Address Selection for Internet Protocol Version 6 (IPv6)</li>
+<li>RFC 6980 Security Implications of IPv6 Fragmentation with IPv6 Neighbor Discovery</li>
+<li>RFC 7217 A Method for Generating Semantically Opaque Interface Identifiers with IPv6 Stateless Address Autoconfiguration (SLAAC)</li>
+<li>RFC 8064 Recommendation on Stable IPv6 Interface Identifiers</li>
+<li>RFC 8106 IPv6 Router Advertisement Options for DNS Configuration</li>
+<li><strong>RFC 8200 Internet Protocol, Version 6 (IPv6) Specification</strong></li>
+<li><strong>RFC 8201 Path MTU Discovery for IP version 6</strong></li>
+<li>RFC 8415 Dynamic Host Configuration Protocol for IPv6 (DHCPv6)</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2020/12/01/IPv6-Addressing/" title="IPv6动态地址分配机制详解">https://www.packetmania.net/2020/12/01/IPv6-Addressing/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/TCP-IP/" rel="tag"><i class="fa fa-tag"></i> TCP/IP</a>
+              <a href="/tags/%E6%80%9D%E7%A7%91%E6%8A%80%E6%9C%AF/" rel="tag"><i class="fa fa-tag"></i> 思科技术</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/01/RSA-attack-defense/" rel="prev" title="RSA的攻与防（一）">
+                  <i class="fa fa-chevron-left"></i> RSA的攻与防（一）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/01/AES-CBC-PaddingOracleAttack/" rel="next" title="AES-CBC密文填充攻击—深入理解和编程实现">
+                  AES-CBC密文填充攻击—深入理解和编程实现 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"52bc3db30dd39100369aa42a6922f4d9"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

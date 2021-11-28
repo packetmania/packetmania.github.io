@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表专栏文章，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="克劳德·香农如何发明未来">
+<meta property="og:url" content="https://www.packetmania.net/2021/11/27/How-Shannon-invent-future/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表专栏文章，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Claude-Portrait_v0.jpg">
+<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/Shannon-Communication_v1.jpg">
+<meta property="og:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Shannon-Saturn_v1.jpg">
+<meta property="article:published_time" content="2021-11-28T01:39:13.651Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.652Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="通信系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Claude-Portrait_v0.jpg">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/11/27/How-Shannon-invent-future/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/11/27/How-Shannon-invent-future/","path":"2021/11/27/How-Shannon-invent-future/","title":"克劳德·香农如何发明未来"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>克劳德·香农如何发明未来 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/11/27/How-Shannon-invent-future/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          克劳德·香农如何发明未来
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-27 17:39:13" itemprop="dateCreated datePublished" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%87%B4%E6%95%AC%E5%85%88%E9%A9%B1/" itemprop="url" rel="index"><span itemprop="name">致敬先驱</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表<a target="_blank" rel="noopener" href="https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/">专栏文章</a>，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。<span id="more"></span>香农如此大名鼎鼎，却又异常低调，乃至许多学生和学者误以为他早已作古。在1985年的IEEE信息学年会上，当与会者得知香农现身在会议中时，会场一片轰动。当年的会议主席回忆：“就好像牛顿出现在物理学会议中。”香农最终于2001年去世，终年84岁。巨星陨落，但他的学术遗产已经由一代又一代的科学家、数学家和工程师所继承和发扬，继续照耀人类前进的道路。特此翻译此文，向先驱致敬！</p>
+<hr />
+<blockquote>
+<p><strong>感谢一位独到的天才的开创性工作，让今天的信息时代成为可能。</strong></p>
+</blockquote>
+<p>科学寻求自然的基本定律。数学在旧的基础上寻找新的定理。工程学构建解决人类需求的系统。这三个学科相互依存但又截然不同。很少有个人同时在这三个学科做出核心贡献 — 但是克劳德·香农就是这样一个难得的个人。</p>
+<p>虽然是最近的纪录片《<a target="_blank" rel="noopener" href="http://www.thebitplayer.com/">比特玩家</a>》(The Bit Player) 的主角 — 而他的工作和研究理念也激发了我自己的职业生涯 — 香农并不是一个家喻户晓的人物。他从未获得过诺贝尔奖，而且在2001年去世前后，他都不是像阿尔伯特·爱因斯坦或理查德·费曼那样的名人。然而70多年前，在一篇划时代的论文中，他为构成现代信息时代根本的通信基础设施奠基。</p>
+<p>香农于1916年出生于密歇根州的盖洛德市，是一位当地商人和一名教师的儿子。从密歇根大学获得电气工程和数学学位后，他在麻省理工学院撰写了一篇<a target="_blank" rel="noopener" href="https://www.cs.virginia.edu/~evans/greatworks/shannon38.pdf">硕士论文</a>，将名为布尔代数的数学理论应用于开关电路的分析和综合。这是一项变革性的工作，将电路设计从一门艺术变成了科学，现在被认为是数字电路设计的起点。</p>
+<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Claude-Portrait_v0.jpg" />
+<p style="text-align: center;">
+年轻的克劳德·香农
+</p>
+<p>接下来，香农将目光投向了一个更大的目标：通信。</p>
+<p>通信是人类最基本的需求之一。从烟雾信号到信鸽，再到电话和电视，人类一直在寻求更远、更快和更可靠的通信方法。但是，通信系统的工程学过去总是与特定的信息源和物理介质相关联。而香农提出的问题是：“是否有一个大一统的通信理论？”1939年，在给导师万尼瓦尔·布什（Vannevar Bush）的信中，香农概述了他关于“用于情报传递的通用系统的基本特性”的一些初步想法。经过十年的研究，香农终于在1948年发表了他的开创性杰作《<a target="_blank" rel="noopener" href="http://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">通信的数学理论</a>》。</p>
+<p>他的理论的核心是一个简单但非常通用的通信模型：发送器将信息编码为信号，该信号会被噪声破坏，然后被接收器解码。虽然简单，香农的模型融合了两个关键见解：将信息源和噪声源与要设计的通信系统隔离开来，并对这两个源进行概率建模。他设想信息源会生成许多可能的消息来进行通信，每条消息都有一定的概率。概率化噪声进一步增加了接收器解析的随机性。</p>
+<p>在香农之前，通信问题主要被视为确定性信号重建问题：如何转换被物理介质扭曲的接收信号，以尽可能准确地重建原始信号。香农的天才在于，他洞察到通信的关键是不确定性。毕竟，如果你提前知道了我在本专栏中对你说的话，那么还有什么必要写它呢？</p>
+<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/Shannon-Communication_v1.jpg" />
+<p style="text-align: center;">
+香农的通信模型示意图
+</p>
+<p>这一观察将通信从实体问题转向到抽象问题，从而使香农可以使用概率对不确定性进行建模。这给当时的通信工程师们带来了极大的冲击。</p>
+<p>确定了不确定性和概率论的框架，香农在其具有里程碑意义的论文中着手系统地确定通信的基本限定。他的回答分为三个部分。在这三个方面都扮演着重要角色的，是信息“比特”（bit) 的概念。香农将其用作不确定性的基本单位。 比特好比是“二进制数字”的两格式旅行箱，可以是1或0，香农的论文是第一个使用该词的人（尽管他说数学家约翰·图基（John Tukey）先在一个备忘录中用到了该词）。</p>
+<p>首先，香农提出了一个用于表示信息量的每秒最少比特数的公式，这个数字他称之为熵率 <span class="math inline">\(H\)</span>。该数字量化了确定信息源将生成哪个消息所涉及的不确定性。熵率越低，不确定性越小，因此将消息压缩成较短的内容越容易。例如，以每分钟100个英文字母的速率发送短信，意味着每分钟发送有<span class="math inline">\(26^{100}\)</span>种可能的消息，每条消息均由100个字母的序列表示。因为<span class="math inline">\(2^{470}≈26^{100}\)</span>，人们可以将所有这些可能性编码为470比特。如果所有序列的可能性相同，那么香农的公式表明熵率确切值是每分钟470比特。现实中，由于某些序列比其他序列出现的可能性高得多，所以熵率要低得多，可以进行更大的压缩。</p>
+<p>其次，他给出了一个噪声条件下可以可靠通信的每秒最大比特数的公式，他将其称为系统的容量 <span class="math inline">\(C\)</span>。这是接收机可以有效解析消息不确定性的最大速率，也就是实际上的通信速度的上限。</p>
+<p>最后，他表明当且只当 <span class="math inline">\(H&lt;C\)</span> 时，来自信息源的信息才能在噪声条件下进行可靠的通信。因此，信息就像水一样：如果流量小于管道的容量，就能可靠地通过。</p>
+<p>虽然这是一种通信理论，但同时也是一种有关信息如何产生和转换的理论 — <a target="_blank" rel="noopener" href="https://www.quantamagazine.org/tag/information-theory/">信息论</a>。因此，香农现在被誉为“信息论之父”。</p>
+<p>他的定理得出了一些与直觉相反的结论。假设你在嘈杂的地方讲话，确保你的消息能够传达的最佳方法是什么？也许重复多次？当然，这是每个人在喧哗的餐厅中的第一个本能，但事实证明这不是很有效。当然，你重复自己的次数越多，通信越可靠。但是你牺牲了速度来换取可靠性。香农向我们展示了我们可以做得更好。重复消息只是使用编码传输消息的一个例子，通过使用不同且更复杂的编码，可以在维持既定可靠性的同时，快速地通信 — 直到速度上限 <span class="math inline">\(C\)</span>。</p>
+<p>香农的理论得出的另一个意外结论是，无论信息的特质是什么 — 莎士比亚十四行诗、贝多芬第五交响曲的录音、还是黑泽明的电影 — 在传输之前，将其编码为比特总是最有效的。因此以无线电系统为例，即使初始的声音和通过空中发送的电磁信号都是模拟波形式的，香农定理也表明最好先将声波数字化为比特，然后将这些比特映射到电磁波。这一令人惊讶的结果是现代数字信息时代的基石，在这个时代里，作为信息通用货币的比特无所不在。</p>
+<p>香农的通用信息理论是如此自然，以至于他似乎发现了宇宙的通信定律，而不是发明了它们。他的理论与自然界的物理定律一样基本。从这个意义上说，他是一名科学家。</p>
+<p>香农发明了新的数学来描述通信定律。他引入了一些新思想，比如概率模型的熵率，这些新思想已应用于研究动力学系统长期行为的遍历数学等广泛的数学分支。从这个意义上说，香农是一个数学家。</p>
+<p>但最重要的是，香农是一名工程师。他的理论受到实际工程问题的启发。尽管对当时的工程师来说是深奥的，但香农的理论现已成为所有现代通信系统（光学、水下、甚至行星际）基础的标准框架。就我个人而言，我很幸运地参与了将香农的理论应用和扩展到无线通信的全球性努力中，历经几代标准将通信速度提高了两个数量级。确实，当前推出的5G标准使用的不是一种而是两种实用的编码，它们被证明可以达到香农的速度上限。</p>
+<img src="https://d2r55xnwy6nx47.cloudfront.net/uploads/2020/12/MIT-Shannon-Saturn_v1.jpg" />
+<p style="text-align: center;">
+晚年香农手持土星的照片
+</p>
+<p>香农在70多年前就为所有这一切奠定了基础。他是怎么做到的？通过不懈地专注于问题的根本特征，忽略所有其它方面。他的通信模型的简单性就是这种风格的很好例证。他还知道要专注于可能，而不是立即可行的事情。</p>
+<p>香农的工作说明了顶级科学研究的真正作用。当我开始读研究生时，我的导师告诉我，最好的工作是修剪知识树，而不是扩张知识树。那时候我不知道该怎么做；我一直认为研究人员的工作就是添加自己的树枝。但是在我的职业生涯中，由于我有机会在自己的工作中运用这种思想，我开始理解了。</p>
+<p>当香农开始研究通信时，工程师已经掌握了大量技术。正是他的统一工作，将所有这些知识枝条修剪成了一棵贯通而优美的树 — 这棵树为几代科学家、数学家和工程师带来了累累硕果。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/11/27/How-Shannon-invent-future/" title="克劳德·香农如何发明未来">https://www.packetmania.net/2021/11/27/How-Shannon-invent-future/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F/" rel="tag"><i class="fa fa-tag"></i> 通信系统</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/13/iTerm2-OMZ-Powerlevel10k/" rel="prev" title="iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端">
+                  <i class="fa fa-chevron-left"></i> iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"f75783f90cab5219152e3dc46cd1eea7"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

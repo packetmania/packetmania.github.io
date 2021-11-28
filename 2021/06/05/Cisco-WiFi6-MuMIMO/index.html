@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="思科的技术博客网站设立了Wi-Fi 6专题页，讲解Wi-Fi 6技术要点及思科相应产品功能。近期的一篇由思科高级无线工程师史瑞亚斯·特里维迪和octoScope公司首席科学家史蒂夫·希勒合作的博文，结合测试实例介绍OFDMA与MU-MIMO技术相结合，在多用户环境下达到两倍多总吞吐量的能力。文章简洁明了，可以让读者快速领悟Wi-Fi 6的关键技术革新，特此翻译为中文，分享给感兴趣的朋友。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情">
+<meta property="og:url" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="思科的技术博客网站设立了Wi-Fi 6专题页，讲解Wi-Fi 6技术要点及思科相应产品功能。近期的一篇由思科高级无线工程师史瑞亚斯·特里维迪和octoScope公司首席科学家史蒂夫·希勒合作的博文，结合测试实例介绍OFDMA与MU-MIMO技术相结合，在多用户环境下达到两倍多总吞吐量的能力。文章简洁明了，可以让读者快速领悟Wi-Fi 6的关键技术革新，特此翻译为中文，分享给感兴趣的朋友。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/redphasor.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/bluephasor.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/superposition.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture1-4.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture3.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture4.png">
+<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture5-468x200.png">
+<meta property="article:published_time" content="2021-06-05T21:49:07.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.655Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="思科技术">
+<meta property="article:tag" content="Wi-Fi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/redphasor.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/","path":"2021/06/05/Cisco-WiFi6-MuMIMO/","title":"思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A2%E6%9D%9F%E6%88%90%E5%BD%A2%E5%92%8Cmu-mimo"><span class="nav-number">1.</span> <span class="nav-text">波束成形和MU-MIMO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0%E5%92%8C%E6%B5%8B%E8%AF%95%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"><span class="nav-number">2.</span> <span class="nav-text">系统概述和测试基础设施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">实际测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-05 14:49:07" itemprop="dateCreated datePublished" datetime="2021-06-05T14:49:07-07:00">2021-06-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>思科的技术博客网站设立了<a target="_blank" rel="noopener" href="https://blogs.cisco.com/tag/wi-fi-6">Wi-Fi 6专题页</a>，讲解Wi-Fi 6技术要点及思科相应产品功能。近期的一篇由思科高级无线工程师<a target="_blank" rel="noopener" href="https://blogs.cisco.com/author/shreyastrivedi">史瑞亚斯·特里维迪</a>和octoScope公司首席科学家<a target="_blank" rel="noopener" href="http://www.linkedin.com/in/ehsshearer">史蒂夫·希勒</a>合作的<a target="_blank" rel="noopener" href="https://blogs.cisco.com/networking/too-fast-too-furious-with-catalyst-wi-fi-6-mu-mimo">博文</a>，结合测试实例介绍OFDMA与MU-MIMO技术相结合，在多用户环境下达到两倍多总吞吐量的能力。文章简洁明了，可以让读者快速领悟Wi-Fi 6的关键技术革新，特此翻译为中文，分享给感兴趣的朋友。 <span id="more"></span></p>
+<hr />
+<p><em>贡献者 – Ming Chong 和 Santa Chowdhury (octoScope公司)</em></p>
+<p><em>我们特别感谢 Nilesh Doshi（高级无线AP经理）的指导。</em></p>
+<p>由于前导码和其它机制产生的附加开销趋向于占主导地位，使用非Wi-Fi 6为许多传输小数据包的客户端提供服务是低效的。OFDMA<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>是这种情况下的理想解决方案，因为它将信道划分以同时服务多达37个用户（对应于80MHz带宽），开销也得到均摊。OFDMA提高了系统效率，但不一定能提高吞吐量。</p>
+<p>MU-MIMO（多用户、多输入、多输出）在发送器和小数量接收器中的每一个之间创建空间分离的独立信道，这样每个接收器只会收听到针对自己的信息，而非针对其它接收器的信息. 这意味着发送器可以通过叠加方式同时向几个接收器发送数据，从而提高总吞吐量，而增加的比例取决于接收器的数量。</p>
+<p>思科Catalyst 9800系列无线局域网控制器即将发布的IOS XE 17.6.1版本（当前处于Beta测试阶段）引入了新潮的接入点调度器设计，可同时高效地为多个客户端提供服务。系统激活此功能时生成最低水平的探测开销，由此即使在密集的用户环境中，也能收益接近物理层速率的数据速率。目前这些新特性在Catalyst 9130和Catalyst 9124系列接入点上得到支持。以下让我们先了解MU-MIMO的概念，然后评估其性能。</p>
+<h3 id="波束成形和mu-mimo">波束成形和MU-MIMO</h3>
+<p>应用相控天线阵列的无线电波束成形技术已为人所知数十年。最近，这些技术理论已用于设计MU-MIMO，其中就包含了使用多个同时波束为每个用户提供独立信道的思想。</p>
+<p>类似的原理适用于音频领域，可以对扬声器定相以将声音引导到特定位置。想法是调整每个扬声器的相位，使声音在收听者所在的点构造性地增加，而在所有其它位置则解构性消减。</p>
+<p>考虑一个声源<span class="math inline">\(Sr\)</span>通过四个扬声器的阵列播放，每个扬声器的声音各自由相量<span class="math inline">\(Q_{1r}\sim Q_{4r}\)</span>调整，以使红色收听者的信号强度<span class="math inline">\(L_r\)</span>最大化，并且在蓝色收听者处<span class="math inline">\(L_b\)</span>被最小化。</p>
+<p><img src="redphasor.png" /></p>
+<p>相似地，我们选择一组相量<span class="math inline">\(Q_{1b}\sim Q_{4b}\)</span>最大化蓝色收听者处的信号，同时最小化红色收听者处的信号。</p>
+<p><img src="bluephasor.png" /></p>
+<p>使用叠加，我们可以对每条消息施加适当的相位调整，并在信号进入扬声器之前聚合。通过这种方式，我们可以同时发送两条不同的消息，但每个听众只会听到针对他们的消息。</p>
+<p><img src="superposition.png" /></p>
+<p>请注意空间分离的重要性—<span class="math inline">\(L_b\)</span>和<span class="math inline">\(L_r\)</span>听到他们各自的消息，因为相量经过优化以将每种声音传送到它们的特定位置。如果其中一位收听者离开他的位置，他将不再能收听到他的信息。</p>
+<p>如果第三个人进入图中的场景并站在靠近扬声器的位置，他将同时听到两条消息的乱声。</p>
+<p>对应于Wi-Fi环境中，扬声器被天线取代，相量控制由信号处理实现，数字消息以特定数据速率生成，这一切都在AP中完成。由于两个消息可以同时传输，理论上可以使聚合数据速率加倍。同样的方法可以用来同时服务更多的客户端，那么上限在哪里呢？实际上，可设置相量的精度存在限制，还有导致“串扰”的反射和其它限制都制约了可获得的吞吐量增益。</p>
+<p>空间位置的重要性决定了MU-MIMO环境中的嗅探更加复杂。请注意，将嗅探器靠近AP将得到我们之前提到的乱码效果。嗅探探头必须放置在靠近被嗅探设备的物理位置，通常每个设备都需要一个嗅探探头。</p>
+<h3 id="系统概述和测试基础设施">系统概述和测试基础设施</h3>
+<p>在这个MU-MIMO测试中，我们使用了octoScope（现在已并入思博伦<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>）STACK-MAX 测试台。在基础设施方面，使用运行IOS-XE 17.6.1（Beta测试版代码）的Catalyst 9800无线局域网控制器和Catalyst 9130接入点。C9130 AP支持最多8×8上行链路和下行链路MU-MIMO，以及8个空间流。Pal-6E支持Wi-Fi 6，最多可仿真256个站点或充当嗅探器探头。</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture1-4.png" /></p>
+<p>STApal是基于Intel AX210芯片组的具有完整功能STA<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>，运行在自己的硬件平台上。所有测试室都与外界完全隔离，它们之间的信号路径由全屏蔽衰减器控制，因此可以进行可靠且可重复的测量。腔室内衬射频（RF）吸收泡沫，以显著减少内部反射并防止驻波。</p>
+<p>对于此MU-MIMO测试，我们使用多达4个STA。RF路径将来自C9130 AP的信号连接到各个STA。我们在LOS或IEEE通道模型A模式下使用多路径仿真器 (MPE)。每对天线都馈入一组四个客户端，如下图所示。我们已经看到空间分离是MU-MIMO操作成功的必要条件。通过将天线放置在消声测试室的角落，实现了最佳空间分离。这允许四个独立的MU-MIMO流发送到四组、每组四个的STA。</p>
+<p><img srcset="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1-300x186.png 300w, https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png 592w" sizes="(max-width: 592px) 100vw, 592px" loading="lazy" class="aligncenter wp-image-366831 size-full" src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png" alt="" width="592" height="368"></p>
+<h3 id="实际测试">实际测试</h3>
+<p>为了演示MU-MIMO增益效果，我们将C9130 AP放置在腔室的中心，并传输下行链路UDP数据到连接到角落天线上的STA。</p>
+<p>首先，我们关闭MU-MIMO并且只开启一个STA。我们注意到吞吐量仅略高于1000 Mbps，略低于1200 Mbps的物理层速率。20秒后，我们引入了另一个STA，看到总吞吐量保持在1000 Mbps，但两个STA共享信道，每个STA达到了500 Mbps。20秒后，我们引入了第三个STA。同样，总吞吐量保持为1000 MBps，三个STA共享信道，每个STA的速度略高于300 Mbps。第四个STA的引入遵循相同的模式，聚合保持不变，每个STA得到250 Mbps。</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture3.png" /></p>
+<p>我们重复了这个实验，这次开启了MU-MIMO。</p>
+<p>从一个STA开始，我们实现了熟悉的1000 Mbps。20秒后，我们引入了第二个STA，并观察到聚合速率已增加到2000 Mbps，这明显高于物理层速率。我们还注意到，每个STA的接收速度仍接近之前的1000 Mbps。与之前的STA共享信道的实验不同，在本实验中，它们每个都能够相互独立地充分利用自己的信道。</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture4.png" /></p>
+<p>添加第三个STA将聚合速度增加到2200 Mbps。三个STA中的每一个仍接收730 Mbps。添加第四个STA导致总吞吐量2100 Mbps的，每个STA接收525 Mbps，比单用户操作增加了两倍。</p>
+<p>下图总结了测试结果：</p>
+<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture5-468x200.png" /></p>
+<h3 id="结论">结论</h3>
+<p>MU-MIMO利用接收器的空间分离引导独立的消息同时发送到每个接收器。这样可以更有效地使用介质，并提升网络可以实现的聚合数据率。Catalyst 9130 AP的开创性调度程序设计，在多用户传输场景中提供了卓越的吞吐量增益。这是更高MCS速率、低探测开销和高效动态分组调度的结果。</p>
+<p>WLAN上默认启用DL和UL MU-MIMO以及OFDMA。这些功能在现有版本的9800系列无线控制器上可用，但上述增强功能将从 17.6.1版本开始提供。</p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>正交频分多址（英文Orthogonal Frequency Division Multiple Access，缩写OFDMA），是无线通信系统中的一种多重接入技术，其结合频域和时域的多路访问机制非常适合宽带无线网络。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>思博伦通信公司（Spirent Communications plc)，一家全球化网络自动化测试和质量保障方案提供商。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>IEEE 802.11 (Wi-Fi) 标准术语，通指运行802.11协议功能的站点（Station，缩写STA)。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/" title="思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情">https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%80%9D%E7%A7%91%E6%8A%80%E6%9C%AF/" rel="tag"><i class="fa fa-tag"></i> 思科技术</a>
+              <a href="/tags/Wi-Fi/" rel="tag"><i class="fa fa-tag"></i> Wi-Fi</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/30/PGITVW-1-bitcount/" rel="prev" title="程序员面试题精解（1）— 比特位计数">
+                  <i class="fa fa-chevron-left"></i> 程序员面试题精解（1）— 比特位计数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/23/PGITVW-2-sqrt/" rel="next" title="程序员面试题精解（2）— 平方根运算">
+                  程序员面试题精解（2）— 平方根运算 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"ddfabd87ff8c7fdc27c094934fbc442b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

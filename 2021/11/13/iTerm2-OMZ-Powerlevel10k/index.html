@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="熟练使用基于终端的各种命令行工具，可以让程序员的工作效率倍增。在苹果macOS上，集成终端应用iTerm2、Oh-My-Zsh配置框架和Powerlevel10k主题，能打造出非常酷的资深程序员专业终端。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端">
+<meta property="og:url" content="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="熟练使用基于终端的各种命令行工具，可以让程序员的工作效率倍增。在苹果macOS上，集成终端应用iTerm2、Oh-My-Zsh配置框架和Powerlevel10k主题，能打造出非常酷的资深程序员专业终端。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/Terminal-iTerm2.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/iTerm-profile-color.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/iTerm-hexo-git-ping-search.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/iTerm-tmux.png">
+<meta property="article:published_time" content="2021-11-14T06:31:58.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.678Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="编程工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/Terminal-iTerm2.jpg">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/","path":"2021/11/13/iTerm2-OMZ-Powerlevel10k/","title":"iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#iterm2%E4%BB%BF%E7%9C%9F%E7%BB%88%E7%AB%AF"><span class="nav-number">1.</span> <span class="nav-text">iTerm2仿真终端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">应用安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%A6%82%E8%A7%88"><span class="nav-number">1.2.</span> <span class="nav-text">功能概览</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#oh-my-zsh%E9%85%8D%E7%BD%AE%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">Oh-My-Zsh配置框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85oh-my-zsh"><span class="nav-number">2.1.</span> <span class="nav-text">安装Oh-My-Zsh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%AE%9A%E5%88%B6%E6%8F%92%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">安装定制插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#powerlevel10k%E4%B8%BB%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">Powerlevel10k主题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%BC%E5%90%88%E8%B0%83%E6%95%B4%E5%92%8C%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">4.</span> <span class="nav-text">综合调整和效果展示</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-13 22:31:58" itemprop="dateCreated datePublished" datetime="2021-11-13T22:31:58-08:00">2021-11-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">工具使用</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>熟练使用基于终端的各种命令行工具，可以让程序员的工作效率倍增。在苹果macOS上，集成终端应用iTerm2、Oh-My-Zsh配置框架和Powerlevel10k主题，能打造出非常酷的资深程序员专业终端。 <span id="more"></span></p>
+<div class="note success no-icon"><p><strong>工欲善其事，必先利其器。</strong><br> <strong>— <em>孔子《论语·卫灵公》</em> </strong></p>
+</div>
+<h3 id="iterm2仿真终端">iTerm2仿真终端</h3>
+<p>苹果计算机系统的默认仿真终端是<code>Terminal.app</code>。虽然它实现了所有必要的基本命令行终端功能，也提供了一些定制选项（Profiles），但是可配置的内容非常有限，其界面对资深程序员也实在了无生趣。iTerm2是macOS平台上非常优秀的仿真终端替代方案。<a target="_blank" rel="noopener" href="https://iterm2.com/index.html">iTerm2官方网站</a>的自我介绍是：</p>
+<blockquote>
+<p>iTerm2 is a replacement for Terminal and the successor to iTerm. It works on Macs with macOS 10.14 or newer. iTerm2 brings the terminal into the modern age with features you never knew you always wanted.</p>
+</blockquote>
+<p>即iTerm2是将给你带来惊喜的现代化终端应用。下面来看看iTerm2的安装和功能概览。</p>
+<h4 id="应用安装">应用安装</h4>
+<p>iTerm2官方网提供最新稳定版（3.4.12）的下载链接：<a target="_blank" rel="noopener" href="https://iterm2.com/downloads/stable/latest">https://iterm2.com/downloads/stable/latest</a>。下载后的文件名为<code>iTerm2-3_4_12.zip</code>，大小约为24.1MB。macOS会自动将其解压为应用程序<code>iTerm.app</code>，此时文件变为72.6MB。把该应用程序复制或直接拖拽到<code>Applications</code>目录，就会在Lauchpad见到iTerm的图标，点击即可启动。</p>
+<h4 id="功能概览">功能概览</h4>
+<p>iTerm2功能特性十分丰富，全面的说明请看其<a target="_blank" rel="noopener" href="https://iterm2.com/documentation.html">在线文档</a>。这里简单描述一些新用户可以快速上手的特性：</p>
+<ul>
+<li><p><strong>分割页面（Split Panes）</strong>：使用<code>cmd-d</code>或<code>cmd-shift-d</code>快捷键，能迅速垂直或水平分割当前终端会话页面（Tab）。要在分割后的子窗口（Pane）之间游走，可以使用<code>cmd-opt-→/←/↑/↓</code>或<code>cmd-[/]</code>快捷键组合。快捷键<code>cmd-shift-enter</code>将当前子窗口最大化——页面其它子窗口全部被隐藏，再次按同样的快捷键恢复隐藏的子窗口。 快捷键<code>cmd-enter</code>可以让当前页面覆盖全屏，重复输入回到原来页面状态。</p></li>
+<li><p><strong>时间戳</strong>：切换<strong>View &gt; Show Timestamps</strong>菜单选项，或者使用切换快捷键<code>cmd+shift+e</code>，可让iTerm2直接在终端窗口打印每一步操作的时间戳。比如对于单个<code>ping -c 5</code>命令的每一个重复的操作都会打印一个时间戳。这方便用户了解终端上的命令执行历史和时间间隔。</p></li>
+<li><p><strong>密码管理器</strong>：iTerm2可以将你的密码保存在macOS的钥匙串（Keychain）应用中。Use the <strong>Window &gt; Password Manager</strong>菜单选项能打开密码管理器输入密码。</p></li>
+<li><p><strong>文本选择和搜索</strong>：可以使用鼠标快速选择记录缓冲区的文本，双击选择连续字段，三击选择当前行全部字符。选中即复制，无需再点鼠标右侧或按<code>cmd+c</code>复制到剪贴板。快捷键<code>cmd-f</code>打开搜索框，可以搜索整个记录缓冲区，还支持正则表达式输入（Regular Expression）。搜索匹配的内容会自动高亮显示。</p></li>
+<li><p><strong>快速打开</strong>：输出记录及缓冲区内的字段如果是URL、目录或文件名，将鼠标移到其上方并按住<code>cmd(⌘)</code>键，该字段会马上变成可点击状态。点击鼠标会自动用预设的应用（浏览器、Finder或Preview）打开对应的网址、目录或文件。</p></li>
+<li><p><strong>撤销关闭</strong>：如果不小心关闭了会话页面，在一定的时间内用户可以按<code>cmd-z</code>撤销并恢复页面。默认的时间是5秒钟。如果想加长延时，可以通过菜单路径<strong>Preferences &gt; Profiles &gt; Session</strong>修改。</p></li>
+<li><p><strong>Tmux集成</strong>：iTerm2与流行的开源终端复用器tmux紧密集成，可以让用户的tmux窗口获得iTerm2原生窗口或页面的操作特性，而tmux自身优秀功能也得到很好的保留。具体使用细节可参考<a target="_blank" rel="noopener" href="https://iterm2.com/documentation-tmux-integration.html">iTerm2-tmux集成文档</a>。</p></li>
+<li><p><strong>色彩主题</strong>：iTerm2外观色彩由菜单项<strong>Preferences &gt; Profiles &gt; Colors</strong>进行配置，用户可以通过<strong>Color Presets</strong>列表选择预设色彩主题。如果不喜欢所列的所有主题，可以上网下载其它iTerm2色彩主题再导入选择。如果对某个主题的个别颜色设定不满意，可以对其作单独调整并导出（Export）保存。</p></li>
+<li><p><strong>状态条</strong>：iTerm2提供了可配置及可由脚本控制的状态条，以便即时显示工作环境的状态信息。状态条通过菜单路径<strong>Preferences &gt; Profiles &gt; Session</strong>设置，点击复选框<strong>Status bar enabled</strong>开启状态条，再点击<strong>Configure Status Bar</strong>选择和配置要加入状态条的组件。iTerm2给出的常用组件有处理器和内存利用率、剩余电量、网络吞吐量、时钟、当前主机/用户/目录/任务名称、git状态、搜索框等。iTerm2还支持用户使用其Python API编写的自定义组件。组件选择和配置对话框里的<strong>Auto-Rainbow</strong>列表可让用户设置状态条组件的配色方案，一般选用Automatic（自动）即可。</p></li>
+</ul>
+<p>下面就是macOS自带的Terminal应用与iTerm2的页面快照比较。这里iTerm2使用的是个人比较喜欢<code>Solarized Dark</code>色彩主题，对比度不太强，眼睛不会太疲劳。注意iTerm2页面顶上状态条显示3个彩色组件：处理器利用率、内存利用率和网络吞吐量（蓝色为下载速率，红色为上载速率）。</p>
+<p><img src="Terminal-iTerm2.jpg" style="width:70.0%;height:70.0%" /></p>
+<h3 id="oh-my-zsh配置框架">Oh-My-Zsh配置框架</h3>
+<p>Z shell（Zsh）是从Bourne shell改进出来的新一款命令解释器，同时它也加入了Bash、ksh及tcsh的某些功能。2019年自macOS Catalina（10.15版）起，苹果的Mac系统默认Shell以zsh取代之前的Bash。Zsh能定制的內容非常多，但是对新手来说设置过于复杂，因此一开始不太受人欢迎人。后来有人开发了一个配置套件，大大简化了定制设置的过程，zsh才由此真正变得流行起来。这一配置套件就是<a target="_blank" rel="noopener" href="https://ohmyz.sh">Oh-My-Zsh</a>。</p>
+<p>完整意义上，Oh-My-Zsh是一个建立于zsh之上的、用户社区驱动的开源管理配置框架。它综合了众多的功能插件和配置主题，并提供优选的初始化设置。截止于2021年11月，其<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh">GitHub源站点</a>总共绑定了<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins">275+个插件</a>和<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Themes">150种主题</a>，同时也带有更新已安装插件及主题的自动更新工具。</p>
+<h4 id="安装oh-my-zsh">安装Oh-My-Zsh</h4>
+<p>新用户可以选择使用curl或wget工具安装，其命令行分别如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span></span><br><span class="line">$ sh -c <span class="string">&quot;<span class="subst">$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<p>安装过程的记录如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">~ % sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span></span><br><span class="line">Cloning Oh My Zsh...</span><br><span class="line">Cloning into <span class="string">&#x27;/Users/zixi/.oh-my-zsh&#x27;</span>...</span><br><span class="line">remote: Enumerating objects: 1244, <span class="keyword">done</span>.</span><br><span class="line">remote: Counting objects: 100% (1244/1244), <span class="keyword">done</span>.</span><br><span class="line">remote: Compressing objects: 100% (1205/1205), <span class="keyword">done</span>.</span><br><span class="line">remote: Total 1244 (delta 19), reused 1178 (delta 18), pack-reused 0</span><br><span class="line">Receiving objects: 100% (1244/1244), 877.00 KiB | 670.00 KiB/s, <span class="keyword">done</span>.</span><br><span class="line">Resolving deltas: 100% (19/19), <span class="keyword">done</span>.</span><br><span class="line"></span><br><span class="line">Looking <span class="keyword">for</span> an existing zsh config...</span><br><span class="line">Using the Oh My Zsh template file and adding it to ~/.zshrc.</span><br><span class="line"></span><br><span class="line">         __                                     __   </span><br><span class="line">  ____  / /_     ____ ___  __  __   ____  _____/ /_  </span><br><span class="line"> / __ \/ __ \   / __ `__ \/ / / /  /_  / / ___/ __ \ </span><br><span class="line">/ /_/ / / / /  / / / / / / /_/ /    / /_(__  ) / / / </span><br><span class="line">\____/_/ /_/  /_/ /_/ /_/\__, /    /___/____/_/ /_/  </span><br><span class="line">                        /____/                       ....is now installed!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Before you scream Oh My Zsh! look over the `.zshrc` file to select plugins, themes, and options.</span><br><span class="line"></span><br><span class="line">• Follow us on Twitter: https://twitter.com/ohmyzsh</span><br><span class="line">• Join our Discord community: https://discord.gg/ohmyzsh</span><br><span class="line">• Get stickers, t-shirts, coffee mugs and more: https://shop.planetargon.com/collections/oh-my-zsh</span><br></pre></td></tr></table></figure>
+<p>安装实际上从GitHub源站点克隆了Oh-My-Zsh到本机用户主目录下，生成.oh-my-zsh子目录。检查子目录内容可以看到Oh-My-Zsh仓储的git分支工作空间：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">❯ ls -anl .oh-my-zsh</span><br><span class="line">total 128</span><br><span class="line">drwxr-xr-x   22 501  20    704 Nov 14 15:19 .</span><br><span class="line">drwxr-xr-x+  33 501  20   1056 Nov 22 22:30 ..</span><br><span class="line">-rw-r--r--    1 501  20    115 Nov 14 15:19 .editorconfig</span><br><span class="line">drwxr-xr-x   13 501  20    416 Nov 22 21:49 .git</span><br><span class="line">drwxr-xr-x    7 501  20    224 Nov 14 15:19 .github</span><br><span class="line">-rw-r--r--    1 501  20     77 Nov 14 15:19 .gitignore</span><br><span class="line">-rw-r--r--    1 501  20    131 Nov 14 15:19 .gitpod.Dockerfile</span><br><span class="line">-rw-r--r--    1 501  20    259 Nov 14 15:19 .gitpod.yml</span><br><span class="line">-rw-r--r--    1 501  20   3374 Nov 14 15:19 CODE_OF_CONDUCT.md</span><br><span class="line">-rw-r--r--    1 501  20   8281 Nov 14 15:19 CONTRIBUTING.md</span><br><span class="line">-rw-r--r--    1 501  20   1142 Nov 14 15:19 LICENSE.txt</span><br><span class="line">-rw-r--r--@   1 501  20  13448 Nov 14 15:19 README.md</span><br><span class="line">-rw-r--r--    1 501  20    705 Nov 14 15:19 SECURITY.md</span><br><span class="line">drwxr-xr-x    6 501  20    192 Nov 14 15:19 cache</span><br><span class="line">drwxr-xr-x    5 501  20    160 Nov 14 15:19 custom</span><br><span class="line">drwxr-xr-x   21 501  20    672 Nov 14 15:19 lib</span><br><span class="line">drwxr-xr-x    3 501  20     96 Nov 22 21:02 <span class="built_in">log</span></span><br><span class="line">-rw-r--r--    1 501  20   5670 Nov 14 15:19 oh-my-zsh.sh</span><br><span class="line">drwxr-xr-x  305 501  20   9760 Nov 14 15:19 plugins</span><br><span class="line">drwxr-xr-x    3 501  20     96 Nov 14 15:19 templates</span><br><span class="line">drwxr-xr-x  144 501  20   4608 Nov 14 15:19 themes</span><br><span class="line">drwxr-xr-x    9 501  20    288 Nov 14 15:19 tools</span><br></pre></td></tr></table></figure>
+<p>而用户的zsh资源文件也被修改为指向Oh-My-Zsh子目录，默认加入<a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git">git插件</a>和设置主题为robbyrussell，最后引导那里的oh-my-zsh.sh文件进行初始化：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">❯ grep <span class="string">&quot;^[^#;]&quot;</span> .zshrc</span><br><span class="line"><span class="built_in">export</span> ZSH=<span class="string">&quot;/Users/zixi/.oh-my-zsh&quot;</span></span><br><span class="line">ZSH_THEME=<span class="string">&quot;robbyrussell&quot;</span></span><br><span class="line">plugins=(git)</span><br><span class="line"><span class="built_in">source</span> <span class="variable">$ZSH</span>/oh-my-zsh.sh</span><br></pre></td></tr></table></figure>
+<h4 id="安装定制插件">安装定制插件</h4>
+<p>定制插件即并非Oh-My-Zsh自身绑定的插件。这里安装两个非常好用的zsh定制插件：<a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-autosuggestions">zsh-autosuggestions</a>和<a target="_blank" rel="noopener" href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting</a>。</p>
+<ol type="1">
+<li><p><strong>zsh-autosuggestions</strong>：此插件在用户键入时，基于命令行历史和完整命令名推荐余下的输入。安装时先从GitHub源克隆仓储到<code>$ZSH_CUSTOM/plugin</code>目录（默认为~/.oh-my-zsh/custom/plugins）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions <span class="variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-autosuggestions</span><br></pre></td></tr></table></figure>
+<p>然后，编辑~/.zshrc文件把它加到插件列表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plugins=( </span><br><span class="line">    <span class="comment"># other plugins...</span></span><br><span class="line">    zsh-autosuggestions</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>zsh-syntax-highlighting</strong>：此插件对zsh提示符后的输入自动匹配语法高亮，可以让用户在实际命令运行前审核输入行，以便及时发现和改正语法错误。安装时同样先从GitHub源克隆仓储到<code>$ZSH_CUSTOM/plugin</code>目录（默认为~/.oh-my-zsh/custom/plugins）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
+<p>然后，编辑~/.zshrc文件把它加到插件列表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plugins=( </span><br><span class="line">    <span class="comment"># other plugins...</span></span><br><span class="line">    zsh-syntax-highlighting</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>⚠️注意：与zsh-autosuggestions不同，为了保证语法高亮的效果，<strong>zsh-syntax-highlighting插件必须置于插件列表的最后一项！</strong></p></li>
+</ol>
+<p>定制插件安装完毕后，需要退出再重启iTerm2才能生效。</p>
+<h3 id="powerlevel10k主题">Powerlevel10k主题</h3>
+<p><a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k">Powerlevel10k</a>是为zsh定做的主题，它的显著特点是高速、灵活及开箱即用的用户体验。用Powerlevel10k定制的提示行包含色彩丰富的图形化符号，可在左右两边都实时显示当前系统和工作目录下的状态，还能与多种工具集成让程序员的工作环境产生惊艳的效果。</p>
+<p>在Oh-My-Zsh环境下的安装很简单，直接从Github源克隆Powerlevel10k仓储到<code>$ZSH_CUSTOM/themes</code>目录（默认为~/.oh-my-zsh/custom/themes）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth=1 https://github.com/romkatv/powerlevel10k.git <span class="variable">$&#123;ZSH_CUSTOM:-<span class="variable">$HOME</span>/.oh-my-zsh/custom&#125;</span>/themes/powerlevel10k</span><br></pre></td></tr></table></figure>
+<p>中国大陆用户可以使用 gitee.com 上的官方镜像加速下载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth=1 https://gitee.com/romkatv/powerlevel10k.git <span class="variable">$&#123;ZSH_CUSTOM:-<span class="variable">$HOME</span>/.oh-my-zsh/custom&#125;</span>/themes/powerlevel10k</span><br></pre></td></tr></table></figure>
+<p>接下来使用编辑器打开~/.zshrc文件，更新ZSH_THEME</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ vi ~/.zshrc</span><br><span class="line"><span class="comment"># Set name of the theme to load</span></span><br><span class="line">ZSH_THEME=<span class="string">&quot;powerlevel10k/powerlevel10k&quot;</span>`</span><br></pre></td></tr></table></figure>
+<p>安装完成后重启iTerm2，会自动触发Powerlevel10k配置向导（Configuration Wizard）。这个向导设计得非常直观和人性化，一步一步引领用户设定界面，所选择的效果一目了然。Powerlevel10k配置向导采用问答的方式进行，大致的流程解说如下：</p>
+<ol type="1">
+<li><p><strong>安装Powerline字体</strong> - 配置向导第一次运行时，会问用户是否需要安装推荐的字体。为了让提示行的图标正常显示，当然要选（y）。这时Powerlevel10k就自动下载<em>Meslo Nerd Font</em>并设置到iTerm2的Profile中，然后提示用户<code>cmd+q</code>关闭再重启iTerm2使其生效。用户可以打开<strong>Preferences &gt; Profiles &gt; Text &gt; Font</strong>看到字体已经设定为<em>MesloLGS NF</em>。</p></li>
+<li><p><strong>确认特殊符号是否正常</strong> - 配置向导会与用户核对特殊图标是否能正常显示，如果第1步的字体安装无误，所有特殊符号和图标（菱形、🔒、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/File:Debian-OpenLogo.svg">Debian标识</a>及字符与图标相嵌）都应该正常呈现。</p></li>
+<li><p><strong>选择提示行风格</strong> - 有简约到丰富渲染程度不等的四种风格（Lean、Classic、Rainbow和Pure）可选，偏好因人而异。个人较喜欢彩虹（Rainbow）风格。</p></li>
+<li><p><strong>选择字符集</strong> - 有Unicode和ASCII两种选择。如果需要在提示行显示许多花俏的图标，一定要选Unicode。</p></li>
+<li><p><strong>其它风格细节设定</strong> - 包括是否在右端显示时间及何种时制、提示行内分隔符和末端的形狀、提示行与输入命令是否分隔成两行、命令执行结束记录上滚后是否去除提示行（Transient Prompt）等等。</p></li>
+</ol>
+<p>跟着Powerlevel10k的配置向导完成设置，你就能获得视效满满的终端提示行。在此之后如果想变一下口味，可以输入命令<code>p10k configure</code>启动配置向导重新设定。Powerlevel10k最后生成的配置存放在~/.p10k.zsh中，用户可以编辑此文件作细节微调。</p>
+<p>至此，全部必要的软件工具都已经安装配置完毕。最后的.zshrc文件的有效内容如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt; grep <span class="string">&quot;^[^#;]&quot;</span> .zshrc</span><br><span class="line"><span class="keyword">if</span> [[ -r <span class="string">&quot;<span class="variable">$&#123;XDG_CACHE_HOME:-<span class="variable">$HOME</span>/.cache&#125;</span>/p10k-instant-prompt-<span class="variable">$&#123;(%):-%n&#125;</span>.zsh&quot;</span> ]]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">source</span> <span class="string">&quot;<span class="variable">$&#123;XDG_CACHE_HOME:-<span class="variable">$HOME</span>/.cache&#125;</span>/p10k-instant-prompt-<span class="variable">$&#123;(%):-%n&#125;</span>.zsh&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">export</span> ZSH=<span class="string">&quot;/Users/zixi/.oh-my-zsh&quot;</span></span><br><span class="line">ZSH_THEME=<span class="string">&quot;powerlevel10k/powerlevel10k&quot;</span></span><br><span class="line">plugins=(</span><br><span class="line">    git</span><br><span class="line">    zsh-autosuggestions</span><br><span class="line">    zsh-syntax-highlighting</span><br><span class="line">)</span><br><span class="line"><span class="built_in">source</span> <span class="variable">$ZSH</span>/oh-my-zsh.sh</span><br><span class="line">[[ ! -f ~/.p10k.zsh ]] || <span class="built_in">source</span> ~/.p10k.zsh</span><br></pre></td></tr></table></figure>
+<h3 id="综合调整和效果展示">综合调整和效果展示</h3>
+<p>根据个人喜好的不同，用户可以对 iTerm2 + Oh-My-Zsh + Powerlevel10k 组合作一些整体调节，以打造自己满意的终端界面。个人使用的是iTerm2预设的<code>Solarized Dark</code>色彩主题。虽然它的颜色配置对眼睛较柔和，但缺点是无法看清Oh-My-Zsh自动推荐插件输出的内容。这是由于<code>Solarized Dark</code>色彩主题里<strong>Basic Colors &gt; Background</strong>与<strong>ANSI Colors &gt; Bright Black</strong>太接近造成的。矫正的方法是打开iTerm2设置对话框<strong>Preferences &gt; Profiles &gt; Colors</strong>，将<strong>ANSI Colors &gt; Bright Black</strong>调亮一些。对<strong>ANSI Colors &gt; Bright</strong>颜色列表的Green、Yellow、Blue及Cyan也可作相应的调整。矫正结果如下截屏所示</p>
+<p><img src="iTerm-profile-color.png" style="width:70.0%;height:70.0%" /></p>
+<p>此外，个人还对Powerlevel10k的配置文件~/.p10k.zsh做了了如下微小改动，将硬盘使用率（disk_usage）起始注释符号#去掉，以将其加到提示行右端实时显示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vi ~/.p10k.zsh</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="built_in">typeset</span> -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment"># load                  # CPU load</span></span><br><span class="line">    disk_usage              <span class="comment"># disk usage</span></span><br><span class="line">    <span class="comment"># ram                   # free RAM</span></span><br><span class="line">    ...</span><br><span class="line">    time                    <span class="comment"># current time</span></span><br><span class="line">    <span class="comment"># ip                    # ip address and bandwidth usage for a specified network interface</span></span><br><span class="line">    <span class="comment"># public_ip             # public IP address</span></span><br><span class="line">    <span class="comment"># proxy                 # system-wide http/https/ftp proxy</span></span><br><span class="line">    <span class="comment"># battery               # internal battery</span></span><br><span class="line">    ...</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>注意这里load和ram与iTerm2页面状态条的处理器利用率和内存利用率组件显示的信息重复，所以不需要。如果对网络地址分配感兴趣，可以用同样的操作把以上配置段里的内网地址（ip）和公网地址（public_ip）加到提示行右端。</p>
+<p>最终，iTerm2 + Oh-My-Zsh + Powerlevel10k 生成的色彩生动的终端界面如下</p>
+<p><img src="iTerm-hexo-git-ping-search.png" style="width:85.0%;height:85.0%" /> 此图中展现出来的功能特性有：</p>
+<ol type="1">
+<li><strong>语法高亮</strong>：ping、vi、hexo及gst（git status的别名）命令都用绿色显示。hexo和gst命令的输出也都有对应的色彩变化。</li>
+<li><strong>彩色状态条</strong>：顶上的状态条用不同颜色显示处理器利用率和内存利用率。</li>
+<li><strong>文本搜索</strong>：顶上状态条左侧搜索框显示查找"git"字符串的结果，在整个记录缓冲区内找到206个。在窗口内匹配的内容自动反色突出高亮显示。</li>
+<li><strong>彩虹提示行</strong>：底部是彩虹风格的提示行。左侧显示苹果图标、目录图标和路径，还有git分支名及工作空间状态指示（分支为master，“!1 ?1”表明一个现存文件被修改，及一个未被记录的新文件）。右侧第一个✓图标指示最近的命令运行成功，否则会显示✗及错误码；第二个图标显示上个ping命令的执行时间3s；下一个为硬盘使用率14%；最后是12小时制的当前时间。</li>
+<li><strong>自动推荐</strong>：底部输入vi命令时，根据命令行历史会显示自动推荐的文件名参数。这时键入<code>→</code>，光标会马上跳到参数末尾。如果要部分修改，可使用<code>delete</code>键左移光标到相关位置，再输入即可。注意光标前后的字符颜色的不同。后面是自动推荐部分，其颜色就是上述调整过的Bright Black。</li>
+</ol>
+<p>下面的页面截图，演示了iTerm2与tmux集成后双栏4个子窗口的运行效果：</p>
+<ul>
+<li>左上 - 运行htop实时监控系统信息</li>
+<li>右上 - <a target="_blank" rel="noopener" href="https://github.com/dylanaraps/neofetch">neofetch</a>（一种美化的系统快照工具）的执行结果，以及简单命令行脚本的语法高亮效果</li>
+<li>左下 - <a target="_blank" rel="noopener" href="https://github.com/Peltoche/lsd">lsd</a>（LSDeluxe—彩色精装版ls）的输出，其中目录和可执行文件分别为亮蓝色和亮绿色，这正是上述Bright Blue和Bright Green调整后的结果</li>
+<li>右下 - <a target="_blank" rel="noopener" href="https://github.com/sharkdp/bat">bat</a>（搭配语法高亮和Git集成的cat）的输出</li>
+</ul>
+<p><img src="iTerm-tmux.png" style="width:90.0%;height:90.0%" /> 很显然，iTerm2 + Oh-My-Zsh + Powerlevel10k 组合实现的终端工作环境能够充分地发挥色彩丰富的各类应用的巨大潜力。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/" title="iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端">https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" rel="tag"><i class="fa fa-tag"></i> 编程工具</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/03/ASAN-intro/" rel="prev" title="AddressSanitizer — 程序员检测内存访问错误的利器">
+                  <i class="fa fa-chevron-left"></i> AddressSanitizer — 程序员检测内存访问错误的利器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/27/How-Shannon-invent-future/" rel="next" title="克劳德·香农如何发明未来">
+                  克劳德·香农如何发明未来 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"81e6af9498e8c412b9aab1a72b6bd973"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

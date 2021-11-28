@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="现代计算机的硬件设计建立于数字电路的基础之上，而数字电路采用以2为基数的二进制记数系统。由此，二进制及其数字位（称为比特）的运算构成计算机系统软件的基石。一个常见的程序员面试题，就是比特位计数，即计算给定整数的二进制表示中比特1的个数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员面试题精解（1）— 比特位计数">
+<meta property="og:url" content="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="现代计算机的硬件设计建立于数字电路的基础之上，而数字电路采用以2为基数的二进制记数系统。由此，二进制及其数字位（称为比特）的运算构成计算机系统软件的基石。一个常见的程序员面试题，就是比特位计数，即计算给定整数的二进制表示中比特1的个数。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/bitcount1.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/bitcount2.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/bitcount3.png">
+<meta property="article:published_time" content="2021-05-31T03:53:56.000Z">
+<meta property="article:modified_time" content="2021-11-28T06:10:43.622Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta property="article:tag" content="系统编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/bitcount1.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/","path":"2021/05/30/PGITVW-1-bitcount/","title":"程序员面试题精解（1）— 比特位计数"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>程序员面试题精解（1）— 比特位计数 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%84%E8%A7%A3%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">常规解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E8%A7%A3%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">快速解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E8%80%8C%E6%B2%BB%E4%B9%8B"><span class="nav-number">3.</span> <span class="nav-text">分而治之</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%A6%E4%B8%8A%E6%B7%BB%E8%8A%B1"><span class="nav-number">4.</span> <span class="nav-text">锦上添花</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E5%92%8C%E5%BA%94%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">总结和应用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员面试题精解（1）— 比特位计数
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-30 20:53:56" itemprop="dateCreated datePublished" datetime="2021-05-30T20:53:56-07:00">2021-05-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 22:10:43" itemprop="dateModified" datetime="2021-11-27T22:10:43-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">面试指南</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>现代计算机的硬件设计建立于数字电路的基础之上，而数字电路采用以2为基数的二进制记数系统。由此，二进制及其数字位（称为比特）的运算构成计算机系统软件的基石。一个常见的程序员面试题，就是比特位计数，即计算给定整数的二进制表示中比特1的个数。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Low-level programming is good for the programmer's soul.</strong><br> <strong>— <em>John Carmack</em>（约翰·卡马克，美国电玩游戏程序员、id Software的创始人之一）</strong></p>
+</div>
+<p>这并不是一道很难的题目，但是要给出令人印象深刻的答案，却需要对二进制及比特位运算的深入理解，以及坚实的系统编程技巧和经验。实际上，比特位计数功能有悠久的历史。在早期的晶体管计算机时代，就有专门执行该功能的指令。如果主机的CPU指令集不支持此类指令，就必须使用软件代码实现。由于这一功能也常常被称为“种群统计”（population count），本文中所有解法的函数命名都以<code>popcount_</code>为前缀。下面我们来解析和评介这一面试题的各种解法和C语言实现。</p>
+<h3 id="常规解法">常规解法</h3>
+<p>常规的解法是每一个初级程序员都必须掌握的。以32位整数2418146236为例，</p>
+<ul>
+<li>十六进制表示：0x9021FBBC</li>
+<li>二进制表示：0b 10010000 00100001 11111011 10111100</li>
+<li>比特1的个数：16</li>
+</ul>
+<p>如果熟悉基本的比特位运算操作（<em>取反、与、或、异或、左/右移位</em>），就可以很快找到一个解题的思路：生成一个单比特数0b1，将它与要计数的整数做<em>位与</em>运算，结果为1说明整数最右边的比特为1，否则为0；将此单比特数<em>左移</em>一位得到0b10，再与原整数做<em>位与</em>运算，用结果判定从右边起的第二位比特是否为1；重复此<em>左移</em>和<em>位与</em>运算，就能够从右到左扫描到所有的比特1并计数。如下的代码实现了这一简单直接的解法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_common1</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; <span class="number">32</span>) &#123; </span><br><span class="line">        <span class="keyword">if</span> (n &amp; (<span class="number">1</span> &lt;&lt; i))</span><br><span class="line">            c++;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，这种解法的运算量只取决于输入整数类型的总比特数，而与整数本身的数值无关。如上的函数定义，因为输入为32位无符号数，所以代码中循环和移位次数也为32。</p>
+<p>与之类似的解法，是固定单比特数0b1，而将输入整数逐次<em>右移</em>，这样所有的高位比特都可以移到最右边来检测。利用比特位<em>右移</em>运算时最左边补上符号位的特点，此解法可能不需要循环32次而提前结束，循环的次数等于最高位比特1与最右边比特的比特距离。以下的代码展示了这一解法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_common2</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n) &#123;</span><br><span class="line">        c += n &amp; <span class="number">1</span>;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于上面的第二种常规解法的C函数实现，有三点要提醒注意：</p>
+<ol type="1">
+<li>解法利用了<em>右移</em>时最左边补上符号位0的特点，所以可以根据移位后数是否为0，来确定需不需要提前结束循环。这是优于第一种常规解法的地方。但是也由此限定了输入n必须为无符号数，否则当输入为负数时，<em>右移</em>时最左边的符号位会移到数据位，而且还会又补上符号位1。这样最终n会变为0xFFFFFFFF，程序落入死循环！解决此问题的办法是，如果函数定义的输入是<code>int32_t</code>，要先将之强制类型赋值到无符号数<code>uint32_t</code>，再执行相同的检测和计数步骤。基于此处理，本文余下内容所提到的整数皆为无符号数。</li>
+<li>以上代码第5行不是应该写成<code>if (n &amp; 1) c++;</code>吗？为什么变成<code>c += n &amp; 1;</code>？其实两种写法结果一样，但实际中后者可能会优于前者。现代计算机处理器都是基于流水线（pipeline）的设计以提高指令执行速度，而<code>if</code>语句编译成的分支指令，会造成流水线冲突而拉低执行效率。当然，依赖于特定的计算机体系结构和编译器优化能力，这一区别也有可能太小乃至可以忽略不计。</li>
+<li>以上代码第6行<em>右移</em>一位，等价于将整数除以2。那么请问可以把它写成<code>n /= 2;</code>吗？绝对不行！这是面试官设置的陷阱。只要学过计算机组成的基础知识，就应该知道除法的执行效率远低于移位运算，所以实际中要尽量避免使用除法。</li>
+</ol>
+<h3 id="快速解法">快速解法</h3>
+<p>实现常规解法可以验证面试者是否拥有初级程序员的基本技能。然而，对于中高级程序员的职位，面试官会要求效率更高的解法。那么，存在更快的解法吗？答案是肯定的。</p>
+<p>考虑一个单字节8比特的整数n, 其数值为0x94，以二进制表示为0b10010100。如下图所示，如果将n减去1，得到0b10010011，即0x93。仔细观察二者的区别，减1后原整数最右边的比特1及后面的比特0全部取反，而其之前的比特位均保持不变。这时，如果将二者做<em>位与</em>运算，结果是0b10010000（0x90），最右的比特1被清除了！重复减1后<em>位与</em>操作，会得到0b10000000 (0x80)，原整数从右边数第二个比特1被清除了。第三次同样的操作完成，得到0，即原来的全部三个比特1都被清零。</p>
+<p><img src="bitcount1.png" style="width:50.0%;height:50.0%" /></p>
+<p>总结这一规律：将一个整数减去1，再同原整数做<em>位与</em>运算，得到的结果等于原整数最右边的比特1清零；在最终结果变成0之前，能重复进行这样的操作的次数，就是原整数中比特1的数目。基于这一规律，我们可以写出新的计数函数代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_fast1</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n) &#123;</span><br><span class="line">        c++;</span><br><span class="line">        n &amp;= (n<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>毫无疑问，由于循环的次数取决于比特1的数目，这种解法当然比常规解法要快。在比特1个数不多的场合，这是优选的快速解法。</p>
+<p>无独有偶，还有一种与之对称的解法，适用于比特1个数较多（即比特0较少）的情况。参考下图，整数数值为0xBD，二进制表示为0b10111101。如果将n加上1，得到0b10111110，即0xBE。对比二者，加1后原整数最右边的比特0及后面的比特1全部取反，而其之前的比特位均保持不变。这时，如果将二者做<em>位或</em>运算，结果是0b10111111（0xBF），最右的比特0被置位了！重复加1后<em>位与</em>操作，会得到0b11111111 (0xFF)，原整数从右边数第二个比特0被置位了。这时原来的全部两个比特0都被置位，解法终止，原整数中比特1的个数等于总比特数减去重复操作的次数。</p>
+<p><img src="bitcount2.png" style="width:50.0%;height:50.0%" /></p>
+<p>总结新的规律：将一个整数加上1，再同原整数做<em>位或</em>运算，得到的结果等于原整数最右边的比特0置位；在最终结果变成全比特1（等同于有符号数-1）之前，能重复进行这样的操作的次数，就是原整数中比特0的数目，而原整数中比特1的个数等于总比特数减去比特0的数目。这一规律对应的计数函数代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_fast2</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">32</span>;</span><br><span class="line">    <span class="keyword">while</span> (n != <span class="number">-1</span>) &#123;</span><br><span class="line">        c--;</span><br><span class="line">        n |= (n+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同理，由于循环的次数取决于比特0的数目，在比特1个数较多的场合，这是优选的快速解法。</p>
+<p>在具体的应用场景中，如果要处理的数据量很大，达到GB甚至TB量级，并且已知绝大部分数值的比特1个数都是较少（或较多）的状况，还可以将循环语句展开，进一步加快运行速度。</p>
+<p>以上两种快速解法的循环展开实现如下。代码先定义宏<code>f(x)</code>和<code>g(x)</code>用来检测结果并即时返回计数值，然后在函数实现中拿掉<code>while</code>循环，取而代之的是分别反复调用<code>f(x)</code>和<code>g(x)</code>。在任何一步满足<code>if</code>条件为真，就会马上返回。这实际上是一种<strong>以空间换时间</strong>的方案。虽然函数代码及编译后的指令数目会增加不少，但是在运行过程中，因为每次检测都减少了一个算术运算指令（用于更新计数变量），所以运行会更快。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* If most bits are 0, use the following unrolled solution.*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> f(x) <span class="meta-keyword">if</span> ((n &amp;= (n-1)) == 0) return x;</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_fast1_unrolled</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    f( <span class="number">1</span>) f( <span class="number">2</span>) f( <span class="number">3</span>) f( <span class="number">4</span>) f( <span class="number">5</span>) f( <span class="number">6</span>) f( <span class="number">7</span>) f( <span class="number">8</span>)</span><br><span class="line">    f( <span class="number">9</span>) f(<span class="number">10</span>) f(<span class="number">11</span>) f(<span class="number">12</span>) f(<span class="number">13</span>) f(<span class="number">14</span>) f(<span class="number">15</span>) f(<span class="number">16</span>)</span><br><span class="line">    f(<span class="number">17</span>) f(<span class="number">18</span>) f(<span class="number">19</span>) f(<span class="number">20</span>) f(<span class="number">21</span>) f(<span class="number">22</span>) f(<span class="number">23</span>) f(<span class="number">24</span>)</span><br><span class="line">    f(<span class="number">25</span>) f(<span class="number">26</span>) f(<span class="number">27</span>) f(<span class="number">24</span>) f(<span class="number">29</span>) f(<span class="number">30</span>) f(<span class="number">31</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">32</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* If most bits are 1, use the following unrolled solution.*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> g(x) <span class="meta-keyword">if</span> ((n |= (n+1)) == -1) return 32-x;</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_fast2_unrolled</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">-1</span>) <span class="keyword">return</span> <span class="number">32</span>;</span><br><span class="line">    g( <span class="number">1</span>) g( <span class="number">2</span>) g( <span class="number">3</span>) g( <span class="number">4</span>) g( <span class="number">5</span>) g( <span class="number">6</span>) g( <span class="number">7</span>) g( <span class="number">8</span>)</span><br><span class="line">    g( <span class="number">9</span>) g(<span class="number">10</span>) g(<span class="number">11</span>) g(<span class="number">12</span>) g(<span class="number">13</span>) g(<span class="number">14</span>) g(<span class="number">15</span>) g(<span class="number">16</span>)</span><br><span class="line">    g(<span class="number">17</span>) g(<span class="number">18</span>) g(<span class="number">19</span>) g(<span class="number">20</span>) g(<span class="number">21</span>) g(<span class="number">22</span>) g(<span class="number">23</span>) g(<span class="number">24</span>)</span><br><span class="line">    g(<span class="number">25</span>) g(<span class="number">26</span>) g(<span class="number">27</span>) g(<span class="number">24</span>) g(<span class="number">29</span>) g(<span class="number">30</span>) g(<span class="number">31</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="分而治之">分而治之</h3>
+<p>如前所述，快速解法是比特1个数较少或较多的情况下的优选。在平均计数值为总比特数的一半时，仍然需要相当多的指令完成任务。对于前例的<code>popcount_fast1</code>和<code>popcount_fast2</code>函数，平均需要循环16次，每次执行三次算术运算和一次比较/分支操作，最少64条操作指令。还有没有更好的、需要更少指令的通用解法呢？</p>
+<p>当然有！早在40多年以前，三位美国计算机科学家Reingold、Nievergelt和Deo所著的《组合算法：理论和实践》<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>一书中，就详细讨论了一种应用“分而治之”（Divide and Conquer）策略的解法。这种解法是如此精妙，乃至应该将其升格以算法称呼才合适。下图演示了以16位的双字节数0xBFA6为例的计算过程，算法首先把相邻的两个比特位组合为一个位段，将这两个比特位的值相加，结果置于这个宽度为2的比特位段中。下一步把相邻的两个双比特位段的值相加，结果置于宽度为4的比特位段中。以此类推，四步之后就得到数值11（0x000B），正好就是原整数中比特1的总数。</p>
+<p><img src="bitcount3.png" style="width:70.0%;height:70.0%" /></p>
+<p>这一看似帽子戏法的算法，是“分而治之”策略的典型应用。一个16位整数的比特1计数问题，被转化为两个8位整数的计数问题，分别解决后再将结果相加合并。递归运用此策略，直至分解到单个比特计数的问题。然后反复运用并行位运算求解再合并，即可求出最终的计数值。很明显，给定N比特位整数，此算法的时间复杂性是<span class="math inline">\(O(\log N)\)</span>。</p>
+<p>对于32位的整数，上图中的算法用C语言写出来就是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Divide-and-Conquer - original (20 arithmetic operations) */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_dnq1</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    n = (n &amp; <span class="number">0x55555555</span>) + ((n &gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x55555555</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x33333333</span>) + ((n &gt;&gt; <span class="number">2</span>) &amp; <span class="number">0x33333333</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x0F0F0F0F</span>) + ((n &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0F0F0F0F</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x00FF00FF</span>) + ((n &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0x00FF00FF</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x0000FFFF</span>) + ((n &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0x0000FFFF</span>);</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>值得说明的一点是，此函数实现中的圆括号都是必要的。这是因为在C语言运算符的优先级次序表里，加减（<code>+</code>、<code>-</code>）要高于移位(<code>&lt;&lt;</code>、<code>&gt;&gt;</code>)，而后者又高于比特位运算（<code>&amp;</code>、<code>^</code>、<code>|</code>）<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。在<code>n &gt;&gt; 1</code>两边加圆括号则有助于增强代码的可读性。</p>
+<p>另外，函数的第一行（上面代码段行号4）按照算法描述本来应该写成<code>(n &amp; 0xAAAAAAAA) &gt;&gt; 1</code>，之所以这么写是为了避免在寄存器中生成两个大的常数。如果使用0xAAAAAAAA，在不支持单个“and not”指令的计算机里，就必须多耗费一条指令先将0x55555555<em>取反</em>，再与n做<em>位与</em>运算。后面四行的写法也出于同样的考虑。统计下来，这种“分而治之”算法的实现运算量恒定，总共只有20次算术运算操作，运行速度达到了快速解法平均速度的三倍多！</p>
+<p>到这里，如果面试者对以上全部的解法都有清晰的思路并写下无错的代码，应该可以得到面试官的首肯。再往下的知识点，就是属于能给面试官带来惊喜的技能了。</p>
+<h3 id="锦上添花">锦上添花</h3>
+<p>问还可以更快吗？</p>
+<p>是的，上述“分而治之”算法的代码实现还能进一步优化：</p>
+<ol type="1">
+<li>仔细审查函数<code>popcount_dnq1</code>返回语句之前的三行（代码段行号6、7、8），你会发现一些<em>位与</em>操作是多余的。一则，在这些步骤中比特位段求和的结果不可能向左边的比特位段进位；二则，在最后一步，高位的比特值是可忽略的，计数结果只在最右边的m位比特中，这里<span class="math inline">\(m=\log N+1\)</span>，所以可以省却一个<em>位与</em>运算。</li>
+<li>函数<code>popcount_dnq1</code>的第一行（代码段行号4）还有另一种写法，可以减少一次算术运算。其依据是下面的“种群统计”数学公式<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>： <span class="math display">\[\operatorname{popcount}(n)=n-\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor-\Bigl\lfloor\frac{n}{4}\Bigr\rfloor-\cdots-\Bigl\lfloor\frac{n}{2^{N-1}}\Bigr\rfloor\tag{1}\]</span> N为整数n的比特位数目，<span class="math inline">\(\lfloor\space\rfloor\)</span>为向下取整操作。此公式的前两项可以用来并行计算宽度为2的比特位段，以一个四比特位数为例： <span class="math display">\[\begin{align}
+n&amp;=a_3⋅2^3+a_2⋅2^2+a_1⋅2^1+a_0⋅2^0\tag{2}\\
+\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor&amp;=a_3⋅2^2+a_2⋅2^1+a_1⋅2^0\tag{3}\\
+\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor\space\&amp;\space0\mathbf{x}5&amp;=a_3⋅2^2+a_1⋅2^0\tag{4}\\
+n-(\Bigl\lfloor{\frac{n}{2}}\Bigr\rfloor\space\&amp;\space0\mathbf{x}5)&amp;=a_3⋅(2^3-2^2)+a_2⋅2^2+a_1⋅(2^1-2^0)+a_0⋅2^0\\
+&amp;=(a_3+a_2)⋅2^2+(a_1+a_0)⋅2^0\tag{5}
+\end{align}\]</span> 显然上式（3）等同于将n右移一位。稍加思考，也可以推断出上式（5）得到就是宽度为2的比特位段计数值。依据这一分析，我们可以重写第一行为<code>n = n - ((n &gt;&gt; 1) &amp; 0x55555555);</code></li>
+</ol>
+<p>综合上述两点，优化后的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Divide-and-Conquer - improved (15 arithmetic operations) */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_dnq2</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    n = n - ((n &gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x55555555</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x33333333</span>) + ((n &gt;&gt; <span class="number">2</span>) &amp; <span class="number">0x33333333</span>);</span><br><span class="line">    n = (n + (n &gt;&gt; <span class="number">4</span>)) &amp; <span class="number">0x0F0F0F0F</span>;</span><br><span class="line">    n = n + (n &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    n = n + (n &gt;&gt; <span class="number">16</span>);</span><br><span class="line">    <span class="keyword">return</span> n &amp; <span class="number">0x3F</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新的<code>popcount_dnq2</code>函数实现比<code>popcount_dnq1</code>少了5个算术运算操作，速度加快了25%。</p>
+<p>还有优化的余地吗？</p>
+<p>真的有！有经验的系统程序员都知道，许多现代计算机处理器的设计都支持单条乘法指令。由此把一个数乘以0x01010101，等于将其每个长度为8的比特位段相加求和，结果置于最高的字节中，所以只要右移24位就可以得到我们要的计数值。根据这一点，我们可以得到“分而治之”算法的最优实现版本：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Divide-and-Conquer - final (12 arithmetic operations) */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_dnq3</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    n = n - ((n &gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x55555555</span>);</span><br><span class="line">    n = (n &amp; <span class="number">0x33333333</span>) + ((n &gt;&gt; <span class="number">2</span>) &amp; <span class="number">0x33333333</span>);</span><br><span class="line">    n = (n + (n &gt;&gt; <span class="number">4</span>)) &amp; <span class="number">0x0F0F0F0F</span>;</span><br><span class="line">    <span class="keyword">return</span> (n * <span class="number">0x01010101</span>) &gt;&gt; <span class="number">24</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它只需要12次算术运算操作就完成任务，真的非常快！</p>
+<p>使用GCC编译器特定选项，可以生成混合C代码及对照汇编语言的列表（list）文件，用来验证<code>popcount_dnq3</code>实现的优越性。在运行于Intel处理器的Ubuntu Linux x86-64虚拟机上，执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wa,-adhln -g -march=native popcount.c &gt; popcount.s</span><br></pre></td></tr></table></figure>
+<p>然后打开产生的列表文件<code>popcount.s</code>，找到<code>popcount_dnq2</code>和<code>popcount_dnq3</code>相关的部分：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">106</span>:popcount.<span class="function">c    **** <span class="keyword">int</span> <span class="title">popcount_dnq2</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function">107:popcount.c    **** </span>&#123;</span><br><span class="line">...</span><br><span class="line"><span class="number">111</span>:popcount.c    ****     n = n + (n &gt;&gt; <span class="number">8</span>);</span><br><span class="line"><span class="number">972</span>              		.loc <span class="number">1</span> <span class="number">111</span> <span class="number">16</span></span><br><span class="line"><span class="number">973</span> <span class="number">0786</span> <span class="number">8B</span>45FC   		movl	<span class="number">-4</span>(%rbp), %eax</span><br><span class="line"><span class="number">974</span> <span class="number">0789</span> C1E808   		shrl	$<span class="number">8</span>, %eax</span><br><span class="line"><span class="number">975</span>              		.loc <span class="number">1</span> <span class="number">111</span> <span class="number">7</span></span><br><span class="line"><span class="number">976</span> <span class="number">078</span>c <span class="number">0145F</span>C   		addl	%eax, <span class="number">-4</span>(%rbp)</span><br><span class="line"><span class="number">112</span>:popcount.c    ****     n = n + (n &gt;&gt; <span class="number">16</span>);</span><br><span class="line"><span class="number">977</span>              		.loc <span class="number">1</span> <span class="number">112</span> <span class="number">16</span></span><br><span class="line"><span class="number">978</span> <span class="number">078f</span> <span class="number">8B</span>45FC   		movl	<span class="number">-4</span>(%rbp), %eax</span><br><span class="line"><span class="number">979</span> <span class="number">0792</span> C1E810   		shrl	$<span class="number">16</span>, %eax</span><br><span class="line"><span class="number">980</span>              		.loc <span class="number">1</span> <span class="number">112</span> <span class="number">7</span></span><br><span class="line"><span class="number">981</span> <span class="number">0795</span> <span class="number">0145F</span>C   		addl	%eax, <span class="number">-4</span>(%rbp)</span><br><span class="line"><span class="number">113</span>:popcount.c    ****     <span class="keyword">return</span> n &amp; <span class="number">0x3F</span>;</span><br><span class="line"><span class="number">982</span>              		.loc <span class="number">1</span> <span class="number">113</span> <span class="number">14</span></span><br><span class="line"><span class="number">983</span> <span class="number">0798</span> <span class="number">8B</span>45FC   		movl	<span class="number">-4</span>(%rbp), %eax</span><br><span class="line"><span class="number">984</span> <span class="number">079b</span> <span class="number">83E03</span>F   		andl	$<span class="number">63</span>, %eax</span><br><span class="line">...</span><br><span class="line"><span class="number">117</span>:popcount.<span class="function">c    **** <span class="keyword">int</span> <span class="title">popcount_dnq3</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function">118:popcount.c    **** </span>&#123;</span><br><span class="line">...</span><br><span class="line"><span class="number">122</span>:popcount.<span class="function">c    ****     <span class="title">return</span> <span class="params">(n * <span class="number">0x01010101</span>)</span> &gt;&gt; 24</span>;</span><br><span class="line"><span class="number">1034</span>              		.loc <span class="number">1</span> <span class="number">122</span> <span class="number">15</span></span><br><span class="line"><span class="number">1035</span> <span class="number">07e7</span> <span class="number">8B</span>45FC   		movl	<span class="number">-4</span>(%rbp), %eax</span><br><span class="line"><span class="number">1036</span> <span class="number">07</span>ea <span class="number">69</span>C00101 		imull	$<span class="number">16843009</span>, %eax, %eax</span><br><span class="line"><span class="number">1036</span>      <span class="number">0101</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，<code>popcount_dnq2</code>实现里右移8/16位相加各自有三条指令（行号973、974、976和978、979、981），最后的<em>位与</em>0x3F有两条指令（行号983、984），一共8条指令；而在<code>popcount_dnq3</code>实现中只有两条：一条加载指令<code>movl</code>和一条乘法指令<code>imull</code>。<code>popcount_dnq3</code>完胜！</p>
+<p>还有一种<strong>以空间换时间</strong>的“分而治之”方案，虽然看上去比较无趣，但是其执行效率却可与上面的其他算法比肩。这种解决方案预设一个256项的数组，填入0～255之间每个数的比特位计数值，之后对于输入的整数依次取出单个字节查表，然后将结果相加。以下是无比较/分支指令的代码实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> popcount_tab[<span class="number">256</span>] =</span><br><span class="line">&#123;</span><br><span class="line">    <span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,</span><br><span class="line">    <span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,</span><br><span class="line">    <span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,</span><br><span class="line">    <span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,</span><br><span class="line">    <span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,</span><br><span class="line">    <span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,</span><br><span class="line">    <span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,</span><br><span class="line">    <span class="number">3</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">7</span>,<span class="number">8</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Table lookup method */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount_tablelookup</span> <span class="params">(<span class="keyword">uint32_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> popcount_tab[n         &amp; <span class="number">0xFF</span>] +</span><br><span class="line">           popcount_tab[(n &gt;&gt;  <span class="number">8</span>) &amp; <span class="number">0xFF</span>] +</span><br><span class="line">           popcount_tab[(n &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFF</span>] +</span><br><span class="line">           popcount_tab[(n &gt;&gt; <span class="number">24</span>)];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>透彻掌握本节的内容，一定可以让面试官对你刮目相看，因为你写出的代码，实现的就是广为认可的高效算法。不信去下载GCC最新的11.1.0版本，看看库文件<code>libgcc/libgcc2.c</code>里的比特位计数函数（复制如下），与前面的代码实质上是一样的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span></span><br><span class="line">__popcountSI2 (UWtype x)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">/* Force table lookup on targets like AVR and RL78 which only</span></span><br><span class="line"><span class="comment">     pretend they have LIBGCC2_UNITS_PER_WORD 4, but actually</span></span><br><span class="line"><span class="comment">     have 1, and other small word targets.  */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __SIZEOF_INT__ &gt; 2 &amp;&amp; defined (POPCOUNTCST) &amp;&amp; __CHAR_BIT__ == 8</span></span><br><span class="line">  x = x - ((x &gt;&gt; <span class="number">1</span>) &amp; POPCOUNTCST (<span class="number">0x55</span>)); </span><br><span class="line">  x = (x &amp; POPCOUNTCST (<span class="number">0x33</span>)) + ((x &gt;&gt; <span class="number">2</span>) &amp; POPCOUNTCST (<span class="number">0x33</span>));</span><br><span class="line">  x = (x + (x &gt;&gt; <span class="number">4</span>)) &amp; POPCOUNTCST (<span class="number">0x0F</span>);</span><br><span class="line">  <span class="keyword">return</span> (x * POPCOUNTCST (<span class="number">0x01</span>)) &gt;&gt; (W_TYPE_SIZE - __CHAR_BIT__);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> </span></span><br><span class="line">  <span class="keyword">int</span> i, ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; W_TYPE_SIZE; i += <span class="number">8</span>)</span><br><span class="line">    ret += __popcount_tab[(x &gt;&gt; i) &amp; <span class="number">0xff</span>];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="总结和应用">总结和应用</h3>
+<p>下表总结比较了本文全部的解法和算法的函数实现：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">分类</th>
+<th style="text-align: center;">函数名</th>
+<th style="text-align: center;">方法概要</th>
+<th style="text-align: center;">性能</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">常规解法</td>
+<td style="text-align: center;">popcount_common1</td>
+<td style="text-align: center;">从右到左单比特扫描</td>
+<td style="text-align: center;">最慢</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">常规解法</td>
+<td style="text-align: center;">popcount_common2</td>
+<td style="text-align: center;">输入移位单比特扫描</td>
+<td style="text-align: center;">慢</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">快速解法</td>
+<td style="text-align: center;">popcount_fast1</td>
+<td style="text-align: center;">减一再<em>位与</em>清零最右1，适用较少1</td>
+<td style="text-align: center;">快（非通用）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">快速解法</td>
+<td style="text-align: center;">popcount_fast2</td>
+<td style="text-align: center;">加一再<em>位或</em>置位最右0，适用较少0</td>
+<td style="text-align: center;">快（非通用）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">快速解法</td>
+<td style="text-align: center;">popcount_fast1_unrolled</td>
+<td style="text-align: center;">fast1循环展开（以空间换时间）</td>
+<td style="text-align: center;">更快（非通用）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">快速解法</td>
+<td style="text-align: center;">popcount_fast2_unrolled</td>
+<td style="text-align: center;">fast2循环展开（以空间换时间）</td>
+<td style="text-align: center;">更快（非通用）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">分而治之</td>
+<td style="text-align: center;">popcount_dnq1</td>
+<td style="text-align: center;">位段并行计数合并、递归</td>
+<td style="text-align: center;">快（通用）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">分而治之</td>
+<td style="text-align: center;">popcount_dnq2</td>
+<td style="text-align: center;">位段并行计数合并、递归（优化）</td>
+<td style="text-align: center;">更快（通用）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">分而治之</td>
+<td style="text-align: center;">popcount_dnq3</td>
+<td style="text-align: center;">位段并行计数合并、递归（最优化）</td>
+<td style="text-align: center;">最快（通用）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">分而治之</td>
+<td style="text-align: center;">popcount_tablelookup</td>
+<td style="text-align: center;">单字节查表法（以空间换时间）</td>
+<td style="text-align: center;">最快（通用）</td>
+</tr>
+</tbody>
+</table>
+<p>比特位计数当然不仅仅是用来考验面试者的，它广泛应用于信息学、纠错编码和密码学等多个领域。实际上，“种群统计”就是二进制符号数据的汉明重量<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。而两个数据比特串的<strong>汉明距离</strong>，就定义为二者对应位置上不同比特的个数，即二者相<em>异或</em>后的汉明重量。基于汉明距离的分析是密码分析学的一个关键技术，是历史上破解许多密码的关键。从比特位计数的算法，也衍生出一些快速计算汉明距离的算法，感兴趣者可以留言讨论。</p>
+<p>事实上，比特位计数是如此重要，乃至GCC和Clang编译器都提供了内建库函数<code>__builtin_popcount</code>。Intel、AMD和ARM处理器也都为之设定了专门的指令。如下在运行于Intel处理器的Ubuntu Linux x86-64虚拟机上，指定GCC选项<code>-march=native</code>后<code>__builtin_popcount</code>函数编译成单一指令<code>popcntl</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">159</span>:popcount.c    ****         count = __builtin_popcount(num);</span><br><span class="line"><span class="number">1204</span>              		.loc <span class="number">1</span> <span class="number">159</span> <span class="number">17</span></span><br><span class="line"><span class="number">1205</span> <span class="number">08b</span>4 F30FB845 		popcntl	<span class="number">-8</span>(%rbp), %eax</span><br></pre></td></tr></table></figure>
+<p>对比特位计数功能应用方面的了解，有助于扩展知识面，会成为面试时的加分项。</p>
+<p>完整程序（包含以上所有计数函数及测试代码）和示例列表文件的压缩包在此下载：<a href="popcount.tar.gz">popcount.tar.gz</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Reingold, Edward M., Nievergelt, Jurg, and Deo, Narsingh. <em>Combintional Algorithms: Theory and Practice</em>. Prentice-Hall, 1977.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>比特位<em>取反</em>操作（<code>~</code>）是一个例外，C语言定义其优先级高于乘除、取余和加减运算。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>这个公式的证明不难，需要讨论的请在评论区留言。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>命名于美国数学家理查德·汉明（Richard Hamming），他对计算机和通信工程贡献突出。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/" title="程序员面试题精解（1）— 比特位计数">https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> 系统编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/10/Support-16bit-access/" rel="prev" title="C编程支持16位存取接口的存储设备">
+                  <i class="fa fa-chevron-left"></i> C编程支持16位存取接口的存储设备
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/05/Cisco-WiFi6-MuMIMO/" rel="next" title="思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情">
+                  思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"77f443c33a730ffae69acdf6a531b11e"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

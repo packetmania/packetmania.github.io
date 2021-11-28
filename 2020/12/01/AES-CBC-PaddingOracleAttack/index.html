@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证反馈信息，实现密文破解。这里简单回顾密文填充攻击的发展历史，然后深入剖析AES-CBC工作模式下的攻击原理，最后给出了Python的编程实现示例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AES-CBC密文填充攻击—深入理解和编程实现">
+<meta property="og:url" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证反馈信息，实现密文破解。这里简单回顾密文填充攻击的发展历史，然后深入剖析AES-CBC工作模式下的攻击原理，最后给出了Python的编程实现示例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/AES-ECB-CBC.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/AES-CBC-ENC.png">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/AES-CBC-DEC.png">
+<meta property="og:image" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/CBC-R-ENC.png">
+<meta property="article:published_time" content="2020-12-02T05:18:32.000Z">
+<meta property="article:modified_time" content="2021-11-28T01:39:13.639Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="网络安全">
+<meta property="article:tag" content="Python编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/AES-ECB-CBC.jpg">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/","path":"2020/12/01/AES-CBC-PaddingOracleAttack/","title":"AES-CBC密文填充攻击—深入理解和编程实现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AES-CBC密文填充攻击—深入理解和编程实现 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%86%E6%96%87%E5%A1%AB%E5%85%85%E6%94%BB%E5%87%BB%E7%AE%80%E5%8F%B2"><span class="nav-number">1.</span> <span class="nav-text">密文填充攻击简史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aes-cbc%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">AES-CBC工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#aes%E6%A0%87%E5%87%86"><span class="nav-number">2.1.</span> <span class="nav-text">AES标准</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A1%AB%E5%85%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">填充格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">工作模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%A7%A3%E5%AF%86%E6%96%87%E5%A1%AB%E5%85%85%E6%94%BB%E5%87%BB"><span class="nav-number">3.</span> <span class="nav-text">理解密文填充攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E7%A0%B4%E8%A7%A3%E5%AF%86%E6%96%87"><span class="nav-number">3.1.</span> <span class="nav-text">攻击破解密文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cbc-r%E4%BC%AA%E9%80%A0%E6%98%8E%E6%96%87"><span class="nav-number">3.2.</span> <span class="nav-text">CBC-R伪造明文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%B0%E5%AE%9E%E4%B8%AD%E7%9A%84%E6%94%BB%E5%87%BB"><span class="nav-number">3.3.</span> <span class="nav-text">现实中的攻击</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">Python编程实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%92%8C%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">工具和辅助函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A1%AB%E5%85%85%E5%8F%8A%E9%AA%8C%E8%AF%81%E5%87%BD%E6%95%B0"><span class="nav-number">4.2.</span> <span class="nav-text">填充及验证函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E5%92%8C%E8%A7%A3%E5%AF%86%E5%87%BD%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">加密和解密函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%86%E6%96%87%E5%A1%AB%E5%85%85%E6%94%BB%E5%87%BB%E5%87%BD%E6%95%B0"><span class="nav-number">4.4.</span> <span class="nav-text">密文填充攻击函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E7%A8%8B%E5%BA%8F%E6%B1%87%E6%80%BB"><span class="nav-number">4.5.</span> <span class="nav-text">攻击程序汇总</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AES-CBC密文填充攻击—深入理解和编程实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-01 21:18:32" itemprop="dateCreated datePublished" datetime="2020-12-01T21:18:32-08:00">2020-12-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/" itemprop="url" rel="index"><span itemprop="name">学习体会</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>23k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>21 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证反馈信息，实现密文破解。这里简单回顾密文填充攻击的发展历史，然后深入剖析AES-CBC工作模式下的攻击原理，最后给出了Python的编程实现示例。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Every secret creates a potential failure point.</strong><br> <strong>— <em>Bruce Schneier</em>（布鲁斯·施奈尔，美国密码学和信息安全专家、作家）</strong></p>
+</div>
+<h3 id="密文填充攻击简史">密文填充攻击简史</h3>
+<p>早在1998年，在贝尔实验室工作的密码学家丹尼尔·布莱肯巴赫（Daniel Bleichenbacher）首次成功设计和实现了使用选择密文攻击破解基于RSA公钥加密标准PKCS #1 v1.5的密码<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。这种攻击依赖于密文接受方反馈的填充格式正确与否信息，持续发送构造的密文以精准地定位明文。虽然当时并未见攻击所造成实质危害的报道，但是这种新颖的攻击手段引起了密码学家和保密通信协议研究者的广泛关注。</p>
+<p>三年后，澳大利亚电讯研究实验室的詹姆斯·马格（James Manger）发现了应用类似技术攻击更新后的PKCS #1 v2.0加密标准的方法<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>。攻击的有效性取决于在解密和完整性检测过程之间所泄漏的信息，而该版本协议的设计使得实际实现中出现这种情况的可能性极高。这次攻击的目标仍旧是非对称的RSA公钥加密协议，然而已经有研究者着力于使用相似的攻击手段破解对称加密协议。</p>
+<p>2002年，瑞士洛桑联邦理工学院的密码学家塞尔日·瓦德奈（Serge Vaudenay）在欧洲密码学年会（EUROCRYPT）上发表论文<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>，详述他发明的使用密文填充验证应答消息攻击CBC模式的对称分组加密密码。由于这种密文填充攻击的原理和实现都比较简单，同时CBC模式的分组密码应用非常普遍，瓦德奈的发明很快成为密码学家和信息安全专家的研究热点，也被许多黑客/极客投入实践中。在接下来的十多年里，源于这种攻击方法所发现的CBC模式相关的保密通信安全漏洞不断地涌现，如下所列：</p>
+<ul>
+<li>2003年，结合时序攻击，破解IMAP电邮服务器与Outlook客户端之间的SSL/TLS加密信道，盗取用户密码。</li>
+<li>2004年，证明攻击适用于ISO CBC模式加密和填充标准，可以有效地破译出明文。</li>
+<li>2007年，攻击只加密不认证的IPsec网络配置，成功破解有效载荷（payload）明文。</li>
+<li>2009年，利用消息认证码（MAC）执行时间的微小差别区分填充验证结果，攻破OpenSSL和GnuTLS的DTLS实现，恢复全部明文。</li>
+<li>2010年，成功攻破验证码（CAPTCHA）系统，为后续拒绝服务攻击扫清道路；破译JavaServer Faces加密的访问状态；应用衍生的CBC-R加密算法，伪造可被服务器解密及填充验证无误的访问状态。</li>
+<li>2011年，发现微软ASP.NET网页应用框架中的多个安全设计漏洞，可被攻击者利用破解未认证的加密小信息块（cookie）及伪造访问状态用以盗取服务器上限制访问目录中的文件。这给当时25%的互联网站点的安全性带来巨大冲击。</li>
+<li>2012年，攻击硬件辅助RSA或CBC加密设备如USB安全令牌、智能卡和电子ID卡等，破解导入的密码。</li>
+<li>2013年，全新变种“幸运十三攻击”出现，其针对TLS协议中的 HMAC-SHA1 MAC验证的软件实现进行侧信道时序攻击。开源TLS/DTLS软件库包OpenSSL、GnuTLS、PolarSSL、CyaSSL及亚马逊AWS所开发的s2n都需要打补丁修复相应的漏洞。</li>
+<li>2014年，谷歌安全团队报告“贵宾犬漏洞”（POODLE）。攻击者可利用软件实现中为照顾不同版本互通性而牺牲安全性的机制， 采用中间人攻击方式将客户端连接降级到SSL 3.0，再进行密文填充攻击破解密文。几个月后，又出现了一个新变种，攻击TLS 1.0-1.2服务器协议实现中的一些漏洞。</li>
+<li>2016年，Steam游戏平台被曝光其客户端连接存在严重安全漏洞，可让攻击者组合重放攻击与密文填充攻击破解用户密码和其它保密信息；同年，常见漏洞与披露报告<a target="_blank" rel="noopener" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-2107">CVE-2016-2107</a>揭示了OpenSSL针对“幸运十三攻击”的补丁中引入了另一个CBC模式密文填充攻击漏洞。</li>
+</ul>
+<p>从密文填充攻击的历史进程可以看出，虽然这种攻击方法始于非对称的加密协议，但是作用于分组加密CBC模式下，其攻击力和影响力都得到大幅提升。这并非是因为分组加密比RSA公钥加密弱，实际上<a target="_blank" rel="noopener" href="https://www.keylength.com/en/4/">AES-128自身的安全强度高于当前通用的2048比特模数RSA</a>。真正的原因在于分组加密与CBC模式的既有广泛应用、对认证加密重要性的忽视，以及加密协议实现者对应用密码学学习和网络信息安全性认识不足。有鉴于此，要预防下一个密文填充攻击安全漏洞，密码学家和网络信息安全专家们建议从以下几个方面改进和更新：</p>
+<ol type="1">
+<li>采用认证加密方法，如具有最高安全性的Encrypt-then-MAC（EtM）：首先对明文进行加密，然后根据得到的密文生成MAC，密文和它的MAC一起发送；对密文的随意改动将造成消息认证错误，会被马上抛弃。比如SSHv2支持的hmac-sha1-etm@openssh.com算法。或者直接应用<strong>带有关联数据的认证加密</strong>（Authenticated Encryption with Associated Data，<strong>AEAD</strong>），既能保护数据私密性，又可以同时认证密文和明文。</li>
+<li>弃用TLS中的所有CBC密码套件（Cipher Suite），阻断密文填充攻击的可能性。如内容分发网络（Content Delivery Network, CDN）服务提供商Cloudflare从2016年开始全面转向支持分组加密AES-GCM和流加密ChaCha20-Poly1305，两者都是基于AEAD的密码套件。</li>
+<li>升级到<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246">TLS 1.2</a>或<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8446">TLS 1.3</a>，禁用之前版本的SSH/TLS协议，同时禁止降级协商，强制安全性高于互通性。TLS 1.3不允许任何非AEAD加密算法。2021年3月，IETF发布当前最佳实践<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc8996/">RFC 8996</a>，正式宣布弃用 TLS 1.0 和 TLS 1.1。根据<a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssl-pulse/">SSL Labs</a>2021年9月的扫描统计，在全球最流行150,000个启用SSL/TLS的网站中99.6%支持TLS 1.2，48.9%的站点支持TLS 1.3。</li>
+</ol>
+<h3 id="aes-cbc工作模式">AES-CBC工作模式</h3>
+<h4 id="aes标准">AES标准</h4>
+<p>瓦德奈发明的密文填充攻击适用于任何CBC工作模式下的对称分组密码，知名的有DES、3DES、RC6、Rijndael和TwoFish等。由于DES已被暴力破解，而NIST认定3DES只有80位的安全性，它们都已被列入遭淘汰的分组加密算法名单中。在NIST1997年开始组织的高级加密标准（Advanced Encryption Standard，缩写AES）评选过程中，经过五年的公开征募、选拔、分析和评估，最终Rijndael算法胜过RC6、TwoFish和其它候选者，修订后成为选定的AES标准（<a target="_blank" rel="noopener" href="http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf">FIPS PUB 197</a>）。从此AES成为最流行的对称密钥加密算法。</p>
+<p>AES算法建立于代换-置换网络的设计原则之上，大部分计算在一个特殊的有限域完成的。AES标准规定的区块长度固定为128比特，密钥长度则可以是128、192或256比特。加密过程中使用的扩展密钥是由AES密钥生成方案产生。AES将输入的128比特区块明文按字节组合为一个4×4字节矩阵，加密运算就操作于该矩阵之上。加密过程包括重复的加密循环，称为轮（round），除最后一轮外均包含AddRoundKey、SubBytes、ShiftRows和MixColumns四个步骤，保障高效的混淆与扩散（confusion and diffusion）。解密的过程使用相同的密钥，应用一组逆转的轮次和运算步骤恢复明文。AES密钥长度决定了总共的轮次，如下所示：</p>
+<ul>
+<li>密钥长度128比特，10轮</li>
+<li>密钥长度192比特，12轮</li>
+<li>密钥长度256比特，14轮</li>
+</ul>
+<p>显然密钥长度越大，密码的安全性越高。迄今为止，AES加密算法的安全性经受住了考验，没有发现直接破解密文的有效方法。</p>
+<h4 id="填充格式">填充格式</h4>
+<p>然而在实际应用中，AES还必须与特定的分组密码工作模式一起运行，才能支持变长数据。AES-CBC工作模式要求数据必须先被划分为定长的区块，最后一块数据往往需要使用合适填充方式将长度补足。分组密码常用由<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc2315#section-10.3">PKCS #7</a>定义的填充方式，摘录如下：</p>
+<blockquote>
+<pre><code>    2.   Some content-encryption algorithms assume the
+         input length is a multiple of k octets, where k &gt; 1, and
+         let the application define a method for handling inputs
+         whose lengths are not a multiple of k octets. For such
+         algorithms, the method shall be to pad the input at the
+         trailing end with k - (l mod k) octets all having value k -
+         (l mod k), where l is the length of the input. In other
+         words, the input is padded at the trailing end with one of
+         the following strings:
+                  01 -- if l mod k = k-1
+                 02 02 -- if l mod k = k-2
+                             .
+                             .
+                             .
+               k k ... k k -- if l mod k = 0</code></pre>
+</blockquote>
+<p>这种填充方式可理解为：将原始数据分割成一系列定长的区块，算出最后一块与区块长度的字节数差值；如果差值为零，用区块长度对应的字节填充一个完整的新区块加到尾部；否则，用差值对应字节填满最后一块。以AES为例，区块长度为16字节（128比特），下表给出了填充示例（XX表示数据字节）：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">差值</th>
+<th style="text-align: center;">填充字节</th>
+<th style="text-align: center;">尾块（* 表示新尾部区块）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0x10</td>
+<td style="text-align: center;"><code>10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10</code>*</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0x01</td>
+<td style="text-align: center;"><code>XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 01</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0x02</td>
+<td style="text-align: center;"><code>XX XX XX XX XX XX XX XX XX XX XX XX XX XX 02 02</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">...</td>
+<td style="text-align: center;">...</td>
+<td style="text-align: center;"><code>....</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">0x0E</td>
+<td style="text-align: center;"><code>XX XX 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">0x0F</td>
+<td style="text-align: center;"><code>XX 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F</code></td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: center;">
+表1 PKCS #7协议填充格式
+</p>
+<p>TLS协议为CBC分组密码套件所指定的填充格式与PKCS #7大同小异。<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc5246#section-6.2.3.2">TLS 1.2记录层协议规范</a>定义了如下类C语言的区块结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    opaque IV[SecurityParameters.record_iv_length];</span><br><span class="line">    block-ciphered <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">        opaque content[TLSCompressed.length];</span><br><span class="line">        opaque MAC[SecurityParameters.mac_length];</span><br><span class="line">        uint8 padding[GenericBlockCipher.padding_length];</span><br><span class="line">        uint8 padding_length;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; GenericBlockCipher;</span><br></pre></td></tr></table></figure>
+<p>TLS协议规定用户数据、MAC、填充序列及填充长度一起构成待加密的明文<code>block-ciphered</code>。这里填充长度是PKCS #7所没有的，总是位于最后一个字节。填充序列字节数值就是填充长度。相应地，TLS协议下AES-CBC的填充格式变为：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">填充长度</th>
+<th style="text-align: center;">填充字节</th>
+<th style="text-align: center;">尾块（* 表示新尾部区块）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">无</td>
+<td style="text-align: center;"><code>XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 00</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0x01</td>
+<td style="text-align: center;"><code>XX XX XX XX XX XX XX XX XX XX XX XX XX XX 01 01</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0x02</td>
+<td style="text-align: center;"><code>XX XX XX XX XX XX XX XX XX XX XX XX XX 02 02 02</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">...</td>
+<td style="text-align: center;">...</td>
+<td style="text-align: center;"><code>...</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">0x0E</td>
+<td style="text-align: center;"><code>XX 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E 0E</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">0x0F</td>
+<td style="text-align: center;"><code>0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F</code>*</td>
+</tr>
+</tbody>
+</table>
+<p style="text-align: center;">
+表2 TLS协议CBC分组密码填充格式
+</p>
+<p>可以看到，无论是在PKCS #7还是TLS协议下，都不可能出现无任何填充的情况，填充长度本身也是一种填充。这样设计的原因，是为了避免当明文长度正好为区块长度整数倍时，末端的内容被误认为填充的错误。</p>
+<h4 id="工作模式">工作模式</h4>
+<p>填充满足了分组密码只能对确定长度的数据块进行处理的要求，接下来的工作模式描述了加密每一数据块的过程。</p>
+<p>最简单的模式是电子密码本（Electronic Codebook，缩写ECB）模式。顾名思义，在此模式下每个区块单独应用密钥进行加密，相同的明文块加密成同样的密文块，就如同参照电子密码本编译码一样。显然，这里区块长度不能太小，否则会被字典攻击暴力破解。AES使用128比特区块，可以打消这一顾虑。</p>
+<p>即便如此，ECB模式的简单性带来一个致命缺陷，因为它不能很好地隐藏数据模式，可能破坏严格的数据保密性。如下典型例子显示，左边是Linux吉祥物企鹅位图（bitmap）格式的图片，中间是经过ECB模式加密后样子。因为同样的颜色编码序列被加密成相同的密文，所以生成的文件重现原图的大致模式，失去保密性。此外，如果攻击者事先知晓了ECB模式密文对照的明文，可以使用重放攻击达到某些欺诈的目的。</p>
+<img src="AES-ECB-CBC.jpg" />
+<p style="text-align: center;">
+（来源：维基百科条目“分组密码工作模式”）
+</p>
+<p>为了弥补ECB模式的缺陷，1976年几位在IBM工作的密码学家发明了密码分组链接（Cipher Block Chaining，缩写CBC）工作模式。在这种模式下，每个明文块先与前一个密文块进行异或，结果再输入到分组加密模块产生自身的密文块。对于第一个明文块，由于不存在前一个密文块，需要使用初始化向量（Initialization Vector，缩写IV）代替。下图就是CBC工作模式的加密流程</p>
+<img src="AES-CBC-ENC.png" />
+<p style="text-align: center;">
+CBC加密流程（来源：维基百科条目“分组密码工作模式”）
+</p>
+<p>这种方法使得每个密文块都依赖于它前面的所有明文块，实现了跨区块的混淆与扩散。而对于同样的明文块序列和加密密钥，只要初始化向量不同，所得到的密文块序列就完全不同，数据的保密性大大增强。在实际的应用中，必须使用随机化的初始化向量，以保证安全。上面企鹅图片组中，最右边就是经过CBC模式加密后的结果，图片呈现随机噪声特征，无疑比ECB模式安全得多。</p>
+<p>解密过程包括对应的反向处理：每个密文块先输入到分组解密模块，然后将此中间结果与前一个密文块进行异或，得到相应的明文块；对于第一个密文块，使用初始化向量进行异或操作。下图显示CBC工作模式的解密流程</p>
+<img src="AES-CBC-DEC.png" />
+<p style="text-align: center;">
+CBC解密流程（来源：维基百科条目“分组密码工作模式”）
+</p>
+<p>注意到解密时每一块的处理只依赖于前一块密文，由于所有密文块都已经知晓，所以解密可以实现并行处理，也能支持对单独明文块解密的随机读访问。</p>
+<p>CBC工作模式的加密过程可以用数学公式表示为：</p>
+<p><span class="math display">\[\begin{align}
+C_0&amp;=IV\\
+C_i&amp;=E_K(P_i⊕C_{i-1})\tag{1}
+\end{align}\]</span></p>
+<p>这里<span class="math inline">\(P\)</span>和<span class="math inline">\(C\)</span>代表明文和密文，下标<span class="math inline">\(0、i-1、i\)</span>为区块索引编号，<span class="math inline">\(E_K\)</span>及<span class="math inline">\(D_K\)</span>代表使用密钥<span class="math inline">\(K\)</span>进行单块加密和解密运算函数（对于AES，即前述“AES标准”中所介绍的加解密算法）。对应解密过程的公式如下：</p>
+<p><span class="math display">\[\begin{align}
+C_0&amp;=IV\\
+P_i&amp;=D_K(C_i)⊕C_{i-1}\tag{2}
+\end{align}\]</span></p>
+<p>公式<span class="math inline">\((1)\)</span>表明，初始化向量或明文中的单个比特位的变化会影响后续全部的密文，这体现很好的扩散效应。而上面公式<span class="math inline">\((2)\)</span>也清楚地说明，解密本块明文只需要本块密文和上一块密文。</p>
+<h3 id="理解密文填充攻击">理解密文填充攻击</h3>
+<p>熟悉了AES-CBC工作模式，现在就可以讲解针对它的密文填充攻击原理了。</p>
+<h4 id="攻击破解密文">攻击破解密文</h4>
+<p>参考上一节CBC工作模式的解密过程公式<span class="math inline">\((2)\)</span>，假定攻击者截获了密文块<span class="math inline">\(C_i\)</span>和<span class="math inline">\(C_{i-1}\)</span>，其目标是破解密文得到明文<span class="math inline">\(P_i\)</span>。如果把应用对称密钥<span class="math inline">\(K\)</span>解密当前块<span class="math inline">\(C_i\)</span>后的中间结果记为<span class="math inline">\(P_i&#39;\)</span>，即<span class="math inline">\(P_i&#39;=D_K(C_i)\)</span>，则公式<span class="math inline">\((2)\)</span>变成 <span class="math display">\[P_i=P_i&#39;⊕C_{i-1}\tag{3}\]</span> 很显然，如果攻击者能得到<span class="math inline">\(P_i&#39;\)</span>，明文<span class="math inline">\(P_i\)</span>就自然破解出来了。那么如何得到<span class="math inline">\(P_i&#39;\)</span>呢？直接从<span class="math inline">\(C_i\)</span>分析得出<span class="math inline">\(P_i&#39;\)</span>是不可能的，那等同于破解AES。但是攻击者可以利用系统实现中的漏洞，通过操纵<span class="math inline">\(C_{i-1}\)</span>来推导出正确的<span class="math inline">\(P_i&#39;\)</span>。</p>
+<p>将修改后的<span class="math inline">\(C_{i-1}\)</span>记为<span class="math inline">\(C_{i-1}&#39;\)</span>，接收方处理<span class="math inline">\(C_{i-1}&#39;\)</span>后的结果记为<span class="math inline">\(P_i^*\)</span>，则有 <span class="math display">\[P_i^*=P_i&#39;⊕C_{i-1}&#39;\]</span> 由异或运算的定义导出 <span class="math display">\[P_i&#39;=P_i^*⊕C_{i-1}&#39;\]</span> 由此可见，知道了<span class="math inline">\(P_i^*\)</span>就能算出<span class="math inline">\(P_i&#39;\)</span>，从而回到<span class="math inline">\((3)\)</span>式解出<span class="math inline">\(P_i\)</span>。注意到，因为异或本身是比特位上的运算，这一结论对整个区块和区块内的单个字节都成立。</p>
+<p>那么怎么才能知道<span class="math inline">\(P_i^*\)</span>呢？再看看CBC解密流程图，如果发送方使用PKCS #7格式填充，则接收方需要先解密所有密文块、验证尾部填充符合PKCS #7规范，随后移除填充，最后返回解密后的明文信息给应用程序。 <strong>为了系统容错和调试的需要，接收方（服务器端）的实现在验证填充失败时，常常返回特定的“填充无效”出错代码。</strong>这本是为方便系统管理员和用户的一个设计，可就是这一功能成为被攻击者利用来实现密文破解的突破口。</p>
+<p>虽然收到“填充无效”出错代码不能说明什么，因为无效填充的字节序列太多了；但是没有收到“填充无效”消息却告诉攻击者一个重要的信息：<span class="math inline">\(P_i^*\)</span>的末端字节一定是16种可能组合之一。特别地，攻击者操纵<span class="math inline">\(C_{i-1}\)</span>的单个末端字节，发送<span class="math inline">\(C_{i-1}&#39;\)</span>多次尝试，观测填充验证的结果，可以完全定位<span class="math inline">\(P_i^*\)</span>某个末端字节的数值，进而破解<span class="math inline">\(P_i\)</span>的对应字节。破解单个末端字节之后，攻击者还能构造出新的准填充字节序列，重复此过程从右到左逐个破解余下的字节。</p>
+<p>这正是瓦德奈发现的密文填充攻击的机理。下面针对AES-CBC工作模式做出详细解释。假定攻击者截获的密文包含<span class="math inline">\(n\)</span>个区块，具体的攻击破解过程如下：</p>
+<ol type="1">
+<li><p><strong>确定尾块填充的长度：</strong>对于最后一个区块（即尾块）<span class="math inline">\(C_n\)</span>，可以肯定的是它一定包含填充，最少一个0x01，最多16个0x10（参见前面表1）。攻击者从<span class="math inline">\(C_{n-1}\)</span>的左边第一个字节开始，将其修改成 <span class="math display">\[C_{n-1}&#39;[0]=C_{n-1}[0]⊕{\mathrm {0x10}}\tag{4}\]</span> 然后将<span class="math inline">\(C_{n-1}&#39;\)</span>与<span class="math inline">\(C_n\)</span>一起发给接收方。接收方执行AES-CBC解密流程得到左边第一个字节为 <span class="math display">\[\begin{align}
+P_n^*[0]&amp;=P_n&#39;[0]⊕C_{n-1}&#39;[0]\\
+  &amp;=P_n&#39;[0]⊕(C_{n-1}[0]⊕{\mathrm {0x10}})\\
+  &amp;=(P_n&#39;[0]⊕C_{n-1})[0]⊕{\mathrm {0x10}}\\
+  &amp;=P_n[0]⊕{\mathrm {0x10}}
+\end{align}\]</span> 以上推演基于异或运算满足交换律的特性。这时如果接收方报告“填充无效”，表明<span class="math inline">\(P_n^*[0]\)</span>为填充的一部分，填充长度一定是16。如果接收方没有返回此错误，那么<span class="math inline">\(C_{n-1}[0]\)</span>的变化不影响填充验证，填充长度一定小于16，攻击者再按照<span class="math inline">\((4)\)</span>式修改第二个字节，再次发给接收方。这时如果接收方报告“填充无效”，则填充长度一定是15。依此类推，从左到右逐字节递进，攻击者就可以得出尾块填充的确切长度。</p></li>
+<li><p><strong>破解尾块数据明文：</strong>得到尾块填充长度后，攻击者就可以从右到左逐个破解尾块数据明文。假设填充长度为<span class="math inline">\(L\)</span>，由PKCS #7规范得出明文块最后<span class="math inline">\(L\)</span>个字节数值全为<span class="math inline">\(L\)</span>，为通用起见记为<span class="math inline">\(P_n[i]=M\)</span>。攻击者先如下修改<span class="math inline">\(C_{n-1}\)</span>的最后<span class="math inline">\(L\)</span>个字节 <span class="math display">\[C_{n-1}&#39;[i]=C_{n-1}[i]⊕M⊕(L+1)\qquad i=(16-L),\cdots,15\tag{5}\]</span> 如此接收方执行AES-CBC解密后得到最后<span class="math inline">\(L\)</span>个字节为 <span class="math display">\[\begin{align}
+P_n^*[i]&amp;=(P_n&#39;[i]⊕C_{n-1}[i])⊕M⊕(L+1)\\
+  &amp;=P_n[i]⊕M⊕(L+1)\\
+  &amp;=M⊕M⊕(L+1)\\
+  &amp;=L+1
+\end{align}\]</span> 所以这样做的结果等于强制解密后最后<span class="math inline">\(L\)</span>个字节为<span class="math inline">\(L+1\)</span>。然后，攻击者尝试对<span class="math inline">\(C_{n-1}\)</span>倒数第<span class="math inline">\(L+1\)</span>个字节（就是下一个要破解的字节）执行 <span class="math display">\[\begin{align}
+C_{n-1}&#39;[15-L]&amp;=C_{n-1}[15-L]⊕X\tag{6}\\
+P_n^*[15-L]&amp;=(P_n&#39;[15-L]⊕C_{n-1}[15-L])⊕X\\
+        &amp;=P_n[15-L]⊕X\tag{7}\\
+\end{align}\]</span> <span class="math inline">\(X\)</span>的取值范围为0x00-0xFF。在这个区间有且仅有一个<span class="math inline">\(X\)</span>，使得<span class="math inline">\(P_n^*[15-L]\)</span>为<span class="math inline">\(L+1\)</span>，即倒数第<span class="math inline">\(L+1\)</span>个字节也为<span class="math inline">\(L+1\)</span>。这时整个区块以<span class="math inline">\(L+1\)</span>个<span class="math inline">\(L+1\)</span>结尾，是唯一攻击者不会收到“填充无效”应答的情况。根据<span class="math inline">\((7)\)</span>式导出 <span class="math display">\[P_n[15-L]=(L+1)⊕X\tag{8}\]</span> 所以只要找到<span class="math inline">\(X\)</span>，攻击者马上可以算出明文倒数第<span class="math inline">\(L+1\)</span>个字节为<span class="math inline">\((L+1)⊕X\)</span>。接下来将<span class="math inline">\(L\)</span>递增，重复此过程，继续破解倒数第<span class="math inline">\(L+1\)</span>个明文字节。如下，攻击者就能破解尾块全部数据字节：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.. .. .. .. .. .. .. .. .. .. .. .. .. .. XX 02</span><br><span class="line">.. .. .. .. .. .. .. .. .. .. .. .. .. XX 03 03</span><br><span class="line">.. .. ..</span><br><span class="line">.. XX 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F</span><br><span class="line">XX 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10</span><br></pre></td></tr></table></figure> 可以看出，在这种攻击方法下破解每一个明文字节XX平均需要发送128次修改的密文。这是很有效的。</p></li>
+<li><p><strong>破解非尾块数据明文：</strong>对于非尾部区块，即<span class="math inline">\(i&lt;n\)</span>时，攻击的方式没有什么本质不同。攻击者依照<span class="math inline">\((6)\)</span>式更改<span class="math inline">\(C_{i-1}\)</span>的最后一个字节（即<span class="math inline">\(C_{i-1}&#39;[15]\)</span>），然后发送<span class="math inline">\((C_{i-1}&#39;,C_i)\)</span>至服务器。这时<span class="math inline">\(C_i\)</span>会被视为尾块，当接收方返回“填充无效”的消息，攻击者尝试下一个<span class="math inline">\(X\)</span>。当接收方没有返回“填充无效”的消息时，需要区分下面几种情况：</p>
+<ul>
+<li><p>如果攻击者事先知道明文数据字节都大于0x10，比如都是ASCII表中可打印的字符，那么可以确信解密后的最后一个字节<span class="math inline">\(P_i^*[15]\)</span>为0x01。这是因为系统认定填充一定存在，而0x01是唯一可能通过验证的单字节填充情况。根据<span class="math inline">\((8)\)</span>式得到<span class="math display">\[{P_i[15]=\mathrm {0x01}}⊕X\tag{9}\]</span>就此破解了最右边字节。</p></li>
+<li><p>如果明文数据字节没有取值范围限制，则解密后的最后一个字节<span class="math inline">\(P_i^*[15]\)</span>要么为0x01，要么为0x02-0x10之间的某个值。前者一定会出现，后者会碰巧当该明文块数据为以下15种之一的式样时发生</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.. .. .. .. .. .. .. .. .. .. .. .. .. .. 02 ..</span><br><span class="line">.. .. .. .. .. .. .. .. .. .. .. .. .. 03 03 ..</span><br><span class="line">.. .. ..</span><br><span class="line">.. 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F 0F ..</span><br><span class="line">10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 ..</span><br></pre></td></tr></table></figure> 这时接收方一样也认为填充正确。如何分辨这两者呢？有一个简单的办法。攻击者在没有收到“填充无效”消息时，修改<span class="math inline">\(C_{i-1}\)</span>的倒数第二个字节<span class="math inline">\(C_{i-1}[14]\)</span>，再重发给接收者。如果是前者，接收方还是不会返回“填充无效”的消息，因为倒数第二个字节的变化对此没有影响；如果是后者，倒数第二个字节的变化破坏了填充格式，接收方返回“填充无效”的消息。攻击者鉴别出前者后，应用<span class="math inline">\((9)\)</span>式就可以了。</p></li>
+</ul>
+<p>接下来对非尾块其它数据明文字节的破解，遵照上面第二步（破解尾块数据明文）相同的处理，参考<span class="math inline">\((5-8)\)</span>式从右到左逐个字节破解。说明一下，对第一个密文块<span class="math inline">\(C_1\)</span>，攻击需要的前一块<span class="math inline">\(C_0\)</span>就是<span class="math inline">\(IV\)</span>。如果攻击者无法获取<span class="math inline">\(IV\)</span>，就不能破解<span class="math inline">\(C_1\)</span>。</p>
+<p>总结统计攻击非尾块时，如果明文数据字节都大于0x10，破解一个AES-CBC密文块平均需要发送2048（128x16）次查询；如果明文数据字节没有取值范围限制，则额外需要多一次查询。</p></li>
+</ol>
+<p>以上密文填充攻击的步骤，稍加调整同样适用于TLS协议规定的CBC分组密码填充格式。TLS协议下，第一步<span class="math inline">\((4)\)</span>式要改为 <span class="math display">\[C_{n-1}&#39;[0]=C_{n-1}[0]⊕{\mathrm {0x0F}}\]</span> 在确定尾块填充的长度<span class="math inline">\(L\)</span>后，实际的填充字节不为<span class="math inline">\(L\)</span>，而是<span class="math inline">\(L-1\)</span>。由此，第二和第三步中的<span class="math inline">\((5)\)</span>、<span class="math inline">\((8)\)</span>和<span class="math inline">\((9)\)</span>式相应变成 <span class="math display">\[\begin{align}
+C_{n-1}&#39;[i]&amp;=C_{n-1}[i]⊕M⊕L\qquad i=(16-L),\cdots,15\\
+P_n[15-L]&amp;=L⊕X\\
+P_n[15]&amp;=\mathrm {0x00}⊕X=X
+\end{align}\]</span> 其它细节变化参考上面每一步的说明，这里不再赘述。</p>
+<h4 id="cbc-r伪造明文">CBC-R伪造明文</h4>
+<p>CBC密文填充攻击的目的是破解截获的密文，从而无需密钥就可以恢复明文。那么它可以用来伪造能被对方接受的明文吗？两位信息安全专家Juliano Rizzo和Thai Duong给出了肯定的答案<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>。仔细观察<span class="math inline">\((3)\)</span>式，很显然密文填充攻击完全恢复了明文<span class="math inline">\(P_i\)</span>和中间结果<span class="math inline">\(P_i&#39;\)</span>。作为选择密文攻击，攻击者当然可以任意更改<span class="math inline">\(C_{i-1}\)</span>以控制接收方解密后所见的<span class="math inline">\(P_i\)</span>。也就是说，攻击者可以利用CBC密文填充攻击，在密钥未知的情况加密任意长度的消息。</p>
+<p>Rizzo和Duong为这种变种攻击设计了流程，并命名为CBC-R（R代表Reverse，即逆向操作）。CBC-R的流程如下图所示</p>
+<p><img src="CBC-R-ENC.png" /></p>
+<p>开始时，攻击者选择一段随机的密文块<span class="math inline">\(C_i\)</span>，执行密文填充攻击得到中间结果，标记这一操作为<span class="math inline">\(D_{PaddingOracle}(C_i)\)</span>。因为 <span class="math display">\[P_i=D_{PaddingOracle}(C_i)⊕C_{i−1}\]</span> 所以攻击者控制<span class="math inline">\(C_{i-1}\)</span>之后，可以让<span class="math inline">\(P_i\)</span>变成任何值。假设攻击者想将<span class="math inline">\(P_i\)</span>设置为<span class="math inline">\(P_x\)</span>，只要使 <span class="math display">\[C_{i−1}=P_x⊕D_{PaddingOracle}(C_i)\]</span> 就行了。但是这样也会让<span class="math inline">\(C_{i-1}\)</span>解密后的结果不是攻击者想要的<span class="math inline">\(P_{i-1}\)</span>，怎么办？没问题，只要重复把<span class="math inline">\(C_{i-1}\)</span>输入<span class="math inline">\(D_{PaddingOracle}()\)</span>中去产生新的中间结果，再生成 <span class="math display">\[C_{i−2}=P_{i-1}⊕D_{PaddingOracle}(C_{i-1})\]</span> 这样逆向循环迭代，就能构造伪造明文对应的整个密文序列。</p>
+<p>对于16字节AES块，CBC-R伪造明文攻击的算法伪代码如下</p>
+<blockquote>
+<ol type="1">
+<li>选择要构造的明文消息，分割成<span class="math inline">\(N\)</span>个16字节块<span class="math inline">\(P_1,P_2,..,P_n\)</span></li>
+<li>选择随机字节<span class="math inline">\(r_1,r_2,..,r_{16}\)</span>，设定<span class="math inline">\(C_n=r_1|r_2|...|r_{16}\)</span></li>
+<li>从 <span class="math inline">\(i=n\)</span> 递减到 <span class="math inline">\(2\)</span>:<br />
+<span class="math inline">\(C_{i−1}=P_i⊕D_{PaddingOracle}(C_i)\)</span></li>
+<li><span class="math inline">\(IV=P_1⊕D_{PaddingOracle}(C_1)\)</span></li>
+<li>输出<span class="math inline">\(IV\)</span>和密文序列<span class="math inline">\(C =C_1|C_2|...|C_n\)</span></li>
+</ol>
+</blockquote>
+<h4 id="现实中的攻击">现实中的攻击</h4>
+<p>实际中，攻击者根本不需要入侵ISP或其它复杂的网络流量截取手段，只要在同样的本地网上借助ARP欺骗技术就可以实施密文填充攻击。攻击者诱导目标主机将本应该发到路由器的数据包转到攻击者的主机，就可以查看、修改加密的数据并度量浏览器发到服务器的消息所需的时间。攻击者还能通过插入JavaScript脚本到非加密的网站的方式，让用户的浏览器重复发送到目标HTTPS站点的请求。这些请求包含用作攻击的登录小信息块和CSRF（跨站请求伪造）标识。CBC-R就被用来攻击ASP.NET网页应用框架构建的网站，攻击者利用伪造的会话盗取服务器上限制访问的文件和资源。</p>
+<p>在常见的TLS应用中，服务器处理收到的AES-CBC密文时，对填充验证和消息认证的不同结果会做出不同的反应。对如下三种情况，</p>
+<ol type="1">
+<li>无效填充</li>
+<li>填充正确，HMAC错误</li>
+<li>填充正确，HMAC正确</li>
+</ol>
+<p>旧版TLS服务器对以上1和2返回不同的出错代码，正是这看似一点点的侧信道（side-channel）信息泄漏，使密文填充攻击成为可能。在漏洞得到大规模曝光后，TLS服务器端迅速做了软件更新，对1和2返回同样的出错代码，以图杜绝此类攻击。</p>
+<p>然而，攻击者很快挖掘出了另一个可用的侧信道——时序（timing）。攻击者注意到，尽管现在1和2返回同样的出错代码，但是由于2执行了附加的HMAC计算，其返回的时间更长一些。虽然时间度量会受到多种因素的影响，只要攻击者尝试足够多的次数，一定可以从统计上将1和2区分开来，密文填充攻击还是可能的。对此，TLS实现者马上又做了修改，即使填充无效也要执行HMAC计算。此时假定0填充，对全部明文数据计算HMAC。实现者借此希望1、2和3的执行时间恒定。</p>
+<p>不幸的是，这只是他们的一厢情愿。2013年，“<a target="_blank" rel="noopener" href="http://www.isg.rhul.ac.uk/tls/Lucky13.html">幸运十三攻击</a>”出现，攻击的着眼点还是时序。研究者们通过大量的测试和实验观察到，对不同长度的数据HMAC的运算时间是不同的，这样就重开了密文填充攻击的大门。要堵住这个漏洞，必须实现与数据长度独立的、完全时间恒定的HMAC函数，这是具有相当复杂性和挑战性的程序实现。尽管最后TLS软件开发者们找到了解决方案，但是整个业界对CBC工作模式与认证后加密（MAC-then-encrypt）相结合的应用已失去信心。各大网络服务站点纷纷将CBC密码套件下架，而TLS 1.3完全摒弃非AEAD的密码套件也提供了佐证。</p>
+<h3 id="python编程实现">Python编程实现</h3>
+<p>最后一部分，让我们来编程实践一下AES-CBS密文填充攻击。</p>
+<h4 id="工具和辅助函数">工具和辅助函数</h4>
+<p>首先我们需要一个实现字节序列异或操作的函数。利用Python的内建函数<code>zip()</code>，可将输入的两个字节序列中对应的字节打包成一个个元组（tuple）并组成列表（list），再应用<code>for</code>循环对列表成员逐个异或，结果添加到新的字节序列。由此得到的代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bytes_xor</span>(<span class="params">x, y</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;XOR two given byte strings of same length&#x27;&#x27;&#x27;</span></span><br><span class="line">    ret = <span class="string">b&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> b1, b2 <span class="keyword">in</span> <span class="built_in">zip</span>(x, y):</span><br><span class="line">        ret += <span class="built_in">bytes</span>([b1 ^ b2])</span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+<p>其次，AES-CBC工作模式需要一个函数能将给定字节序列按照指定块大小分组。使用列表推导式（list comprehension）可以写出简洁的单行代码，实现对输入字节序列切片的功能：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">AES_128_BLOCK_SIZE = <span class="number">16</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">split_bytes_blocks</span>(<span class="params">bytes_str, block_size=AES_128_BLOCK_SIZE</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Split bytes into blocks for given block size, note the</span></span><br><span class="line"><span class="string">    last block might be a short one if the total length is</span></span><br><span class="line"><span class="string">    not a multiple of block size.</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> [bytes_str[i:i + block_size]</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(bytes_str), block_size)]</span><br></pre></td></tr></table></figure>
+<p>以上实现中块大小默认为AES区块长度16字节（128比特），函数返回字节序列列表。除了最后一个字节序列可能不足块大小以外，其他字节序列都是定长的。</p>
+<p>为了测试的目的，另外还需要一个辅助函数生成指定长度的随机字符串。Python3的<code>string</code>模块提供了可打印字符串常量<code>printable</code>，与<code>random</code>模块的<code>choice()</code>函数相结合，也可以一行实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_random_string</span>(<span class="params">length</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Return random string of given length. String has the</span></span><br><span class="line"><span class="string">    combination of all printable ASCII characters.</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(choice(printable) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(length))</span><br></pre></td></tr></table></figure>
+<h4 id="填充及验证函数">填充及验证函数</h4>
+<p>PKCS #7填充规则的Python实现很直观，两行程序就可以了。第一行将数据字节长度对区块长度取余，再将余数从区块长度中减去，得到的就是填充字节的长度，也是填充字节本身的数值；第二行函数返回尾部添加重复填充后的字节序列：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pkcs7_padding</span>(<span class="params">data, block_size=AES_128_BLOCK_SIZE</span>):</span></span><br><span class="line">    padding_length = block_size - <span class="built_in">len</span>(data) % block_size</span><br><span class="line">    <span class="keyword">return</span> data + <span class="built_in">bytes</span>([padding_length]) * padding_length</span><br></pre></td></tr></table></figure>
+<p>PKCS #7填充的验证和去除也很简单。我们可以自定义特殊类型的填充异常类，然后根据不同的出错条件引发。出错条件包括：</p>
+<ol type="1">
+<li>数据字节总长度不是区块长度的整数倍</li>
+<li>填充字节本身的数值为0或大于区块长度</li>
+<li>数据字节序列尾部并非重复填充后的字节</li>
+</ol>
+<p>如果没有出现以上任何错误，就返回去除重复填充字节的数据字节序列。函数的实现如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PaddingError</span>(<span class="params">Exception</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pkcs7_stripping</span>(<span class="params">data, block_size=AES_128_BLOCK_SIZE</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(data) % block_size &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">raise</span> PaddingError</span><br><span class="line"></span><br><span class="line">    padding_length = data[-<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> padding_length &gt; block_size <span class="keyword">or</span> padding_length &lt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">raise</span> PaddingError</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> data.endswith(<span class="built_in">bytes</span>([padding_length]) * padding_length):</span><br><span class="line">        <span class="keyword">raise</span> PaddingError</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> data[:-padding_length]</span><br></pre></td></tr></table></figure>
+<p>为了仿真密文填充攻击，必须写一个函数模拟验证应答。函数的填充验证条件和上面的出错条件2、3一样，但是出错时不引发异常，而只是返回布尔值<code>False</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pkcs7_padding_oracle</span>(<span class="params">data, block_size=AES_128_BLOCK_SIZE</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Padding Oracle API: return False for bad padding&#x27;&#x27;&#x27;</span></span><br><span class="line">    padding_length = data[-<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> padding_length &gt; block_size <span class="keyword">or</span> padding_length &lt; <span class="number">1</span>:</span><br><span class="line">        ret = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> data.endswith(<span class="built_in">bytes</span>([padding_length]) * padding_length):</span><br><span class="line">        ret = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        ret = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+<h4 id="加密和解密函数">加密和解密函数</h4>
+<p>虽然Python编程实现AES加密和解密并非特别复杂，但是这里的重点是仿真攻击AES-CBC工作模式，所以我们可以尝试调用现存的密码库进行加解密。<a target="_blank" rel="noopener" href="https://cryptography.io/en/latest/">Cryptography</a>是一个强大的开源Python模块包（支持Python 3.6+），其设计目标是成为开发者的“密码学标准库”。Cryptography包括高级的安全“菜谱”（recipes）层和低级的有风险“密码学原语”层（也被称为hazardous materials layer，简称hazmat）。低级hazmat层为资深研发者提供了广泛的API实现各种密码学功能，其后端与OpenSSL直接对接。</p>
+<p>这里的技巧是，如果我们对单个128比特的数据分组调用AES-ECB模式的加解密函数，实质就等同于黑箱实现了AES的加解密功能。以下就是应用Cryptography密码库API的128比特密钥加解密函数代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives.ciphers <span class="keyword">import</span> Cipher</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives.ciphers.algorithms <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.primitives.ciphers.modes <span class="keyword">import</span> ECB</span><br><span class="line"><span class="keyword">from</span> cryptography.hazmat.backends <span class="keyword">import</span> default_backend</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">aes_128_encrypt</span>(<span class="params">key, msg_block</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Single 128-byte block AES encryption leveraging Cryptography</span></span><br><span class="line"><span class="string">    library Cipher object AES-ECB APIs</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    aes_cipher = Cipher(AES(key), ECB(), default_backend())</span><br><span class="line">    aes_encryptor = aes_cipher.encryptor()</span><br><span class="line">    <span class="keyword">return</span> aes_encryptor.update(msg_block) + aes_encryptor.finalize()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">aes_128_decrypt</span>(<span class="params">key, cipher_block</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Single 128-byte block AES decryption leveraging Cryptography</span></span><br><span class="line"><span class="string">    library Cipher object AES-ECB APIs</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    aes_cipher = Cipher(AES(key), ECB(), default_backend())</span><br><span class="line">    aes_decryptor = aes_cipher.decryptor()</span><br><span class="line">    <span class="keyword">return</span> aes_decryptor.update(cipher_block) + aes_decryptor.finalize()</span><br></pre></td></tr></table></figure>
+<p>AES-128加解密函数就绪之后，参考CBC工作模式下加解密的流程图，就可以应用迭代很快写出AES-CBC-128的加解密函数了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">aes_128_cbc_encrypt</span>(<span class="params">iv, key, msg_text</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;AES-CBC-128 encryption with given IV and Key&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment"># padding then split the cipher_text to block of size 16-bytes</span></span><br><span class="line">    msg_text = pkcs7_padding(msg_text, AES_128_BLOCK_SIZE)</span><br><span class="line">    blocks = split_bytes_blocks(msg_text)</span><br><span class="line"></span><br><span class="line">    prev = iv</span><br><span class="line">    cipher_text = <span class="string">b&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> block <span class="keyword">in</span> blocks:</span><br><span class="line">        block = bytes_xor(prev, block)</span><br><span class="line">        encipher = aes_128_encrypt(key, block)</span><br><span class="line">        prev = encipher</span><br><span class="line">        cipher_text += encipher</span><br><span class="line">    <span class="keyword">return</span> cipher_text</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">aes_128_cbc_decrypt_oracle</span>(<span class="params">iv, key, cipher_text</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    AES-CBC-128 decryption with given IV and Key then do padding oracle:</span></span><br><span class="line"><span class="string">    Return boolean:</span></span><br><span class="line"><span class="string">        True  : Decrypted plain text has valid padding</span></span><br><span class="line"><span class="string">        False : Padding error seen with plain text decrypted</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment"># split the cipher_text to block of size 16-bytes</span></span><br><span class="line">    blocks = split_bytes_blocks(cipher_text)</span><br><span class="line"></span><br><span class="line">    prev = iv</span><br><span class="line">    plain_text = <span class="string">b&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> block <span class="keyword">in</span> blocks:</span><br><span class="line">        decipher = aes_128_decrypt(key, block)</span><br><span class="line">        plain_text += bytes_xor(prev, decipher)</span><br><span class="line">        prev = block</span><br><span class="line">    <span class="keyword">return</span> pkcs7_padding_oracle(plain_text)</span><br></pre></td></tr></table></figure>
+<p>说明，在上述AES-CBC-128加密函数中，先对输入的完整明文字节序列进行填充、分组，然后迭代，输出加密后的密文；而AES-CBC-128解密函数预设输入的密文字节序列的总长度是16的倍数，直接分组再迭代，解密后明文送到前面定义的填充验证应答函数<code>pkcs7_padding_oracle()</code>，其输出就是整个函数的输出结果。所以<code>aes_128_cbc_decrypt_oracle()</code>返回True表明解密后的明文尾部填充无误，返回False时标示其存在填充错误。</p>
+<h4 id="密文填充攻击函数">密文填充攻击函数</h4>
+<p>与前述的AES-CBC攻击破解过程对应，下面的函数实现第一步“<strong>确定尾块填充的长度</strong>”。函数输入为最后的两个密文区块及IV和密钥，输出为尾块填充的长度。内嵌的注释给出了简要说明。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crack_padding_length</span>(<span class="params">seclast_cblock, ending_cblock, iv, key</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    This function returns the padding length in the ending ciphertext</span></span><br><span class="line"><span class="string">    block. It needs last two ciphertext blocks. The input IV and key</span></span><br><span class="line"><span class="string">    are passed to the AES-CBC-128 padding oracle function invoked inside.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    To find out the padding length, it starts from the 1st byte of the</span></span><br><span class="line"><span class="string">    ending block and makes single byte change each round via scrambling</span></span><br><span class="line"><span class="string">    the corresponding byte of the penultimate block because</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        P(n) = D(C(n), k) ^ C(n-1)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    The forged ciphertext blocks are fed to the oracle. If that returns</span></span><br><span class="line"><span class="string">    False, meaning it breaks the padding rule, the padding length would</span></span><br><span class="line"><span class="string">    be BLOCK size minus the index from the left.</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    c_array = <span class="built_in">bytearray</span>(seclast_cblock)</span><br><span class="line">    padding_len = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span>):</span><br><span class="line">        c_array[i] ^= <span class="number">16</span></span><br><span class="line">        feed_ctxt = <span class="built_in">bytes</span>(c_array) + ending_cblock</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> aes_128_cbc_decrypt_oracle(iv, key, feed_ctxt):</span><br><span class="line">            padding_len = <span class="number">16</span> - i</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> padding_len</span><br></pre></td></tr></table></figure>
+<p>攻击破解过程的的第二和第三步实现，可以组合在一个通用函数中。如下所示，函数<code>crack_cipher_block()</code>接受前一个密文块、当前密文块、IV、密钥和当前块的填充长度，运行结束给出破解出来的当前块明文。如果当前块是尾块，<code>plen</code>就是上面<code>crack_padding_length()</code>的输出；否则总是0。如果当前块是第一块，则前一个密文块就是IV。需要特别指出的是，为简化起见，此函数实现假定明文数据字节都大于0x10，不考虑第三步“<strong>破解非尾块数据明文</strong>”提到的“如果明文数据字节没有取值范围限制”的情况。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crack_cipher_block</span>(<span class="params">prev_ctxt, curr_ctxt, iv, key, plen</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    This function takes two cipher blocks and forge the 1st one to</span></span><br><span class="line"><span class="string">    hack out the plain text of the 2nd block, one byte at a time.</span></span><br><span class="line"><span class="string">    Return the cracked plain text of the 2nd block.</span></span><br><span class="line"><span class="string">    Input:</span></span><br><span class="line"><span class="string">        prev_ctxt  The previous ciphertext block</span></span><br><span class="line"><span class="string">        curr_ctxt  The current ciphertext block as the target</span></span><br><span class="line"><span class="string">        iv         16-byte AES-128 IV</span></span><br><span class="line"><span class="string">        key        16-byte AES-128 Key</span></span><br><span class="line"><span class="string">        plen       The padding length of the target block</span></span><br><span class="line"><span class="string">    Output:</span></span><br><span class="line"><span class="string">        Byte array of the plain text block</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    plain_txt = <span class="built_in">bytearray</span>(<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> plen == <span class="number">16</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">b&#x27;\x10&#x27;</span> * <span class="number">16</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># This is to crack last block. First time we need to set all</span></span><br><span class="line">    <span class="comment"># last plen bytes of plain_txt to the value of plen.</span></span><br><span class="line">    <span class="keyword">if</span> plen != <span class="number">0</span>:</span><br><span class="line">        plain_txt[-plen:] = [plen] * plen</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span> - plen):</span><br><span class="line">        <span class="comment"># The target byte index is (16-plen-i-1)</span></span><br><span class="line">        <span class="comment"># First presetting the bytes behind the target byte</span></span><br><span class="line">        prev_array = <span class="built_in">bytearray</span>(prev_ctxt)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(plen + i):</span><br><span class="line">            prev_array[-j - <span class="number">1</span>] ^= (plen + i + <span class="number">1</span>) ^ plain_txt[-j - <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Now cracking the target byte</span></span><br><span class="line">        target_original = prev_array[-plen - i - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">            prev_array[-plen - i - <span class="number">1</span>] = target_original ^ (k ^ (plen + i + <span class="number">1</span>))</span><br><span class="line">            feed_ctxt = <span class="built_in">bytes</span>(prev_array) + curr_ctxt</span><br><span class="line">            <span class="comment"># feed to padding oracle</span></span><br><span class="line">            <span class="keyword">if</span> aes_128_cbc_decrypt_oracle(iv, key, feed_ctxt):</span><br><span class="line">                plain_txt[<span class="number">15</span> - plen - i] = k</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bytes</span>(plain_txt)</span><br></pre></td></tr></table></figure>
+<h4 id="攻击程序汇总">攻击程序汇总</h4>
+<p>至此，所有的函数模块都已准备就绪，我们可以将它们集成到一个完整的仿真测试过程中：</p>
+<ol type="1">
+<li>调用<code>get_random_string()</code>生成随机长度可打印字符串</li>
+<li>将该字符串转化为明文字节序列</li>
+<li>调用库函数<code>urandom()</code>生成随机IV和密钥</li>
+<li>调用<code>aes_128_cbc_encrypt()</code>加密明文字节序列</li>
+<li>调用<code>split_bytes_blocks()</code>分割上一步输出的密文字节序列，输出密文块列表</li>
+<li>将IV转化为字节序列，添加到上一步生成的密文块列表的头部</li>
+<li>将密文块列表的最后两个块输入到<code>crack_padding_length()</code>，得出尾块填充长度</li>
+<li>启动循环，从密文块列表尾部开始，调用<code>crack_cipher_block()</code>逐个破解</li>
+<li>调用<code>pkcs7_stripping()</code>从破解的明文块尾部去除PKCS #7填充</li>
+<li>比较破解出的明文和原始明文字节序列</li>
+</ol>
+<p>程序实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ptxt = get_random_string(randint(<span class="number">10</span>,<span class="number">100</span>));</span><br><span class="line">p_bytes = <span class="built_in">bytes</span>(ptxt, <span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">p_len = <span class="number">16</span> - <span class="built_in">len</span>(p_bytes) % <span class="number">16</span></span><br><span class="line">iv = urandom(<span class="number">16</span>)</span><br><span class="line">key = urandom(<span class="number">16</span>)</span><br><span class="line">ctxt = aes_128_cbc_encrypt(iv, key, p_bytes)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Plaintext: &quot;</span>, p_bytes);</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Ciphertext:&quot;</span>, hexlify(ctxt));</span><br><span class="line"></span><br><span class="line"><span class="comment"># Split and prepend IV for normalized processing</span></span><br><span class="line">c_blocks = split_bytes_blocks(ctxt)</span><br><span class="line">c_blocks = [<span class="built_in">bytes</span>(iv)] + c_blocks</span><br><span class="line"></span><br><span class="line"><span class="comment"># Find the exact padding length in the last block</span></span><br><span class="line">padding_len = crack_padding_length(c_blocks[-<span class="number">2</span>], c_blocks[-<span class="number">1</span>], iv, key)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nPlaintext length:      &quot;</span>, <span class="built_in">len</span>(p_bytes));</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Cracked padding length:&quot;</span>, padding_len)</span><br><span class="line"><span class="keyword">assert</span> padding_len == p_len</span><br><span class="line"></span><br><span class="line">cracked_ptxt = <span class="string">b&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> m <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(c_blocks) - <span class="number">1</span>):</span><br><span class="line">    <span class="keyword">if</span> m != <span class="number">0</span>:</span><br><span class="line">        padding_len = <span class="number">0</span></span><br><span class="line">    cracked_block = crack_cipher_block(c_blocks[-m - <span class="number">2</span>], c_blocks[-m - <span class="number">1</span>],</span><br><span class="line">                                       iv, key, padding_len)</span><br><span class="line">    cracked_ptxt = cracked_block + cracked_ptxt</span><br><span class="line"></span><br><span class="line">cracked_bytes = pkcs7_stripping(cracked_ptxt)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Cracked plaintext:\n&quot;</span>, cracked_bytes)</span><br><span class="line"><span class="keyword">assert</span> p_bytes == cracked_bytes</span><br></pre></td></tr></table></figure>
+<p>程序运行两次的输出示例如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; </span><br><span class="line">==================== RESTART: aes-cbc-poa.py ====================</span><br><span class="line">Plaintext:  b<span class="string">&quot;h&#x27;d;g*wL&lt;-9_;ghpcZ2~!&#123;B=L[G^8r\t?&quot;</span></span><br><span class="line">Ciphertext: b<span class="string">&#x27;d563a4db02142bc19d52dfcaf185f0a84fe1e0ee371b83da3cad84d47a03fdda56d7c936c90a9bbd369f4ec7723f115b&#x27;</span></span><br><span class="line"></span><br><span class="line">Plaintext length:       32</span><br><span class="line">Cracked padding length: 16</span><br><span class="line">Cracked plaintext:</span><br><span class="line"> b<span class="string">&quot;h&#x27;d;g*wL&lt;-9_;ghpcZ2~!&#123;B=L[G^8r\t?&quot;</span></span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">==================== RESTART: aes-cbc-poa.py ====================</span><br><span class="line">Plaintext:  b<span class="string">&#x27;9N\rN%!r?t&quot;s[i6o# \tydHG$\&#x27;</span>\np?z~&gt;0UU&lt;E\<span class="string">&#x27;9nnK\&#x27;</span>d/M&lt;WE5wi~hBX/&amp;`6sKy(|\n.\t@<span class="string">&#x27;</span></span><br><span class="line"><span class="string">Ciphertext: b&#x27;</span>bfb5e397839a0b6650201e66eeba82cadff91b7af0276f8e0129b74f6189b2f9c0a9ec8da83b5b7847a0ef6cd9d9d2d0fba7efbc28a6c73b59ea5aafa458d0c619d17b8e1cf1eff0851e510d58cc256a<span class="string">&#x27;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Plaintext length:       67</span></span><br><span class="line"><span class="string">Cracked padding length: 13</span></span><br><span class="line"><span class="string">Cracked plaintext:</span></span><br><span class="line"><span class="string"> b&#x27;</span>9N\rN%!r?t<span class="string">&quot;s[i6o# \tydHG$\&#x27;\np?z~&gt;0UU&lt;E\&#x27;9nnK\&#x27;d/M&lt;WE5wi~hBX/&amp;`6sKy(|\n.\t@&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>完整的程序可点击这里下载：<a href="aes-cbc-poa.py.gz">aes-cbc-poa.py.gz</a></p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>D. Bleichenbacher. <em>Chosen Ciphertext Attacks Against Protocols Based on the RSA Encryption Standard PKCS#1</em>. In Advances in Cryptology CRYPTO’98, Santa Barbara, California, U.S.A., Lectures Notes in Computer Science 1462, pp. 1–12, Springer-Verlag, 1998.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>J. Manger. <em>A Chosen Ciphertext Attack on RSA Optimal Asymmetric Encryption Padding (OAEP) as Standardized in PKCS#1 v2.0</em>. In Advances in Cryptology CRYPTO’01, Santa Barbara, California, U.S.A., Lectures Notes in Computer Sci- ence 2139, pp. 230–238, Springer-Verlag, 2001.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>S. Vaudenay, <em>Security Flaws Induced by CBC Padding - Applications to SSL, IPSEC, WTLS...</em>. In Advances in Cryptology- EUROCRYPT 2002. Springer, 2002, pp. 534–545.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>J. Rizzo; T. Duong, <em>Practical Padding Oracle Attacks</em>. USENIX WOOT 2010.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/" title="AES-CBC密文填充攻击—深入理解和编程实现">https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 网络安全</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/01/IPv6-Addressing/" rel="prev" title="IPv6动态地址分配机制详解">
+                  <i class="fa fa-chevron-left"></i> IPv6动态地址分配机制详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/02/14/Fermats-Little-Theorem/" rel="next" title="费马小定理的归纳法证明和应用">
+                  费马小定理的归纳法证明和应用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">193k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:56</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","client_secret":null,"admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"65316625f81085042eb5c25e76503b9d"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

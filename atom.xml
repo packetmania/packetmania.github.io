@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2021-11-28T01:39:13.678Z</updated>
+  <updated>2021-12-27T20:35:47.905Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>自己动手使用树莓派搭建家用NAS和流媒体服务器</title>
+    <link href="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/"/>
+    <id>https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/</id>
+    <published>2021-12-19T18:53:08.000Z</published>
+    <updated>2021-12-27T20:35:47.905Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;网络附加储存（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。</summary>
+    
+    
+    
+    <category term="动手实践" scheme="https://www.packetmania.net/categories/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5/"/>
+    
+    
+    <category term="树莓派" scheme="https://www.packetmania.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+    <category term="NAS" scheme="https://www.packetmania.net/tags/NAS/"/>
+    
+  </entry>
   
   <entry>
     <title>iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端</title>
@@ -40,7 +61,7 @@
     <link href="https://www.packetmania.net/2021/08/03/ASAN-intro/"/>
     <id>https://www.packetmania.net/2021/08/03/ASAN-intro/</id>
     <published>2021-08-03T23:00:56.000Z</published>
-    <updated>2021-11-28T06:14:31.726Z</updated>
+    <updated>2021-12-20T08:27:17.742Z</updated>
     
     
     <summary type="html">&lt;p&gt;内存访问错误是最常见的软件错误，常常造成程序崩溃。程序员们一直在找寻优秀的内存访问错误检测工具，以便及时定位和排除错误以提高软件的可靠性。2012年由谷歌工程师开发的一款AddressSanitizer工具，以其覆盖面广、高效率和低开销的特性，已成为C/C++程序员们的首选。这里对其原理和使用方法做一个简要的介绍。</summary>
@@ -244,7 +265,7 @@
     <link href="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/"/>
     <id>https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/</id>
     <published>2020-12-02T05:18:32.000Z</published>
-    <updated>2021-11-28T07:14:01.875Z</updated>
+    <updated>2021-12-27T20:40:35.238Z</updated>
     
     
     <summary type="html">&lt;p&gt;密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证反馈信息，实现密文破解。这里简单回顾密文填充攻击的发展历史，然后深入剖析AES-CBC工作模式下的攻击原理，最后给出了Python的编程实现示例。</summary>
@@ -353,7 +374,7 @@
     <link href="https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/"/>
     <id>https://www.packetmania.net/2020/11/25/ISIC-test-IP-stack/</id>
     <published>2020-11-26T05:15:51.000Z</published>
-    <updated>2021-11-28T01:39:13.633Z</updated>
+    <updated>2021-12-19T19:20:41.536Z</updated>
     
     
     <summary type="html">&lt;p&gt;ISIC是一个开放源码的IP协议栈健壮性测试工具集。许多网络设备的安全漏洞 (比如拒绝服务等) 源于IP协议栈的软件设计或实现错误，应用此工具集可以及时发现和修复这些差错，确保系统运行的稳定性和可靠性。</summary>
@@ -370,6 +391,8 @@
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
     <category term="软件测试" scheme="https://www.packetmania.net/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/"/>
+    
+    <category term="树莓派" scheme="https://www.packetmania.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
     
   </entry>
   

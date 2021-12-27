@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/AES-CBC-DEC.png">
 <meta property="og:image" content="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/CBC-R-ENC.png">
 <meta property="article:published_time" content="2020-12-02T05:18:32.000Z">
-<meta property="article:modified_time" content="2021-11-28T07:14:01.875Z">
+<meta property="article:modified_time" content="2021-12-27T20:40:35.238Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -180,18 +180,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -293,7 +293,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-27 23:14:01" itemprop="dateModified" datetime="2021-11-27T23:14:01-08:00">2021-11-27</time>
+        <time title="修改时间：2021-12-27 12:40:35" itemprop="dateModified" datetime="2021-12-27T12:40:35-08:00">2021-12-27</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -530,9 +530,9 @@ P_n^*[0]&amp;=P_n&#39;[0]⊕C_{n-1}&#39;[0]\\
   &amp;=(P_n&#39;[0]⊕C_{n-1})[0]⊕{\mathrm {0x10}}\\
   &amp;=P_n[0]⊕{\mathrm {0x10}}
 \end{align}\]</span> 以上推演基于异或运算满足交换律的特性。这时如果接收方报告“填充无效”，表明<span class="math inline">\(P_n^*[0]\)</span>为填充的一部分，填充长度一定是16。如果接收方没有返回此错误，那么<span class="math inline">\(C_{n-1}[0]\)</span>的变化不影响填充验证，填充长度一定小于16，攻击者再按照<span class="math inline">\((4)\)</span>式修改第二个字节，再次发给接收方。这时如果接收方报告“填充无效”，则填充长度一定是15。依此类推，从左到右逐字节递进，攻击者就可以得出尾块填充的确切长度。</p></li>
-<li><p><strong>破解尾块数据明文：</strong>得到尾块填充长度后，攻击者就可以从右到左逐个破解尾块数据明文。假设填充长度为<span class="math inline">\(L\)</span>，由PKCS #7规范得出明文块最后<span class="math inline">\(L\)</span>个字节数值全为<span class="math inline">\(L\)</span>，为通用起见记为<span class="math inline">\(P_n[i]=M\)</span>。攻击者先如下修改<span class="math inline">\(C_{n-1}\)</span>的最后<span class="math inline">\(L\)</span>个字节 <span class="math display">\[C_{n-1}&#39;[i]=C_{n-1}[i]⊕M⊕(L+1)\qquad i=(16-L),\cdots,15\tag{5}\]</span> 如此接收方执行AES-CBC解密后得到最后<span class="math inline">\(L\)</span>个字节为 <span class="math display">\[\begin{align}
-P_n^*[i]&amp;=(P_n&#39;[i]⊕C_{n-1}[i])⊕M⊕(L+1)\\
-  &amp;=P_n[i]⊕M⊕(L+1)\\
+<li><p><strong>破解尾块数据明文：</strong>得到尾块填充长度后，攻击者就可以从右到左逐个破解尾块数据明文。假设填充长度为<span class="math inline">\(L\)</span>，由PKCS #7规范得出明文块最后<span class="math inline">\(L\)</span>个字节数值全为<span class="math inline">\(L\)</span>，为通用起见记为<span class="math inline">\(P_n[j]=M\)</span>。攻击者先如下修改<span class="math inline">\(C_{n-1}\)</span>的最后<span class="math inline">\(L\)</span>个字节 <span class="math display">\[C_{n-1}&#39;[j]=C_{n-1}[j]⊕M⊕(L+1)\qquad j=(16-L),\cdots,15\tag{5}\]</span> 如此接收方执行AES-CBC解密后得到最后<span class="math inline">\(L\)</span>个字节为 <span class="math display">\[\begin{align}
+P_n^*[j]&amp;=(P_n&#39;[j]⊕C_{n-1}[j])⊕M⊕(L+1)\\
+  &amp;=P_n[j]⊕M⊕(L+1)\\
   &amp;=M⊕M⊕(L+1)\\
   &amp;=L+1
 \end{align}\]</span> 所以这样做的结果等于强制解密后最后<span class="math inline">\(L\)</span>个字节为<span class="math inline">\(L+1\)</span>。然后，攻击者尝试对<span class="math inline">\(C_{n-1}\)</span>倒数第<span class="math inline">\(L+1\)</span>个字节（就是下一个要破解的字节）执行 <span class="math display">\[\begin{align}
@@ -551,7 +551,7 @@ P_n^*[15-L]&amp;=(P_n&#39;[15-L]⊕C_{n-1}[15-L])⊕X\\
 <p>总结统计攻击非尾块时，如果明文数据字节都大于0x10，破解一个AES-CBC密文块平均需要发送2048（128x16）次查询；如果明文数据字节没有取值范围限制，则额外需要多一次查询。</p></li>
 </ol>
 <p>以上密文填充攻击的步骤，稍加调整同样适用于TLS协议规定的CBC分组密码填充格式。TLS协议下，第一步<span class="math inline">\((4)\)</span>式要改为 <span class="math display">\[C_{n-1}&#39;[0]=C_{n-1}[0]⊕{\mathrm {0x0F}}\]</span> 在确定尾块填充的长度<span class="math inline">\(L\)</span>后，实际的填充字节不为<span class="math inline">\(L\)</span>，而是<span class="math inline">\(L-1\)</span>。由此，第二和第三步中的<span class="math inline">\((5)\)</span>、<span class="math inline">\((8)\)</span>和<span class="math inline">\((9)\)</span>式相应变成 <span class="math display">\[\begin{align}
-C_{n-1}&#39;[i]&amp;=C_{n-1}[i]⊕M⊕L\qquad i=(16-L),\cdots,15\\
+C_{n-1}&#39;[j]&amp;=C_{n-1}[j]⊕M⊕L\qquad j=(16-L),\cdots,15\\
 P_n[15-L]&amp;=L⊕X\\
 P_n[15]&amp;=\mathrm {0x00}⊕X=X
 \end{align}\]</span> 其它细节变化参考上面每一步的说明，这里不再赘述。</p>
@@ -742,14 +742,14 @@ P_n[15]&amp;=\mathrm {0x00}⊕X=X
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">193k</span>
+    <span title="站点总字数">211k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">2:56</span>
+    <span title="站点阅读时长">3:12</span>
   </span>
 </div>
 <div class="busuanzi-count">

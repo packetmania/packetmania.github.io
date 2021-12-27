@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="网络附加储存（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自己动手使用树莓派搭建家用NAS和流媒体服务器">
+<meta property="og:url" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="网络附加储存（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/RPi-4B.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/RPi-Imager-advopt.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-unbox.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-internal.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-outside.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-login-default.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-start-cn.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-Storage-Disks-cn.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-Storage-FS-cn.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-Storage-SharedFolders-cn.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-User-authorize-cn.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-SMB-Shares-cn.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/OMV-Dashboard-cn.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/macOS-SMB.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/Plex-notice.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/Plex-movie.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/RPi-stress-test.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/ADM-SSD.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/ADM-HDD.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-final.jpg">
+<meta property="article:published_time" content="2021-12-19T18:53:08.000Z">
+<meta property="article:modified_time" content="2021-12-27T20:35:47.905Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="树莓派">
+<meta property="article:tag" content="NAS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/RPi-4B.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/","path":"2021/12/19/RPi-NAS-Plex/","title":"自己动手使用树莓派搭建家用NAS和流媒体服务器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>自己动手使用树莓派搭建家用NAS和流媒体服务器 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%A7%84%E5%88%92"><span class="nav-number">1.</span> <span class="nav-text">项目规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">项目实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E6%A0%91%E8%8E%93%E6%B4%BE4b"><span class="nav-number">2.1.</span> <span class="nav-text">预备树莓派4B</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.1.</span> <span class="nav-text">预备操作系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A2%E6%B5%8Bip%E5%9C%B0%E5%9D%80"><span class="nav-number">2.1.2.</span> <span class="nav-text">探测IP地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0%E5%8D%87%E7%BA%A7"><span class="nav-number">2.1.3.</span> <span class="nav-text">系统更新升级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95"><span class="nav-number">2.1.4.</span> <span class="nav-text">网络连接测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nsapi%E5%A5%97%E4%BB%B6%E7%BB%84%E8%A3%85"><span class="nav-number">2.2.</span> <span class="nav-text">NSAPi套件组装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E5%86%85%E7%BD%AEssd"><span class="nav-number">2.2.1.</span> <span class="nav-text">预备内置SSD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pwm%E9%A3%8E%E6%89%87%E6%8E%A7%E5%88%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">PWM风扇控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E7%BB%84%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.3.</span> <span class="nav-text">硬件组装过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#omv%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">OMV安装和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85omv%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="nav-number">2.3.1.</span> <span class="nav-text">安装OMV软件包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2"><span class="nav-number">2.3.2.</span> <span class="nav-text">连接管理界面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.3.3.</span> <span class="nav-text">配置文件服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.4.</span> <span class="nav-text">客户端设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plex%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">Plex安装和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.4.1.</span> <span class="nav-text">安装媒体服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.4.2.</span> <span class="nav-text">配置媒体服务器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0"><span class="nav-number">3.</span> <span class="nav-text">性能评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">系统压力测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%B5%8B%E9%80%9F"><span class="nav-number">3.2.</span> <span class="nav-text">文件传输测速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E7%9B%98%E8%AF%BB%E5%86%99%E6%B5%8B%E9%80%9F"><span class="nav-number">3.3.</span> <span class="nav-text">硬盘读写测速</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">项目总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_rs.png">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_rs.png">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自己动手使用树莓派搭建家用NAS和流媒体服务器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-12-19 10:53:08" itemprop="dateCreated datePublished" datetime="2021-12-19T10:53:08-08:00">2021-12-19</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-12-27 12:35:47" itemprop="dateModified" datetime="2021-12-27T12:35:47-08:00">2021-12-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">动手实践</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>18k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>网络附加储存（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>纸上得来终觉浅，绝知此事要躬行。</strong><br> <strong>— <em>陆游</em>《冬夜读书示子聿》</strong></p>
+</div>
+<h2 id="项目规划">项目规划</h2>
+<p><strong><a target="_blank" rel="noopener" href="https://www.raspberrypi.com/products/raspberry-pi-4-model-b/">树莓派（Raspberry Pi）4B</a></strong>的处理器升级为1.8GHz的博通BCM2711（四核Cortex-A72），其板载内存容量最高达8GB，配备了两个更新的USB 3.0接口和全速千兆以太网，电源也采用了较新的USB-C接口。这些极大地提高了系统吞吐量和整体综合性能，我们可以用它打造全功能家用NAS。</p>
+<p><img src="RPi-4B.png" style="width:65.0%;height:65.0%" /></p>
+<p>在NAS系统软件方面，<strong><a target="_blank" rel="noopener" href="https://www.openmediavault.org">OpenMediaVault</a></strong>（OMV）是基于Debian Linux的完整NAS解决方案。它是知名的开源NAS服务器系统FreeNAS（基于FreeBSD）的Linux重写版。OMV的显著特点有</p>
+<ul>
+<li>开箱即用，无需网络和存储系统的专业知识的安装和管理</li>
+<li>适用于x86-64和ARM平台，具有完整的Web管理界面</li>
+<li>支持多种协议（如SFTP、SMB/CIFS或NFS）下的文件存储访问</li>
+<li>可以通过SSH进行管理，能控制用户和组的访问权</li>
+</ul>
+<p>OMV主要用于家庭环境或小型家庭办公室，但不限于这些场景。该系统基于模块化设计，安装基本系统后即可使用插件轻松扩展。很显然，OMV就是我们需要的NAS服务器系统软件。</p>
+<p>NAS系统配上媒体播放系统，可以在家庭网络环境下提供极佳的音/视频点播体验。<strong><a target="_blank" rel="noopener" href="https://support.plex.tv/articles/categories/plex-media-server/">Plex媒体服务器</a></strong>软件整合互联网媒体服务（YouTube、Vimeo和TED等）和本地多媒体资料库，为用户的各种设备提供流媒体播放服务。Plex管理本地资料库的特色是</p>
+<ul>
+<li>集中管理，单一库轻松共享</li>
+<li>Web界面媒体资料导航，流播放</li>
+<li>实时保存和恢复播放进程</li>
+<li>多用户支持及分级播放权限设置</li>
+</ul>
+<p>Plex媒体服务器软件本身是免费的，也支持众多操作系统，非常适合与家用NAS相集成。</p>
+<p>以上这些涵盖了我们的NAS项目所需的所有软件，但是这对一个完整的NAS系统是不够的。我们还需要一个优选的机壳，否则树莓派NAS只能裸机运行。虽然市场上树莓派4B可用的机壳很多，作为NAS系统我们需要能容纳至少1-2个内置式SSD/HDD的机壳套件。</p>
+<p>经过一些比对，确定选用Geekworm的<a target="_blank" rel="noopener" href="https://wiki.geekworm.com/NASPi"><strong>NASPi 树莓派4B NAS存储套件</strong></a>。NASPi是专为最新的树莓派4B设计的的NUC（Next Unit of Computing）风格的NAS存储解决方案。它由三个部件组成：</p>
+<ol type="1">
+<li>X823存储屏蔽板，支持2.5英寸SATA 固态硬盘（SDD）或机械硬盘（HDD）</li>
+<li>X-C1适配板，将所有树莓派4B接口调整到机壳背面，并提供安全关机按钮</li>
+<li>基于温控PWM（Pulse-Width Modulation，脉冲宽度调制）风扇的散热系统</li>
+</ol>
+<p>所有这些部件最后组装到铝合金制成并经过表面阳极氧化处理的外壳内。</p>
+<p>就此我们的NAS项目规划如下：</p>
+<ul>
+<li>硬件系统：
+<ul>
+<li>树莓派4B 8GB RAM主硬件系统</li>
+<li>32GB microSD用于树莓派OS存储</li>
+<li>NASPi NAS存储套件</li>
+<li>15-20W USB-C 电源适配器</li>
+<li>500GB内置式SSD（USB3.0）</li>
+<li>2TB外置式HDD（USB 3.0）</li>
+</ul></li>
+<li>软件系统：
+<ul>
+<li>轻量级树莓派OS（无桌面环境）</li>
+<li>OMV用于NAS文件服务器</li>
+<li>Plex媒体服务器提供流媒体服务</li>
+</ul></li>
+</ul>
+<p>要特别指出的是，NAS服务器一般都是无头系统，没有常见的键盘、鼠标和显示器连接。这对软硬件系统的安装、配置和调试都提出一些挑战。实际实现中，如下一节的描述所示，我们应用SSH终端连接完成基本项目实现过程。</p>
+<h2 id="项目实现">项目实现</h2>
+<p>此项目实现分为四个阶段，详细描述如下。</p>
+<h3 id="预备树莓派4b">预备树莓派4B</h3>
+<p>第一阶段我们需要预先准备树莓派操作系统，并做一些基本的单元测试。这个很重要，如果等到完整的NSAPi套件组装完毕再测试，那时发现树莓派的问题就很麻烦。</p>
+<h4 id="预备操作系统">预备操作系统</h4>
+<p>首先将microSD卡插入到USB适配器并连接到macOS电脑，然后到树莓派网站下载<a target="_blank" rel="noopener" href="https://www.raspberrypi.org/software/">Raspberry Pi Imager</a>软件运行。从应用程序的界面，逐级点击<strong>CHOOSE OS &gt; Raspberry Pi OS (other) &gt; Raspberry Pi OS Lite (32-bit)</strong>，选择不需要桌面环境的轻量级树莓派操作系统，再点击<strong>CHOOSE STORAGE</strong>选择microSD卡。</p>
+<p>接下来是一个小窍门——敲入<code>ctrl-shift-x</code>组合键，就会弹出如下的高级选项对话框 <img src="RPi-Imager-advopt.png" style="width:70.0%;height:70.0%" /> 这里正好就有我们需要的启动时启用SSH选项<strong>Enable SSH</strong>，还能为默认的用户名<code>pi</code>预设密码（默认为raspberry）。设置完毕点击<strong>SAVE</strong>回到主页面，再点击<strong>WRITE</strong>就开始格式化microSD卡和写入系统。完成之后将microSD卡取出再插入到树莓派中，连接以太网加电启动。</p>
+<h4 id="探测ip地址">探测IP地址</h4>
+<p>这时我们碰到一个问题：由于安装的系统没有桌面环境，没法连上键盘、鼠标和显示器，那么我们如何找到其IP地址呢？有两个办法：</p>
+<ol type="1">
+<li>连接到家用路由器的管理网页，查看主机名raspberry对应的地址。</li>
+<li>应用nmap工具扫描对应网段，对比树莓派启动前后的变化。</li>
+</ol>
+<p>nmap工具的运行记录如下。注意到扫描出新的IP地址192.168.2.4，再对其单独运行nmap发现TCP端口22已打开。据此可以大致判定这就是我们新上线的树莓派：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">❯ nmap -sn 192.168.2.0/24</span><br><span class="line">Starting Nmap 7.92 ( https://nmap.org ) at 2021-11-28 21:07 PST</span><br><span class="line">Nmap scan report <span class="keyword">for</span> router.sx.com (192.168.2.1)</span><br><span class="line">Host is up (0.0050s latency).</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.2.3</span><br><span class="line">Host is up (0.0048s latency).</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.2.4 <span class="comment">## New IP after Raspberry Pi boots up</span></span><br><span class="line">Host is up (0.0057s latency).</span><br><span class="line">Nmap <span class="keyword">done</span>: 256 IP addresses (3 hosts up) scanned <span class="keyword">in</span> 15.31 seconds</span><br><span class="line"></span><br><span class="line">❯ nmap 192.168.2.4</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.2.4</span><br><span class="line">Host is up (0.0066s latency).</span><br><span class="line">Not shown: 999 closed tcp ports (conn-refused)</span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line">22/tcp open  ssh</span><br></pre></td></tr></table></figure>
+<h4 id="系统更新升级">系统更新升级</h4>
+<p>下一步尝试SSH连接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">❯ ssh pi@192.168.2.4</span><br><span class="line">pi@192.168.2.4<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string">Linux raspberrypi 5.10.63-v7l+ #1488 SMP Thu Nov 18 16:15:28 GMT 2021 armv7l</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The programs included with the Debian GNU/Linux system are free software;</span></span><br><span class="line"><span class="string">the exact distribution terms for each program are described in the</span></span><br><span class="line"><span class="string">individual files in /usr/share/doc/*/copyright.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent</span></span><br><span class="line"><span class="string">permitted by applicable law.</span></span><br><span class="line"><span class="string">Last login: Fri Dec 24 19:46:15 2021 from 192.168.2.3</span></span><br><span class="line"><span class="string">pi@raspberrypi:~ $</span></span><br></pre></td></tr></table></figure>
+<p>确认后，就可以在树莓派里执行以下命令更新和升级系统：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ sudo apt update &amp;&amp; sudo apt upgrade</span><br></pre></td></tr></table></figure>
+<h4 id="网络连接测试">网络连接测试</h4>
+<p>本阶段的最后，是测试树莓派4B系统以太网连接的稳定性。在macOS电脑上用简单的ping命令，设定<code>-i 0.05</code>选项指定每秒20个数据包，以及<code>-t 3600</code>选项运行1个小时的测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">❯ sudo ping -i 0.05 192.168.2.4 -t 3600</span><br></pre></td></tr></table></figure>
+<p>在没有无线连接的网段上，应该不会有超过1%数据包丢失或超时，否则应该检查排错。事实上，在实测中真的出现了将近10%的ping数据包的情况，SSH连接也时常掉线。上网搜索发现，类似的树莓派4B以太网连接丢包问题已有不少报告。相关论坛上人们给出的分析和建议集中在以下几点：</p>
+<ol type="1">
+<li>供电不稳定造成丢包，需要更换为15W以上可靠的USB-C电源适配器。</li>
+<li>高能效以太网（Energy-Efficient Ethernet）机能失常，关闭即可解决。</li>
+<li>全速千兆以太网连接功能故障，必须降速到100Mbit/s使用。</li>
+</ol>
+<p>实际中试验了上面所有这些，收效不大。后来发现，连接树莓派4B的家用路由器，是2011年产的Belkin N750 DB。虽然它提供 Wi-Fi双频段802.11n和4个千兆以太网端口，可是生产年限过于久远，不由得让人怀疑其互操作性问题。而以上报告的第2、3点本质上也属于互操作性问题。想到这些，马上订购了普联（TP-Link）TL-SG105 5端口千兆以太网交换机。收到后，用TL-SG105扩展N750的千兆以太网端口，树莓派4B连接到TL-SG105上，再重新测试。果然这一次ping丢包率不到0.1%，SSH连接也很稳固。</p>
+<p>结论是，树莓派4B千兆以太网接口与一些旧式设备可能存在兼容性问题，可通过在二者之间插入互操作良好的交换机解决。</p>
+<h3 id="nsapi套件组装">NSAPi套件组装</h3>
+<p>第二阶段组装NSAPi存储套件，目标是装配全部硬件，完成独立的NAS机体。</p>
+<h4 id="预备内置ssd">预备内置SSD</h4>
+<p>NSAPi支持一个内置SSD或HDD。项目选择的是三星870 EVO 500GB 内置SSD，这里必须先确保SSD能单独正常工作，否则就得要拆机才能更换。可以将SSD挂接到Windows系统检查一下文件系统和基本读写操作。如果是新买的SSD，在Windows系统上可执行下列的步骤快速格式化：</p>
+<ol type="1">
+<li>点击<strong>Start</strong>或<strong>Windows</strong>按钮，选择<strong>Control Panel &gt; System and Security</strong></li>
+<li>选择<strong>Administrative Tools &gt; Computer Management &gt; Disk management</strong></li>
+<li>选中要格式化的硬盘, 点击右键选择<strong>Format</strong></li>
+<li>在出现的对话框中选择
+<ul>
+<li><strong>File System → NTFS</strong><br />
+</li>
+<li><strong>Allocation Unit Size → Default</strong></li>
+<li><strong>Volume Label →（指定卷名）</strong></li>
+<li><strong>Perform a quick format</strong></li>
+</ul></li>
+<li>点击OK开始快速格式化SSD</li>
+</ol>
+<p>⚠️注意：这里选择的文件系统是NTFS，这是OMV支持挂载（mount）文件系统之一。</p>
+<h4 id="pwm风扇控制">PWM风扇控制</h4>
+<p>在实际的硬件组装之前，还要安装Geekworm提供的一个特殊软件——PWM风扇控制脚本。基于温度变化的PWM风扇转速控制是NASPi区别于其他硬件方案的一大特色，所以这一步很重要。</p>
+<p>参考Geekworm的<a target="_blank" rel="noopener" href="https://wiki.geekworm.com/X-C1_Software">X-C1软件维基页</a>，SSH连接到树莓派4B系统后的安装命令序列如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y git pigpio </span><br><span class="line">sudo apt-get install -y python3-pigpio</span><br><span class="line">sudo apt-get install -y python3-smbus</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/geekworm-com/x-c1.git</span><br><span class="line"><span class="built_in">cd</span> x-c1</span><br><span class="line">sudo chmod +x *.sh</span><br><span class="line">sudo bash install.sh</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;alias xoff=&#x27;sudo /usr/local/bin/x-c1-softsd.sh&#x27;&quot;</span> &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>如果在树莓派4B上不能直接做<code>git clone</code>，可以先在SSH客户端下载X-C1软件，然后用scp传送到树莓派4B，再执行后续命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">❯ scp -r x-c1 pi@192.168.2.4:/home/pi/</span><br></pre></td></tr></table></figure>
+<details class="note primary"><summary><p><strong>X-C1软件是如何实现PWM风扇控制的？</strong></p>
+</summary>
+<p>X-C1软件的核心是一个名为fan.py的Python程序，代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> pigpio</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">servo = <span class="number">18</span></span><br><span class="line"></span><br><span class="line">pwm = pigpio.pi()</span><br><span class="line">pwm.set_mode(servo, pigpio.OUTPUT)</span><br><span class="line">pwm.set_PWM_frequency( servo, <span class="number">25000</span> )</span><br><span class="line">pwm.set_PWM_range(servo, <span class="number">100</span>)</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">     <span class="comment">#get CPU temp</span></span><br><span class="line">     file = <span class="built_in">open</span>(<span class="string">&quot;/sys/class/thermal/thermal_zone0/temp&quot;</span>)</span><br><span class="line">     temp = <span class="built_in">float</span>(file.read()) / <span class="number">1000.00</span></span><br><span class="line">     temp = <span class="built_in">float</span>(<span class="string">&#x27;%.2f&#x27;</span> % temp)</span><br><span class="line">     file.close()</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">30</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">40</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">50</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">50</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">60</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">70</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">70</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">80</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">75</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &lt; <span class="number">30</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">0</span>)</span><br><span class="line">     time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>它的逻辑其实很简单。通过导入pigpio模块，先初始化一个PWM控制对象，然后开始周期1秒的循环。每次循环时读取CPU温度，根据温度高低设置PWM的占空比，从而控制风扇转速。低于30℃时占空比为0，风扇停止；高于75℃时占空比为100，风扇全速转动。用户可以修改程序中的温度阈值和占空比参数，定制PWM风扇控制。</p>
+
+</details>
+<p>此外，下面的pi-temp.sh脚本能读出GPU和CPU的温度，也很有用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ cat ./pi-temp.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="comment"># Script: pi-temp.sh</span></span><br><span class="line"><span class="comment"># Purpose: Display the ARM CPU and GPU  temperature of Raspberry Pi</span></span><br><span class="line"><span class="comment"># -------------------------------------------------------</span></span><br><span class="line">cpu=$(&lt;/sys/class/thermal/thermal_zone0/temp)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="subst">$(date)</span> @ <span class="subst">$(hostname)</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;-------------------------------------------&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;GPU =&gt; <span class="subst">$(vcgencmd measure_temp)</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;CPU =&gt; temp=<span class="subst">$((cpu/1000)</span>)’C&quot;</span></span><br><span class="line"></span><br><span class="line">pi@raspberrypi:~ $ ./pi-temp.sh</span><br><span class="line">Mon 29 Nov 06:59:17 GMT 2021 @ raspberrypi</span><br><span class="line">-------------------------------------------</span><br><span class="line">GPU =&gt; temp=33.1<span class="string">&#x27;C</span></span><br><span class="line"><span class="string">CPU =&gt; temp=32’C</span></span><br></pre></td></tr></table></figure>
+<h4 id="硬件组装过程">硬件组装过程</h4>
+<p>下图是Geekwork NASPi开箱后零部件快照（第二排最右的树莓派4B和右下角的螺丝刀除外）</p>
+<p><img src="NASPi-unbox.jpg" style="width:80.0%;height:80.0%" /></p>
+<p>第二排里的三个关键的部件，从左到右分别是</p>
+<ul>
+<li>X-C1 V1.3适配板提供电源管理、接口适配和安全关机功能</li>
+<li>X823 V1.5存储屏蔽板提供2.5英寸SSD/HDD存储功能（支持UASP）</li>
+<li>4010 PWM风扇和金属风扇支架</li>
+</ul>
+<p>组装过程主要参考Youtube上的<a target="_blank" rel="noopener" href="https://youtu.be/ithz2Mg5Vrc">NASPi教学视屏</a>按部就班进行，大致步骤如下：</p>
+<ol type="1">
+<li>插入SSD到X823的SATA III接口，翻转到另一面用螺丝固定</li>
+<li>载此面加装空间分隔块后安装树莓派4B板，2x7针排线穿过二者之间</li>
+<li>在树莓派4B板上面安装PWM风扇，以及额外的空间分隔块</li>
+<li>连接X-C1板和树莓派4B板，插入2x7针排线右端到X-C1 GPIO端口，插入3针排线到X-C1 FAN端口</li>
+<li>对齐插入2x7针排线左端的子板到树莓派4B板的GPIO端口，用螺丝固定</li>
+<li>插入USB 3.0连接器，连通X823 V1.5的USB 3.0端口与树莓派4B板下面一个USB 3.0口</li>
+</ol>
+<p>就此内部组件安装完成，得到如下视图</p>
+<p><img src="NASPi-internal.jpg" style="width:60.0%;height:60.0%" /></p>
+<p>此时加上USB-C电源启动系统，按动按键开关，应该会看到PWM风扇开始转动。转动速率时快时慢，并非恒定，这正是温度感应的PWM风扇正常工作的表现。</p>
+<p>前端内嵌蓝色LED的按键开关控制整个系统的开关机，可做如下测试</p>
+<ul>
+<li>加电后点按开关，系统启动</li>
+<li>运行中按住开关1-2秒，系统重启</li>
+<li>运行中按住开关3秒，安全关机</li>
+<li>运行中按住开关7-8秒，强制关机</li>
+</ul>
+<p>在SSH连接终端上，运行xoff命令也可以安全关机。但是不能直接用Linux的shutdown关机，因为这样无法解除X-C1板的供电。</p>
+<p>开关机测试完成，拔出USB 3.0连接器，就可以将整个模块插入机壳。加上后背板拧紧螺丝后，再重新插入USB 3.0连接器，就此NASPi系统套件组装完毕，下面是Geekworm提供的完整系统的前后视图（标注了全部接口和通风孔）</p>
+<p><img src="NASPi-outside.jpg" style="width:60.0%;height:60.0%" /></p>
+<h3 id="omv安装和配置">OMV安装和配置</h3>
+<p>第三阶段安装和配置NAS系统的核心软件——OMV，目标是实现基本的网络文件访问服务。</p>
+<h4 id="安装omv软件包">安装OMV软件包</h4>
+<p>安装OMV的方法很简单，直接在SSH连接的终端运行下面的命令行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O - https://raw.githubusercontent.com/OpenMediaVault-Plugin-Developers/installScript/master/install | sudo bash</span><br></pre></td></tr></table></figure>
+<p>由于OMV整个软件包很大，这一安装过程会持续较长的时间。安装结束后，系统的IP地址可能会变化，此时需要重连SSH：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(Reading database ... 51781 files and directories currently installed.)</span><br><span class="line">Purging configuration files <span class="keyword">for</span> dhcpcd5 (1:8.1.2-1+rpt3) ...</span><br><span class="line">Purging configuration files <span class="keyword">for</span> raspberrypi-net-mods (1.3.2) ...</span><br><span class="line">Enable and start systemd-resolved ...</span><br><span class="line">Unblocking wifi with rfkill ...</span><br><span class="line">Adding eth0 to openmedivault database ...</span><br><span class="line">IP address may change and you could lose connection <span class="keyword">if</span> running this script via ssh.</span><br><span class="line">client_loop: send disconnect: Broken pipe	</span><br></pre></td></tr></table></figure>
+<p>重连后可用<code>dpkg</code>查看OMV的软件包。可以看到，这里安装的OMV是当前最新的6.0.5版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ dpkg -l | grep openme</span><br><span class="line">ii  openmediavault                       6.0.5-1                          all          openmediavault - The open network attached storage solution</span><br><span class="line">ii  openmediavault-flashmemory           6.0.2                            all          folder2ram plugin <span class="keyword">for</span> openmediavault</span><br><span class="line">ii  openmediavault-keyring               1.0                              all          GnuPG archive keys of the OpenMediaVault archive</span><br><span class="line">ii  openmediavault-omvextrasorg          6.0.4                            all          OMV-Extras.org Package Repositories <span class="keyword">for</span> OpenMediaVault</span><br></pre></td></tr></table></figure>
+<h4 id="连接管理界面">连接管理界面</h4>
+<p>这时OMV的工作台已经上线了，在macOS电脑打开浏览器输入IP地址后回车，就可以打开漂亮的登录界面（点击右上角🌍图标可以选择用户界面语言）： <img src="OMV-login-default.png" style="width:70.0%;height:70.0%" /></p>
+<p>用上图显示的默认用户名和密码登录后，会看到工作台界面。此时第一件事应该是点击右上角的⚙️图标，弹出设置菜单后点击“更改密码”。你也可以在这里修改语言，如下为选择“简体中文”后的结果 <img src="OMV-start-cn.png" style="width:80.0%;height:80.0%" /></p>
+<p>点击设置菜单中的“仪表盘”可以选择开启相关的组件。界面左侧边的菜单系列为管理员提供任务导航，不需要时可以隐藏。完整的OMV管理手册可参考<a target="_blank" rel="noopener" href="https://openmediavault.readthedocs.io/en/latest/index.html">在线文档</a></p>
+<h4 id="配置文件服务">配置文件服务</h4>
+<p>接下来就是配置NAS的关键流程，包括下面5个步骤：</p>
+<ol type="1">
+<li><p><strong>扫描系统挂接的硬盘</strong></p>
+<p>从侧栏菜单点击<strong>存储器 &gt; 磁盘</strong>，进入硬盘管理页面。如果有刚刚插入的USB存储设备，可在这里点击🔍扫描出来。本系统的扫描结果如下，内置三星500GB SSD和外置希捷2TB HDD都被检测出来了，装载整个系统的32GB microSD也列在最上边： <img src="OMV-Storage-Disks-cn.png" style="width:80.0%;height:80.0%" /></p>
+<p>在SSH终端上可看到对应的硬盘挂接信息：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ df -h | grep disk</span><br><span class="line">/dev/sdb2       466G   13G  454G   3% /srv/dev-disk-by-uuid-D0604B68604B547E</span><br><span class="line">/dev/sda1       1.9T  131G  1.7T   7% /srv/dev-disk-by-uuid-DEB2474FB2472B7B</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>挂载硬盘文件系统</strong></p>
+<p>从侧栏菜单点击<strong>存储器 &gt; 文件系统</strong>，进入文件系统管理页面。如果存储设备还没有文件系统，可点击⨁新建（Format）或挂载（Mount）文件系统。OMV可以新建/挂载ext4、ext3、jfs、xfs文件系统，但对ntfs文件系统只支持挂载。下图显示OMV正确无误地挂载SSD和HDD的ntfs文件系统： <img src="OMV-Storage-FS-cn.png" style="width:80.0%;height:80.0%" /></p></li>
+<li><p><strong>设置共享共享夹</strong></p>
+<p>从侧栏菜单点击<strong>存储器 &gt; 文件系统</strong>，进入共享文件夹管理页面。这里点击⨁创建共享文件夹。创建时要指定名称、对应的文件系统和相对路径，还可以添加注释。选择已创建的文件夹，再点击铅笔图标可以编辑相关信息。本系统为SSD和HDD分别设定共享文件夹相对路径Zixi-Primary和Zixi-Secondary <img src="OMV-Storage-SharedFolders-cn.png" style="width:80.0%;height:80.0%" /></p>
+<p>注意到上图顶上的橙黄色警示，它提醒管理者设置已变更，必须点击✔️图标才能生效。</p></li>
+<li><p><strong>添加文件共享访问用户</strong></p>
+<p>从侧栏菜单点击<strong>用户管理 &gt; 用户</strong>，进入用户管理页面。系统的默认用户pi具有root权限，基于安全考量，不可用于文件共享访问。所以需要另外添加一个新用户。在此页面点击⨁新建用户，新建时只有用户名和密码是必须的，其它可选填。建好后选中此用户，点击第三个带钥匙的文件夹图标（提示“共享文件夹权限”），进入如下的权限设置页面 <img src="OMV-User-authorize-cn.png" style="width:80.0%;height:80.0%" /> 如图所示，针对此新用户zixi，管理员可以设定每一个共享文件夹的读写访问权限。</p></li>
+<li><p><strong>启动文件共享服务</strong></p>
+<p>展开导航菜单的“服务”项，可以看到OMV管理五种服务：FTP、NFS、Rsync、SMB/CIFS和SSH。SSH是系统初始就启用的。NFS和SMB/CIFS是最通用的网络文件共享协议，macOS也都支持二者。这里以SMB/CIFS为例。从侧栏菜单点击<strong>服务 &gt; SMB/CIFS</strong>，进入管理页面。页面包含两个按钮：设置和共享。先点击“设置”，在新页面启动SMB/CIFS服务并配置工作组名称，其它选项可先保持默认值。保存后SMB/CIFS回到管理页面。然后点击“共享”，在新页面点击⨁添加共享文件夹Zixi-Primary和Zixi-Secondary并保存。之后点击跳出的橙黄色警示条的✔️图标使所有配置更新生效，最终得到如下图的结果 <img src="OMV-SMB-Shares-cn.png" style="width:80.0%;height:80.0%" /></p></li>
+</ol>
+<p>到此我们的树莓派NAS系统的文件共享配置完毕，SMB/CIFS的服务已启动。选择开启相关的组件后，我们的仪表盘实时监控显示如下<img src="OMV-Dashboard-cn.png" style="width:85.0%;height:85.0%" /></p>
+<h4 id="客户端设置">客户端设置</h4>
+<p>服务器端好了后，我们要在客户机端加载网络共享文件夹，方法如下：</p>
+<ul>
+<li>Windows PC 客户端
+<ul>
+<li>打开 File Explore，点击“This PC”</li>
+<li>在右边空白处点鼠标右键， 从弹出菜单中选"Add a network location”</li>
+<li>在“Internet or network address"输入框中，键入“\\&lt;IP地址&gt;\<共享文件夹名>”</li>
+<li>输入用户名和密码</li>
+</ul></li>
+<li>MacBook 客户端（截屏示例如下）
+<ul>
+<li>打开 Finder，点击菜单项 Go</li>
+<li>点击“Connect to Server...”</li>
+<li>输入URL“smb://&lt;IP地址&gt;/<共享文件夹名>”，点击 Connect</li>
+<li>输入用户名和密码<br />
+<img src="macOS-SMB.png" style="width:80.0%;height:80.0%" /></li>
+</ul></li>
+</ul>
+<p>设置好客户机端后，用户就可以如同本地目录一样在网络共享文件夹上执行各种操作，如预览、新建、打开或复制文件等，也可创建新的子目录或删除现存子目录。</p>
+<h3 id="plex安装和配置">Plex安装和配置</h3>
+<p>最后一个阶段安装和配置Plex媒体服务器，实现网络流媒体服务。</p>
+<h4 id="安装媒体服务器">安装媒体服务器</h4>
+<p>安装Plex媒体服务器过程需要HTTPS传输支持，由此我们必须先安装https-transport软件包。SSH到我们树莓派NAS，执行安装命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install apt-transport-https</span><br></pre></td></tr></table></figure>
+<p>接下来给系统添加Plex仓库，这需要先下载Plex签名密钥。下面是相应的命令和运行记录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0</span><br><span class="line">  Warning: apt-key is deprecated. Manage keyring files <span class="keyword">in</span> trusted.gpg.d instead (see apt-key(8)).</span><br><span class="line">100  3072  100  3072    0     0  10039      0 --:--:-- --:--:-- --:--:-- 10039</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>用同样的apt-key命令查看加入的Plex签名密钥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ apt-key list</span><br><span class="line">Warning: apt-key is deprecated. Manage keyring files <span class="keyword">in</span> trusted.gpg.d instead (see apt-key(8)).</span><br><span class="line">/etc/apt/trusted.gpg</span><br><span class="line">...</span><br><span class="line">pub   rsa4096 2015-03-22 [SC]</span><br><span class="line">      CD66 5CBA 0E2F 88B7 373F  7CB9 9720 3C7B 3ADC A79D</span><br><span class="line">uid           [ unknown] Plex Inc.</span><br><span class="line">sub   rsa4096 2015-03-22 [E]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>可以看到Plex使用4096比特的RSA密钥。对于上面记录里的告警信息“apt-key is deprecated...”，可以暂时忽略，感兴趣的可以去阅读<a target="_blank" rel="noopener" href="https://askubuntu.com/questions/1286545/what-commands-exactly-should-replace-the-deprecated-apt-key?newreg=20085e604ada43c2a3466bb51eb4349a">askubuntu论坛上的讨论</a>。</p>
+<p>下一步添加Plex仓库到系统仓库列表 ，然后更新软件包 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list</span><br><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></p>
+<p>现在就可以开始实质的Plex媒体服务器安装，安装命令和记录如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ sudo apt install plexmediaserver</span><br><span class="line">Reading package lists... Done</span><br><span class="line">Building dependency tree... Done</span><br><span class="line">Reading state information... Done</span><br><span class="line">The following NEW packages will be installed:</span><br><span class="line">  plexmediaserver</span><br><span class="line">0 upgraded, 1 newly installed, 0 to remove and 20 not upgraded.</span><br><span class="line">Need to get 66.1 MB of archives.</span><br><span class="line">After this operation, 146 MB of additional disk space will be used.</span><br><span class="line">Get:1 https://downloads.plex.tv/repo/deb public/main armhf plexmediaserver armhf 1.25.0.5282-2edd3c44d [66.1 MB]</span><br><span class="line">Fetched 66.1 MB <span class="keyword">in</span> 28s (2392 kB/s)</span><br><span class="line">Selecting previously unselected package plexmediaserver.</span><br><span class="line">(Reading database ... 51783 files and directories currently installed.)</span><br><span class="line">Preparing to unpack .../plexmediaserver_1.25.0.5282-2edd3c44d_armhf.deb ...</span><br><span class="line">PlexMediaServer install: Pre-installation Validation.</span><br><span class="line">PlexMediaServer install: Pre-installation Validation complete.</span><br><span class="line">Unpacking plexmediaserver (1.25.0.5282-2edd3c44d) ...</span><br><span class="line">Setting up plexmediaserver (1.25.0.5282-2edd3c44d) ...</span><br><span class="line"></span><br><span class="line">Configuration file <span class="string">&#x27;/etc/apt/sources.list.d/plexmediaserver.list&#x27;</span></span><br><span class="line"> ==&gt; File on system created by you or by a script.</span><br><span class="line"> ==&gt; File also <span class="keyword">in</span> package provided by package maintainer.</span><br><span class="line">   What would you like to <span class="keyword">do</span> about it ?  Your options are:</span><br><span class="line">    Y or I  : install the package maintainer<span class="string">&#x27;s version</span></span><br><span class="line"><span class="string">    N or O  : keep your currently-installed version</span></span><br><span class="line"><span class="string">      D     : show the differences between the versions</span></span><br><span class="line"><span class="string">      Z     : start a shell to examine the situation</span></span><br><span class="line"><span class="string"> The default action is to keep your current version.</span></span><br><span class="line"><span class="string">*** plexmediaserver.list (Y/I/N/O/D/Z) [default=N] ?</span></span><br><span class="line"><span class="string">PlexMediaServer install: PlexMediaServer-1.25.0.5282-2edd3c44d - Installation starting.</span></span><br><span class="line"><span class="string">PlexMediaServer install:</span></span><br><span class="line"><span class="string">PlexMediaServer install: Now installing based on:</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Installation Type:   New</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Process Control:     systemd</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Plex User:           plex</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Plex Group:          plex</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Video Group:         video</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Metadata Dir:        /var/lib/plexmediaserver/Library/Application Support</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Temp Directory:      /tmp</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Lang Encoding:       en_US.UTF-8</span></span><br><span class="line"><span class="string">PlexMediaServer install:   Nvidia GPU card:     Not Found</span></span><br><span class="line"><span class="string">PlexMediaServer install:</span></span><br><span class="line"><span class="string">PlexMediaServer install: Completing final configuration.</span></span><br><span class="line"><span class="string">Created symlink /etc/systemd/system/multi-user.target.wants/plexmediaserver.service → /lib/systemd/system/plexmediaserver.service.</span></span><br><span class="line"><span class="string">PlexMediaServer install: PlexMediaServer-1.25.0.5282-2edd3c44d - Installation successful.  Errors: 0, Warnings: 0</span></span><br></pre></td></tr></table></figure>
+<p>中间会被问到Plex媒体服务器列表（plexmediaserver.list）的问题，选默认的N就可以了。看到“Installation successful”，我们知道安装成功。这时Plex流媒体服务也启动了，从macOS端再运行nmap扫描，发现TCP服务端口32400已开</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">❯ nmap -p1-65535 192.168.2.4 | grep open</span><br><span class="line">22/tcp    open     ssh</span><br><span class="line">80/tcp    open     http</span><br><span class="line">111/tcp   open     rpcbind</span><br><span class="line">139/tcp   open     netbios-ssn</span><br><span class="line">445/tcp   open     microsoft-ds</span><br><span class="line">2049/tcp  open     nfs</span><br><span class="line">5357/tcp  open     wsdapi</span><br><span class="line">32400/tcp open     plex</span><br></pre></td></tr></table></figure>
+<h4 id="配置媒体服务器">配置媒体服务器</h4>
+<p>Plex媒体服务器的配置是在网页上完成的。在macOS电脑端启动浏览器，键入网址<strong>http://&lt;IP-地址&gt;:32400/web</strong>，不出意外的话会看到如下的页面 <img src="Plex-notice.png" style="width:80.0%;height:80.0%" /> 我们可以用Google、Facebook或Apple账户登录，也可以输入电邮创建新账户。逐步跟随页面的指示，不需要负任何费用，很快到达<strong>Server Setup</strong>页面。这里可配置服务器名称和添加资料库。一般情况下我们没必要从外网访问家庭媒体服务器， 所以记住在这一步取消勾选“Allow me to access my media outside my home”。添加资料库时，先选定资料库类型（电影、电视剧集、音乐和照片等），然后点击“BROWSE FOR MEDIA FOLDER”按钮浏览和选定对应的文件夹。资料库添加完毕，相应的媒体文件立即就会出现在本地的服务目录中，截图如下 <img src="Plex-movie.png" style="width:90.0%;height:90.0%" /> 这里我们的树莓派NAS的本地服务器名为ZIXI-RPI-NAS，资料库里的电影目录中显示《黑客帝国》三部曲，并且正在播放第一部<em>The Matrix</em>。将鼠标移到服务器名称上，名称右边会出现➕图标，点击可以继续添加新的媒体库。</p>
+<p>Plex媒体服务器配置好了后，我们可以从家庭网络上的任意设备打开浏览器做流媒体点播，不需要下载额外的应用程序。整个体验就如同我们自己的专有家庭奈飞（Netflix）服务一样！</p>
+<h2 id="性能评估">性能评估</h2>
+<p>连接macOS笔记本电脑到TL-SG105余下的某个端口，就能执行一些简单的同网段内测试，以全面评估此NAS系统的性能。</p>
+<h3 id="系统压力测试">系统压力测试</h3>
+<p>参考Geekworm的<a target="_blank" rel="noopener" href="https://wiki.geekworm.com/Naspi_stress_test">NASPi压力测试维基页</a>，在SSH连接的终端执行下列的命令，从GitHub克隆测试程序运行压力测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/geekworm-com/rpi-cpu-stress</span><br><span class="line"><span class="built_in">cd</span> rpi-cpu-stress</span><br><span class="line">chmod +x stress.sh</span><br><span class="line">sudo ./stress.sh</span><br></pre></td></tr></table></figure>
+<p>同时建立第二个SSH连接，运行htop监控系统负荷状态。下图是接近5分钟时的截图（左边是htop实时显示，右边为压力测试输出） <img src="RPi-stress-test.png" style="width:80.0%;height:80.0%" /> 右边输出的<code>temp</code>值除以1000即是CPU的温度。可以看到，测试过程中所有4个CPU核都达到100%满负荷，而最高温度不操过70℃。这时抚摸机身没有明显热感。键入<code>ctrl-c</code>中止压力测试，再单独执行测温脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ ./pi-temp.sh</span><br><span class="line">Fri Dec 24 15:59:21 PST 2021 @ raspberrypi</span><br><span class="line">-------------------------------------------</span><br><span class="line">GPU =&gt; temp=39.9<span class="string">&#x27;C</span></span><br><span class="line"><span class="string">CPU =&gt; temp=40&#x27;</span>C</span><br></pre></td></tr></table></figure>
+<p>系统温度回到较低的数值范围。测试结果确认本系统符合设计要求。</p>
+<h3 id="文件传输测速">文件传输测速</h3>
+<p>用远程文件复制工具scp可以粗略测量文件传输速度。首先在macOS客户端上运行<code>mkfile</code>命令创建1GB大小的文件，然后用<code>scp</code>命令将其复制到远端 NAS 系统的用户目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">❯ mkfile 1G test-nas.dmg</span><br><span class="line">❯ ls -al test-nas.dmg</span><br><span class="line">rw-------    1 sxiao  staff  1073741824 Dec 19 20:53 test-nas.dmg</span><br><span class="line">❯ scp test-nas.dmg pi@192.168.2.4:/home/pi/</span><br><span class="line">pi@192.168.2.4<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string">test-nas.dmg                        100% 1024MB  19.2MB/s   00:53</span></span><br></pre></td></tr></table></figure>
+<p>复制成功后会输出计时和由此算出的速度。反向运用就可以得到从 NAS 系统接收文件的速度</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">❯ scp pi@192.168.2.4:/home/pi/test-nas.dmg test-nas-rx.dmg</span><br><span class="line">pi@192.168.2.4<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string">test-nas.dmg                        100% 1024MB  65.7MB/s   00:15</span></span><br></pre></td></tr></table></figure>
+<p>来回重复三次得到的结果如下</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">传输类型</th>
+<th style="text-align: center;">服务器操作</th>
+<th style="text-align: center;">计时（秒）</th>
+<th style="text-align: center;">速度（MB/s）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">发送</td>
+<td style="text-align: center;">写</td>
+<td style="text-align: center;">53</td>
+<td style="text-align: center;">19.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">发送</td>
+<td style="text-align: center;">写</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">22.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">发送</td>
+<td style="text-align: center;">写</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">20.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">接收</td>
+<td style="text-align: center;">读</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">65.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">接收</td>
+<td style="text-align: center;">读</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">60.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">接收</td>
+<td style="text-align: center;">读</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">66.3</td>
+</tr>
+</tbody>
+</table>
+<p>统计系统远程写入文件的速度在 20MB/s 左右，而远程读出文件的速度可达到 60MB/s 以上。考虑到scp相关的加解密处理在通用树莓派系统上都是软件实现的，这一结果可算是差强人意。</p>
+<h3 id="硬盘读写测速">硬盘读写测速</h3>
+<p>真正能检验NAS本身功能表现的是网络硬盘读写测速。对此，可在苹果的应用商店下载的AmorphousDiskMark应用。这是一款简便高效的硬盘测速软件，以MB/s和IOPS（每秒输入/输出操作）度量存储设备的读/写性能。它具有四种类型的测试：</p>
+<ol type="1">
+<li>顺序读写1MB块，队列深度8</li>
+<li>顺序读写1MB块，队列深度1</li>
+<li>随机读写4KB快，队列深度64</li>
+<li>随机读写4KB快，队列深度1</li>
+</ol>
+<p>以上的队列深度是默认值，也有其他值可选。此外，用户还能修改测试文件大小和持续时间。</p>
+<p>在macOS客户端运行该应用程序，并在顶端分别选择远程SMB文件夹Zixi-Primary （三星 SSD）和Zixi-Secondary（希捷 HDD）文件夹，再点击左上角的<code>All</code>按钮启动NAS硬盘测速过程。二者的测试结果并列比较如下图所示</p>
+<div class="group-picture"><div class="group-picture-row"><div class="group-picture-column"><img src="ADM-SSD.png" /></div><div class="group-picture-column"><img src="ADM-HDD.png" /></div></div></div>
+<p>由此可以观察到以下几点：</p>
+<ul>
+<li>NAS硬盘读的速度比写要快，随机访问下的差别非常大。</li>
+<li>无论顺序访问还是随机访问，SSD的性能都胜过HDD。</li>
+<li>大的队列深度可以加快读，对随机访问尤甚，当对写的影响不大。</li>
+<li>对于SSD和HDD，都是顺序读写的效率要大大好于随机读写。</li>
+<li>对 SSD和HDD，都是大队列深度下顺序读写达到最高速度。</li>
+</ul>
+<p>这些其实并不意外，与macOS笔记本电脑直接外挂SSD和HDD的测试结果相一致，只是数值较低。在此NAS系统下，SSD和HDD都是通过USB 3.0接口连接的。USB 3.0支持高达5Gbit/s的传输速度，所以系统的性能瓶颈在于网络接口带宽和处理器能力。</p>
+<p>另一方面，SSD和HDD都在1MB顺序读及队列深度8的情况下达到超过900Mbit/s传送速度，接近千兆以太网接口带宽上限。这一存储速度可支持单路帧率为60fps的1080p60视频流或者并行2路帧率为25fps的1080i50视频流，对于家庭流媒体服务来说已经足够了。实测同时三台电脑点播高清视频和一部手机播放MP3音乐，并无任何卡顿的现象，此NAS系统的表现令人满意。</p>
+<h2 id="项目总结">项目总结</h2>
+<p>至此我们的树莓派家用NAS项目顺利完成，现在可以将之移到较永久的位置，方便为全家提供网络文件和流媒体服务：</p>
+<p><img src="NASPi-final.jpg" style="width:80.0%;height:80.0%" /></p>
+<p>从经济上来看，我们的家用NAS的成本统计如下表（不计SSD/HDD）</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">设备</th>
+<th style="text-align: center;">作用</th>
+<th style="text-align: center;">成本（$）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">树莓派4B 2/4/8GB 内存</td>
+<td style="text-align: center;">主硬件系统</td>
+<td style="text-align: center;">45/55/75</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">三星 32GB EVO+ Class-10 Micro SDHC</td>
+<td style="text-align: center;">操作系统存储</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Geekworm NASPi 树莓派4B NAS 存储套件</td>
+<td style="text-align: center;">机壳、扩展版和PWM风扇</td>
+<td style="text-align: center;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Geekworm 20W 5V 4A USB-C 电源适配器</td>
+<td style="text-align: center;">供电电源</td>
+<td style="text-align: center;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">普联 TL-SG105 5端口千兆以太网交换机</td>
+<td style="text-align: center;">桌面交换机</td>
+<td style="text-align: center;">15</td>
+</tr>
+</tbody>
+</table>
+<p>即使采用最高内存配置的树莓派4B，整个开销也才$175，比市面上所售低端品牌NAS价格的一半多一点。实际上，除非有需要流媒体服务的客户端设备很多，一般内存消耗都在2GB一下，所以2GB的树莓派4B应该可以满足绝大多数的家用场景。这样算下来只要$145，低于市售价的一半。</p>
+<p>另一方面，此DIY项目非常好地锻炼了动手实践能力，帮助我们积累了构建网络连接、配置系统软硬件及调整和测试应用层服务的宝贵直观经验。总结下来，树莓派4B集成OMV搭建的家用NAS与Plex媒体服务器相结合，为家庭网络提供了成本效益好的文件备份和流媒体服务解决方案。</p>
+<p>附录：相关设备清单及亚马逊链接</p>
+<blockquote>
+<p><strong><em>Disclosure</em></strong>: <em>This blog site is reader-supported. When you buy through affiliate links below, we may earn a tiny commission. Thank you.</em></p>
+<p><strong>CanaKit 树莓派 4B 8GB RAM + 128GB MicroSD 极限套件</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3DUeDfm">https://amzn.to/3DUeDfm</a><br />
+<strong>三星 32GB EVO+ Class 10 Micro SDHC with Adapter</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3FLkTb7">https://amzn.to/3FLkTb7</a><br />
+<strong>Geekworm NASPi 2.5英寸 SATA HDD/SSD 树莓派 4B NAS 存储套件</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3m5djAi">https://amzn.to/3m5djAi</a><br />
+<strong>Geekworm 树莓派 4 20W 5V 4A USB-C 电源适配器</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3m1EXOf">https://amzn.to/3m1EXOf</a><br />
+<strong>普联（TP-Link）TL-SG105 5端口千兆以太网交换机</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3pRkBsi">https://amzn.to/3pRkBsi</a><br />
+<strong>三星 870 EVO 500GB 2.5英寸 SATA III 内置式 SSD</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3DPKnCl">https://amzn.to/3DPKnCl</a><br />
+<strong>希捷便携式 2TB USB 3.0 外置式 HDD</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3EYegl4">https://amzn.to/3EYegl4</a><br />
+<strong>群晖科技（Synology）2-Bay 2GB NAS DiskStation DS220+</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3Jp5qjd">https://amzn.to/3Jp5qjd</a><br />
+<strong>群晖科技（Synology）5-Bay 8GB NAS DiskStation DS1520+</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3qniQDm">https://amzn.to/3qniQDm</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/" title="自己动手使用树莓派搭建家用NAS和流媒体服务器">https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/" rel="tag"><i class="fa fa-tag"></i> 树莓派</a>
+              <a href="/tags/NAS/" rel="tag"><i class="fa fa-tag"></i> NAS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/13/iTerm2-OMZ-Powerlevel10k/" rel="prev" title="iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端">
+                  <i class="fa fa-chevron-left"></i> iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">211k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:12</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"fce02bd85b6f6b010d3bc70baae54eb1"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

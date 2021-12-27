@@ -52,7 +52,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/ADM-HDD.png">
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-final.jpg">
 <meta property="article:published_time" content="2021-12-19T18:53:08.000Z">
-<meta property="article:modified_time" content="2021-12-27T20:35:47.905Z">
+<meta property="article:modified_time" content="2021-12-27T23:23:29.185Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="树莓派">
 <meta property="article:tag" content="NAS">
@@ -308,7 +308,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-12-27 12:35:47" itemprop="dateModified" datetime="2021-12-27T12:35:47-08:00">2021-12-27</time>
+        <time title="修改时间：2021-12-27 15:23:29" itemprop="dateModified" datetime="2021-12-27T15:23:29-08:00">2021-12-27</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -400,9 +400,9 @@
 <li>Plex媒体服务器提供流媒体服务</li>
 </ul></li>
 </ul>
-<p>要特别指出的是，NAS服务器一般都是无头系统，没有常见的键盘、鼠标和显示器连接。这对软硬件系统的安装、配置和调试都提出一些挑战。实际实现中，如下一节的描述所示，我们应用SSH终端连接完成基本项目实现过程。</p>
+<p>要特别指出的是，NAS服务器一般都是无头系统（headless system），没有常见的键盘、鼠标和显示器连接。这对软硬件系统的安装、配置和调试都提出一些挑战。实际实现中，如下一节的描述所示，我们应用SSH终端连接完成基本项目实现过程。</p>
 <h2 id="项目实现">项目实现</h2>
-<p>此项目实现分为四个阶段，详细描述如下。</p>
+<p>此项目实现分为四个阶段，逐段详细描述如下。</p>
 <h3 id="预备树莓派4b">预备树莓派4B</h3>
 <p>第一阶段我们需要预先准备树莓派操作系统，并做一些基本的单元测试。这个很重要，如果等到完整的NSAPi套件组装完毕再测试，那时发现树莓派的问题就很麻烦。</p>
 <h4 id="预备操作系统">预备操作系统</h4>
@@ -457,7 +457,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y git pigpio </span><br><span class="line">sudo apt-get install -y python3-pigpio</span><br><span class="line">sudo apt-get install -y python3-smbus</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/geekworm-com/x-c1.git</span><br><span class="line"><span class="built_in">cd</span> x-c1</span><br><span class="line">sudo chmod +x *.sh</span><br><span class="line">sudo bash install.sh</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;alias xoff=&#x27;sudo /usr/local/bin/x-c1-softsd.sh&#x27;&quot;</span> &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
 <p>如果在树莓派4B上不能直接做<code>git clone</code>，可以先在SSH客户端下载X-C1软件，然后用scp传送到树莓派4B，再执行后续命令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">❯ scp -r x-c1 pi@192.168.2.4:/home/pi/</span><br></pre></td></tr></table></figure>
-<details class="note primary"><summary><p><strong>X-C1软件是如何实现PWM风扇控制的？</strong></p>
+<details class="note primary"><summary><p><strong>X-C1软件是如何控制PWM风扇的？</strong></p>
 </summary>
 <p>X-C1软件的核心是一个名为fan.py的Python程序，代码如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> pigpio</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">servo = <span class="number">18</span></span><br><span class="line"></span><br><span class="line">pwm = pigpio.pi()</span><br><span class="line">pwm.set_mode(servo, pigpio.OUTPUT)</span><br><span class="line">pwm.set_PWM_frequency( servo, <span class="number">25000</span> )</span><br><span class="line">pwm.set_PWM_range(servo, <span class="number">100</span>)</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">     <span class="comment">#get CPU temp</span></span><br><span class="line">     file = <span class="built_in">open</span>(<span class="string">&quot;/sys/class/thermal/thermal_zone0/temp&quot;</span>)</span><br><span class="line">     temp = <span class="built_in">float</span>(file.read()) / <span class="number">1000.00</span></span><br><span class="line">     temp = <span class="built_in">float</span>(<span class="string">&#x27;%.2f&#x27;</span> % temp)</span><br><span class="line">     file.close()</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">30</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">40</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">50</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">50</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">60</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">70</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">70</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">80</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &gt; <span class="number">75</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(temp &lt; <span class="number">30</span>):</span><br><span class="line">          pwm.set_PWM_dutycycle(servo, <span class="number">0</span>)</span><br><span class="line">     time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>

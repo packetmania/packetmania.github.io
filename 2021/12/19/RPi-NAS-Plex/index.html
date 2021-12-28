@@ -52,7 +52,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/ADM-HDD.png">
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-final.jpg">
 <meta property="article:published_time" content="2021-12-19T18:53:08.000Z">
-<meta property="article:modified_time" content="2021-12-27T23:54:27.977Z">
+<meta property="article:modified_time" content="2021-12-28T21:18:48.683Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="树莓派">
 <meta property="article:tag" content="NAS">
@@ -308,7 +308,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-12-27 15:54:27" itemprop="dateModified" datetime="2021-12-27T15:54:27-08:00">2021-12-27</time>
+        <time title="修改时间：2021-12-28 13:18:48" itemprop="dateModified" datetime="2021-12-28T13:18:48-08:00">2021-12-28</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -360,7 +360,7 @@
 <p><img src="RPi-4B.png" style="width:65.0%;height:65.0%" /></p>
 <p>在NAS系统软件方面，<strong><a target="_blank" rel="noopener" href="https://www.openmediavault.org">OpenMediaVault</a></strong>（OMV）是基于Debian Linux的完整NAS解决方案。它是知名的开源NAS服务器系统FreeNAS（基于FreeBSD）的Linux重写版。OMV的显著特点有</p>
 <ul>
-<li>开箱即用，无需网络和存储系统的专业知识的安装和管理</li>
+<li>开箱即用，安装和管理无需网络和存储系统专业知识</li>
 <li>适用于x86-64和ARM平台，具有完整的Web管理界面</li>
 <li>支持多种协议（如SFTP、SMB/CIFS或NFS）下的文件存储访问</li>
 <li>可以通过SSH进行管理，能控制用户和组的访问权</li>
@@ -374,7 +374,7 @@
 <li>多用户支持及分级播放权限设置</li>
 </ul>
 <p>Plex媒体服务器软件本身是免费的，也支持众多操作系统，非常适合与家用NAS相集成。</p>
-<p>以上这些涵盖了我们的NAS项目所需的所有软件，但是这对一个完整的NAS系统是不够的。我们还需要一个优选的机壳，否则树莓派NAS只能裸机运行。虽然市场上树莓派4B可用的机壳很多，作为NAS系统我们需要能容纳至少1-2个内置式SSD/HDD的机壳套件。</p>
+<p>以上这些涵盖了我们的NAS项目所需的所有软件，但是这对一个完整的NAS系统是不够的。我们还需要一个优选的机壳，否则树莓派NAS只能裸机运行。虽然市场上树莓派4B可用的机壳很多，作为NAS系统我们需要能容纳至少1-2个内置式SSD/HDD的机壳套件，此外还必须拥有良好的散热设计。</p>
 <p>经过一些比对，确定选用Geekworm的<a target="_blank" rel="noopener" href="https://wiki.geekworm.com/NASPi"><strong>NASPi 树莓派4B NAS存储套件</strong></a>。NASPi是专为最新的树莓派4B设计的的NUC（Next Unit of Computing）风格的NAS存储解决方案。它由三个部件组成：</p>
 <ol type="1">
 <li>X823存储屏蔽板，支持2.5英寸SATA 固态硬盘（SDD）或机械硬盘（HDD）</li>
@@ -390,7 +390,7 @@
 <li>32GB microSD用于树莓派OS存储</li>
 <li>NASPi NAS存储套件</li>
 <li>15-20W USB-C 电源适配器</li>
-<li>500GB内置式SSD（USB3.0）</li>
+<li>500GB内置式SSD（USB 3.0）</li>
 <li>2TB外置式HDD（USB 3.0）</li>
 </ul></li>
 <li>软件系统：
@@ -400,7 +400,7 @@
 <li>Plex媒体服务器提供流媒体服务</li>
 </ul></li>
 </ul>
-<p>要特别指出的是，NAS服务器一般都是无头系统（headless system），没有常见的键盘、鼠标和显示器连接。这对软硬件系统的安装、配置和调试都提出一些挑战。实际实现中，如下一节的描述所示，我们应用SSH终端连接完成基本项目实现过程。</p>
+<p>要特别指出的是，NAS服务器一般都是无头系统（headless system），无需键盘、鼠标和显示器。这对软硬件系统的安装、配置和调试都提出一些挑战。实际实现中，如下一节的描述所示，我们应用SSH终端连接完成基本项目实现过程。</p>
 <h2 id="项目实现">项目实现</h2>
 <p>此项目实现分为四个阶段，逐段详细描述如下。</p>
 <h3 id="预备树莓派4b">预备树莓派4B</h3>
@@ -478,11 +478,11 @@
 <p>组装过程主要参考Youtube上的<a target="_blank" rel="noopener" href="https://youtu.be/ithz2Mg5Vrc">NASPi教学视屏</a>按部就班进行，大致步骤如下：</p>
 <ol type="1">
 <li>插入SSD到X823的SATA III接口，翻转到另一面用螺丝固定</li>
-<li>载此面加装空间分隔块后安装树莓派4B板，2x7针排线穿过二者之间</li>
-<li>在树莓派4B板上面安装PWM风扇，以及额外的空间分隔块</li>
-<li>连接X-C1板和树莓派4B板，插入2x7针排线右端到X-C1 GPIO端口，插入3针排线到X-C1 FAN端口</li>
-<li>对齐插入2x7针排线左端的子板到树莓派4B板的GPIO端口，用螺丝固定</li>
-<li>插入USB 3.0连接器，连通X823 V1.5的USB 3.0端口与树莓派4B板下面一个USB 3.0口</li>
+<li>在此面加装空间分隔块后安装树莓派4B，2x7针排线穿过二者之间</li>
+<li>在树莓派4B上面安装PWM风扇，以及额外的空间分隔块</li>
+<li>连接X-C1和树莓派4B，插入2x7针排线右端到X-C1 GPIO端口，插入3针排线到X-C1 FAN端口</li>
+<li>对齐插入2x7针排线左端的子板到树莓派4B的GPIO端口，用螺丝固定</li>
+<li>插入USB 3.0连接器，连通X823与树莓派4B的对应USB 3.0端口</li>
 </ol>
 <p>就此内部组件安装完成，得到如下视图</p>
 <p><img src="NASPi-internal.jpg" style="width:60.0%;height:60.0%" /></p>
@@ -494,11 +494,11 @@
 <li>运行中按住开关3秒，安全关机</li>
 <li>运行中按住开关7-8秒，强制关机</li>
 </ul>
-<p>在SSH连接终端上，运行xoff命令也可以安全关机。但是不能直接用Linux的shutdown关机，因为这样无法解除X-C1板的供电。</p>
+<p>在SSH连接终端上，运行xoff命令也可以安全关机。但是不能直接用Linux的shutdown关机，因为这样无法解除X-C1的供电。</p>
 <p>开关机测试完成，拔出USB 3.0连接器，就可以将整个模块插入机壳。加上后背板拧紧螺丝后，再重新插入USB 3.0连接器，就此NASPi系统套件组装完毕，下面是Geekworm提供的完整系统的前后视图（标注了全部接口和通风孔）</p>
 <p><img src="NASPi-outside.jpg" style="width:60.0%;height:60.0%" /></p>
 <h3 id="omv安装和配置">OMV安装和配置</h3>
-<p>第三阶段安装和配置NAS系统的核心软件——OMV，目标是实现基本的网络文件访问服务。</p>
+<p>第三阶段安装和配置NAS系统的核心软件——OMV，目标是实现基本的网络文件访问服务。在重新开机之前，先插入已格式化好NTSF文件系统的希捷2TB外置HDD到余下的另一个USB 3.0端口。启动后，从macOS连接SSH到NASPi，执行下面的流程。</p>
 <h4 id="安装omv软件包">安装OMV软件包</h4>
 <p>安装OMV的方法很简单，直接在SSH连接的终端运行下面的命令行：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -O - https://raw.githubusercontent.com/OpenMediaVault-Plugin-Developers/installScript/master/install | sudo bash</span><br></pre></td></tr></table></figure>
@@ -696,12 +696,12 @@
 <blockquote>
 <p><strong><em>Disclosure</em></strong>: <em>This blog site is reader-supported. When you buy through affiliate links below, we may earn a tiny commission. Thank you.</em></p>
 <p><strong>CanaKit 树莓派 4B 8GB RAM + 128GB MicroSD 极限套件</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3DUeDfm">https://amzn.to/3DUeDfm</a><br />
-<strong>三星 32GB EVO+ Class 10 Micro SDHC with Adapter</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3FLkTb7">https://amzn.to/3FLkTb7</a><br />
+<strong>三星（Samsung）32GB EVO+ Class 10 Micro SDHC with Adapter</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3FLkTb7">https://amzn.to/3FLkTb7</a><br />
 <strong>Geekworm NASPi 2.5英寸 SATA HDD/SSD 树莓派 4B NAS 存储套件</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3m5djAi">https://amzn.to/3m5djAi</a><br />
 <strong>Geekworm 树莓派 4 20W 5V 4A USB-C 电源适配器</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3m1EXOf">https://amzn.to/3m1EXOf</a><br />
 <strong>普联（TP-Link）TL-SG105 5端口千兆以太网交换机</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3pRkBsi">https://amzn.to/3pRkBsi</a><br />
-<strong>三星 870 EVO 500GB 2.5英寸 SATA III 内置式 SSD</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3DPKnCl">https://amzn.to/3DPKnCl</a><br />
-<strong>希捷便携式 2TB USB 3.0 外置式 HDD</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3EYegl4">https://amzn.to/3EYegl4</a><br />
+<strong>三星（Samsung）870 EVO 500GB 2.5英寸 SATA III 内置式 SSD</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3DPKnCl">https://amzn.to/3DPKnCl</a><br />
+<strong>希捷（Seagate）便携式 2TB USB 3.0 外置式 HDD</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3EYegl4">https://amzn.to/3EYegl4</a><br />
 <strong>群晖科技（Synology）2-Bay 2GB NAS DiskStation DS220+</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3Jp5qjd">https://amzn.to/3Jp5qjd</a><br />
 <strong>群晖科技（Synology）5-Bay 8GB NAS DiskStation DS1520+</strong> <a target="_blank" rel="noopener" href="https://amzn.to/3qniQDm">https://amzn.to/3qniQDm</a></p>
 </blockquote>

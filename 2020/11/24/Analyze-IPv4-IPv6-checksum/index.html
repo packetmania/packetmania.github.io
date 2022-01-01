@@ -32,7 +32,7 @@
 <meta property="og:description" content="关于IP报文首部校验和(checksum)算法，简单的说就是16位累加的反码运算，但具体是如何实现的，许多资料不得其详。TCP和UDP数据报首部也使用相同的校验算法，但参与运算的数据与IP报文首部不一样。此外，IPv6对校验和的运算与IPv4又有些许不同。因此有必要对IP分组的校验和算法作全面的解析。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-11-25T05:59:09.000Z">
-<meta property="article:modified_time" content="2021-11-28T01:39:13.683Z">
+<meta property="article:modified_time" content="2021-12-31T20:10:25.135Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="C&#x2F;C++编程">
 <meta property="article:tag" content="TCP&#x2F;IP">
@@ -103,6 +103,7 @@
         <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
         <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
         <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -166,7 +167,7 @@
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="子曦"
-      src="/images/ccie_emeritus.png">
+      src="/images/ccie_emeritus.jpg">
   <p class="site-author-name" itemprop="name">子曦</p>
   <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
 </div>
@@ -259,7 +260,7 @@
     <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2020/11/24/Analyze-IPv4-IPv6-checksum/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ccie_emeritus.png">
+      <meta itemprop="image" content="/images/ccie_emeritus.jpg">
       <meta itemprop="name" content="子曦">
       <meta itemprop="description" content="计算机网络技术及软件设计与实现">
     </span>
@@ -287,7 +288,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+        <time title="修改时间：2021-12-31 12:10:25" itemprop="dateModified" datetime="2021-12-31T12:10:25-08:00">2021-12-31</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -340,7 +341,7 @@
 <p>其中的<code>Header Checksum</code>域即为首部校验和部分。当要计算IPv4报文首部校验和时，发送方先将其置为全0，然后按16位逐一累加至IPv4报文首部结束，累加和保存于一个32位的数值中。如果总的字节数为奇数，则最后一个字节单独相加。累加完毕将结果中高16位再加到低16位上，重复这一过程直到高16位为全0。最后将结果取反存入首部校验和域。</p>
 <p>下面用实际截获的IPv4分组来演示整个计算过程：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x0000: 00 60 47 41 11 c9 00 09 6b 7a 5b 3b 08 00 45 00 </span><br><span class="line">0x0010: 00 1c 74 68 00 00 80 11 59 8f c0 a8 64 01 ab 46 </span><br><span class="line">0x0020: 9c e9 0f 3a 04 05 00 08 7f c5 00 00 00 00 00 00 </span><br><span class="line">0x0030: 00 00 00 00 00 00 00 00 00 00 00 00</span><br></pre></td></tr></table></figure>
-<p>在上面的16进制采样中，起始为以太网 (Ethernet) 帧的开头。IPv4报文首部从地址偏移量0x000e开始，第一个字节为0x45，最后一个字节为0xe9。根据以上的算法描述，我们可以作如下计算：</p>
+<p>在上面的16进制转储中，起始为以太网 (Ethernet) 帧的开头。IPv4报文首部从地址偏移量0x000e开始，第一个字节为0x45，最后一个字节为0xe9。根据以上的算法描述，我们可以作如下计算：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(1) 0x4500 + 0x001c + 0x7468 + 0x0000 + 0x8011 +</span><br><span class="line">    0x0000 + 0xc0a8 + 0x6401 + 0xab46 + 0x9ce9 = 0x3a66d</span><br><span class="line">(2) 0xa66d + 0x3 = 0xa670</span><br><span class="line">(3) 0xffff - 0xa670 = 0x598f</span><br></pre></td></tr></table></figure>
 <p>注意在第一步我们用<u>0x0000</u>设置首部校验和部分。可以看出这一报文首部的校验和与收到的值完全一致。以上的过程仅用于发送方计算初始的校验和，实际中对于中间转发的路由器和最终接收方，可将收到的IPv4报文首部校验和部分直接按同样算法相加，如果结果为<u>0xffff</u>，则校验正确。</p>
 <h2 id="c语言实现">C语言实现</h2>

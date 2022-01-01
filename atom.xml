@@ -384,9 +384,9 @@
     <category term="工具使用" scheme="https://www.packetmania.net/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"/>
     
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
@@ -401,7 +401,7 @@
     <link href="https://www.packetmania.net/2020/11/24/Analyze-IPv4-IPv6-checksum/"/>
     <id>https://www.packetmania.net/2020/11/24/Analyze-IPv4-IPv6-checksum/</id>
     <published>2020-11-25T05:59:09.000Z</published>
-    <updated>2021-11-28T01:39:13.683Z</updated>
+    <updated>2021-12-31T20:10:25.135Z</updated>
     
     
     <summary type="html">&lt;p&gt;关于IP报文首部校验和(checksum)算法，简单的说就是16位累加的反码运算，但具体是如何实现的，许多资料不得其详。TCP和UDP数据报首部也使用相同的校验算法，但参与运算的数据与IP报文首部不一样。此外，IPv6对校验和的运算与IPv4又有些许不同。因此有必要对IP分组的校验和算法作全面的解析。</summary>

@@ -8,6 +8,7 @@ Allow: /contact/
 Allow: /page/
 Allow: /tags/
 Allow: /medias/
+Allow: /en/
 
 Disallow: /js/
 Disallow: /css/

@@ -24,12 +24,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="网络附加储存（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。">
+<meta name="description" content="网络附接存储（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="自己动手使用树莓派搭建家用NAS和流媒体服务器">
 <meta property="og:url" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/index.html">
 <meta property="og:site_name" content="网络热度">
-<meta property="og:description" content="网络附加储存（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。">
+<meta property="og:description" content="网络附接存储（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端$300到高端$700不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/RPi-4B.png">
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/RPi-Imager-advopt.png">
@@ -52,7 +52,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/ADM-HDD.png">
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-final.jpg">
 <meta property="article:published_time" content="2021-12-19T18:53:08.000Z">
-<meta property="article:modified_time" content="2021-12-28T21:18:48.683Z">
+<meta property="article:modified_time" content="2022-01-04T00:23:37.019Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="树莓派">
 <meta property="article:tag" content="NAS">
@@ -181,7 +181,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%A7%84%E5%88%92"><span class="nav-number">1.</span> <span class="nav-text">项目规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">项目实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E6%A0%91%E8%8E%93%E6%B4%BE4b"><span class="nav-number">2.1.</span> <span class="nav-text">预备树莓派4B</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.1.</span> <span class="nav-text">预备操作系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A2%E6%B5%8Bip%E5%9C%B0%E5%9D%80"><span class="nav-number">2.1.2.</span> <span class="nav-text">探测IP地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0%E5%8D%87%E7%BA%A7"><span class="nav-number">2.1.3.</span> <span class="nav-text">系统更新升级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95"><span class="nav-number">2.1.4.</span> <span class="nav-text">网络连接测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nsapi%E5%A5%97%E4%BB%B6%E7%BB%84%E8%A3%85"><span class="nav-number">2.2.</span> <span class="nav-text">NSAPi套件组装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E5%86%85%E7%BD%AEssd"><span class="nav-number">2.2.1.</span> <span class="nav-text">预备内置SSD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pwm%E9%A3%8E%E6%89%87%E6%8E%A7%E5%88%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">PWM风扇控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E7%BB%84%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.3.</span> <span class="nav-text">硬件组装过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#omv%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">OMV安装和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85omv%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="nav-number">2.3.1.</span> <span class="nav-text">安装OMV软件包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2"><span class="nav-number">2.3.2.</span> <span class="nav-text">连接管理界面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.3.3.</span> <span class="nav-text">配置文件服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.4.</span> <span class="nav-text">客户端设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plex%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">Plex安装和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.4.1.</span> <span class="nav-text">安装媒体服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.4.2.</span> <span class="nav-text">配置媒体服务器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0"><span class="nav-number">3.</span> <span class="nav-text">性能评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">系统压力测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%B5%8B%E9%80%9F"><span class="nav-number">3.2.</span> <span class="nav-text">文件传输测速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E7%9B%98%E8%AF%BB%E5%86%99%E6%B5%8B%E9%80%9F"><span class="nav-number">3.3.</span> <span class="nav-text">硬盘读写测速</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">项目总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%A7%84%E5%88%92"><span class="nav-number">1.</span> <span class="nav-text">项目规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">系统实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E6%A0%91%E8%8E%93%E6%B4%BE4b"><span class="nav-number">2.1.</span> <span class="nav-text">预备树莓派4B</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.1.</span> <span class="nav-text">预备操作系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A2%E6%B5%8Bip%E5%9C%B0%E5%9D%80"><span class="nav-number">2.1.2.</span> <span class="nav-text">探测IP地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9B%B4%E6%96%B0%E5%8D%87%E7%BA%A7"><span class="nav-number">2.1.3.</span> <span class="nav-text">系统更新升级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95"><span class="nav-number">2.1.4.</span> <span class="nav-text">网络连接测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nsapi%E5%A5%97%E4%BB%B6%E7%BB%84%E8%A3%85"><span class="nav-number">2.2.</span> <span class="nav-text">NSAPi套件组装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E5%86%85%E7%BD%AEssd"><span class="nav-number">2.2.1.</span> <span class="nav-text">预备内置SSD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pwm%E9%A3%8E%E6%89%87%E6%8E%A7%E5%88%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">PWM风扇控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E7%BB%84%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.3.</span> <span class="nav-text">硬件组装过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#omv%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">OMV安装和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85omv%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="nav-number">2.3.1.</span> <span class="nav-text">安装OMV软件包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2"><span class="nav-number">2.3.2.</span> <span class="nav-text">连接管理界面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.3.3.</span> <span class="nav-text">配置文件服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.4.</span> <span class="nav-text">客户端设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plex%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">Plex安装和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.4.1.</span> <span class="nav-text">安装媒体服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.4.2.</span> <span class="nav-text">配置媒体服务器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0"><span class="nav-number">3.</span> <span class="nav-text">性能评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">系统压力测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%B5%8B%E9%80%9F"><span class="nav-number">3.2.</span> <span class="nav-text">文件传输测速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E7%9B%98%E8%AF%BB%E5%86%99%E6%B5%8B%E9%80%9F"><span class="nav-number">3.3.</span> <span class="nav-text">硬盘读写测速</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">项目总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -309,7 +309,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-12-28 13:18:48" itemprop="dateModified" datetime="2021-12-28T13:18:48-08:00">2021-12-28</time>
+        <time title="修改时间：2022-01-03 16:23:37" itemprop="dateModified" datetime="2022-01-03T16:23:37-08:00">2022-01-03</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -353,9 +353,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>网络附加储存（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端<span class="tex2jax_ignore">$</span>300到高端<span class="tex2jax_ignore">$700</span>不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。<span id="more"></span></p>
+        <p>网络附接存储（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端<span class="tex2jax_ignore">$</span>300到高端<span class="tex2jax_ignore">$700</span>不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。<span id="more"></span></p>
 <div class="note success no-icon"><p><strong>纸上得来终觉浅，绝知此事要躬行。</strong><br> <strong>— <em>陆游</em>《冬夜读书示子聿》</strong></p>
 </div>
+<p>这篇博文记录了构建Raspberry Pi NAS和家庭媒体服务器的整个过程，包括项目规划、系统实现和性能审查。这里还总结了一些重要的经验和相关选购信息，希望对任何想要尝试这个DIY项目的人有所帮助。</p>
 <h2 id="项目规划">项目规划</h2>
 <p><strong><a target="_blank" rel="noopener" href="https://www.raspberrypi.com/products/raspberry-pi-4-model-b/">树莓派（Raspberry Pi）4B</a></strong>的处理器升级为1.8GHz的博通BCM2711（四核Cortex-A72），其板载内存容量最高达8GB，配备了两个更新的USB 3.0接口和全速千兆以太网，电源也采用了较新的USB-C接口。这些极大地提高了系统吞吐量和整体综合性能，我们可以用它打造全功能家用NAS。</p>
 <p><img src="RPi-4B.png" style="width:65.0%;height:65.0%" /></p>
@@ -402,7 +403,7 @@
 </ul></li>
 </ul>
 <p>要特别指出的是，NAS服务器一般都是无头系统（headless system），无需键盘、鼠标和显示器。这对软硬件系统的安装、配置和调试都提出一些挑战。实际实现中，如下一节的描述所示，我们应用SSH终端连接完成基本项目实现过程。</p>
-<h2 id="项目实现">项目实现</h2>
+<h2 id="系统实现">系统实现</h2>
 <p>此项目实现分为四个阶段，逐段详细描述如下。</p>
 <h3 id="预备树莓派4b">预备树莓派4B</h3>
 <p>第一阶段我们需要预先准备树莓派操作系统，并做一些基本的单元测试。这个很重要，如果等到完整的NSAPi套件组装完毕再测试，那时发现树莓派的问题就很麻烦。</p>
@@ -476,13 +477,13 @@
 <li>X823 V1.5存储屏蔽板提供2.5英寸SSD/HDD存储功能（支持UASP）</li>
 <li>4010 PWM风扇和金属风扇支架</li>
 </ul>
-<p>组装过程主要参考Youtube上的<a target="_blank" rel="noopener" href="https://youtu.be/ithz2Mg5Vrc">NASPi教学视屏</a>按部就班进行，大致步骤如下：</p>
+<p>组装过程主要参考Youtube上的<a target="_blank" rel="noopener" href="https://youtu.be/ithz2Mg5Vrc">NASPi安装教学视频</a>按部就班进行，大致步骤如下：</p>
 <ol type="1">
 <li>插入SSD到X823的SATA III接口，翻转到另一面用螺丝固定</li>
-<li>在此面加装空间分隔块后安装树莓派4B，2x7针排线穿过二者之间</li>
+<li>在此面加装空间分隔块后安装树莓派4B，7针排线穿过二者之间</li>
 <li>在树莓派4B上面安装PWM风扇，以及额外的空间分隔块</li>
-<li>连接X-C1和树莓派4B，插入2x7针排线右端到X-C1 GPIO端口，插入3针排线到X-C1 FAN端口</li>
-<li>对齐插入2x7针排线左端的子板到树莓派4B的GPIO端口，用螺丝固定</li>
+<li>连接X-C1和树莓派4B，插入7针排线右端到X-C1 GPIO端口，插入3针排线到X-C1 FAN端口</li>
+<li>对齐插入7针排线左端的子板到树莓派4B的GPIO端口，用螺丝固定</li>
 <li>插入USB 3.0连接器，连通X823与树莓派4B的对应USB 3.0端口</li>
 </ol>
 <p>就此内部组件安装完成，得到如下视图</p>
@@ -519,14 +520,14 @@
 <p>在SSH终端上可看到对应的硬盘挂接信息：</p>
 <p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ df -h | grep disk</span><br><span class="line">/dev/sdb2       466G   13G  454G   3% /srv/dev-disk-by-uuid-D0604B68604B547E</span><br><span class="line">/dev/sda1       1.9T  131G  1.7T   7% /srv/dev-disk-by-uuid-DEB2474FB2472B7B</span><br></pre></td></tr></table></figure></p></li>
 <li><p><strong>挂载硬盘文件系统</strong></p>
-<p>从侧栏菜单点击<strong>存储器 &gt; 文件系统</strong>，进入文件系统管理页面。如果存储设备还没有文件系统，可点击⨁新建（Format）或挂载（Mount）文件系统。OMV可以新建/挂载ext4、ext3、jfs、xfs文件系统，但对ntfs文件系统只支持挂载。下图显示OMV正确无误地挂载SSD和HDD的ntfs文件系统： <img src="OMV-Storage-FS-cn.png" style="width:80.0%;height:80.0%" /></p></li>
-<li><p><strong>设置共享共享夹</strong></p>
-<p>从侧栏菜单点击<strong>存储器 &gt; 文件系统</strong>，进入共享文件夹管理页面。这里点击⨁创建共享文件夹。创建时要指定名称、对应的文件系统和相对路径，还可以添加注释。选择已创建的文件夹，再点击铅笔图标可以编辑相关信息。本系统为SSD和HDD分别设定共享文件夹相对路径Zixi-Primary和Zixi-Secondary <img src="OMV-Storage-SharedFolders-cn.png" style="width:80.0%;height:80.0%" /></p>
+<p>从侧栏菜单点击<strong>存储器 &gt; 文件系统</strong>，进入文件系统管理页面。如果存储设备还没有文件系统，可点击⨁新建（Create）或挂载（Mount）文件系统。OMV可以新建/挂载ext4、ext3、jfs、xfs文件系统，但对ntfs文件系统只支持挂载。下图显示OMV正确无误地挂载SSD和HDD的ntfs文件系统： <img src="OMV-Storage-FS-cn.png" style="width:80.0%;height:80.0%" /></p></li>
+<li><p><strong>设置共享文件夹</strong></p>
+<p>从侧栏菜单点击<strong>存储器 &gt; 共享文件夹</strong>，进入共享文件夹管理页面。这里点击⨁创建共享文件夹。创建时要指定名称、对应的文件系统和相对路径，还可以添加注释。选择已创建的文件夹，再点击铅笔图标可以编辑相关信息。本系统为SSD和HDD分别设定共享文件夹相对路径Zixi-Primary和Zixi-Secondary <img src="OMV-Storage-SharedFolders-cn.png" style="width:80.0%;height:80.0%" /></p>
 <p>注意到上图顶上的橙黄色警示，它提醒管理者设置已变更，必须点击✔️图标才能生效。</p></li>
 <li><p><strong>添加文件共享访问用户</strong></p>
 <p>从侧栏菜单点击<strong>用户管理 &gt; 用户</strong>，进入用户管理页面。系统的默认用户pi具有root权限，基于安全考量，不可用于文件共享访问。所以需要另外添加一个新用户。在此页面点击⨁新建用户，新建时只有用户名和密码是必须的，其它可选填。建好后选中此用户，点击第三个带钥匙的文件夹图标（提示“共享文件夹权限”），进入如下的权限设置页面 <img src="OMV-User-authorize-cn.png" style="width:80.0%;height:80.0%" /> 如图所示，针对此新用户zixi，管理员可以设定每一个共享文件夹的读写访问权限。</p></li>
 <li><p><strong>启动文件共享服务</strong></p>
-<p>展开导航菜单的“服务”项，可以看到OMV管理五种服务：FTP、NFS、Rsync、SMB/CIFS和SSH。SSH是系统初始就启用的。NFS和SMB/CIFS是最通用的网络文件共享协议，macOS也都支持二者。这里以SMB/CIFS为例。从侧栏菜单点击<strong>服务 &gt; SMB/CIFS</strong>，进入管理页面。页面包含两个按钮：设置和共享。先点击“设置”，在新页面启动SMB/CIFS服务并配置工作组名称，其它选项可先保持默认值。保存后SMB/CIFS回到管理页面。然后点击“共享”，在新页面点击⨁添加共享文件夹Zixi-Primary和Zixi-Secondary并保存。之后点击跳出的橙黄色警示条的✔️图标使所有配置更新生效，最终得到如下图的结果 <img src="OMV-SMB-Shares-cn.png" style="width:80.0%;height:80.0%" /></p></li>
+<p>展开导航菜单的“服务”项，可以看到OMV管理五种服务：FTP、NFS、Rsync、SMB/CIFS和SSH。SSH是系统初始就启用的。NFS和SMB/CIFS是最通用的网络文件共享协议，macOS也都支持二者。这里以SMB/CIFS为例。从侧栏菜单点击<strong>服务 &gt; SMB/CIFS</strong>，进入管理页面。页面包含两个按钮：设置和共享。先点击“设置”，在新页面启动SMB/CIFS服务并配置工作组名称，其它选项可先保持默认值。保存后回到SMB/CIFS管理页面。然后点击“共享”，在新页面点击⨁添加共享文件夹Zixi-Primary和Zixi-Secondary并保存。之后点击跳出的橙黄色警示条的✔️图标使所有配置更新生效，最终得到如下图的结果 <img src="OMV-SMB-Shares-cn.png" style="width:80.0%;height:80.0%" /></p></li>
 </ol>
 <p>到此我们的树莓派NAS系统的文件共享配置完毕，SMB/CIFS的服务已启动。选择开启相关的组件后，我们的仪表盘实时监控显示如下<img src="OMV-Dashboard-cn.png" style="width:85.0%;height:85.0%" /></p>
 <h4 id="客户端设置">客户端设置</h4>
@@ -645,9 +646,9 @@
 <ul>
 <li>NAS硬盘读的速度比写要快，随机访问下的差别非常大。</li>
 <li>无论顺序访问还是随机访问，SSD的性能都胜过HDD。</li>
-<li>大的队列深度可以加快读，对随机访问尤甚，当对写的影响不大。</li>
+<li>大的队列深度可以加快读，对随机访问尤甚，但对写的影响不大。</li>
 <li>对于SSD和HDD，都是顺序读写的效率要大大好于随机读写。</li>
-<li>对 SSD和HDD，都是大队列深度下顺序读写达到最高速度。</li>
+<li>对于SSD和HDD，都是大队列深度下顺序读写达到最高速度。</li>
 </ul>
 <p>这些其实并不意外，与macOS笔记本电脑直接外挂SSD和HDD的测试结果相一致，只是数值较低。在此NAS系统下，SSD和HDD都是通过USB 3.0接口连接的。USB 3.0支持高达5Gbit/s的传输速度，所以系统的性能瓶颈在于网络接口带宽和处理器能力。</p>
 <p>另一方面，SSD和HDD都在1MB顺序读及队列深度8的情况下达到超过900Mbit/s传送速度，接近千兆以太网接口带宽上限。这一存储速度可支持单路帧率为60fps的1080p60视频流或者并行2路帧率为25fps的1080i50视频流，对于家庭流媒体服务来说已经足够了。实测同时三台电脑点播高清视频和一部手机播放MP3音乐，并无任何卡顿的现象，此NAS系统的表现令人满意。</p>
@@ -787,7 +788,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

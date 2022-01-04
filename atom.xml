@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2022-01-04T05:27:19.629Z</updated>
+  <updated>2022-01-04T18:48:18.522Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/"/>
     <id>https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/</id>
     <published>2021-12-19T18:53:08.000Z</published>
-    <updated>2022-01-04T05:27:19.629Z</updated>
+    <updated>2022-01-04T18:48:18.522Z</updated>
     
     
     <summary type="html">&lt;p&gt;网络附接存储（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端&lt;span class=&quot;tex2jax_ignore&quot;&gt;$&lt;/span&gt;300到高端&lt;span class=&quot;tex2jax_ignore&quot;&gt;$700&lt;/span&gt;不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。</summary>

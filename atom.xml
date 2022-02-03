@@ -206,7 +206,7 @@
     <link href="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/"/>
     <id>https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/</id>
     <published>2021-03-01T19:08:51.000Z</published>
-    <updated>2021-11-28T07:15:18.209Z</updated>
+    <updated>2022-02-03T08:03:47.149Z</updated>
     
     
     <summary type="html">&lt;p&gt;RSA加密算法是现代公钥密码学的核心技术之一，在互联网中应用广泛。作为公钥密码学的经典算法，教科书RSA的编程实现可以帮助我们迅速掌握其数学机理和设计思想，并积累重要的密码技术软件实现经验。这里详述Python3.8编程环境下教科书RSA的实现示例。</summary>
@@ -386,9 +386,9 @@
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="软件测试" scheme="https://www.packetmania.net/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/"/>
     
@@ -411,9 +411,9 @@
     <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
     
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   

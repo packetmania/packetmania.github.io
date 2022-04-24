@@ -61,7 +61,7 @@
     <link href="https://www.packetmania.net/2021/08/03/ASAN-intro/"/>
     <id>https://www.packetmania.net/2021/08/03/ASAN-intro/</id>
     <published>2021-08-03T23:00:56.000Z</published>
-    <updated>2021-12-20T08:27:17.742Z</updated>
+    <updated>2022-04-24T01:28:32.013Z</updated>
     
     
     <summary type="html">&lt;p&gt;内存访问错误是最常见的软件错误，常常造成程序崩溃。程序员们一直在找寻优秀的内存访问错误检测工具，以便及时定位和排除错误以提高软件的可靠性。2012年由谷歌工程师开发的一款AddressSanitizer工具，以其覆盖面广、高效率和低开销的特性，已成为C/C++程序员们的首选。这里对其原理和使用方法做一个简要的介绍。</summary>

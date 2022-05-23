@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="2021年3月，互联网工程任务组（IETF）发布分类为当前最佳实践的RFC 8996，正式宣布弃用TLS 1.0和 TLS 1.1协议。如果你的应用程序和网站服务还在使用这些协议，请马上停止并立即更新到TLS 1.2或TLS 1.3协议版本，以消除可能存在的安全隐患。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="请马上停止使用TLS 1.0和TLS 1.1!">
+<meta property="og:url" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="2021年3月，互联网工程任务组（IETF）发布分类为当前最佳实践的RFC 8996，正式宣布弃用TLS 1.0和 TLS 1.1协议。如果你的应用程序和网站服务还在使用这些协议，请马上停止并立即更新到TLS 1.2或TLS 1.3协议版本，以消除可能存在的安全隐患。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/SSL-Lab-SSL-TLS.png">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/SSL-Report-Sum.png">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/SSL-Report-Conf.png">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/Firefox-TLS-MIN-VER.png">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/TLS-V1-1-BADSSL.png">
+<meta property="article:published_time" content="2022-05-01T19:20:25.000Z">
+<meta property="article:modified_time" content="2022-05-23T22:53:44.096Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/SSL-Lab-SSL-TLS.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/","path":"2022/05/01/Stop-TLS1-0-TLS1-1/","title":"请马上停止使用TLS 1.0和TLS 1.1!"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>请马上停止使用TLS 1.0和TLS 1.1! | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#rfc%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">RFC解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E7%95%8C%E5%8A%A8%E6%80%81"><span class="nav-number">2.</span> <span class="nav-text">业界动态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">协议测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ssl-lab%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">SSL Lab测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E8%87%AA%E6%B5%8B"><span class="nav-number">3.2.</span> <span class="nav-text">用户自测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B5%8B%E8%AF%95"><span class="nav-number">3.3.</span> <span class="nav-text">浏览器测试</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_emeritus.jpg">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_emeritus.jpg">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          请马上停止使用TLS 1.0和TLS 1.1!
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-01 12:20:25" itemprop="dateCreated datePublished" datetime="2022-05-01T12:20:25-07:00">2022-05-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-05-23 15:53:44" itemprop="dateModified" datetime="2022-05-23T15:53:44-07:00">2022-05-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E8%AF%84%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">技术评论</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>2021年3月，互联网工程任务组（IETF）发布分类为当前最佳实践的<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>，正式宣布弃用TLS 1.0和 TLS 1.1协议。如果你的应用程序和网站服务还在使用这些协议，请马上停止并立即更新到TLS 1.2或TLS 1.3协议版本，以消除可能存在的安全隐患。 <span id="more"></span></p>
+<div class="note success no-icon"><p><strong>One single vulnerability is all an attacker needs.</strong><br> <strong>— <em>Window Snyder</em>（窗·斯奈德，美国计算机安全专家，曾任微软、苹果、英特尔等公司的顶级安全策略师及首席软件安全官等职务）</strong></p>
+</div>
+<h3 id="rfc解读">RFC解读</h3>
+<p><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>的文档标题非常直接，就是“弃用TLS 1.0和 TLS 1.1”。那么它给出的理据是什么？下面来做一个简单的解读。</p>
+<p>首先，看看其摘要的中文译文：</p>
+<blockquote>
+<p>本文档正式弃用传输层安全性协议（Transport Layer Security，简写TLS）1.0（RFC 2246）和1.1（RFC 4346）版本。 相应地，那些RFC文档已被移至历史状态。 这些协议版本缺乏对当前推荐的加密算法和机制的支持，而且现在许多政府和行业都要求使用TLS的各种应用避开这些旧的TLS版本。</p>
+<p>TLS 1.2版本在2008年成为IETF协议的推荐版本（随后在2018年被TLS 1.3版本所替代），这为从旧版本过渡提供了足够的时间。从应用实现中移除对旧版本的支持可以减少攻击面、降低错误配置的机会和提高库和产品的维护效率。</p>
+<p>本文档还废除了数据报传输层安全性协议（Datagram TLS）1.0版本（RFC 4347），但DTLS 1.2版本仍然有效。DTLS 1.1版本并不存在。</p>
+<p>如文中所述，本文档更新了许多规范性地引用TLS 1.0或1.1版本的RFC。本文档也更新了RFC 7525中关于TLS使用的最佳实践。因此，它是BCP 195的一部分。</p>
+</blockquote>
+<p>这里给出的信息很明确，弃用它们的原因完全是技术上的。TLS 1.0和TLS 1.1不能支持更强的加密算法和机制，无法胜任新时代各类网络应用的高安全需求。TLS是基于TCP的，对应于基于UDP的DTLS协议，<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>也宣布弃用DTLS 1.0协议。</p>
+<p>正文的序言部分列出了技术原因的一些细节：</p>
+<ol type="1">
+<li>这些旧版本要求实现一些过时的密码套件，而这些密码套件已经被密码学认定不再可取。比如TLS 1.0强制必须支持TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA。</li>
+<li>缺乏对当前推荐的密码套件的支持，特别是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Authenticated_encryption">带有关联数据的认证加密（AEAD）</a>算法。TLS对它们的支持从1.2版本才开始。</li>
+<li>握手过程的完整性取决于SHA-1散列值。</li>
+<li>对对方真实性的认证取决于SHA-1签名。</li>
+<li>支持四个版本的TLS协议使得错误配置的机会上升。</li>
+<li>至少一个普遍使用的编程库正计划在即将发布的新版本中放弃对TLS 1.0和TLS 1.1的支持。</li>
+</ol>
+<p>上述的第5、6条很清楚，无需进一步解释。</p>
+<p>对第1条提到的3DES，虽然它使用总长168位的三个独立密钥，但是考虑到可能的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Meet-in-the-middle_attack">中途相遇攻击</a>，它的有效安全性仅为112位。此外，3DES的加密块长度仍然是64位，这使得它在<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Birthday_attack">生日攻击</a>面前显得异常脆弱（参见<a target="_blank" rel="noopener" href="https://sweet32.info/">Sweet32</a>）。NIST规定单个3DES密钥组只能用于加密<span class="math inline">\(2^{20}\)</span>个数据块（即8MB）。这当然太小了，最终NIST于2017决定在IPSec和TLS的协议中弃用3DES。</p>
+<p>3DES只是一个例子，另一大类早先就被淘汰的就是使用RC4流密码的密码套件，详情可见<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7465">RFC 7465</a>。此外，还有块密码CBC模式实现中的种种问题，也常常被攻击者利用破解TLS会话。对TLS 1.0和TLS 1.1的各类攻击及应对措施的总结，在<a target="_blank" rel="noopener" href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf">NIST800-52r2</a>和<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7457">RFC7457</a>中有详细的阐述。这两个参考文档为弃用提供了关键理据。显然，任何强制要求实现不安全密码套件的协议都应该被列入被淘汰的清单中。</p>
+<p>在文档的第2部分，更是直接引用了<a target="_blank" rel="noopener" href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf">NIST800-52r2</a>的1.1节“TLS的历史”中的内容（简略如下表所示）：</p>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 36%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">TLS版本</th>
+<th style="text-align: center;">协议文档</th>
+<th style="text-align: left;">关键特征更新</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.1</td>
+<td style="text-align: center;"><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4346">RFC 4346</a></td>
+<td style="text-align: left;">改进初始化向量选择和填充差错处理的过程，以修补TLS 1.0中发现的CBC模式下的种种缺陷。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1.2</td>
+<td style="text-align: center;"><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246">RFC 5246</a></td>
+<td style="text-align: left;">改进的加密算法，特别在散列函数方面支持SHA-2系列算法来进行散列、MAC和伪随机函数计算，增加了AEAD密码套件</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1.3</td>
+<td style="text-align: center;"><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8446">RFC 8446</a></td>
+<td style="text-align: left;">TLS的重大改变，旨在清除多年来出现的众多威胁。变化包括新的握手协议、新的使用基于HMAC的提取和扩展密钥派生函数（HKDF）的密钥派生过程，以及删除各种使用RSA密钥传输、静态迪菲—赫尔曼密钥交换、CBC操作模式或SHA-1的密码套件。</td>
+</tr>
+</tbody>
+</table>
+<p>AEAD是一种能够同时保证数据的保密性、完整性和真实性的加密模式，典型的如<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/CCM_mode">CCM</a>和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">GCM</a>等。TLS 1.2引入了一系列AEAD密码套件，而它的高安全性使得其成为TLS 1.3的排他性选择。这些注释了技术原因的第2条。</p>
+<p>技术原因的第3、4条点名SHA-1，那么SHA-1到底有什么问题？文档的第3部分引用了两名法国的研究者<a target="_blank" rel="noopener" href="https://www.mitls.org/downloads/transcript-collisions.pdf">Karthikeyan Bhargavan和Gaetan Leurent的论文</a>做出了解答。</p>
+<p>作为一种密码散列函数，SHA-1由美国国家安全局（NSA）设计，而后被美国国家标准技术研究所（NIST）发布为联邦资料处理标准（FIPS）。SHA-1可将最大不超过<span class="math inline">\(2^{64}\)</span>比特的消息生成一个160位（20字节）散列值，即消息摘要。由此，基于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Birthday_attack">生日攻击</a>的暴力破解法需要复杂度为<span class="math inline">\(2^{80}\)</span>的操作。2005年，中国密码学家王小云及其研究团队在此领域获得突破。她们发表的高效率SHA-1攻击法，能在<span class="math inline">\(2^{63}\)</span>个计算复杂度内找到散列碰撞。这给SHA-1的安全性带来巨大的冲击，但这并不表示该破解法已经可以进入实际应用的阶段。</p>
+<p>网络安全协议（如TLS、IKE和SSH等）依赖于密码散列函数的次原像抗性（second preimage resistance），即从计算角度无法找到任何与特定输入值有着相同输出的二次输入值。例如，对于密码散列函数<span class="math inline">\(h(x)\)</span>及给定输入<span class="math inline">\(x\)</span>，很难找到满足<span class="math inline">\(h(x) = h(x^′)\)</span>的次原像<span class="math inline">\(x^′ ≠ x\)</span>。因为找到散列碰撞并不意味着就能定位出次原像，所以实践中人们一度认为继续使用SHA-1问题不大。</p>
+<p>然而，2016年Bhargavan和Leurent（就是他们实现了前述的针对64位块密码的Sweet32攻击）发现了一类新的攻击密钥交换协议的方法，打破了这一认知。此方法建立于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack">选择前缀碰撞攻击</a>原理之上，即给定两个不同的前缀<span class="math inline">\(p_1\)</span>和<span class="math inline">\(p_2\)</span>, 找到两个附件<span class="math inline">\(m_1\)</span>和<span class="math inline">\(m_2\)</span>满足<span class="math inline">\(h(p_1 ∥ m_1) = hash(p_2 ∥ m_2)\)</span>。应用此方法，他们演示了针对TLS客户端和服务器的中间人攻击用以实现盗取敏感资料，也证实了攻击可以用来在TLS 1.1、IKEv2和SSH-2会话握手过程中实现伪装和降级。特别地，他们计算出只需要<span class="math inline">\(2^{77}\)</span>次操作，就可以破解使用SHA-1或者MD5与SHA-1级联散列值的握手协议。</p>
+<p>由于TLS 1.0和TLS 1.1都不允许会话双方为服务器密钥交换（ServerKeyExchange）消息或证书验证（CertificateVerify）消息选择更强的密码散列函数，IETF确认使用较新协议版本为唯一的升级路径。</p>
+<p>文档的第4、5部分再次明确不得使用TLS 1.0和TLS 1.1、不允许从任何TLS版本协商到TLS 1.0或TLS 1.1。这意味着TLS客户端和服务器各自发出的ClientHello.client_version和ServerHello.server_version不得为{03,01}（TLS 1.0）或{03,02}（TLS 1.1）。如果收到对方发来的Hello消息里的协议版本号为{03,01}或{03,02}，本地必须以“protocol_version”告警消息回应并关闭连接。</p>
+<p>值得注意的是，由于历史原因，TLS规范并没有明确客户端发送ClientHello消息时记录层版本号(TLSPlaintext.version)的取值。 所以为了最大限度地提高互操作性，TLS服务器必须接受任何值 {03,XX} (包括 {03,00}) 作为ClientHello消息的记录层版本号，但他们不得协商TLS 1.0或TLS 1.1。</p>
+<p>文档的第6部分声明了对以前发布的<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7525">RFC 7525</a>（TLS和DTLS的安全使用推荐）的文字修订。在该RFC的三个地方将实现时协商TLS 1.0、TLS 1.1和DTLS 1.0从“不应”（SHOULD NOT）改为“不得”（MUST NOT）。最后余下部分是标准的RFC操作和安全考虑总结。</p>
+<h3 id="业界动态">业界动态</h3>
+<p>在大型公共在线服务的业界，GitHub是最先行动的。他们早在2018年2月就开始在所有HTTPS连接中禁用TLS 1.0和TLS 1.1，同时还在SSH连接服务中淘汰了不安全的<code>diffie-hellman-group1-sha1</code>和<code>diffie-hellman-group14-sha1</code>密钥交换算法。2018年8月，Mozilla火狐的首席技术官Eric Rescorla发布TLS 1.3技术规范<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8446</a>。两个月之后，Mozilla就与苹果、谷歌和微软三大巨头一起协同发布声明，将废除TLS 1.0和TLS 1.1提上日程。</p>
+<p>以下是对几个相关知名企业的动态简单汇总：</p>
+<ul>
+<li><p><strong>微软：</strong>对于Office 365服务，受COVID-19的影响，曾经暂停了对商业客户的TLS 1.0和1.1的禁用。2020年10月15日重新启动了TLS 1.2的强制推广。SharePoint和OneDrive的用户需要更新和配置.NET以支持TLS 1.2。Teams Rooms的用户推荐升级应用程序到4.0.64.0版。Surface Hub在2019年5月就发布了对TLS 1.2的支持。Edge浏览器84版本开始默认不使用TLS 1.0/1.1 ，而Azure云计算服务则于2022年3月31日起永久废弃TLS 1.0/1.1。</p></li>
+<li><p><strong>谷歌：</strong>早于2018年，就开始在Chrome 70加入了TLS 1.3的功能。从Chrome 84开始，全面移除对TLS 1.0和TLS 1.1支持。在搜索引擎、Gmail电邮、YouTube和其他各种谷歌服务中运行TLS 1.3一段时间后，于2020年正式推出了TLS 1.3作为所有新的和现有的云CDN和全球负载均衡客户的默认配置。</p></li>
+<li><p><strong>苹果:</strong> 2021年9月宣布，在iOS 15、iPadOS 15、macOS 12、watchOS 8及tvOS 15中废止对TLS 1.0和TLS 1.1的支持，后续版本将彻底移除。如果用户的应用程序在所有的连接中都激活App Transport Security（ATS）功能，则无须任何改变。同时通告用户确保网络服务器支持更新的TLS版本，并从应用中删除以下已废弃的<code>Security.framework</code>符号：</p>
+<ul>
+<li>tls_protocol_version_t.TLSv10</li>
+<li>tls_protocol_version_t.TLSv11</li>
+<li>tls_protocol_version_t.DTLSv10</li>
+</ul></li>
+<li><p><strong>Mozilla：</strong>从火狐浏览器78版开始，默认配置的最低TLS版本为TLS 1.2。在2020年初，Mozilla曾短暂完全去除火狐的TLS 1.0和TLS 1.1，但是这造成了许多用户无法打开一些COVID-19疫情公共信息网站，所以不得不恢复相关的功能。在此之后，Mozilla在其技术支持页提供帮助信息，指导用户自行按需修改默认配置中的最低TLS版本号。</p></li>
+<li><p><strong>思科：</strong>Cisco Umbrella（从OpenDNS更名而来）服务在2020年3月31日中止对TLS 1.2之前所有版本的支持。此后，只有兼容TLS 1.2的客户端才能进行连接。在路由器和交换机的产品线，2020年前后基本都实现了网页管理只允许TLS 1.2或后续版本。</p>
+<p>思科的无线接入点（AP）与无线局域网控制器（WLC）之间的CAPWAP连接建立与DTLS之上。从2015年到最近发布的全部802.11ac Wave 2和802.11ax AP都支持DTLS 1.2。AireOS WLC在8.3.11x.0版加入DTLS 1.2功能，而运行IOS-XE的新一代C9800 WLC则一开始就支持DTLS 1.2。注意，因为存在大量使用旧设备和软件版本的既有网络部署，为保护用户投资，目前AP和WLC还不能马上去除对DTLS 1.0的支持。但是，DTLS 1.2已经是AP和WLC默认的最优选择。</p></li>
+</ul>
+<h3 id="协议测试">协议测试</h3>
+<p>不论是TLS/DTLS的客户端还是服务器，都需要测试验证其实现是否遵循<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>的当前最佳实践。</p>
+<h4 id="ssl-lab测试">SSL Lab测试</h4>
+<p>Qualys公司源自非商业的<a target="_blank" rel="noopener" href="https://www.ssllabs.com/index.html">SSL Lab项目</a>。他们提供免费的简单客户端和服务器测试服务，还有一个<a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssl-pulse/">监控面板</a>报告最流行互联网网站的TLS/SSL安全性扫描统计。下面是最近的2022年5月的协议支持统计图表：</p>
+<p><img src="SSL-Lab-SSL-TLS.png" style="width:70.0%;height:70.0%" /></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">协议版本</th>
+<th style="text-align: center;">安全性</th>
+<th style="text-align: center;">站点支持（2022年1月）</th>
+<th style="text-align: center;">站点支持（2022月5月)</th>
+<th style="text-align: center;">变化</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">SSL 2.0</td>
+<td style="text-align: center;">不安全</td>
+<td style="text-align: center;">486（0.4%）</td>
+<td style="text-align: center;">404（0.3%)</td>
+<td style="text-align: center;">-0.1%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">SSL 3.0</td>
+<td style="text-align: center;">不安全</td>
+<td style="text-align: center;">3,864（2.8%）</td>
+<td style="text-align: center;">3,434（2.5%)</td>
+<td style="text-align: center;">-0.3%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">TLS 1.0</td>
+<td style="text-align: center;">弃用</td>
+<td style="text-align: center;">53,520（39.3%）</td>
+<td style="text-align: center;">50.216（37.1)</td>
+<td style="text-align: center;">-2.2%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">TLS 1.1</td>
+<td style="text-align: center;">弃用</td>
+<td style="text-align: center;">58,646（40.6%）</td>
+<td style="text-align: center;">54,926（43.0%)</td>
+<td style="text-align: center;">-2.4%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">TLS 1.2</td>
+<td style="text-align: center;">取决于密码套件和客户端</td>
+<td style="text-align: center;">135,842（99.6）</td>
+<td style="text-align: center;">134,937（99.7)</td>
+<td style="text-align: center;">+0.1%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">TLS 1.3</td>
+<td style="text-align: center;">安全</td>
+<td style="text-align: center;">70,073（51.4%）</td>
+<td style="text-align: center;">73,355（54.2%)</td>
+<td style="text-align: center;">+2.8%</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，几乎100%的站点都能运行TLS 1.2，支持TLS 1.3的百分比也超过了50%。这是非常鼓舞人心的数据。虽然极少数网站还在运行SSL 2.0/3.0，并且TLS 1.0/1.1都还有40%左右的支持率，总体上它们所占比例是在持续下降的，这一好趋势应该会持续下去。</p>
+<p>本博客网站的服务由GitHub Page提供，输入网址到<a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssltest/">SSL Lab的服务器测试页</a>，提交后得到的测试报告如下：</p>
+<p><img src="SSL-Report-Sum.png" /></p>
+<p>站点的整体安全评级达到最高的A+。在证书和协议支持方面是满分，而在密钥交换和密码强度上也都得到90分。这说明GitHub兑现了对用户的安全承诺，值得程序员们的信任。</p>
+<p>报告的配置部分，给出了如下协议支持和密码套件的测试结果细节：</p>
+<p><img src="SSL-Report-Conf.png" /></p>
+<p>这进一步确认了GitHub Page只支持TLS 1.2/1.3，符合<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>的要求。还可以看到，在“密码套件”（Cipher Suites）小标题下，TLS 1.3显示的两项GCM、一项ChaCha20-Poly1305都是AEAD算法，同类的三个密码套件也是服务器首选的TLS 1.2密码套件。这正是当前普遍采纳的安全密码算法配置。</p>
+<h4 id="用户自测">用户自测</h4>
+<p>如果怀疑私有服务器还在使用过时的TLS/SSL协议，可以用命令行工具<code>curl</code>做个简单测试，示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">❯ curl https://www.cisco.com -svo /dev/null --tls-max 1.1</span><br><span class="line">*   Trying 104.108.67.95:443...</span><br><span class="line">* Connected to www.cisco.com (104.108.67.95) port 443 (<span class="comment">#0)</span></span><br><span class="line">* ALPN, offering h2</span><br><span class="line">* ALPN, offering http/1.1</span><br><span class="line">* successfully <span class="built_in">set</span> certificate verify locations:</span><br><span class="line">*  CAfile: /etc/ssl/cert.pem</span><br><span class="line">*  CApath: none</span><br><span class="line">* (304) (OUT), TLS handshake, Client hello (1):</span><br><span class="line">&#125; [151 bytes data]</span><br><span class="line">* error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version</span><br><span class="line">* Closing connection 0</span><br></pre></td></tr></table></figure>
+<p>这里输入命令行选项<code>--tls-max 1.1</code>设定最高的协议版本1.1，并连接到思科公司主页。结果连接失败并收到“protocol version”告警信息。这说明服务器拒绝了TLS 1.1连接请求，其响应正好就是<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>所要求的。</p>
+<p>通用的开源密码学和安全通信工具箱<a target="_blank" rel="noopener" href="https://www.openssl.org">OpenSSL</a>提供的<code>openssl</code>命令行工具也可以做同样的测试。为了检测服务器是否支持TLS 1.2协议，可使用选项<code>s_client</code>仿真TLS/SSL客户端，同时输入<code>-tls1_2</code>指定只用TLS 1.2。命令行运行的记录如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">❯ openssl s_client -connect www.cisco.com:443 -tls1_2</span><br><span class="line">CONNECTED(00000005)</span><br><span class="line">depth=2 C = US, O = IdenTrust, CN = IdenTrust Commercial Root CA 1</span><br><span class="line">verify <span class="built_in">return</span>:1</span><br><span class="line">depth=1 C = US, O = IdenTrust, OU = HydrantID Trusted Certificate Service, CN = HydrantID Server CA O1</span><br><span class="line">verify <span class="built_in">return</span>:1</span><br><span class="line">depth=0 CN = www.cisco.com, O = Cisco Systems Inc., L = San Jose, ST = California, C = US</span><br><span class="line">verify <span class="built_in">return</span>:1</span><br><span class="line">---</span><br><span class="line">Certificate chain</span><br><span class="line"> 0 s:/CN=www.cisco.com/O=Cisco Systems Inc./L=San Jose/ST=California/C=US</span><br><span class="line">   i:/C=US/O=IdenTrust/OU=HydrantID Trusted Certificate Service/CN=HydrantID Server CA O1</span><br><span class="line"> 1 s:/C=US/O=IdenTrust/OU=HydrantID Trusted Certificate Service/CN=HydrantID Server CA O1</span><br><span class="line">   i:/C=US/O=IdenTrust/CN=IdenTrust Commercial Root CA 1</span><br><span class="line"> 2 s:/C=US/O=IdenTrust/CN=IdenTrust Commercial Root CA 1</span><br><span class="line">   i:/C=US/O=IdenTrust/CN=IdenTrust Commercial Root CA 1</span><br><span class="line">---</span><br><span class="line">Server certificate</span><br><span class="line">-----BEGIN CERTIFICATE-----</span><br><span class="line">MIIHrzCCBpegAwIBAgIQQAF9KqwAKOKNhDf17h+WazANBgkqhkiG9w0BAQsFADBy</span><br><span class="line">...</span><br><span class="line">4TY7</span><br><span class="line">-----END CERTIFICATE-----</span><br><span class="line">subject=/CN=www.cisco.com/O=Cisco Systems Inc./L=San Jose/ST=California/C=US</span><br><span class="line">issuer=/C=US/O=IdenTrust/OU=HydrantID Trusted Certificate Service/CN=HydrantID Server CA O1</span><br><span class="line">---</span><br><span class="line">No client certificate CA names sent</span><br><span class="line">Server Temp Key: ECDH, P-256, 256 bits</span><br><span class="line">---</span><br><span class="line">SSL handshake has <span class="built_in">read</span> 5765 bytes and written 322 bytes</span><br><span class="line">---</span><br><span class="line">New, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256</span><br><span class="line">Server public key is 2048 bit</span><br><span class="line">Secure Renegotiation IS supported</span><br><span class="line">Compression: NONE</span><br><span class="line">Expansion: NONE</span><br><span class="line">No ALPN negotiated</span><br><span class="line">SSL-Session:</span><br><span class="line">    Protocol  : TLSv1.2</span><br><span class="line">    Cipher    : ECDHE-RSA-AES128-GCM-SHA256</span><br><span class="line">    Session-ID: 1656D7D14447C1D5E68943F614A697455E60A036957D8D8C18F3B198DF42969F</span><br><span class="line">    Session-ID-ctx:</span><br><span class="line">    Master-Key: BB1209155344C55792077A4337964661FCA4F3F5BBF3185112F5E235BD07AD63838D24F5CF97161E696CB57398CAF478</span><br><span class="line">    TLS session ticket lifetime hint: 83100 (seconds)</span><br><span class="line">    TLS session ticket:</span><br><span class="line">    0000 - 00 00 0b 33 d4 56 15 3d-64 e8 fa 1d cf c1 1c 04   ...3.V.=d.......</span><br><span class="line">    ...</span><br><span class="line">    0090 - 1b 96 9c 25 82 70 a8 ed-24 1d 70 c9 28 56 84 59   ...%.p..$.p.(V.Y</span><br><span class="line"></span><br><span class="line">    Start Time: 1653265585</span><br><span class="line">    Timeout   : 7200 (sec)</span><br><span class="line">    Verify <span class="built_in">return</span> code: 0 (ok)</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<p>此记录很详细，格式的可读性也非常好。从输出中，可以了解到思科主页服务器的数字证书是由根证书认证机构IdenTrust提供数字签名认证的。客户端与服务器的会话是建立在TLS 1.2协议之上的，选中的密码套件是AEAD类型的ECDHE-RSA-AES128-GCM-SHA256，与GitHub Page提供的首选项完全一致。</p>
+<h4 id="浏览器测试">浏览器测试</h4>
+<p>如果不放心你使用的浏览器的安全性，想测一测看是否还支持TLS 1.2之前的协议，可以在浏览器的地址拦输入下面的网址：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-0.badssl.com</a></li>
+<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a></li>
+</ul>
+<p>第一个只支持TLS 1.0，第二个只支持TLS 1.1。用默认配置的火狐浏览器连到第二个网址后，页面显示如下</p>
+<blockquote>
+<p><strong>Secure Connection Failed</strong></p>
+<p>An error occurred during a connection to tls-v1-1.badssl.com:1011. Peer using unsupported version of security protocol.</p>
+<p>Error code: SSL_ERROR_UNSUPPORTED_VERSION</p>
+<ul>
+<li>The page you are trying to view cannot be shown because the authenticity of the received data could not be verified.</li>
+<li>Please contact the website owners to inform them of this problem.</li>
+</ul>
+<p><mark>This website might not support the TLS 1.2 protocol, which is the minimum version supported by Firefox.</mark></p>
+</blockquote>
+<p>此错误消息清楚地表明，在此配置下火狐浏览器运行的最低TLS协议版本为1.2，由于对方只运行TLS 1.1，所以双方无法建立连接。</p>
+<p>那么当浏览器真的还保留TLS 1.0/1.1的功能时，连接的结果是怎样的？</p>
+<p>出于测试的目的，可以先将火狐的默认TLS偏好值改成1.1，步骤如下（参考下图）：</p>
+<ol type="1">
+<li>打开一个新标签页中，在地址栏中输入<strong>about:config</strong>，然后按回车/返回键。</li>
+<li>页面提示“Proceed with Caution”，点击<strong>Accept the Risk and Continue</strong>按钮。</li>
+<li>在页面上方的搜索框中，键入TLS，显示过滤后的列表。</li>
+<li>找到<strong>security.tls.version.min</strong>偏好选项，点击<strong>Edit</strong>图标修改最低TLS版本。TLS版本与偏好值的对应关系是
+<ul>
+<li>TLS 1.0 =&gt; 1</li>
+<li>TLS 1.1 =&gt; 2</li>
+<li>TLS 1.2 =&gt; 3</li>
+<li>TLS 1.3 =&gt; 4</li>
+</ul></li>
+</ol>
+<p><img src="Firefox-TLS-MIN-VER.png" style="width:80.0%;height:80.0%" /></p>
+<p>此时再连到<a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a>，结果是</p>
+<p><img src="TLS-V1-1-BADSSL.png" style="width:80.0%;height:80.0%" /></p>
+<p>这个醒目的大红页面告诉你，当前使用的浏览器没有禁用TLS 1.1，存在安全风险，能不用就尽量不用。</p>
+<p>最后，不要忘记恢复火狐浏览器的默认TLS最低版本设置3。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/" title="请马上停止使用TLS 1.0和TLS 1.1!">https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 网络安全</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/12/19/RPi-NAS-Plex/" rel="prev" title="自己动手使用树莓派搭建家用NAS和流媒体服务器">
+                  <i class="fa fa-chevron-left"></i> 自己动手使用树莓派搭建家用NAS和流媒体服务器
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">221k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:21</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"fd9a0c0d8fe659e1a062b4747af13cb2"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

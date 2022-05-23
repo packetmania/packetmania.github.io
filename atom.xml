@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2022-01-04T18:48:18.522Z</updated>
+  <updated>2022-05-23T22:53:44.096Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>请马上停止使用TLS 1.0和TLS 1.1!</title>
+    <link href="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/"/>
+    <id>https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/</id>
+    <published>2022-05-01T19:20:25.000Z</published>
+    <updated>2022-05-23T22:53:44.096Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;2021年3月，互联网工程任务组（IETF）发布分类为当前最佳实践的&lt;a href=&quot;https://tools.ietf.org/html/rfc8996&quot;&gt;RFC 8996&lt;/a&gt;，正式宣布弃用TLS 1.0和 TLS 1.1协议。如果你的应用程序和网站服务还在使用这些协议，请马上停止并立即更新到TLS 1.2或TLS 1.3协议版本，以消除可能存在的安全隐患。</summary>
+    
+    
+    
+    <category term="技术评论" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E8%AF%84%E8%AE%BA/"/>
+    
+    
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>自己动手使用树莓派搭建家用NAS和流媒体服务器</title>
@@ -414,31 +435,6 @@
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Endianness一点通</title>
-    <link href="https://www.packetmania.net/2020/11/24/Endianness/"/>
-    <id>https://www.packetmania.net/2020/11/24/Endianness/</id>
-    <published>2020-11-25T05:58:43.000Z</published>
-    <updated>2021-11-28T01:39:13.646Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;Endianness 的问题实质就是关于计算机如何存储大的数值的问题。</summary>
-    
-    
-    
-    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
-    
-    
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="计算机体系结构" scheme="https://www.packetmania.net/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/"/>
-    
-    <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     
   </entry>
   

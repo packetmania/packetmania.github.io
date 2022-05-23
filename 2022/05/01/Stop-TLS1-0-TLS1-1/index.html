@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/Firefox-TLS-MIN-VER.png">
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/TLS-V1-1-BADSSL.png">
 <meta property="article:published_time" content="2022-05-01T19:20:25.000Z">
-<meta property="article:modified_time" content="2022-05-23T23:04:00.279Z">
+<meta property="article:modified_time" content="2022-05-23T23:20:10.627Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -294,7 +294,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-05-23 16:04:00" itemprop="dateModified" datetime="2022-05-23T16:04:00-07:00">2022-05-23</time>
+        <time title="修改时间：2022-05-23 16:20:10" itemprop="dateModified" datetime="2022-05-23T16:20:10-07:00">2022-05-23</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -320,7 +320,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>9.7k</span>
+      <span>9.8k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -402,7 +402,7 @@
 <p>然而，2016年Bhargavan和Leurent（就是他们实现了前述的针对64位块密码的Sweet32攻击）发现了一类新的攻击密钥交换协议的方法，打破了这一认知。此方法建立于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack">选择前缀碰撞攻击</a>原理之上，即给定两个不同的前缀<span class="math inline">\(p_1\)</span>和<span class="math inline">\(p_2\)</span>, 找到两个附件<span class="math inline">\(m_1\)</span>和<span class="math inline">\(m_2\)</span>满足<span class="math inline">\(h(p_1 ∥ m_1) = hash(p_2 ∥ m_2)\)</span>。应用此方法，他们演示了针对TLS客户端和服务器的中间人攻击用以实现盗取敏感资料，也证实了攻击可以用来在TLS 1.1、IKEv2和SSH-2会话握手过程中实现伪装和降级。特别地，他们计算出只需要<span class="math inline">\(2^{77}\)</span>次操作，就可以破解使用SHA-1或者MD5与SHA-1级联散列值的握手协议。</p>
 <p>由于TLS 1.0和TLS 1.1都不允许会话双方为服务器密钥交换（ServerKeyExchange）消息或证书验证（CertificateVerify）消息选择更强的密码散列函数，IETF确认使用较新协议版本为唯一的升级路径。</p>
 <p>文档的第4、5部分再次明确不得使用TLS 1.0和TLS 1.1、不允许从任何TLS版本协商到TLS 1.0或TLS 1.1。这意味着TLS客户端和服务器各自发出的ClientHello.client_version和ServerHello.server_version不得为{03,01}（TLS 1.0）或{03,02}（TLS 1.1）。如果收到对方发来的Hello消息里的协议版本号为{03,01}或{03,02}，本地必须以“protocol_version”告警消息回应并关闭连接。</p>
-<p>值得注意的是，由于历史原因，TLS规范并没有明确客户端发送ClientHello消息时记录层版本号(TLSPlaintext.version)的取值。 所以为了最大限度地提高互操作性，TLS服务器必须接受任何值 {03,XX} (包括 {03,00}) 作为ClientHello消息的记录层版本号，但他们不得协商TLS 1.0或TLS 1.1。</p>
+<p>值得注意的是，由于历史原因，TLS规范并没有明确客户端发送ClientHello消息时记录层版本号（TLSPlaintext.version）的取值。 所以为了最大限度地提高互操作性，TLS服务器必须接受任何值 {03,XX} (包括 {03,00}) 作为ClientHello消息的记录层版本号，但它们不得协商TLS 1.0或TLS 1.1。</p>
 <p>文档的第6部分声明了对以前发布的<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7525">RFC 7525</a>（TLS和DTLS的安全使用推荐）的文字修订。在该RFC的三个地方将实现时协商TLS 1.0、TLS 1.1和DTLS 1.0从“不应”（SHOULD NOT）改为“不得”（MUST NOT）。最后余下部分是标准的RFC操作和安全考虑总结。</p>
 <h3 id="业界动态">业界动态</h3>
 <p>在大型公共在线服务的业界，GitHub是最先行动的。他们早在2018年2月就开始在所有HTTPS连接中禁用TLS 1.0和TLS 1.1，同时还在SSH连接服务中淘汰了不安全的<code>diffie-hellman-group1-sha1</code>和<code>diffie-hellman-group14-sha1</code>密钥交换算法。2018年8月，Mozilla火狐的首席技术官Eric Rescorla发布TLS 1.3技术规范<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8446</a>。两个月之后，Mozilla就与苹果、谷歌和微软三大巨头一起协同发布声明，将废除TLS 1.0和TLS 1.1提上日程。</p>
@@ -481,7 +481,7 @@
 </tbody>
 </table>
 <p>可以看到，几乎100%的站点都能运行TLS 1.2，支持TLS 1.3的百分比也超过了50%。这是非常鼓舞人心的数据。虽然极少数网站还在运行SSL 2.0/3.0，并且TLS 1.0/1.1都还有40%左右的支持率，总体上它们所占比例是在持续下降的，这一好趋势应该会持续下去。</p>
-<p>本博客网站的服务由GitHub Page提供，输入网址到<a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssltest/">SSL Lab的服务器测试页</a>，提交后得到的测试报告如下：</p>
+<p>本博客网站的服务由GitHub Page提供，输入网址到<a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssltest/">SSL Lab的服务器测试页</a>，提交后得到的测试结果总结如下：</p>
 <p><img src="SSL-Report-Sum.png" /></p>
 <p>站点的整体安全评级达到最高的A+。在证书和协议支持方面是满分，而在密钥交换和密码强度上也都得到90分。这说明GitHub兑现了对用户的安全承诺，值得程序员们的信任。</p>
 <p>报告的配置部分，给出了如下协议支持和密码套件的测试结果细节：</p>
@@ -490,17 +490,17 @@
 <h4 id="用户自测">用户自测</h4>
 <p>如果怀疑私有服务器还在使用过时的TLS/SSL协议，可以用命令行工具<code>curl</code>做个简单测试，示例如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">❯ curl https://www.cisco.com -svo /dev/null --tls-max 1.1</span><br><span class="line">*   Trying 104.108.67.95:443...</span><br><span class="line">* Connected to www.cisco.com (104.108.67.95) port 443 (<span class="comment">#0)</span></span><br><span class="line">* ALPN, offering h2</span><br><span class="line">* ALPN, offering http/1.1</span><br><span class="line">* successfully <span class="built_in">set</span> certificate verify locations:</span><br><span class="line">*  CAfile: /etc/ssl/cert.pem</span><br><span class="line">*  CApath: none</span><br><span class="line">* (304) (OUT), TLS handshake, Client hello (1):</span><br><span class="line">&#125; [151 bytes data]</span><br><span class="line">* error:1404B42E:SSL routines:ST_CONNECT:tlsv1 alert protocol version</span><br><span class="line">* Closing connection 0</span><br></pre></td></tr></table></figure>
-<p>这里输入命令行选项<code>--tls-max 1.1</code>设定最高的协议版本1.1，并连接到思科公司主页。结果连接失败并收到“protocol version”告警信息。这说明服务器拒绝了TLS 1.1连接请求，其响应正好就是<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>所要求的。</p>
+<p>这里输入命令行选项<code>--tls-max 1.1</code>设定最高的协议版本1.1，并连接到思科公司主页。输出结果显示连接失败，并收到“protocol version”告警信息。这说明服务器拒绝了TLS 1.1连接请求，其响应正好就是<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>所要求的。</p>
 <p>通用的开源密码学和安全通信工具箱<a target="_blank" rel="noopener" href="https://www.openssl.org">OpenSSL</a>提供的<code>openssl</code>命令行工具也可以做同样的测试。为了检测服务器是否支持TLS 1.2协议，可使用选项<code>s_client</code>仿真TLS/SSL客户端，同时输入<code>-tls1_2</code>指定只用TLS 1.2。命令行运行的记录如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">❯ openssl s_client -connect www.cisco.com:443 -tls1_2</span><br><span class="line">CONNECTED(00000005)</span><br><span class="line">depth=2 C = US, O = IdenTrust, CN = IdenTrust Commercial Root CA 1</span><br><span class="line">verify <span class="built_in">return</span>:1</span><br><span class="line">depth=1 C = US, O = IdenTrust, OU = HydrantID Trusted Certificate Service, CN = HydrantID Server CA O1</span><br><span class="line">verify <span class="built_in">return</span>:1</span><br><span class="line">depth=0 CN = www.cisco.com, O = Cisco Systems Inc., L = San Jose, ST = California, C = US</span><br><span class="line">verify <span class="built_in">return</span>:1</span><br><span class="line">---</span><br><span class="line">Certificate chain</span><br><span class="line"> 0 s:/CN=www.cisco.com/O=Cisco Systems Inc./L=San Jose/ST=California/C=US</span><br><span class="line">   i:/C=US/O=IdenTrust/OU=HydrantID Trusted Certificate Service/CN=HydrantID Server CA O1</span><br><span class="line"> 1 s:/C=US/O=IdenTrust/OU=HydrantID Trusted Certificate Service/CN=HydrantID Server CA O1</span><br><span class="line">   i:/C=US/O=IdenTrust/CN=IdenTrust Commercial Root CA 1</span><br><span class="line"> 2 s:/C=US/O=IdenTrust/CN=IdenTrust Commercial Root CA 1</span><br><span class="line">   i:/C=US/O=IdenTrust/CN=IdenTrust Commercial Root CA 1</span><br><span class="line">---</span><br><span class="line">Server certificate</span><br><span class="line">-----BEGIN CERTIFICATE-----</span><br><span class="line">MIIHrzCCBpegAwIBAgIQQAF9KqwAKOKNhDf17h+WazANBgkqhkiG9w0BAQsFADBy</span><br><span class="line">...</span><br><span class="line">4TY7</span><br><span class="line">-----END CERTIFICATE-----</span><br><span class="line">subject=/CN=www.cisco.com/O=Cisco Systems Inc./L=San Jose/ST=California/C=US</span><br><span class="line">issuer=/C=US/O=IdenTrust/OU=HydrantID Trusted Certificate Service/CN=HydrantID Server CA O1</span><br><span class="line">---</span><br><span class="line">No client certificate CA names sent</span><br><span class="line">Server Temp Key: ECDH, P-256, 256 bits</span><br><span class="line">---</span><br><span class="line">SSL handshake has <span class="built_in">read</span> 5765 bytes and written 322 bytes</span><br><span class="line">---</span><br><span class="line">New, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256</span><br><span class="line">Server public key is 2048 bit</span><br><span class="line">Secure Renegotiation IS supported</span><br><span class="line">Compression: NONE</span><br><span class="line">Expansion: NONE</span><br><span class="line">No ALPN negotiated</span><br><span class="line">SSL-Session:</span><br><span class="line">    Protocol  : TLSv1.2</span><br><span class="line">    Cipher    : ECDHE-RSA-AES128-GCM-SHA256</span><br><span class="line">    Session-ID: 1656D7D14447C1D5E68943F614A697455E60A036957D8D8C18F3B198DF42969F</span><br><span class="line">    Session-ID-ctx:</span><br><span class="line">    Master-Key: BB1209155344C55792077A4337964661FCA4F3F5BBF3185112F5E235BD07AD63838D24F5CF97161E696CB57398CAF478</span><br><span class="line">    TLS session ticket lifetime hint: 83100 (seconds)</span><br><span class="line">    TLS session ticket:</span><br><span class="line">    0000 - 00 00 0b 33 d4 56 15 3d-64 e8 fa 1d cf c1 1c 04   ...3.V.=d.......</span><br><span class="line">    ...</span><br><span class="line">    0090 - 1b 96 9c 25 82 70 a8 ed-24 1d 70 c9 28 56 84 59   ...%.p..$.p.(V.Y</span><br><span class="line"></span><br><span class="line">    Start Time: 1653265585</span><br><span class="line">    Timeout   : 7200 (sec)</span><br><span class="line">    Verify <span class="built_in">return</span> code: 0 (ok)</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
 <p>此记录很详细，格式的可读性也非常好。从输出中，可以了解到思科主页服务器的数字证书是由根证书认证机构IdenTrust提供数字签名认证的。客户端与服务器的会话是建立在TLS 1.2协议之上的，选中的密码套件是AEAD类型的ECDHE-RSA-AES128-GCM-SHA256，与GitHub Page提供的首选项完全一致。</p>
 <h4 id="浏览器测试">浏览器测试</h4>
 <p>如果不放心你使用的浏览器的安全性，想测一测看是否还支持TLS 1.2之前的协议，可以在浏览器的地址拦输入下面的网址：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-0.badssl.com</a></li>
-<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a></li>
+<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-0.badssl.com</a> （只支持TLS 1.0）</li>
+<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a> （只支持TLS 1.0）</li>
 </ul>
-<p>第一个只支持TLS 1.0，第二个只支持TLS 1.1。用默认配置的火狐浏览器连到第二个网址后，页面显示如下</p>
+<p>用默认配置的火狐浏览器连到第二个网址后，页面显示如下</p>
 <blockquote>
 <p><strong>Secure Connection Failed</strong></p>
 <p>An error occurred during a connection to tls-v1-1.badssl.com:1011. Peer using unsupported version of security protocol.</p>
@@ -530,7 +530,7 @@
 <p>此时再连到<a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a>，结果是</p>
 <p><img src="TLS-V1-1-BADSSL.png" style="width:80.0%;height:80.0%" /></p>
 <p>这个醒目的大红页面告诉你，当前使用的浏览器没有禁用TLS 1.1，存在安全风险，能不用就尽量不用。</p>
-<p>最后，不要忘记恢复火狐浏览器的默认TLS最低版本设置3。</p>
+<p>最后，不要忘记恢复火狐浏览器的默认TLS最低版本设置（3）。</p>
 
     </div>
 

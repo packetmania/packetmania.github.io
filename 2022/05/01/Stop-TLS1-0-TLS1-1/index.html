@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/Firefox-TLS-MIN-VER.png">
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/TLS-V1-1-BADSSL.png">
 <meta property="article:published_time" content="2022-05-01T19:20:25.000Z">
-<meta property="article:modified_time" content="2022-05-23T22:53:44.096Z">
+<meta property="article:modified_time" content="2022-05-23T23:04:00.279Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -294,7 +294,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-05-23 15:53:44" itemprop="dateModified" datetime="2022-05-23T15:53:44-07:00">2022-05-23</time>
+        <time title="修改时间：2022-05-23 16:04:00" itemprop="dateModified" datetime="2022-05-23T16:04:00-07:00">2022-05-23</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -320,7 +320,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>9.8k</span>
+      <span>9.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -397,7 +397,7 @@
 </table>
 <p>AEAD是一种能够同时保证数据的保密性、完整性和真实性的加密模式，典型的如<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/CCM_mode">CCM</a>和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">GCM</a>等。TLS 1.2引入了一系列AEAD密码套件，而它的高安全性使得其成为TLS 1.3的排他性选择。这些注释了技术原因的第2条。</p>
 <p>技术原因的第3、4条点名SHA-1，那么SHA-1到底有什么问题？文档的第3部分引用了两名法国的研究者<a target="_blank" rel="noopener" href="https://www.mitls.org/downloads/transcript-collisions.pdf">Karthikeyan Bhargavan和Gaetan Leurent的论文</a>做出了解答。</p>
-<p>作为一种密码散列函数，SHA-1由美国国家安全局（NSA）设计，而后被美国国家标准技术研究所（NIST）发布为联邦资料处理标准（FIPS）。SHA-1可将最大不超过<span class="math inline">\(2^{64}\)</span>比特的消息生成一个160位（20字节）散列值，即消息摘要。由此，基于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Birthday_attack">生日攻击</a>的暴力破解法需要复杂度为<span class="math inline">\(2^{80}\)</span>的操作。2005年，中国密码学家王小云及其研究团队在此领域获得突破。她们发表的高效率SHA-1攻击法，能在<span class="math inline">\(2^{63}\)</span>个计算复杂度内找到散列碰撞。这给SHA-1的安全性带来巨大的冲击，但这并不表示该破解法已经可以进入实际应用的阶段。</p>
+<p>作为一种密码散列函数，SHA-1由美国国家安全局（NSA）设计，而后被美国国家标准技术研究所（NIST）发布为联邦信息处理标准（FIPS）。SHA-1可将最大不超过<span class="math inline">\(2^{64}\)</span>比特的消息生成一个160位（20字节）散列值，即消息摘要。由此，基于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Birthday_attack">生日攻击</a>的暴力破解需要复杂度为<span class="math inline">\(2^{80}\)</span>的操作。2005年，中国密码学家王小云及其研究团队在此领域获得突破。她们发表的高效率SHA-1攻击法，能在<span class="math inline">\(2^{63}\)</span>个计算复杂度内找到散列碰撞。这给SHA-1的安全性带来巨大的冲击，但这并不表示该破解法已经可以进入实用阶段。</p>
 <p>网络安全协议（如TLS、IKE和SSH等）依赖于密码散列函数的次原像抗性（second preimage resistance），即从计算角度无法找到任何与特定输入值有着相同输出的二次输入值。例如，对于密码散列函数<span class="math inline">\(h(x)\)</span>及给定输入<span class="math inline">\(x\)</span>，很难找到满足<span class="math inline">\(h(x) = h(x^′)\)</span>的次原像<span class="math inline">\(x^′ ≠ x\)</span>。因为找到散列碰撞并不意味着就能定位出次原像，所以实践中人们一度认为继续使用SHA-1问题不大。</p>
 <p>然而，2016年Bhargavan和Leurent（就是他们实现了前述的针对64位块密码的Sweet32攻击）发现了一类新的攻击密钥交换协议的方法，打破了这一认知。此方法建立于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Collision_attack#Chosen-prefix_collision_attack">选择前缀碰撞攻击</a>原理之上，即给定两个不同的前缀<span class="math inline">\(p_1\)</span>和<span class="math inline">\(p_2\)</span>, 找到两个附件<span class="math inline">\(m_1\)</span>和<span class="math inline">\(m_2\)</span>满足<span class="math inline">\(h(p_1 ∥ m_1) = hash(p_2 ∥ m_2)\)</span>。应用此方法，他们演示了针对TLS客户端和服务器的中间人攻击用以实现盗取敏感资料，也证实了攻击可以用来在TLS 1.1、IKEv2和SSH-2会话握手过程中实现伪装和降级。特别地，他们计算出只需要<span class="math inline">\(2^{77}\)</span>次操作，就可以破解使用SHA-1或者MD5与SHA-1级联散列值的握手协议。</p>
 <p>由于TLS 1.0和TLS 1.1都不允许会话双方为服务器密钥交换（ServerKeyExchange）消息或证书验证（CertificateVerify）消息选择更强的密码散列函数，IETF确认使用较新协议版本为唯一的升级路径。</p>

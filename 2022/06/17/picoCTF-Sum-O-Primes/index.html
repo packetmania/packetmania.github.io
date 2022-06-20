@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="一个偶然的机会，接触到一道picoCTF的RSA挑战题Sum-O-Primes。这道题不难，了解RSA的基本算法就能做出来。另外，如果熟悉RSA算法演变的历史，还能找到第二种巧妙的快速解法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="巧解picoCTF的RSA挑战题Sum-O-Primes">
+<meta property="og:url" content="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="一个偶然的机会，接触到一道picoCTF的RSA挑战题Sum-O-Primes。这道题不难，了解RSA的基本算法就能做出来。另外，如果熟悉RSA算法演变的历史，还能找到第二种巧妙的快速解法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://imgs.xkcd.com/comics/security.png">
+<meta property="og:image" content="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/picoGym.png">
+<meta property="article:published_time" content="2022-06-18T06:32:21.000Z">
+<meta property="article:modified_time" content="2022-06-20T02:01:31.873Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="Python编程">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://imgs.xkcd.com/comics/security.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/","path":"2022/06/17/picoCTF-Sum-O-Primes/","title":"巧解picoCTF的RSA挑战题Sum-O-Primes"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>巧解picoCTF的RSA挑战题Sum-O-Primes | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#picoctf%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.</span> <span class="nav-text">picoCTF项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sum-o-primes%E6%8C%91%E6%88%98"><span class="nav-number">2.</span> <span class="nav-text">Sum-O-Primes挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%84%E8%A7%A3%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">常规解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E8%A7%A3%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">快速解法</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie_emeritus.jpg">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie_emeritus.jpg">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          巧解picoCTF的RSA挑战题Sum-O-Primes
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-17 23:32:21" itemprop="dateCreated datePublished" datetime="2022-06-17T23:32:21-07:00">2022-06-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-06-19 19:01:31" itemprop="dateModified" datetime="2022-06-19T19:01:31-07:00">2022-06-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>一个偶然的机会，接触到一道picoCTF的RSA挑战题Sum-O-Primes。这道题不难，了解RSA的基本算法就能做出来。另外，如果熟悉RSA算法演变的历史，还能找到第二种巧妙的快速解法。<span id="more"></span></p>
+<figure>
+<img src="https://imgs.xkcd.com/comics/security.png" alt="xkcd-security" /><figcaption aria-hidden="true">xkcd-security</figcaption>
+</figure>
+<h3 id="picoctf项目">picoCTF项目</h3>
+<p><a target="_blank" rel="noopener" href="https://picoctf.org/">picoCTF</a>是由卡内基梅隆大学的安全和隐私专家创建的一个免费的计算机安全教育项目，其通过建立于CTF（Capture the Flag，夺旗赛）框架之上的原创内容，以各种挑战的形式，为参与者提供系统学习网络安全知识并获取实践经验的宝贵机会。</p>
+<p>picoCTF的练习题集合被称为picoGym。通用的题解是从给定的信息中搜索或破解出格式为<strong>“picoCTF{...}”</strong>的字符串，即要夺取的旗标。如下图所示，当前picoGym包含了271道网络安全挑战练习，内容涵盖一般技能、密码学、逆向工程、取证等领域。</p>
+<p><img src="picoGym.png" style="width:35.0%;height:35.0%" /></p>
+<h3 id="sum-o-primes挑战">Sum-O-Primes挑战</h3>
+<p>picoGym中密码学相关的挑战题有50道，其中一个就是Sum-O-Primes。此挑战的谜面很简单，其说明如下：</p>
+<blockquote>
+<p>We have so much faith in RSA we give you not just the product of the primes, but their sum as well!</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c/180/gen.py">gen.py</a></li>
+<li><a target="_blank" rel="noopener" href="https://artifacts.picoctf.net/c/180/output.txt">output.txt</a></li>
+</ul>
+</blockquote>
+<p>就是说我们不仅给出RSA所用的两个素数的乘积，还告诉你它们的和。具体是怎么给出的呢？这需要解题者自己去从剩下的信息中去发掘。点击给出的两个链接下载后，打开第一个Python文件：</p>
+<figure class="highlight python"><figcaption><span>gen.py</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> binascii <span class="keyword">import</span> hexlify</span><br><span class="line"><span class="keyword">from</span> gmpy2 <span class="keyword">import</span> mpz_urandomb, next_prime, random_state</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> sys.version_info &lt; (<span class="number">3</span>, <span class="number">9</span>):</span><br><span class="line">    <span class="keyword">import</span> gmpy2</span><br><span class="line">    math.gcd = gmpy2.gcd</span><br><span class="line">    math.lcm = gmpy2.lcm</span><br><span class="line"></span><br><span class="line">FLAG  = <span class="built_in">open</span>(<span class="string">&#x27;flag.txt&#x27;</span>).read().strip()</span><br><span class="line">FLAG  = <span class="built_in">int</span>(hexlify(FLAG.encode()), <span class="number">16</span>)</span><br><span class="line">SEED  = <span class="built_in">int</span>(hexlify(os.urandom(<span class="number">32</span>)).decode(), <span class="number">16</span>)</span><br><span class="line">STATE = random_state(SEED)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_prime</span>(<span class="params">bits</span>):</span></span><br><span class="line">    <span class="keyword">return</span> next_prime(mpz_urandomb(STATE, bits) | (<span class="number">1</span> &lt;&lt; (bits - <span class="number">1</span>)))</span><br><span class="line"></span><br><span class="line">p = get_prime(<span class="number">1024</span>)</span><br><span class="line">q = get_prime(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">x = p + q</span><br><span class="line">n = p * q</span><br><span class="line"></span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line"></span><br><span class="line">m = math.lcm(p - <span class="number">1</span>, q - <span class="number">1</span>)</span><br><span class="line">d = <span class="built_in">pow</span>(e, -<span class="number">1</span>, m)</span><br><span class="line"></span><br><span class="line">c = <span class="built_in">pow</span>(FLAG, e, n)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;x = <span class="subst">&#123;x:x&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;n = <span class="subst">&#123;n:x&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;c = <span class="subst">&#123;c:x&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>如果你具备初级Python编程技能，并了解RSA算法的基本原理，应该可以很快读懂上面的程序。它所做的事情是：</p>
+<ol type="1">
+<li>打开旗帜文件<code>flag.txt</code>读入内容。再使用<code>hexlify</code>和<code>int</code>函数将其转换为整数，结果存入变量<code>FLAG</code>。</li>
+<li>调用<code>get_prime</code>函数生成两个素数<code>p</code>和<code>q</code>，二者之和存入<code>x</code>，之积存入<code>n</code>。然后取<code>e</code>值为65537，计算出RSA私钥<code>d</code>。</li>
+<li>运用标准的<code>pow</code>函数执行模幂运算，实现RSA加密，将明文<code>FLAG</code>加密为密文<code>c</code>。</li>
+<li>打印输出<code>x</code>、<code>n</code>和<code>c</code>。</li>
+</ol>
+<p>打开第二个文件，显然它就是Python第一个程序输出的结果：</p>
+<figure class="highlight bash"><figcaption><span>output.txt</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = 154ee809a4dc337290e6a4996e0717dd938160d6abfb651736d9f5d524812a659b310ad1f221196ee8ab187fa746a1b488a4079cddfc5db08e78be0d96c83c01e9bb42420b40d6f0ad9f220633459a6dc058bb01c517386bfbd2d4811c9b08558b0e05534768581a74884758d15e15b4ef0dbd6a338bf1f52eed4f137957737d2</span><br><span class="line">n = 6ce91e471f1df651b0d275d6d5522703feecdd77e7821a2caf9514104c059781c1b2e64772d9220addd657ecbd4e6cb8b5941608f6ab54bd5760074a5cd5854920439422192d2ee8912f1ebcc0d97714f209ee2a22e2da60e071541cb7e0772373cfea71831673378ee6432e63abfd14db0d4aa601928923253f9edd419ce96f4d68ce0aa3e6d6b530cd46eefbdac93038ce949c9dd2e573a47471cf8223f88b96e00a92f4d47fd277c42c4075b5e99b41a9f279f442bc0d533b9ddc50592e369e7026b3f7afaa8edf8972f0c3055f4de67a0eea963f099a32e1539de1d1727abadd9235f66371998ec883d1f89b8d907270842818cae49cd5c7f906c4752e81</span><br><span class="line">c = 48b89662b9718fb391c96527272bf74c27810edaca09b63e694af9d11608010b1db9aedd1c867849371121941a1ccac610f7b28b92fa2f981babe816e6d3ecfab83514ed7e18e2b23fc3b96c7002ff47da897e9f2a9cb1b4e245396589e0b72affb73568a2016031555d2a46557919e44a15cd43fe9e1881d40dce1d1e36625e63b1472d3c317898102943072e06d79688c96b6ee2e584002c66497a9cdc48c38aa0548a7bc4fed9b4c23fcd493f38ece68788ef37a559b7f20c6941fcf8e567d9f50807259a7f11fa7a01d3125a1f7609cd94781f224ec8351605354b11c6b078fe015826342c3271ee3af4b99bb0a538b1e6b845594ee6546be8abd22ef2bd</span><br></pre></td></tr></table></figure>
+<p>理解了题意，就能马上做出判断——如果能从密文<code>c</code>解密出<code>FLAG</code>，就可以得到原始<code>flag.txt</code>的内容，即夺旗。</p>
+<h3 id="常规解法">常规解法</h3>
+<p>RSA解密需要私钥指数<span class="math inline">\(d\)</span>。参考下面的RSA算法步骤，很明显这要求先解出大素数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>。</p>
+<ol type="1">
+<li>选择两个大素数 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，计算 <span class="math inline">\(n=pq\)</span></li>
+<li>计算 <span class="math inline">\(n\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/卡邁克爾函數">卡迈克尔函数</a> <span class="math inline">\(\lambda(pq)=\operatorname{lcm}(p − 1, q − 1)\)</span>，<span class="math inline">\(\operatorname{lcm}\)</span> 是求最小公倍数的函数</li>
+<li>选择一个小于 <span class="math inline">\(\lambda(n)\)</span> 且与之互素的数 <span class="math inline">\(e\)</span>，并求得 <span class="math inline">\(e\)</span> 关于 <span class="math inline">\(\lambda(n)\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/模反元素">模逆元</a> <span class="math inline">\(d\equiv e^{-1}\pmod {\lambda(n)}\)</span></li>
+<li><span class="math inline">\((n,e)\)</span> 是RSA公钥，<span class="math inline">\((n,d)\)</span> 是RSA私钥</li>
+<li>使用公钥将明文<span class="math inline">\(m\)</span>加密的计算公式是 <span class="math inline">\(c\equiv m^e\pmod n\)</span></li>
+<li>使用私钥将密文<span class="math inline">\(c\)</span>解密的计算公式是 <span class="math inline">\(m\equiv c^d\pmod n\)</span></li>
+</ol>
+<p>由此，挑战题转化为已知两个大素数的乘积<span class="math inline">\(n\)</span>与和<span class="math inline">\(x\)</span>，求这两个大素数。即求解二元一次方程组 <span class="math display">\[
+\left\{
+\begin{aligned}
+p+q &amp;=n \\ 
+p*q &amp;=x
+\end{aligned} 
+\right. 
+\]</span> 运用初等数学的知识，可将以上的方程组变成一元二次方程<span class="math display">\[p^2 - x * p + n = 0\]</span> 显然<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>就是它的两个解。根据解题公式得到 <span class="math display">\[(p,q)={\frac {x}{2}}\pm {\sqrt {\left({\frac {x}{2}}\right)^{2}-n}}\]</span> 得到<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>，余下的工作就很简单了。由<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>算出<span class="math inline">\(d\)</span>的代码可以直接从gen.py中第28、30和31行复制过来。最后的完整Python解题代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line">file = <span class="built_in">open</span>(<span class="string">&#x27;output.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">Lines = file.readlines()</span><br><span class="line">file.close()</span><br><span class="line"></span><br><span class="line">x = <span class="built_in">int</span>((Lines[<span class="number">0</span>].split())[<span class="number">2</span>], <span class="number">16</span>) <span class="comment"># x = p + q</span></span><br><span class="line">n = <span class="built_in">int</span>((Lines[<span class="number">1</span>].split())[<span class="number">2</span>], <span class="number">16</span>) <span class="comment"># n = p * q</span></span><br><span class="line">c = <span class="built_in">int</span>((Lines[<span class="number">2</span>].split())[<span class="number">2</span>], <span class="number">16</span>) <span class="comment"># Ciphertext</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solve_rsa_primes</span>(<span class="params">s: <span class="built_in">int</span>, m: <span class="built_in">int</span></span>) -&gt; <span class="built_in">tuple</span>:</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    Solve RSA prime numbers (p, q) from the quadratic equation</span></span><br><span class="line"><span class="string">    p^2 - s * p + m = 0 with the formula p = s/2 +/- sqrt((s/2)^2 - m)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Input: s - sum of primes, m - product of primes</span></span><br><span class="line"><span class="string">    Output: (p, q)</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    half_s = s &gt;&gt; <span class="number">1</span></span><br><span class="line">    tmp = math.isqrt(half_s ** <span class="number">2</span> - m)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(half_s + tmp), <span class="built_in">int</span>(half_s - tmp);  </span><br><span class="line"></span><br><span class="line"><span class="comment"># Now run with the real input</span></span><br><span class="line">p, q = solve_rsa_primes(x, n)</span><br><span class="line">m = math.lcm(p - <span class="number">1</span>, q - <span class="number">1</span>)</span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line">d = <span class="built_in">pow</span>(e, -<span class="number">1</span>, m)</span><br><span class="line">FLAG = <span class="built_in">pow</span>(c, d, n)</span><br><span class="line"><span class="built_in">print</span>(FLAG.to_bytes((FLAG.bit_length() + <span class="number">7</span>) // <span class="number">8</span>, <span class="string">&#x27;big&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p>上面的程序定义了一个通用的函数<code>solve_rsa_primes</code>求解两个大素数。在得出<span class="math inline">\(d\)</span>之后，同样调用<code>pow</code>函数解密，最后将明文从大的整数转化为字节序列并打印输出。程序运行的结果是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">b&#x27;picoCTF&#123;pl33z_n0_g1v3_c0ngru3nc3_0f_5qu4r35_92fe3557&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>BINGO！夺旗成功！</p>
+<div class="note warning"><p><strong>注意：</strong> 函数<code>solve_rsa_primes</code>调用了<code>math.isqrt</code>计算整数平方根，这是必须的！如果误写成<code>math.sqrt</code>，就会出现如下的溢出错误</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;</span><br><span class="line">=============== RESTART: /Users/zixi/Downloads/Sum-O-Primes.py ==============</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/Users/zixi/Downloads/Sum-O-Primes.py&quot;</span>, line <span class="number">35</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    p, q = solve_rsa_primes(x, n)</span><br><span class="line">  File <span class="string">&quot;/Users/zixi/Downloads/Sum-O-Primes.py&quot;</span>, line <span class="number">31</span>, <span class="keyword">in</span> solve_rsa_primes</span><br><span class="line">    tmp = math.sqrt(<span class="built_in">int</span>(half_s ** <span class="number">2</span> - m))</span><br><span class="line">OverflowError: <span class="built_in">int</span> too large to convert to <span class="built_in">float</span></span><br></pre></td></tr></table></figure>
+<p>这是因为<code>math.sqrt</code>是使用浮点数运算，但这里它无法将大的整数转换为浮点数。</p>
+</div>
+<h3 id="快速解法">快速解法</h3>
+<p>本题的常规解法要解一元二次方程，所以整数平方根运算必不可少。那么有不需要平方根运算的解法吗？答案是肯定的。</p>
+<p>在<a target="_blank" rel="noopener" href="http://people.csail.mit.edu/rivest/Rsapaper.pdf">原始的RSA论文</a>中，公钥指数<span class="math inline">\(e\)</span>和私钥指数<span class="math inline">\(d\)</span>之间的关系是 <span class="math display">\[d⋅e≡1\pmod{\varphi(n)}\]</span> 这里模数为欧拉函数<span class="math inline">\(\varphi(n)=(p-1)(q-1)\)</span>。由于<span class="math inline">\(\varphi(N)\)</span>总是能被<span class="math inline">\(\lambda(n)\)</span>整除，任何满足上式的<span class="math inline">\(d\)</span>也满足<span class="math inline">\(d⋅e≡1\pmod{\lambda(n)}\)</span>，所以<strong>私钥指数<span class="math inline">\(d\)</span>并不唯一</strong>。虽然这时算出的<span class="math inline">\(d&gt;\lambda(n)\)</span>，但是应用到Sum-O-Primes题解，却可以避免平方根运算。这是因为</p>
+<p><span class="math display">\[
+\begin{aligned}
+\varphi(n)&amp;=(p-1)(q-1)\\
+&amp;=pq-(p+q)+1\\
+&amp;=n-x+1
+\end{aligned}
+\]</span> 由此私钥指数<span class="math inline">\(d\)</span>的计算公式变成 <span class="math display">\[
+\begin{aligned}
+d&amp;≡e^{-1}\pmod{\varphi(n)}\\
+&amp;≡e^{-1}\pmod{(n-x+1)}
+\end{aligned}
+\]</span> 既然<span class="math inline">\(n\)</span>和<span class="math inline">\(x\)</span>都是现成的，这种方法完全不必求出<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>，自然也就不需要平方根运算。此新解法的Python代码非常简洁</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">d1 = <span class="built_in">pow</span>(e, -<span class="number">1</span>, n - x + <span class="number">1</span>)</span><br><span class="line">FLAG = <span class="built_in">pow</span>(c, d1, n)</span><br><span class="line"><span class="built_in">print</span>(FLAG.to_bytes((FLAG.bit_length() + <span class="number">7</span>) // <span class="number">8</span>, <span class="string">&#x27;big&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;d = &quot;</span>, d)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;d1 = &quot;</span>, d1)</span><br><span class="line"><span class="keyword">assert</span>(d1&gt;d)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;d1/d = &quot;</span>, d1/d)</span><br></pre></td></tr></table></figure>
+<p>为了比较两种解法求出的<span class="math inline">\(d\)</span>的不同，在末尾还加上了4行打印和断言语句。代码的执行结果是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;</span><br><span class="line">=============== RESTART: /Users/zixi/Downloads/Sum-O-Primes.py ==============</span><br><span class="line"><span class="string">b&#x27;picoCTF&#123;pl33z_n0_g1v3_c0ngru3nc3_0f_5qu4r35_92fe3557&#125;&#x27;</span></span><br><span class="line">d =  <span class="number">1590433953643304448870807755026766943237397482033766155980367645454600169745357277163199312196609495875891431590581528929277583062406061101224041553945564552302546648687338536694903918084325519368961617691238793972703013656395301935576994660878296156727353260699130612675943209520489312860964899655070852366584778594425834982623831654304915478835573020874834723387183369976749895237126850604587166433366381884290402338703266523462767765540527102747754912478720160791675179128443712374832507705614160658601242723842366612805686436771142338154848447759947887908800687914418476358484536216953925324788380823429735298973</span></span><br><span class="line">d1 =  <span class="number">11901952834426939436403812982514571575614906347331071933175950931208083895179963694981295931167346168378938101218143770786299673201984563299831132533757316974157649670783507276616478666261648674806749337918514985951832847720617452268824430679672778783943236259522437088812130196067329355430038927225825521934485847159262037514154059696664148362902872186817856316128403800463106817000251243818717005827615275821709043532925457271839955998044684537152992871171338447136672661193487297988293156428071068861346467230927990425182893890027896377626007826573834588309038513191969376781172191621785853174152547091371818954913</span></span><br><span class="line">d1/d =  <span class="number">7.483462489694971</span></span><br></pre></td></tr></table></figure>
+<p>如上所示，此解法亦成功夺旗。新解法算出的<span class="math inline">\(d\)</span>值（d1）是常规解法的7倍多。</p>
+<p>本文全部的代码点击这里下载：<a href="Sum-O-Primes.py.gz">Sum-O-Primes.py.gz</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/" title="巧解picoCTF的RSA挑战题Sum-O-Primes">https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+              <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/01/Stop-TLS1-0-TLS1-1/" rel="prev" title="请马上停止使用TLS 1.0和TLS 1.1！">
+                  <i class="fa fa-chevron-left"></i> 请马上停止使用TLS 1.0和TLS 1.1！
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">228k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:27</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"e1c6fbb6f8459816c55b4edef704c85b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

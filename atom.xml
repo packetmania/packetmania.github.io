@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2022-05-23T23:20:10.627Z</updated>
+  <updated>2022-06-20T02:01:31.873Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -17,11 +17,34 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>请马上停止使用TLS 1.0和TLS 1.1!</title>
+    <title>巧解picoCTF的RSA挑战题Sum-O-Primes</title>
+    <link href="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/"/>
+    <id>https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/</id>
+    <published>2022-06-18T06:32:21.000Z</published>
+    <updated>2022-06-20T02:01:31.873Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;一个偶然的机会，接触到一道picoCTF的RSA挑战题Sum-O-Primes。这道题不难，了解RSA的基本算法就能做出来。另外，如果熟悉RSA算法演变的历史，还能找到第二种巧妙的快速解法。</summary>
+    
+    
+    
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    
+    
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="CTF" scheme="https://www.packetmania.net/tags/CTF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>请马上停止使用TLS 1.0和TLS 1.1！</title>
     <link href="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/"/>
     <id>https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/</id>
     <published>2022-05-01T19:20:25.000Z</published>
-    <updated>2022-05-23T23:20:10.627Z</updated>
+    <updated>2022-05-24T05:37:54.854Z</updated>
     
     
     <summary type="html">&lt;p&gt;2021年3月，互联网工程任务组（IETF）发布分类为当前最佳实践的&lt;a href=&quot;https://tools.ietf.org/html/rfc8996&quot;&gt;RFC 8996&lt;/a&gt;，正式宣布弃用TLS 1.0和 TLS 1.1协议。如果你的应用程序和网站服务还在使用这些协议，请马上停止并立即更新到TLS 1.2或TLS 1.3协议版本，以消除可能存在的安全隐患。</summary>
@@ -103,7 +126,7 @@
     <link href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/"/>
     <id>https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/</id>
     <published>2021-07-23T23:28:43.000Z</published>
-    <updated>2021-11-28T01:39:13.678Z</updated>
+    <updated>2022-06-13T19:08:38.791Z</updated>
     
     
     <summary type="html">&lt;p&gt;遇到面试题“实现开平方根的函数”时，如果回答调用库函数&lt;code&gt;sqrt()&lt;/code&gt;就可以了，那你就会错意了。很显然，面试官要求你实现自己的平方根运算函数。这时，如果再问为什么要自己写，那你的这次面试就危险了😌。</summary>
@@ -414,27 +437,6 @@
     <category term="软件测试" scheme="https://www.packetmania.net/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/"/>
     
     <category term="树莓派" scheme="https://www.packetmania.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>解析IPv4和IPv6报文首部校验和算法</title>
-    <link href="https://www.packetmania.net/2020/11/24/Analyze-IPv4-IPv6-checksum/"/>
-    <id>https://www.packetmania.net/2020/11/24/Analyze-IPv4-IPv6-checksum/</id>
-    <published>2020-11-25T05:59:09.000Z</published>
-    <updated>2021-12-31T20:10:25.135Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;关于IP报文首部校验和(checksum)算法，简单的说就是16位累加的反码运算，但具体是如何实现的，许多资料不得其详。TCP和UDP数据报首部也使用相同的校验算法，但参与运算的数据与IP报文首部不一样。此外，IPv6对校验和的运算与IPv4又有些许不同。因此有必要对IP分组的校验和算法作全面的解析。</summary>
-    
-    
-    
-    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
-    
-    
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
   </entry>
   

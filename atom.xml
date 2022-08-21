@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2022-06-20T02:01:31.873Z</updated>
+  <updated>2022-08-20T23:51:10.937Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/"/>
     <id>https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/</id>
     <published>2022-06-18T06:32:21.000Z</published>
-    <updated>2022-06-20T02:01:31.873Z</updated>
+    <updated>2022-08-20T23:51:10.937Z</updated>
     
     
     <summary type="html">&lt;p&gt;一个偶然的机会，接触到一道picoCTF的RSA挑战题Sum-O-Primes。这道题不难，了解RSA的基本算法就能做出来。另外，如果熟悉RSA算法演变的历史，还能找到第二种巧妙的快速解法。</summary>

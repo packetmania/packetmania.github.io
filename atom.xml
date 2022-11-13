@@ -430,9 +430,9 @@
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="软件测试" scheme="https://www.packetmania.net/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/"/>
     

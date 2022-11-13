@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/Firefox-TLS-MIN-VER.png">
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/TLS-V1-1-BADSSL.png">
 <meta property="article:published_time" content="2022-05-01T19:20:25.000Z">
-<meta property="article:modified_time" content="2022-05-24T05:37:54.854Z">
+<meta property="article:modified_time" content="2022-11-13T02:00:36.895Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -294,7 +294,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-05-23 22:37:54" itemprop="dateModified" datetime="2022-05-23T22:37:54-07:00">2022-05-23</time>
+        <time title="修改时间：2022-11-12 18:00:36" itemprop="dateModified" datetime="2022-11-12T18:00:36-08:00">2022-11-12</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -408,17 +408,19 @@
 <p>在大型公共在线服务的业界，GitHub是最先行动的。他们早在2018年2月就开始在所有HTTPS连接中禁用TLS 1.0和TLS 1.1，同时还在SSH连接服务中淘汰了不安全的<code>diffie-hellman-group1-sha1</code>和<code>diffie-hellman-group14-sha1</code>密钥交换算法。2018年8月，Mozilla火狐的首席技术官Eric Rescorla发布TLS 1.3技术规范<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8446</a>。两个月之后，Mozilla就与苹果、谷歌和微软三大巨头一起协同发布声明，将废除TLS 1.0和TLS 1.1提上日程。</p>
 <p>以下是对几个相关知名企业的动态简单汇总：</p>
 <ul>
-<li><p><strong>微软：</strong>对于Office 365服务，受COVID-19的影响，曾经暂停了对商业客户的TLS 1.0和1.1的禁用。2020年10月15日重新启动了TLS 1.2的强制推广。SharePoint和OneDrive的用户需要更新和配置.NET以支持TLS 1.2。Teams Rooms的用户推荐升级应用程序到4.0.64.0版。Surface Hub在2019年5月就发布了对TLS 1.2的支持。Edge浏览器84版本开始默认不使用TLS 1.0/1.1 ，而Azure云计算服务则于2022年3月31日起永久废弃TLS 1.0/1.1。</p></li>
-<li><p><strong>谷歌：</strong>早于2018年，就开始在Chrome 70加入了TLS 1.3的功能。从Chrome 84开始，全面移除对TLS 1.0和TLS 1.1支持。在搜索引擎、Gmail电邮、YouTube和其他各种谷歌服务中运行TLS 1.3一段时间后，于2020年正式推出了TLS 1.3作为所有新的和现有的云CDN和全球负载均衡客户的默认配置。</p></li>
-<li><p><strong>苹果:</strong> 2021年9月宣布，在iOS 15、iPadOS 15、macOS 12、watchOS 8及tvOS 15中废止对TLS 1.0和TLS 1.1的支持，后续版本将彻底移除。如果用户的应用程序在所有的连接中都激活App Transport Security（ATS）功能，则无须任何改变。同时通告用户确保网络服务器支持更新的TLS版本，并从应用中删除以下已废弃的<code>Security.framework</code>符号：</p>
+<li><strong>微软：</strong>对于Office 365服务，受COVID-19的影响，曾经暂停了对商业客户的TLS 1.0和1.1的禁用。2020年10月15日重新启动了TLS 1.2的强制推广。SharePoint和OneDrive的用户需要更新和配置.NET以支持TLS 1.2。Teams Rooms的用户推荐升级应用程序到4.0.64.0版。Surface Hub在2019年5月就发布了对TLS 1.2的支持。Edge浏览器84版本开始默认不使用TLS 1.0/1.1 ，而Azure云计算服务则于2022年3月31日起永久废弃TLS 1.0/1.1。</li>
+<li><strong>谷歌：</strong>早于2018年，就开始在Chrome 70加入了TLS 1.3的功能。从Chrome 84开始，全面移除对TLS 1.0和TLS 1.1支持。在搜索引擎、Gmail电邮、YouTube和其他各种谷歌服务中运行TLS 1.3一段时间后，于2020年正式推出了TLS 1.3作为所有新的和现有的云CDN和全球负载均衡客户的默认配置。</li>
+<li><strong>苹果:</strong> 2021年9月宣布，在iOS 15、iPadOS 15、macOS 12、watchOS 8及tvOS 15中废止对TLS 1.0和TLS 1.1的支持，后续版本将彻底移除。如果用户的应用程序在所有的连接中都激活App Transport Security（ATS）功能，则无须任何改变。同时通告用户确保网络服务器支持更新的TLS版本，并从应用中删除以下已废弃的<code>Security.framework</code>符号：
 <ul>
 <li>tls_protocol_version_t.TLSv10</li>
 <li>tls_protocol_version_t.TLSv11</li>
 <li>tls_protocol_version_t.DTLSv10</li>
 </ul></li>
-<li><p><strong>Mozilla：</strong>从火狐浏览器78版开始，默认配置的最低TLS版本为TLS 1.2。在2020年初，Mozilla曾短暂完全去除火狐的TLS 1.0和TLS 1.1，但是这造成了许多用户无法打开一些COVID-19疫情公共信息网站，所以不得不恢复相关的功能。在此之后，Mozilla在其技术支持页提供帮助信息，指导用户自行按需修改默认配置中的最低TLS版本号。</p></li>
-<li><p><strong>思科：</strong>Cisco Umbrella（从OpenDNS更名而来）服务在2020年3月31日中止对TLS 1.2之前所有版本的支持。此后，只有兼容TLS 1.2的客户端才能进行连接。在路由器和交换机的产品线，2020年前后基本都实现了网页管理只允许TLS 1.2或后续版本。</p>
-<p>思科的无线接入点（AP）与无线局域网控制器（WLC）之间的CAPWAP连接建立与DTLS之上。从2015年到最近发布的全部802.11ac Wave 2和802.11ax AP都支持DTLS 1.2。AireOS WLC在8.3.11x.0版加入DTLS 1.2功能，而运行IOS-XE的新一代C9800 WLC则一开始就支持DTLS 1.2。注意，因为存在大量使用旧设备和软件版本的既有网络部署，为保护用户投资，目前AP和WLC还不能马上去除对DTLS 1.0的支持。但是，DTLS 1.2已经是AP和WLC默认的最优选择。</p></li>
+<li><strong>Mozilla：</strong>从火狐浏览器78版开始，默认配置的最低TLS版本为TLS 1.2。在2020年初，Mozilla曾短暂完全去除火狐的TLS 1.0和TLS 1.1，但是这造成了许多用户无法打开一些COVID-19疫情公共信息网站，所以不得不恢复相关的功能。在此之后，Mozilla在其技术支持页提供帮助信息，指导用户自行按需修改默认配置中的最低TLS版本号。</li>
+<li><strong>思科：</strong>Cisco Umbrella（从OpenDNS更名而来）服务在2020年3月31日中止对TLS 1.2之前所有版本的支持。此后，只有兼容TLS 1.2的客户端才能进行连接。在路由器和交换机的产品线，2020年前后基本都实现了网页管理只允许TLS 1.2或后续版本。
+<ul>
+<li>思科的无线接入点（AP）与无线局域网控制器（WLC）之间的CAPWAP连接建立与DTLS之上。从2015年到最近发布的全部802.11ac Wave 2和802.11ax AP都支持DTLS 1.2。AireOS WLC在8.3.11x.0版加入DTLS 1.2功能，而运行IOS-XE的新一代C9800 WLC则一开始就支持DTLS 1.2。注意，因为存在大量使用旧设备和软件版本的既有网络部署，为保护用户投资，目前AP和WLC还不能马上去除对DTLS 1.0的支持。但是，DTLS 1.2已经是AP和WLC默认的最优选择。</li>
+</ul></li>
 </ul>
 <h3 id="协议测试">协议测试</h3>
 <p>不论是TLS/DTLS的客户端还是服务器，都需要测试验证其实现是否遵循<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>的当前最佳实践。</p>
@@ -454,14 +456,14 @@
 <td style="text-align: center;">TLS 1.0</td>
 <td style="text-align: center;">弃用</td>
 <td style="text-align: center;">53,520（39.3%）</td>
-<td style="text-align: center;">50.216（37.1)</td>
+<td style="text-align: center;">50,216（37.1)</td>
 <td style="text-align: center;">-2.2%</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">TLS 1.1</td>
 <td style="text-align: center;">弃用</td>
-<td style="text-align: center;">58,646（40.6%）</td>
-<td style="text-align: center;">54,926（43.0%)</td>
+<td style="text-align: center;">58,646（43.0%）</td>
+<td style="text-align: center;">54,926（40.6%)</td>
 <td style="text-align: center;">-2.4%</td>
 </tr>
 <tr class="odd">
@@ -497,8 +499,8 @@
 <h4 id="浏览器测试">浏览器测试</h4>
 <p>如果不放心你使用的浏览器的安全性，想测一测看是否还支持TLS 1.2之前的协议，可以在浏览器的地址拦输入下面的网址：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-0.badssl.com</a> （只支持TLS 1.0）</li>
-<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a> （只支持TLS 1.0）</li>
+<li><a target="_blank" rel="noopener" href="https://tls-v1-0.badssl.com">https://tls-v1-0.badssl.com</a> （只支持TLS 1.0）</li>
+<li><a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a> （只支持TLS 1.1）</li>
 </ul>
 <p>用默认配置的火狐浏览器连到第二个网址后，页面显示如下</p>
 <blockquote>

@@ -36,8 +36,11 @@
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/SSL-Report-Conf.png">
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/Firefox-TLS-MIN-VER.png">
 <meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/TLS-V1-1-BADSSL.png">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/SSL-TLS.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/Implement-TLS.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/Bulletproof-TLS.jpg">
 <meta property="article:published_time" content="2022-05-01T19:20:25.000Z">
-<meta property="article:modified_time" content="2022-11-13T02:00:36.895Z">
+<meta property="article:modified_time" content="2022-11-19T07:52:07.049Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -166,7 +169,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#rfc%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">RFC解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E7%95%8C%E5%8A%A8%E6%80%81"><span class="nav-number">2.</span> <span class="nav-text">业界动态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">协议测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ssl-lab%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">SSL Lab测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E8%87%AA%E6%B5%8B"><span class="nav-number">3.2.</span> <span class="nav-text">用户自测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B5%8B%E8%AF%95"><span class="nav-number">3.3.</span> <span class="nav-text">浏览器测试</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#rfc%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">RFC解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E7%95%8C%E5%8A%A8%E6%80%81"><span class="nav-number">2.</span> <span class="nav-text">业界动态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">协议测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ssl-labs-%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">SSL Labs 测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E8%87%AA%E6%B5%8B"><span class="nav-number">3.2.</span> <span class="nav-text">用户自测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B5%8B%E8%AF%95"><span class="nav-number">3.3.</span> <span class="nav-text">浏览器测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E4%B9%A6%E7%B1%8D"><span class="nav-number">4.</span> <span class="nav-text">参考书籍</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -294,7 +297,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-11-12 18:00:36" itemprop="dateModified" datetime="2022-11-12T18:00:36-08:00">2022-11-12</time>
+        <time title="修改时间：2022-11-18 23:52:07" itemprop="dateModified" datetime="2022-11-18T23:52:07-08:00">2022-11-18</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -320,14 +323,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>9.8k</span>
+      <span>11k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -424,7 +427,7 @@
 </ul>
 <h3 id="协议测试">协议测试</h3>
 <p>不论是TLS/DTLS的客户端还是服务器，都需要测试验证其实现是否遵循<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>的当前最佳实践。</p>
-<h4 id="ssl-lab测试">SSL Lab测试</h4>
+<h4 id="ssl-labs-测试">SSL Labs 测试</h4>
 <p>Qualys公司源自非商业的<a target="_blank" rel="noopener" href="https://www.ssllabs.com/index.html">SSL Lab项目</a>。他们提供免费的简单客户端和服务器测试服务，还有一个<a target="_blank" rel="noopener" href="https://www.ssllabs.com/ssl-pulse/">监控面板</a>报告最流行互联网网站的TLS/SSL安全性扫描统计。下面是最近的2022年5月的协议支持统计图表：</p>
 <p><img src="SSL-Lab-SSL-TLS.png" style="width:70.0%;height:70.0%" /></p>
 <table>
@@ -532,7 +535,18 @@
 <p>此时再连到<a target="_blank" rel="noopener" href="https://tls-v1-1.badssl.com">https://tls-v1-1.badssl.com</a>，结果是</p>
 <p><img src="TLS-V1-1-BADSSL.png" style="width:80.0%;height:80.0%" /></p>
 <p>这个醒目的大红页面告诉你，当前使用的浏览器没有禁用TLS 1.1，存在安全风险，能不用就尽量不用。</p>
-<p>最后，不要忘记恢复火狐浏览器的默认TLS最低版本设置（3）。</p>
+<p>测试完毕，不要忘记恢复火狐浏览器的默认TLS最低版本设置（3）。</p>
+<h3 id="参考书籍">参考书籍</h3>
+<blockquote>
+<p><strong><em>Disclosure</em></strong>: <em>This blog site is reader-supported. When you buy through the affiliate links below, we may earn a tiny commission. Thank you.</em></p>
+</blockquote>
+<p>除了NIST和RFC文档之外，如果需要深入学习TLS协议规范、系统实现及应用和部署，推荐仔细阅读下面的三本书：</p>
+<div class="group-picture"><div class="group-picture-row"><div class="group-picture-column"><img src="SSL-TLS.jpg" /></div><div class="group-picture-column"><img src="Implement-TLS.jpg" /></div><div class="group-picture-column"><img src="Bulletproof-TLS.jpg" /></div></div></div>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://amzn.to/3EIfeo0">SSL and TLS: Theory and Practice, Second Edition</a>《SSL和TLS：理论与实践》（第二版，2016）—— 本书对SSL、TLS和DTLS协议进行了概述和全面讨论，提供了关于协议的理论和实践的完整细节，目标读者是软件开发人员、安全专家、顾问、协议设计者和首席安全官。书中还全面讨论了这些协议与其他互联网安全协议相比的优势和劣势，并提供了正确实施协议所需的细节。</li>
+<li><a target="_blank" rel="noopener" href="https://amzn.to/3tGCfBx">Implementing SSL/TLS Using Cryptography and PKI</a> 《使用密码学和PKI实现SSL/TLS》（2011）—— 本书是为程序员准备的、用C语言编程实现互联网安全的SSL和TLS协议的实践性指南。即使缺乏密码学的知识，在本书的指导下也可以很好地完成工作。书中涵盖了TLS 1.2，包括实现相关加密协议、安全散列、证书解析和证书生成等内容。</li>
+<li><a target="_blank" rel="noopener" href="https://amzn.to/3tLhaG6">Bulletproof TLS and PKI, Second Edition: Understanding and Deploying SSL/TLS and PKI to Secure Servers and Web</a> 《防弹TLS和PKI：理解和部署SSL/TLS和PKI以确保服务器和网站安全》（第二版，2022）—— 这是一本关于使用TLS加密和PKI来部署安全服务器和网络应用的完整指南，作者Ivan Ristić就是 SSL Labs 网站的创建者。本书将教你如何保护你的系统免受窃听和仿冒攻击。特别地，书中还介绍了许多知名的协议或实现中的漏洞和弱点信息，并提供相应的方案和部署建议加以防范。</li>
+</ol>
 
     </div>
 
@@ -629,14 +643,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">228k</span>
+    <span title="站点总字数">229k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:27</span>
+    <span title="站点阅读时长">3:28</span>
   </span>
 </div>
 <div class="busuanzi-count">

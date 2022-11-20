@@ -44,7 +44,7 @@
     <link href="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/"/>
     <id>https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/</id>
     <published>2022-05-01T19:20:25.000Z</published>
-    <updated>2022-11-19T07:52:07.049Z</updated>
+    <updated>2022-11-20T03:25:11.819Z</updated>
     
     
     <summary type="html">&lt;p&gt;2021年3月，互联网工程任务组（IETF）发布分类为当前最佳实践的&lt;a href=&quot;https://tools.ietf.org/html/rfc8996&quot;&gt;RFC 8996&lt;/a&gt;，正式宣布弃用TLS 1.0和 TLS 1.1协议。如果你的应用程序和网站服务还在使用这些协议，请马上停止并立即更新到TLS 1.2或TLS 1.3协议版本，以消除可能存在的安全隐患。</summary>

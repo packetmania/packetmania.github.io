@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-01-24T07:39:54.257Z</updated>
+  <updated>2023-03-11T08:15:22.206Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2022/12/23/uClibc-tips/"/>
     <id>https://www.packetmania.net/2022/12/23/uClibc-tips/</id>
     <published>2022-12-23T23:37:26.000Z</published>
-    <updated>2023-01-24T07:39:54.257Z</updated>
+    <updated>2023-03-11T08:15:22.206Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;a href=&quot;https://www.uclibc.org&quot;&gt;uClibc&lt;/a&gt;是一个面向嵌入式Linux系统的小巧而精致的C标准库，在低配置的嵌入式系统及物联网设备的研发中应用广泛。这里分享最近的一些使用经验，为需要解决相似问题或需求的工程师提供便利。</summary>

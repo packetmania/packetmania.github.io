@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/IEEE754-Pi.jpg">
 <meta property="og:image" content="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/log-plots.png">
 <meta property="article:published_time" content="2021-07-23T23:28:43.000Z">
-<meta property="article:modified_time" content="2022-06-13T19:08:38.791Z">
+<meta property="article:modified_time" content="2023-03-28T03:48:52.811Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="C&#x2F;C++编程">
 <meta property="article:tag" content="系统编程">
@@ -293,7 +293,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-06-13 12:08:38" itemprop="dateModified" datetime="2022-06-13T12:08:38-07:00">2022-06-13</time>
+        <time title="修改时间：2023-03-27 20:48:52" itemprop="dateModified" datetime="2023-03-27T20:48:52-07:00">2023-03-27</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -363,7 +363,7 @@
 <li>下界 <span class="math inline">\(low\leqslant \lfloor\sqrt{x}\rfloor+1\)</span></li>
 <li>上界 <span class="math inline">\(high\geqslant \lfloor\sqrt{x}\rfloor\)</span></li>
 </ul>
-<p>不然算法不能收敛。一个合理且实用的选择是：<span class="math inline">\(low=1，high=x\div32+8\)</span>。据此，二分查找法的完整C语言代码如下（提交LeetCode后通过无误）：</p>
+<p>不然算法不能收敛。一个合理且实用的选择是：<span class="math inline">\(low=1，high=x\div32+8\)</span>。另外，上界也不能超过输入的无符号整数类型的最大值的平方根，否则会产生乘法溢出。据此，二分查找法的完整C语言代码如下（提交LeetCode后通过无误）：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* integer square root - bisection method */</span></span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">isqrt_bist</span><span class="params">(<span class="keyword">uint32_t</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> low, high, mid;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (a &lt;= <span class="number">1</span>) <span class="keyword">return</span> a;</span><br><span class="line"></span><br><span class="line">    low = <span class="number">1</span>;</span><br><span class="line">    high = (a &gt;&gt; <span class="number">5</span>) + <span class="number">8</span>;</span><br><span class="line">    <span class="keyword">if</span> (high &gt; <span class="number">65535</span>) high = <span class="number">65535</span>; <span class="comment">/* adjust upper bound */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (high &gt;= low) &#123;</span><br><span class="line">        mid = (low + high) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (mid * mid &gt; a) &#123;</span><br><span class="line">            high = mid - <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> high;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="牛顿迭代法">牛顿迭代法</h4>
 <p>第二种知名的高效解法就是牛顿迭代法，是基于数值分析中在实数域上近似求解方程的牛顿-拉弗森方法（Newton-Raphson method）。这里概要介绍一下其原理：假定一个可导的实变量函数 <span class="math inline">\(f(x)\)</span>，求满足 <span class="math inline">\(f(x)=0\)</span> 的 <span class="math inline">\(x\)</span> 值，即函数的零点。只要先估计一个与零点相近的值 <span class="math inline">\(x_n\)</span>，代入下面的公式，就可以得到下一个更为接近的估算值 <span class="math inline">\(x_{n+1}\)</span>： <span class="math display">\[x_{n+1}=x_n-{\frac {f(x_n)}{f&#39;(x_n)}}\tag{1}\]</span> 这个公式是怎么得出来的呢？很简单！我们知道导数 <span class="math inline">\(f&#39;(x_n)\)</span> 的数值就是函数 <span class="math inline">\(f(x)\)</span> 在 <span class="math inline">\(x=x_n\)</span>处切线的斜率。如下图所示，将切线与 <span class="math inline">\(x\)</span> 轴的交点记为 <span class="math inline">\(x_{n+1}\)</span>，可以看到 <span class="math inline">\(x_{n+1}\)</span>比 <span class="math inline">\(x=x_n\)</span>更接近零点。</p>
@@ -399,7 +399,7 @@
 <p>由此可以算出实际数值 <span class="math inline">\((-1)^02^{124-127}(1+2^{-2})=0.15625\)</span>。从十进制实数转换为浮点数也不难，具体过程可参考<a target="_blank" rel="noopener" href="https://sandbox.mc.edu/~bennet/cs110/flt/dtof.html">此网页</a>。还可以使用一些<a target="_blank" rel="noopener" href="https://www.h-schmidt.net/FloatConverter/IEEE754.html">在线转换工具</a>验证手算的结果。</p>
 <p>值得注意的是，<strong>浮点数并非实数</strong>，它所表示的数会与实际的数值存在偏差。<strong>32位单精确度浮点数只可以保证7位十进制有效数字，而64位双精度浮点数可以保证15位十进制有效数字</strong>。在下面的在线工具截图中，我们输入精确到小数点后八位的 <span class="math inline">\(\pi\)</span> 值3.14159265，转换后得到单精确度浮点数0x40490fdb，此数字实际代表的值为3.1415927410...。这证实了单精确度浮点数的精确度判断。</p>
 <p><img src="IEEE754-Pi.jpg" /></p>
-<p>C语言的<code>float</code>类型对应IEEE 754标准规定的32位单精确度浮点数，<code>double</code>类型对应64位双精确度浮点数。</p>
+<p>C语言的<code>float</code>类型对应IEEE 754标准规定的32位单精确度浮点数，<code>double</code>类型对应64位双精确度浮点数。在下面的分析中，预设的前提条件是输入的浮点数都大于零。</p>
 <h4 id="二分搜索法">二分搜索法</h4>
 <p>基于实数和其浮点数表示法的特点，应用二分搜索法计算平方根的过程与整数平方根有一些不同：</p>
 <ul>

@@ -27,23 +27,23 @@
 <meta name="description" content="正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="程序员面试题精解（3）— 二分查找">
-<meta property="og:url" content="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/index.html">
+<meta property="og:url" content="https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/index.html">
 <meta property="og:site_name" content="网络热度">
 <meta property="og:description" content="正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-12-25T22:52:16.000Z">
-<meta property="article:modified_time" content="2023-04-06T06:49:27.186Z">
+<meta property="article:published_time" content="2022-12-29T22:52:16.000Z">
+<meta property="article:modified_time" content="2023-04-06T17:42:47.162Z">
 <meta property="article:author" content="子曦">
-<meta property="article:tag" content="C&#x2F;C++编程">
 <meta property="article:tag" content="Python编程">
+<meta property="article:tag" content="C&#x2F;C++编程">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/">
+<link rel="canonical" href="https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/","path":"2022/12/25/PGITVW-3-binsearch/","title":"程序员面试题精解（3）— 二分查找"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/","path":"2022/12/29/PGITVW-3-binsearch/","title":"程序员面试题精解（3）— 二分查找"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>程序员面试题精解（3）— 二分查找 | 网络热度</title>
@@ -257,7 +257,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ccie.gif">
@@ -281,14 +281,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-12-25 14:52:16" itemprop="dateCreated datePublished" datetime="2022-12-25T14:52:16-08:00">2022-12-25</time>
+      <time title="创建时间：2022-12-29 14:52:16" itemprop="dateCreated datePublished" datetime="2022-12-29T14:52:16-08:00">2022-12-29</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-04-05 23:49:27" itemprop="dateModified" datetime="2023-04-05T23:49:27-07:00">2023-04-05</time>
+        <time title="修改时间：2023-04-06 10:42:47" itemprop="dateModified" datetime="2023-04-06T10:42:47-07:00">2023-04-06</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -336,13 +336,13 @@
 <div class="note success no-icon"><p><strong>Although the basic idea of binary search is comparatively straightforward, the details can be surprisingly tricky.</strong><br> <strong>— <em>Donald Knuth</em>（高德纳，著名计算机科学家，现代计算机科学的先驱人物，名著《计算机程序设计艺术》的作者，1974年图灵奖得主）</strong></p>
 </div>
 <h2 id="基本算法">基本算法</h2>
-<p>二分查找，也称二分搜索或折半搜索，是一种在有序数组中查找给定元素的搜索算法。它的基本思想是：从数组的中间元素开始与目标值其进行比较，如果相等则搜索过程结束；否则，排除目标值不在其中的那一半，继续在余下的一半内查找，再次取中间元素与目标值进行比较，反复进行直到找到目标值；如果某一步骤时余下的数组为空，则表明给定元素代表不在数组中。二分查找算法的时间复杂度是<span class="math inline">\(O(\log n)\)</span>，是很有效率的搜索算法。</p>
+<p>二分查找，也称二分搜索或折半搜索，是一种在有序数组中查找给定元素的搜索算法。它的基本思想是：从数组的中间元素开始与目标值其进行比较，如果相等则搜索过程结束；否则，排除目标值不在其中的那一半，继续在余下的一半内查找，再次取中间元素与目标值进行比较，反复进行直到找到目标值；如果某一步骤时余下的数组为空，则表明给定元素代表不在数组中。二分查找算法的时间复杂度是 <span class="math inline">\(O(\log n)\)</span>，是很有效率的搜索算法。</p>
 <p>可惜的是，仅仅了解二分查找的算法思想并不能保证你可以写出准确无误的程序。美国计算机科学家乔恩·本特利（Jon Bentley）在他的计算机科学经典名著《<a target="_blank" rel="noopener" href="https://amzn.to/3UgnCkS">编程珠玑</a>》中提到，在给专业程序员的培训课程中布置二分查找作业，90%的人在数小时后仍然未能提供正确的答案。</p>
 <p>二分查找思路虽然简单，但是从各种要求和条件中产生的差异常常令人难以招架。这里我们借助契约编程的理念，解析二分查找的解法框架和两种基本算法实现，目标就是要将细节中魔⿁关在笼子里。</p>
 <h3 id="契约编程">契约编程</h3>
 <p>要编写出二分查找正确实现，首先要掌握契约编程的概念。契约编程是一种计算机软件设计的方法。这种方法要求软件设计者为程序组件定义正式的、精确的并且可验证的接口。具体到二分查找函数的这样模块，就包括先决条件（precondition)、后置条件（postcindition）、循环不变式（loop invariant）和边界函数（bound function）这些关键要素。它们的解释如下</p>
 <ul>
-<li><strong>先决条件</strong>：函数调用之前前必须成立的条件。如果先决条件被违反了，则代码将产生未定义行为，其运行的结果将偏离设计目标。不正确的先决条件还可能引发安全问题。</li>
+<li><strong>先决条件</strong>：函数调用之前必须成立的条件。如果先决条件被违反了，则代码将产生未定义行为，其运行的结果将偏离设计目标。不正确的先决条件还可能引发安全问题。</li>
 <li><strong>后置条件</strong>：指在执行一段代码后必须成立的条件，其正确性由函数在终止执行时保证。简单的说，后置条件就是函数对其输出结果的承诺。</li>
 <li><strong>循环不变式</strong>：指在循环开始和循环中，每一次迭代时为真的性质，也是在循环开始和结束后始终成立的条件。</li>
 <li><strong>限定函数</strong>：定义为仍需执行的迭代次数的上限。可以把它看作是一个表达式，其值随着循环的进行而单调地减少。当它达到或小于零时，循环结束。</li>
@@ -620,7 +620,8 @@
 <p><strong>描述</strong></p>
 <p>bsearch()函数在由nmemb对象组成的数组中搜索一个与key指向的对象匹配的成员。数组的第一个成员的位置由base指定，每个成员的存储空间大小为size。</p>
 <p>数组的内容应该根据比较函数compar以升序排序。 compar函数应该有两个参数，依次指向key对象和数组成员。如果发现key对象分别小于、等于或大于数组的成员，函数应该返回一个小于、等于或大于零的整数。</p>
-<p><strong>返回值</strong> bsearch()函数返回一个指向数组中匹配成员的指针，如果没有找到匹配的成员，则返回NULL。如果有多个成员匹配key对象，返回的元素是不确定的。</p>
+<p><strong>返回值</strong></p>
+<p>bsearch()函数返回一个指向数组中匹配成员的指针，如果没有找到匹配的成员，则返回NULL。如果有多个成员匹配key对象，返回的元素是不确定的。</p>
 </blockquote>
 <p>可以看到，应用此函数时调用者必须传递一个与数组元素类型相关的比较函数compar()。如果面试时的问题给出了数组元素类型的结构定义，求职者应该能够写出正确的compar()实现和调用bsearch()的完整工作无误的程序。</p>
 <p>作为参考，bsearch()函数的完整实现如下（很明显，它使用了不对称解法）</p>
@@ -642,7 +643,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/" title="程序员面试题精解（3）— 二分查找">https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/</a>
+      <a href="https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/" title="程序员面试题精解（3）— 二分查找">https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
@@ -651,8 +652,8 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
               <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
           </div>
 
         
@@ -808,7 +809,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
 <script src="/js/third-party/math/mathjax.js"></script>
 
 
@@ -816,7 +817,7 @@
 <script src="/js/third-party/comments/disqus.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"1ac4ba954d7b3e98053fad1bc82a8181"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"5834b88293582b96c377ca7ad1b82538"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 <script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
 <script src="/js/third-party/comments/utterances.js"></script>

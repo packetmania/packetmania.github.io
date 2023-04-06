@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-04-06T06:49:27.186Z</updated>
+  <updated>2023-04-06T17:42:47.162Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -18,10 +18,10 @@
   
   <entry>
     <title>程序员面试题精解（3）— 二分查找</title>
-    <link href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/"/>
-    <id>https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/</id>
-    <published>2022-12-25T22:52:16.000Z</published>
-    <updated>2023-04-06T06:49:27.186Z</updated>
+    <link href="https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/"/>
+    <id>https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/</id>
+    <published>2022-12-29T22:52:16.000Z</published>
+    <updated>2023-04-06T17:42:47.162Z</updated>
     
     
     <summary type="html">&lt;p&gt;正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。</summary>
@@ -31,9 +31,9 @@
     <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
     
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -52,9 +52,9 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
     
@@ -79,9 +79,9 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
-    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
     
     <category term="CTF" scheme="https://www.packetmania.net/tags/CTF/"/>
     
@@ -308,9 +308,9 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
-    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -367,11 +367,11 @@
     <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
     
     
-    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -411,11 +411,11 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
-    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   

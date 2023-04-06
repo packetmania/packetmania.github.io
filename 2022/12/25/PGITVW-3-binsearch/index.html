@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员面试题精解（3）— 二分查找">
+<meta property="og:url" content="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-25T22:52:16.000Z">
+<meta property="article:modified_time" content="2023-04-06T06:49:27.186Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta property="article:tag" content="Python编程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/","path":"2022/12/25/PGITVW-3-binsearch/","title":"程序员面试题精解（3）— 二分查找"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>程序员面试题精解（3）— 二分查找 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">基本算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%91%E7%BA%A6%E7%BC%96%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">契约编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%B3%95%E6%A1%86%E6%9E%B6"><span class="nav-number">1.2.</span> <span class="nav-text">解法框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E8%BE%B9%E7%95%8C%E8%A7%A3%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">对称边界解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%AF%B9%E7%A7%B0%E8%BE%B9%E7%95%8C%E8%A7%A3%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">不对称边界解法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E5%BD%A2%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">变形问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E6%90%9C%E7%B4%A2"><span class="nav-number">2.1.</span> <span class="nav-text">边界搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%B7%A6%E8%BE%B9%E7%95%8C"><span class="nav-number">2.1.1.</span> <span class="nav-text">定位左边界</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%8F%B3%E8%BE%B9%E7%95%8C"><span class="nav-number">2.1.2.</span> <span class="nav-text">定位右边界</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E6%95%B0%E7%BB%84"><span class="nav-number">2.2.</span> <span class="nav-text">旋转数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n%E6%AC%A1%E6%96%B9%E6%A0%B9"><span class="nav-number">2.3.</span> <span class="nav-text">N次方根</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF"><span class="nav-number">3.</span> <span class="nav-text">常见错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#glibc-%E5%BA%93%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">Glibc 库函数</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员面试题精解（3）— 二分查找
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-25 14:52:16" itemprop="dateCreated datePublished" datetime="2022-12-25T14:52:16-08:00">2022-12-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-04-05 23:49:27" itemprop="dateModified" datetime="2023-04-05T23:49:27-07:00">2023-04-05</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">面试指南</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Although the basic idea of binary search is comparatively straightforward, the details can be surprisingly tricky.</strong><br> <strong>— <em>Donald Knuth</em>（高德纳，著名计算机科学家，现代计算机科学的先驱人物，名著《计算机程序设计艺术》的作者，1974年图灵奖得主）</strong></p>
+</div>
+<h2 id="基本算法">基本算法</h2>
+<p>二分查找，也称二分搜索或折半搜索，是一种在有序数组中查找给定元素的搜索算法。它的基本思想是：从数组的中间元素开始与目标值其进行比较，如果相等则搜索过程结束；否则，排除目标值不在其中的那一半，继续在余下的一半内查找，再次取中间元素与目标值进行比较，反复进行直到找到目标值；如果某一步骤时余下的数组为空，则表明给定元素代表不在数组中。二分查找算法的时间复杂度是<span class="math inline">\(O(\log n)\)</span>，是很有效率的搜索算法。</p>
+<p>可惜的是，仅仅了解二分查找的算法思想并不能保证你可以写出准确无误的程序。美国计算机科学家乔恩·本特利（Jon Bentley）在他的计算机科学经典名著《<a target="_blank" rel="noopener" href="https://amzn.to/3UgnCkS">编程珠玑</a>》中提到，在给专业程序员的培训课程中布置二分查找作业，90%的人在数小时后仍然未能提供正确的答案。</p>
+<p>二分查找思路虽然简单，但是从各种要求和条件中产生的差异常常令人难以招架。这里我们借助契约编程的理念，解析二分查找的解法框架和两种基本算法实现，目标就是要将细节中魔⿁关在笼子里。</p>
+<h3 id="契约编程">契约编程</h3>
+<p>要编写出二分查找正确实现，首先要掌握契约编程的概念。契约编程是一种计算机软件设计的方法。这种方法要求软件设计者为程序组件定义正式的、精确的并且可验证的接口。具体到二分查找函数的这样模块，就包括先决条件（precondition)、后置条件（postcindition）、循环不变式（loop invariant）和边界函数（bound function）这些关键要素。它们的解释如下</p>
+<ul>
+<li><strong>先决条件</strong>：函数调用之前前必须成立的条件。如果先决条件被违反了，则代码将产生未定义行为，其运行的结果将偏离设计目标。不正确的先决条件还可能引发安全问题。</li>
+<li><strong>后置条件</strong>：指在执行一段代码后必须成立的条件，其正确性由函数在终止执行时保证。简单的说，后置条件就是函数对其输出结果的承诺。</li>
+<li><strong>循环不变式</strong>：指在循环开始和循环中，每一次迭代时为真的性质，也是在循环开始和结束后始终成立的条件。</li>
+<li><strong>限定函数</strong>：定义为仍需执行的迭代次数的上限。可以把它看作是一个表达式，其值随着循环的进行而单调地减少。当它达到或小于零时，循环结束。</li>
+</ul>
+<p>对于二分查找函数，显然输入必须是有序数组，这是常常被忽视的先决条件。函数的后置条件就是清晰定义的搜索结果。如果给定元素在数组中，就返回其索引（或指针）值，不然就输出预先定义的表示不存在的数值。此数值不应该与数组的索引值混淆。二分查找的循环不变式要求“如果目标值存在于数组中，那么目标值就一定存在于当前的搜索区间内”，这是正确代码实现的最重要的要素。如果这条不能总成立，那么函数必然出错！最后的限定函数由当前区间决定，因为每次的搜索空间折半，迭代次数无疑是按照对数单调递减的。</p>
+<h3 id="解法框架">解法框架</h3>
+<p>现在来看看二分查找的基本解法框架，参考C语言的函数示例</p>
+<figure class="highlight c"><figcaption><span>二分查找 - 基本解法框架</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low, mid, high;</span><br><span class="line">    low = <span class="number">0</span>;</span><br><span class="line">    high = ...;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (...) &#123;</span><br><span class="line">        mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (a[mid] &lt; v) &#123;</span><br><span class="line">            low = ...</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a[mid] &gt; v) &#123;</span><br><span class="line">            high = ... </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">/* a[mid] == v */</span></span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> ...;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应于契约编程的原理，我们可以如下说明各项要素：</p>
+<ul>
+<li>先决条件：函数输入已经预先排好的升序整数数组<code>a[]</code>，数组一共有<code>n</code>个元素，要查找的数值为<code>v</code>。</li>
+<li>后置条件：如果<code>v</code>存在于数组<code>a[]</code>中，输出其索引值；否则返回-1。</li>
+<li>循环不变式：如果<code>v</code>存在于数组<code>a[]</code>中，则其一定在每次循环的当前区间内，即位于上下界<code>low</code>和<code>high</code>之间。</li>
+<li>限定函数：因为下界<code>low</code>和上界<code>high</code>会根据<code>v</code>与当前的中间元素<code>a[mid]</code> 比较的结果而改变，总体区间是不断缩减的，<code>while</code>循环被限定。</li>
+</ul>
+<p>无疑这些给我们理清了二分查找编程实现的思路，但是其中5个标记 ... 的部分，就是可能出现细节问题的地⽅。它们直接影响循环不变式的成立和限定函数的功用，细微的不同就会产生错误的结果，从而破坏后置条件。严重时还会造成无限循环或程序崩溃。</p>
+<p>在具体的函数实现中，循环不变式是用特定的变量和数值来正式确定的。依据不同的“当前区间”的表示方法，二分查找有两大类实现方式：对称边界解法和不对称边界解法。</p>
+<h3 id="对称边界解法">对称边界解法</h3>
+<p>对称边界解法是二分查找函数的最直观实现。对称边界解法定义的“当前区间”是 <span class="math inline">\(a[low] &lt;= a[i] &lt;= a[high]\)</span>，即如果要找的元素存在以数组中，那么它的索引值 <span class="math inline">\(i∈[low,high]\)</span>，此循环不变式应该一直成立！</p>
+<p>由此，<code>low</code>被初始化为<code>0</code>，<code>high</code>被初始化为<code>n-1</code>。下面是这个解法的C语言实现：</p>
+<figure class="highlight c"><figcaption><span>二分查找基本解法 - 对称边界、闭合区间 [low, high]</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch_sym</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low, mid, high;</span><br><span class="line">    low = <span class="number">0</span>;</span><br><span class="line">    high = n - <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt;= high) &#123;</span><br><span class="line">        mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (a[mid] &lt; v) &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a[mid] &gt; v) &#123;</span><br><span class="line">            high = mid - <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">/* a[mid] == v */</span></span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为搜索区间是闭合的，当前区间的上下界可能相等，所以<code>while</code>语句内继续循环的条件应该是<code>low &lt;= high</code>，而不是<code>low &lt; high</code>，即二者相等时还要再搜索。</p>
+<p>在循环体内，中间元素<code>a[mid]</code>小于目标值<code>v</code>时，下次搜索的区间下界一定在<code>mid</code>的右侧，所以<code>low = mid + 1</code>；反之当中间元素<code>a[mid]</code>大于目标值<code>v</code>时，下次搜索的区间上界一定在<code>mid</code>的左侧，所以<code>high = mid - 1</code>。这样保证了循环不变式持续为真。</p>
+<p>最后，如果<code>low</code>大于<code>high</code>，区间为空，循环中止，函数返回-1。这满足了后置条件。同时，因为上下界一直在相互靠近，当前区间不断缩小，函数实现隐含了限定函数对循环的限制作用。</p>
+<div class="note warning"><p><strong>注意：</strong> 上面循环代码的中间元素数组索引值的计算式是 <code>mid = low + (high - low) / 2</code>，而非 <code>mid = (low + high) / 2</code>。这时为了避免整数溢出的问题。</p>
+</div>
+<h3 id="不对称边界解法">不对称边界解法</h3>
+<p>不对称边界解法是更为常见、应用更广的二分查找算法实现。不对称边界解法中的循环不变式基于的“当前区间”是 <span class="math inline">\(a[low] &lt;= a[i] &lt; a[high]\)</span>，即如果要找的元素存在以数组中，那么它的索引值 <span class="math inline">\(i∈[low,high)\)</span>。</p>
+<p>不对称边界解法使用左闭右开的半闭合（或称半开放）搜索区间，这样做有很多好处，它使许多操作变得非常简单易懂：</p>
+<ul>
+<li>将一个区间一分为二，可以简单地选择一个支点并在两个新区间引用该支点： [low, high) -&gt; [low, pivot), [pivot, high)</li>
+<li>区间内元素的计数可由一个单一的减法完成：high - low</li>
+<li>空区间的上下界索引都是相同的：[x, x)</li>
+</ul>
+<p>下面给出了这个解法的两种C语言实现。第一种对应于数组输入，第二种适用于指针输入：</p>
+<div class="tabs" id="不对称边界解法"><ul class="nav-tabs"><li class="tab active"><a href="#不对称边界解法-1">数组输入</a></li><li class="tab"><a href="#不对称边界解法-2">指针输入</a></li></ul><div class="tab-content"><div class="tab-pane active" id="不对称边界解法-1"><figure class="highlight c"><figcaption><span>二分查找基本解法 - 数组输入，不对称边界、半闭合区间 [low, high)</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch_asym</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low, mid, high;</span><br><span class="line">    low = <span class="number">0</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (a[mid] &lt; v) &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a[mid] &gt; v) &#123;</span><br><span class="line">            high = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">/* a[mid] == v */</span></span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div class="tab-pane" id="不对称边界解法-2"><figure class="highlight c"><figcaption><span>二分查找基本解法 - 指针输入，不对称边界、半闭合区间 [low, high)</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch_asym_ptr</span><span class="params">(<span class="keyword">int</span> *a, <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> *low, *mid, *high;</span><br><span class="line">    low = a;</span><br><span class="line">    high = a + n;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        mid = low + ((high - low) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (*mid &lt; v) &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (*mid &gt; v) &#123;</span><br><span class="line">            high = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">/* *mid == v */</span></span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure></div></div></div>
+<p>在数组输入的实现代码中，为了满足“当前区间”的条件，<code>low</code>被初始化为<code>0</code>，<code>high</code>被初始化为<code>n</code>。</p>
+<p>因为搜索区间是半闭合的，当前区间的上下界不可能相等，所以<code>while</code>语句内继续循环的条件应该是<code>low &lt; high</code>，而不是<code>low &lt;= high</code>，即二者相等时就不必再搜索了。</p>
+<p>在循环体内，中间元素<code>a[mid]</code>小于目标值<code>v</code>时，下次搜索的区间下界一定在<code>mid</code>的右侧，所以<code>low = mid + 1</code>；反之当中间元素<code>a[mid]</code>大于目标值<code>v</code>时，下次搜索的区间上界就是<code>mid</code>，所以<code>high = mid</code>，此时上界还是开放的，<span class="math inline">\(i∈[low,high)\)</span> 依然成立。这同样保证了循环不变式持续为真。</p>
+<p>最后，如果<code>low</code>不小于<code>high</code>，区间为空，循环中止，函数返回-1。这满足了后置条件。同理，因为上下界一直在相互靠近，当前区间不断缩小，函数实现隐含了限定函数对循环的限制作用。</p>
+<p>因为指针寻址比数组下标索引运算要快，许多二分查找函数使用指针输入。在这种情况下，下界<code>low</code>被赋值为第一个元素的指针<code>a</code>，上界<code>high</code>则为<code>a + n</code>。循环体内中间元素的指针的计算要小心，下面的两种写法都是错误的：</p>
+<ol type="1">
+<li><code>mid = (low + high) / 2</code> - 这里问题不是运行时整数溢出，而是根本无法编译，因为将两个指针相加没有意义。</li>
+<li><code>mid = low + (high - low) &gt;&gt; 1</code> - C语言的移位运算符的优先级低于算术运算符，所以这一行等效于将<code>high</code>右移一位，显然是错误的。</li>
+</ol>
+<p>正确的实现应该是 <code>mid = low + ((high - low) &gt;&gt; 1)</code>。</p>
+<p>另外，在指针输入的情况下，后置条件是不一样的。二分查找函数要返回空指针以表明找不到目标值。</p>
+<h2 id="变形问题">变形问题</h2>
+<p>掌握了契约编程的思想和循环不变式的原则，不仅可以编写出正确的基本算法实现，还能够解决一些变形的二分查找问题。</p>
+<h3 id="边界搜索">边界搜索</h3>
+<p>当有序数组中存在多个重复元素与目标值相同时，常常需要找到第一个（最左边）或最后一个（最右边）的元素的位置，这正是不对称边界解法展示威力的时候。</p>
+<p>应用相同的循环不变式 <span class="math inline">\(a[low] &lt;= a[i] &lt; a[high]\)</span>，也可以找到目标值的左右边界。不一样的地方是，如果中间值相同时，还要继续循环，以便定位第一个或最后一个元素。</p>
+<h4 id="定位左边界">定位左边界</h4>
+<p>要定位左边界时，如果中间元素小于目标值，则要找的元素的左边界一定在中间元素的右侧，需要将下界加一（右移一位）。如果中间元素大于目标值，要将上界设为中间元素的位置，继续搜索。而当中间元素与目标值相等时，因为其左边可能还有相同的元素，也要将上界设为中间元素的位置。在这些操作后，因为最后要找的元素索引值总是满足 <span class="math inline">\(i∈[low,high)\)</span> 的条件，循环不变式恒为真。</p>
+<p>而在循环结束时，为符合后置条件。需要对下界做一些检查。如果下界值为n，此数组索引值已越界，说明目标值比所有元素都大，函数应该返回-1。如果下界对应的元素正好目标值一样，输出下界索引值；否则返回-1。</p>
+<p>以有序数组 [2, 5, 5, 5, 7, 7, 7, 8, 10] 为例，查找目标值5时的算法的执行过程如下表所示</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">循环次数</th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: left;">7</th>
+<th style="text-align: center;">8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0（初始化）</td>
+<td style="text-align: center;">2 (low)</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7 (<strong>mid</strong>)</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: center;">10 (high)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2 (low)</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5 (<strong>mid</strong>)</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7 (high)</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2 (low)</td>
+<td style="text-align: center;">5 (<strong>mid</strong>)</td>
+<td style="text-align: center;">5 (high)</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2 (low/<strong>mid</strong>)</td>
+<td style="text-align: center;">5 (high)</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4（结束）</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5 (<mark>low/high</mark>)</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: center;">10</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，三轮循环过后上下界的索引值相等，都为1。对应的数组元素与目标值一样，所以输出为1。结果正确。以下是C语言实现的能定位左边界的二分查找函数</p>
+<figure class="highlight c"><figcaption><span>二分查找 - 定位左边界</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch_leftbound</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low, mid, high;</span><br><span class="line">    low = <span class="number">0</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (a[mid] &lt; v) &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">/* a[mid] &gt;= v */</span></span><br><span class="line">            high = mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (low == n) <span class="keyword">return</span> <span class="number">-1</span>; <span class="comment">/* v is bigger than all */</span></span><br><span class="line">    <span class="keyword">return</span> a[low] == v ? low : <span class="number">-1</span>; <span class="comment">/* v is less than all */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="定位右边界">定位右边界</h4>
+<p>要定位右边界时，如果中间元素大于目标值，则要找的元素的右边界一定在中间元素的左侧，需要将上界设为中间元素的位置。如果中间元素小于目标值，要将下界加一（右移一位），继续搜索。而当中间元素与目标值相等时，因为其右边可能还有相同的元素，也要将下界设为中间元素的位置。在这些操作后，因为最后要找的元素索引值总是满足 <span class="math inline">\(i∈[low,high)\)</span> 的条件，循环不变式恒为真。</p>
+<p>同样在循环结束时，为符合后置条件。需要对下界做一些检查。如果下界值为0，说明目标值比所有元素都小，函数应该返回-1。如果下界的左边对应的元素正好目标值一样，输出下界左移一位的索引值；否则返回-1。</p>
+<p>以相同的有序数组 [2, 5, 5, 5, 7, 7, 7, 8, 10] 为例，查找目标值7时的算法的执行过程如下表所示</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">循环次数</th>
+<th style="text-align: center;">0</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: left;">7</th>
+<th style="text-align: center;">8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0（初始化）</td>
+<td style="text-align: center;">2 (low)</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7 (<strong>mid</strong>)</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: center;">10 (high)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7 (low)</td>
+<td style="text-align: center;">7 (<strong>mid</strong>)</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: center;">10 (high)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7 (low)</td>
+<td style="text-align: left;">8 (<strong>mid</strong>)</td>
+<td style="text-align: center;">10 (high)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7 (low/<strong>mid</strong>)</td>
+<td style="text-align: left;">8 (high)</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4（结束）</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">8 (<mark>low/high</mark>)</td>
+<td style="text-align: center;">10</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，三轮循环过后上下界的索引值相等，都为7。对应左边的数组元素与目标值一样，所以输出为6。结果正确。以下是C语言实现的能定位右边界的二分查找函数</p>
+<figure class="highlight c"><figcaption><span>二分查找 - 定位右边界</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch_rightbound</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low, mid, high;</span><br><span class="line">    low = <span class="number">0</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt; right) &#123;</span><br><span class="line">        mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (a[mid] &gt; v) &#123;</span><br><span class="line">            high = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (low == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>; <span class="comment">/* v is less than all */</span></span><br><span class="line">    <span class="keyword">return</span> a[low<span class="number">-1</span>] == v ? (low - <span class="number">1</span>) : <span class="number">-1</span>; <span class="comment">/* v is bigger than all */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="旋转数组">旋转数组</h3>
+<p>如果输入的数组并非是完全升序的，二分查找算法还能达到特定的搜索目的吗？这要取决于数组的序列特征。</p>
+<p>考虑数组 [0,1,2,4,5,6,7]，旋转4次后变成 [4,5,6,7,0,1,2]，即后4位元素依次循环移位到前面。如果给定一个没有重复元素的旋转数组，我们可不可以使用二分查找算法找到其最小元素的位置（从而也推断出它的旋转次数）？答案是肯定的。</p>
+<p>仔细观察旋转数组，我们可以发现一个普遍规律：当旋转次数不为零时，如果中间值大于左边（下界）的值，那么最小值就出现在中间值的右侧（例如，对于[4,5,6,7,0,1,2]，中间值是7，最小值0出现在7的右侧）；如果中间值小于左边（下界）的值，最小值一定不会出现在中间值的右侧。据此，初始化low为0，high位n-1，我们可以将循环不变式表述为：“最小值的索引<span class="math inline">\(i\)</span>总是包含在由low和high表示的子数组中，即 <span class="math inline">\(i∈[low,high])\)</span>。”</p>
+<p>相应的Python函数实现如下</p>
+<figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low = <span class="number">0</span></span><br><span class="line">    high = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        <span class="keyword">if</span> nums[low] &lt; nums[high]: <span class="comment"># no rotation</span></span><br><span class="line">            <span class="keyword">return</span> nums[low]</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt;= nums[low]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># nums[mid] &lt; nums[low]</span></span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
+<p>程序说明：</p>
+<ul>
+<li>当<code>nums[low] &lt; nums[high]</code>时，当前区间内数组无旋转（比如 [0,1,2,3,4,5,6,7] 或 [0, 1 2]），从循环不变式的条件可以马上推断，<code>nums[low]</code>就是最小值。返回值满足后置条件。</li>
+<li>对于第二个<code>if</code>语句，当<code>nums[mid]&gt;= nums[low]</code>时，通过总结的规律，我们知道最小值出现在中间值的右手边。这时候因为先决条件是数组没有重复元素，而<code>nums[mid]&gt;= nums[low]</code>（等号只有在<code>low</code>与<code>mid</code>相同时才成立，这在区间只有两个元素是会发生），同时第一个<code>if</code>语句又确定了<code>nums[high]</code>比<code>nums[low]</code>小，所以中间值不可能是最小值。因此，我们可以将下界<code>left</code>设置为<code>mid+1</code>，循环不变式保持不变。</li>
+<li>对于<code>nums[mid] &lt; nums[low]</code>的情况，我们知道，最小值出现在中间值的左手边。然而，中间值可以是最小值，因此我们将上界<code>high</code>设置为中间值以保持循环不变式为真。</li>
+<li>当<code>low</code>与 <code>high</code>相等时，上下界指向同一元素。这时退出循环，函数可返回<code>nums[left]</code>。</li>
+</ul>
+<p>实际上，这就是刷题网站<a target="_blank" rel="noopener" href="https://ssg.leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/">力扣（LeetCode）上第153号问题（寻找旋转排序数组中的最小值）</a>的答案。</p>
+<p>其实换一种思路，还可以得到此题的第二种解法。如果将中间值与最右侧（上界）进行比较，当中间值大于最右侧值时，最小值一定出现在中间值的右侧；当中间值小于最右侧值时，最小值一定不会出现在中间值的右侧。这一结论对于旋转次数为零及区间只剩两个元素是都成立！从这里我们可以修改Python实现如下</p>
+<figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素（解法2）</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin2</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low = <span class="number">0</span></span><br><span class="line">    high = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt; nums[high]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
+<p>此解法的代码看起来更简洁一些，提交LeetCode后同样通过无误。</p>
+<h3 id="n次方根">N次方根</h3>
+<p>另一类可用二分查找算法解决的变形问题，就是求方根。在前文“<a href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/">平方根运算</a>”，就分别讲解了计算整数和浮点数平方根的二分查找/搜索算法实现。这里再给出一个通用的计算整数n次方根的二分查找算法。</p>
+<p>对于整数n次方根，契约编程的各项要素是不同于数组输入的二分查找算法的。以下逐一加以说明：</p>
+<ul>
+<li>先决条件：函数输入是两个整数v和n，目标是求v的n次方根的整数部分。</li>
+<li>后置条件：输出为一个不小于零的整数，为v的n次方根取整后的值。</li>
+<li>循环不变式：每次循环中，v的整数n次方根都会在当前左闭右开区间内[low, high)
+<ul>
+<li>下界 <span class="math inline">\(low\leqslant \lfloor\sqrt[n]{x}\rfloor\)</span></li>
+<li>上界 <span class="math inline">\(high &gt;\lfloor\sqrt[n]{x}\rfloor\)</span></li>
+</ul></li>
+<li>限定函数：因为上下界会根据v与当前的中间元素比较的结果而改变，总体区间不断缩减的，循环次数被限定。</li>
+</ul>
+<p>由此，得到求整数n次方根的不对称边界解法的Python语言实现如下：</p>
+<figure class="highlight python"><figcaption><span>二分查找 - 求整数n次方根</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binSearch_introot</span>(<span class="params">v: <span class="built_in">int</span>, n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Use the binary search method to find out the integer</span></span><br><span class="line"><span class="string">    component of the n&#x27;th root of v, an integer i such that</span></span><br><span class="line"><span class="string">    i ** n &lt;= v &lt; (i + 1) ** n.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span>(v &gt;= <span class="number">0</span>)</span><br><span class="line">    </span><br><span class="line">    low, mid, high = <span class="number">0</span>, <span class="number">0</span>, v</span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        mid = (low + high) // <span class="number">2</span></span><br><span class="line">        power = mid ** n</span><br><span class="line">        <span class="keyword">if</span> power &lt; v:</span><br><span class="line">            low = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> power &gt; v:</span><br><span class="line">            high = mid</span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># power == v</span></span><br><span class="line">            <span class="keyword">return</span> mid</span><br><span class="line">    <span class="keyword">return</span> low - <span class="number">1</span> <span class="keyword">if</span> low &gt; <span class="number">1</span> <span class="keyword">else</span> low</span><br></pre></td></tr></table></figure>
+<p>这里在循环结束后，为满足后置条件，我们要检查<code>low</code>的数值。因为<code>low</code>的值在循环终止前被赋值<code>mid + 1</code>，而此操作使得<code>low &lt; high</code>不再为真，所以必须减一。例外是输入v值为1的情况。</p>
+<h2 id="常见错误">常见错误</h2>
+<p>下面是面试者在回答二分查找的编程实现问题时经常出现的错误：</p>
+<ul>
+<li>不能正确处理零元素或单个元素数组的情况（这时会出现上下界与中间位置重合）</li>
+<li>不能在数组的第一个或最后一个元素中找到目标值的情况，可能是初始化上下界造成的问题</li>
+<li>不能处理目标值不存在造成的搜索失败的情况，原因也可能源自错误的上下界初始值</li>
+<li>不能处理数组中的重复元素，特别是重复元素跨越两个子区间时</li>
+<li>在探测后缩小区间时，没有正确设定子区间的端点，导致无限循环。</li>
+<li>不能正确计算当前区间中间位置的索引值、地址（指针）值或用作比较的元素值
+<ul>
+<li>计算中间位置索引时整数溢出：<code>(low + high) &gt;&gt; 1</code></li>
+<li>计算中间位置地址时作指针相加运算：<code>(low + high) / 2</code></li>
+<li>计算中间位置元素值时结果越界：<code>mid * mid</code> (C/C++/Java时会发生，Python OK)</li>
+</ul></li>
+</ul>
+<p>如果深入理解契约编程，牢记二分查找的基本解题框架，写出正确的循环不变式并将其保持为真的思想贯彻在编程中，再特别留意以上几点容易出错的地方，就一定可以提交令人满意的答案。</p>
+<h2 id="glibc-库函数">Glibc 库函数</h2>
+<p>最后，介绍流行的Glibc库提供的二分查找工具函数 — bsearch()：</p>
+<figure class="highlight c"><figcaption><span>Glibc bsearch</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">bsearch</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *key, <span class="keyword">const</span> <span class="keyword">void</span> *base,</span></span></span><br><span class="line"><span class="params"><span class="function">              <span class="keyword">size_t</span> nmemb, <span class="keyword">size_t</span> size,</span></span></span><br><span class="line"><span class="params"><span class="function">              <span class="keyword">int</span> (*compar)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;                  </span><br></pre></td></tr></table></figure>
+<p>对它的简要说明如下</p>
+<blockquote>
+<p><strong>描述</strong></p>
+<p>bsearch()函数在由nmemb对象组成的数组中搜索一个与key指向的对象匹配的成员。数组的第一个成员的位置由base指定，每个成员的存储空间大小为size。</p>
+<p>数组的内容应该根据比较函数compar以升序排序。 compar函数应该有两个参数，依次指向key对象和数组成员。如果发现key对象分别小于、等于或大于数组的成员，函数应该返回一个小于、等于或大于零的整数。</p>
+<p><strong>返回值</strong> bsearch()函数返回一个指向数组中匹配成员的指针，如果没有找到匹配的成员，则返回NULL。如果有多个成员匹配key对象，返回的元素是不确定的。</p>
+</blockquote>
+<p>可以看到，应用此函数时调用者必须传递一个与数组元素类型相关的比较函数compar()。如果面试时的问题给出了数组元素类型的结构定义，求职者应该能够写出正确的compar()实现和调用bsearch()的完整工作无误的程序。</p>
+<p>作为参考，bsearch()函数的完整实现如下（很明显，它使用了不对称解法）</p>
+<figure class="highlight c"><figcaption><span>glibc/bits/stdlib-bsearch.h.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__extern_inline <span class="keyword">void</span> *</span></span><br><span class="line"><span class="function"><span class="title">bsearch</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *__key, <span class="keyword">const</span> <span class="keyword">void</span> *__base, <span class="keyword">size_t</span> __nmemb, <span class="keyword">size_t</span> __size,</span></span></span><br><span class="line"><span class="params"><span class="function">	 <span class="keyword">__compar_fn_t</span> __compar)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> __l, __u, __idx;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">void</span> *__p;</span><br><span class="line">  <span class="keyword">int</span> __comparison;</span><br><span class="line">  __l = <span class="number">0</span>;</span><br><span class="line">  __u = __nmemb;</span><br><span class="line">  <span class="keyword">while</span> (__l &lt; __u)</span><br><span class="line">    &#123;</span><br><span class="line">      __idx = (__l + __u) / <span class="number">2</span>;</span><br><span class="line">      __p = (<span class="keyword">const</span> <span class="keyword">void</span> *) (((<span class="keyword">const</span> <span class="keyword">char</span> *) __base) + (__idx * __size));</span><br><span class="line">      __comparison = (*__compar) (__key, __p);</span><br><span class="line">      <span class="keyword">if</span> (__comparison &lt; <span class="number">0</span>)</span><br><span class="line">	__u = __idx;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (__comparison &gt; <span class="number">0</span>)</span><br><span class="line">	__l = __idx + <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __GNUC_PREREQ(4, 6)</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">pragma</span> GCC diagnostic push</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">pragma</span> GCC diagnostic ignored <span class="meta-string">&quot;-Wcast-qual&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	  <span class="keyword">return</span> (<span class="keyword">void</span> *) __p;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __GNUC_PREREQ(4, 6)</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">pragma</span> GCC diagnostic pop</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/" title="程序员面试题精解（3）— 二分查找">https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/12/23/uClibc-tips/" rel="prev" title="嵌入式Linux系统中uClibc标准库使用经验笔记">
+                  <i class="fa fa-chevron-left"></i> 嵌入式Linux系统中uClibc标准库使用经验笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">250k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:48</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"1ac4ba954d7b3e98053fad1bc82a8181"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

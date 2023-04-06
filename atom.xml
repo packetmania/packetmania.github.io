@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-03-11T08:15:22.206Z</updated>
+  <updated>2023-04-06T06:49:27.186Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>程序员面试题精解（3）— 二分查找</title>
+    <link href="https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/"/>
+    <id>https://www.packetmania.net/2022/12/25/PGITVW-3-binsearch/</id>
+    <published>2022-12-25T22:52:16.000Z</published>
+    <updated>2023-04-06T06:49:27.186Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。</summary>
+    
+    
+    
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>嵌入式Linux系统中uClibc标准库使用经验笔记</title>
@@ -416,27 +437,6 @@
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C++编程实现的距离矢量路由协议仿真程序</title>
-    <link href="https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/"/>
-    <id>https://www.packetmania.net/2020/11/25/CC-simulate-DV-routing/</id>
-    <published>2020-11-26T05:16:24.000Z</published>
-    <updated>2021-11-28T01:39:13.651Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;距离矢量 (Distance-vector) 和链路状态 (Link-state) 是路由协议的两大分类。距离矢量路由协议在互联网早期得到广泛应用，之后一些协议实现逐渐演变成为标准化的“&lt;a href=&quot;https://tools.ietf.org/html/rfc2453&quot;&gt;路由信息协议&lt;/a&gt;” (Routing Information Protocol，缩写 RIP)。由于其简单和实用性，RIP 现今仍旧是小型网络配置的首选。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
-    
-    
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="路由与交换" scheme="https://www.packetmania.net/tags/%E8%B7%AF%E7%94%B1%E4%B8%8E%E4%BA%A4%E6%8D%A2/"/>
     
   </entry>
   

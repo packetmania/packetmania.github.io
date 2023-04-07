@@ -32,7 +32,7 @@
 <meta property="og:description" content="正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-29T22:52:16.000Z">
-<meta property="article:modified_time" content="2023-04-07T01:06:03.986Z">
+<meta property="article:modified_time" content="2023-04-07T07:17:47.434Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="Python编程">
 <meta property="article:tag" content="C&#x2F;C++编程">
@@ -288,7 +288,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-04-06 18:06:03" itemprop="dateModified" datetime="2023-04-06T18:06:03-07:00">2023-04-06</time>
+        <time title="修改时间：2023-04-07 00:17:47" itemprop="dateModified" datetime="2023-04-07T00:17:47-07:00">2023-04-07</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -571,13 +571,13 @@
 <figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low = <span class="number">0</span></span><br><span class="line">    high = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        <span class="keyword">if</span> nums[low] &lt; nums[high]: <span class="comment"># no rotation</span></span><br><span class="line">            <span class="keyword">return</span> nums[low]</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt;= nums[low]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># nums[mid] &lt; nums[low]</span></span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
 <p>程序说明：</p>
 <ul>
-<li>当<code>nums[low] &lt; nums[high]</code>时，当前区间内数组无旋转（比如 [0,1,2,3,4,5,6,7] 或 [0, 1 2]），从循环不变式的条件可以马上推断，<code>nums[low]</code>就是最小值。返回值满足后置条件。</li>
+<li>当<code>nums[low] &lt; nums[high]</code>时，当前区间内数组无旋转（比如 [0,1,2,3,4,5,6,7] 或 [0,1,2]），从循环不变式的条件可以马上推断，<code>nums[low]</code>就是最小值。返回值满足后置条件。</li>
 <li>对于第二个<code>if</code>语句，当<code>nums[mid]&gt;= nums[low]</code>时，通过总结的规律，我们知道最小值出现在中间值的右手边。这时候因为先决条件是数组没有重复元素，而<code>nums[mid]&gt;= nums[low]</code>（等号只有在<code>low</code>与<code>mid</code>相同时才成立，这在区间只有两个元素是会发生），同时第一个<code>if</code>语句又确定了<code>nums[high]</code>比<code>nums[low]</code>小，所以中间值不可能是最小值。因此，我们可以将下界<code>left</code>设置为<code>mid+1</code>，循环不变式保持不变。</li>
 <li>对于<code>nums[mid] &lt; nums[low]</code>的情况，我们知道，最小值出现在中间值的左手边。然而，中间值可以是最小值，因此我们将上界<code>high</code>设置为中间值以保持循环不变式为真。</li>
 <li>当<code>low</code>与 <code>high</code>相等时，上下界指向同一元素。这时退出循环，函数可返回<code>nums[left]</code>。</li>
 </ul>
 <p>实际上，这就是刷题网站<a target="_blank" rel="noopener" href="https://ssg.leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/">力扣（LeetCode）上第153号问题（寻找旋转排序数组中的最小值）</a>的答案。</p>
-<p>其实换一种思路，还可以得到此题的第二种解法。如果将中间值与最右侧（上界）进行比较，当中间值大于最右侧值时，最小值一定出现在中间值的右侧；当中间值小于最右侧值时，最小值一定不会出现在中间值的右侧。这一结论对于旋转次数为零及区间只剩两个元素是都成立！从这里我们可以修改Python实现如下</p>
+<p>其实换一种思路，还可以得到此题的第二种解法。如果将中间值与最右侧（上界）进行比较，当中间值大于最右侧值时，最小值一定出现在中间值的右侧；当中间值小于最右侧值时，最小值一定不会出现在中间值的右侧。这一结论对于旋转次数为零及区间只剩两个元素时都成立！从这里我们可以修改Python实现如下</p>
 <figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素（解法2）</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin2</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low = <span class="number">0</span></span><br><span class="line">    high = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt; nums[high]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
 <p>此解法的代码看起来更简洁一些，提交LeetCode后同样通过无误。</p>
 <h3 id="n次方根">N次方根</h3>

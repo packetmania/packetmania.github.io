@@ -275,6 +275,13 @@
   </url>
   
   <url>
+    <loc>https://www.packetmania.net/tags/TCP-IP/</loc>
+    <lastmod>2023-04-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2023-04-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -283,13 +290,6 @@
   
   <url>
     <loc>https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2023-04-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.packetmania.net/tags/TCP-IP/</loc>
     <lastmod>2023-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -359,14 +359,14 @@
   </url>
   
   <url>
-    <loc>https://www.packetmania.net/tags/CTF/</loc>
+    <loc>https://www.packetmania.net/tags/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/</loc>
     <lastmod>2023-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.packetmania.net/tags/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/</loc>
+    <loc>https://www.packetmania.net/tags/CTF/</loc>
     <lastmod>2023-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -410,14 +410,14 @@
   </url>
   
   <url>
-    <loc>https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E8%AF%84%E8%AE%BA/</loc>
+    <loc>https://www.packetmania.net/categories/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5/</loc>
     <lastmod>2023-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.packetmania.net/categories/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5/</loc>
+    <loc>https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E8%AF%84%E8%AE%BA/</loc>
     <lastmod>2023-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

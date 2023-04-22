@@ -32,7 +32,7 @@
 <meta property="og:description" content="正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-29T22:52:16.000Z">
-<meta property="article:modified_time" content="2023-04-18T07:53:18.060Z">
+<meta property="article:modified_time" content="2023-04-22T07:09:29.550Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="Python编程">
 <meta property="article:tag" content="C&#x2F;C++编程">
@@ -288,7 +288,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-04-18 00:53:18" itemprop="dateModified" datetime="2023-04-18T00:53:18-07:00">2023-04-18</time>
+        <time title="修改时间：2023-04-22 00:09:29" itemprop="dateModified" datetime="2023-04-22T00:09:29-07:00">2023-04-22</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -479,7 +479,7 @@
 </table>
 <p>可以看到，三轮循环过后上下界的索引值相等，都为1。对应的数组元素与目标值一样，所以输出为1。结果正确。以下是C语言实现的能定位左边界的二分查找函数</p>
 <figure class="highlight c"><figcaption><span>二分查找 - 定位左边界</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch_leftbound</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low, mid, high;</span><br><span class="line">    low = <span class="number">0</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (a[mid] &lt; v) &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">/* a[mid] &gt;= v */</span></span><br><span class="line">            high = mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (low == n) <span class="keyword">return</span> <span class="number">-1</span>; <span class="comment">/* v is greater than all */</span></span><br><span class="line">    <span class="keyword">return</span> a[low] == v ? low <span class="comment">/* find the left bound */</span></span><br><span class="line">                       : <span class="number">-1</span>; <span class="comment">/* v is less than all */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>定位左边界的解法还可以用于定位最后一个小于目标值的元素。比如，给定目标值为7，从左到右最后一个小于目标值的元素是第三个5（索引值为3），即目标值7的左边界的左邻居。而给定目标值为5时，从左到右最后一个小于目标值的元素是2，即搜索目标值5时循环结束时下界索引值减一。由此可见，这里循环不变式完全一样，只是后置条件有所不同：</p>
+<p>定位左边界的解法还可以用于定位最后一个小于目标值的元素。比如，给定目标值为7，从左到右最后一个小于目标值的元素是第三个5（索引值为3），即目标值7的左边界的左邻居。而给定目标值为5时，从左到右最后一个小于目标值的元素是2，即搜索目标值5时循环结束后下界索引值减一。由此可见，这里循环不变式完全一样，只是后置条件有所不同：</p>
 <ul>
 <li>如果目标值不大于数组序列首个元素，返回-1。</li>
 <li>否则返回搜索结果的下界索引值减一。</li>
@@ -570,7 +570,7 @@
 </table>
 <p>可以看到，三轮循环过后上下界的索引值相等，都为7。对应左边的数组元素与目标值一样，所以输出为6。结果正确。以下是C语言实现的能定位右边界的二分查找函数</p>
 <figure class="highlight c"><figcaption><span>二分查找 - 定位右边界</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binSearch_rightbound</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n, <span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low, mid, high;</span><br><span class="line">    low = <span class="number">0</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (a[mid] &gt; v) &#123;</span><br><span class="line">            high = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (high == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;          <span class="comment">/* v is lesser than all */</span></span><br><span class="line">    <span class="keyword">return</span> a[high<span class="number">-1</span>] == v ? (high - <span class="number">1</span>) <span class="comment">/* find the right bound */</span></span><br><span class="line">                          : <span class="number">-1</span>;        <span class="comment">/* v is greater than all */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>同理，定位右边界的解法还可以用于定位第一个大于目标值的元素。比如，给定目标值为7，从左到右第一个大于目标值的元素是8（索引值为7），即目标值7的右边界的右邻居。而给定目标值为6时，从左到右第一个大于目标值的元素是第一个7，即搜索目标值6时循环结束时上界索引值。同样，这里循环不变式完全一样，只是后置条件有所不同：</p>
+<p>同理，定位右边界的解法还可以用于定位第一个大于目标值的元素。比如，给定目标值为7，从左到右第一个大于目标值的元素是8（索引值为7），即目标值7的右边界的右邻居。而给定目标值为6时，从左到右第一个大于目标值的元素是第一个7，即搜索目标值6时循环结束后上界索引值。同样，这里循环不变式完全一样，只是后置条件有所不同：</p>
 <ul>
 <li>如果目标值不小于数组序列末尾元素，返回-1。</li>
 <li>否则返回搜索结果的上界索引值。</li>
@@ -580,7 +580,7 @@
 <h3 id="旋转数组">旋转数组</h3>
 <p>如果输入的数组并非是完全升序的，二分查找算法还能达到特定的搜索目的吗？这要取决于数组的序列特征。</p>
 <p>考虑数组 [0,1,2,4,5,6,7]，旋转4次后变成 [4,5,6,7,0,1,2]，即后4位元素依次循环移位到前面。如果给定一个没有重复元素的旋转数组，我们可不可以使用二分查找算法找到其最小元素的位置（从而也推断出它的旋转次数）？答案是肯定的。</p>
-<p>仔细观察旋转数组，我们可以发现一个普遍规律：当旋转次数不为零时，如果中间值大于左边（下界）的值，那么最小值就出现在中间值的右侧（例如，对于[4,5,6,7,0,1,2]，中间值是7，最小值0出现在7的右侧）；如果中间值小于左边（下界）的值，最小值一定不会出现在中间值的右侧。据此，初始化low为0，high位n-1，我们可以将循环不变式表述为：“最小值的索引<span class="math inline">\(i\)</span>总是包含在由low和high表示的子数组中，即 <span class="math inline">\(i∈[low,high])\)</span>。”</p>
+<p>仔细观察旋转数组，我们可以发现一个普遍规律：当旋转次数不为零时，如果中间值大于左边（下界）的值，那么最小值就出现在中间值的右侧（例如，对于[4,5,6,7,0,1,2]，中间值是7，最小值0出现在7的右侧）；如果中间值小于左边（下界）的值，最小值一定不会出现在中间值的右侧。据此，初始化low为0，high位n-1，我们可以将循环不变式表述为：“最小值的索引<span class="math inline">\(i\)</span>总是包含在由low和high表示的子数组中，即 <span class="math inline">\(i∈[low,high]\)</span>。”</p>
 <p>相应的Python函数实现如下</p>
 <figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low = <span class="number">0</span></span><br><span class="line">    high = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        <span class="keyword">if</span> nums[low] &lt; nums[high]: <span class="comment"># no rotation</span></span><br><span class="line">            <span class="keyword">return</span> nums[low]</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt;= nums[low]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># nums[mid] &lt; nums[low]</span></span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
 <p>程序说明：</p>
@@ -615,14 +615,22 @@
 <ul>
 <li>不能正确处理零元素或单个元素数组的情况（这时会出现上下界与中间位置重合）</li>
 <li>不能在数组的第一个或最后一个元素中找到目标值的情况，可能是初始化上下界造成的问题</li>
-<li>不能处理目标值不存在造成的搜索失败的情况，原因也可能源自错误的上下界初始值</li>
+<li>不能处理目标值不存在造成的搜索失败的情况，原因也可能源自错误的上下界初始值
+<ul>
+<li>对称边界解法使用闭合区间 <span class="math inline">\(i∈[low,high]\)</span>，通常应该设定<code>low = 0</code>，<code>high = n - 1</code></li>
+<li>不对称边界解法使用半闭合区间 <span class="math inline">\(i∈[low,high)\)</span>，通常应该设定<code>low = 0</code>，<code>high = n</code></li>
+</ul></li>
 <li>不能处理数组中的重复元素，特别是重复元素跨越两个子区间时</li>
-<li>在探测后缩小区间时，没有正确设定子区间的端点，导致无限循环。</li>
+<li>在探测后缩小区间时，没有正确设定子区间的端点，导致无限循环
+<ul>
+<li>如果循环继续的条件是<code>low &lt;= high</code>，则更新式一般为<code>low = mid + 1</code>或<code>high = mid - 1</code></li>
+<li>如果循环继续的条件是<code>low &lt; high</code>，则更新式一般为<code>low = mid + 1</code>或<code>high = mid</code></li>
+</ul></li>
 <li>不能正确计算当前区间中间位置的索引值、地址（指针）值或用作比较的元素值
 <ul>
 <li>计算中间位置索引时整数溢出：<code>(low + high) &gt;&gt; 1</code></li>
 <li>计算中间位置地址时作指针相加运算：<code>(low + high) / 2</code></li>
-<li>计算中间位置元素值时结果越界：<code>mid * mid</code> (C/C++/Java时会发生，Python OK)</li>
+<li>计算中间位置元素值时结果溢出：<code>mid * mid</code> (C/C++/Java时会发生，Python OK)</li>
 </ul></li>
 </ul>
 <p>如果深入理解契约编程，牢记二分查找的基本解题框架，写出正确的循环不变式并将其保持为真的思想贯彻在编程中，再特别留意以上几点容易出错的地方，就一定可以提交令人满意的答案。</p>

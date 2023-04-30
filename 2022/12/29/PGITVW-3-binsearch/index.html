@@ -32,7 +32,7 @@
 <meta property="og:description" content="正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-29T22:52:16.000Z">
-<meta property="article:modified_time" content="2023-04-22T22:20:32.092Z">
+<meta property="article:modified_time" content="2023-04-30T22:12:18.543Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="Python编程">
 <meta property="article:tag" content="C&#x2F;C++编程">
@@ -160,7 +160,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">基本算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%91%E7%BA%A6%E7%BC%96%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">契约编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%B3%95%E6%A1%86%E6%9E%B6"><span class="nav-number">1.2.</span> <span class="nav-text">解法框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E8%BE%B9%E7%95%8C%E8%A7%A3%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">对称边界解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%AF%B9%E7%A7%B0%E8%BE%B9%E7%95%8C%E8%A7%A3%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">不对称边界解法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E5%BD%A2%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">变形问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E6%90%9C%E7%B4%A2"><span class="nav-number">2.1.</span> <span class="nav-text">边界搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%B7%A6%E8%BE%B9%E7%95%8C"><span class="nav-number">2.1.1.</span> <span class="nav-text">定位左边界</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%8F%B3%E8%BE%B9%E7%95%8C"><span class="nav-number">2.1.2.</span> <span class="nav-text">定位右边界</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E6%95%B0%E7%BB%84"><span class="nav-number">2.2.</span> <span class="nav-text">旋转数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n%E6%AC%A1%E6%96%B9%E6%A0%B9"><span class="nav-number">2.3.</span> <span class="nav-text">N次方根</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF"><span class="nav-number">3.</span> <span class="nav-text">常见错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#glibc-%E5%BA%93%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">Glibc 库函数</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">基本算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%91%E7%BA%A6%E7%BC%96%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">契约编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%B3%95%E6%A1%86%E6%9E%B6"><span class="nav-number">1.2.</span> <span class="nav-text">解法框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E8%BE%B9%E7%95%8C%E8%A7%A3%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">对称边界解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%AF%B9%E7%A7%B0%E8%BE%B9%E7%95%8C%E8%A7%A3%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">不对称边界解法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E5%BD%A2%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">变形问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E6%90%9C%E7%B4%A2"><span class="nav-number">2.1.</span> <span class="nav-text">边界搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%B7%A6%E8%BE%B9%E7%95%8C"><span class="nav-number">2.1.1.</span> <span class="nav-text">定位左边界</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%8F%B3%E8%BE%B9%E7%95%8C"><span class="nav-number">2.1.2.</span> <span class="nav-text">定位右边界</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E6%95%B0%E7%BB%84"><span class="nav-number">2.2.</span> <span class="nav-text">旋转数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k%E9%82%BB%E8%BF%91%E5%85%83%E7%B4%A0"><span class="nav-number">2.3.</span> <span class="nav-text">K邻近元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n%E6%AC%A1%E6%96%B9%E6%A0%B9"><span class="nav-number">2.4.</span> <span class="nav-text">N次方根</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF"><span class="nav-number">3.</span> <span class="nav-text">常见错误</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#glibc-%E5%BA%93%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">Glibc 库函数</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -288,7 +288,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-04-22 15:20:32" itemprop="dateModified" datetime="2023-04-22T15:20:32-07:00">2023-04-22</time>
+        <time title="修改时间：2023-04-30 15:12:18" itemprop="dateModified" datetime="2023-04-30T15:12:18-07:00">2023-04-30</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -314,14 +314,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>12k</span>
+      <span>15k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>11 分钟</span>
+      <span>13 分钟</span>
     </span>
 </div>
 
@@ -619,7 +619,7 @@ int binSearch(int a[], int n, int v)
 <p>考虑数组 [0,1,2,4,5,6,7]，旋转4次后变成 [4,5,6,7,0,1,2]，即后4位元素依次循环移位到前面。如果给定一个没有重复元素的旋转数组，我们可不可以使用二分查找算法找到其最小元素的位置（从而也推断出它的旋转次数）？答案是肯定的。</p>
 <p>仔细观察旋转数组，我们可以发现一个普遍规律：当旋转次数不为零时，如果中间值大于左边（下界）的值，那么最小值就出现在中间值的右侧（例如，对于[4,5,6,7,0,1,2]，中间值是7，最小值0出现在7的右侧）；如果中间值小于左边（下界）的值，最小值一定不会出现在中间值的右侧。据此，初始化low为0，high位n-1，我们可以将循环不变式表述为：“最小值的索引<span class="math inline">\(i\)</span>总是包含在由low和high表示的子数组中，即 <span class="math inline">\(i∈[low,high]\)</span>。”</p>
 <p>相应的Python函数实现如下</p>
-<figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low = <span class="number">0</span></span><br><span class="line">    high = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        <span class="keyword">if</span> nums[low] &lt; nums[high]: <span class="comment"># no rotation</span></span><br><span class="line">            <span class="keyword">return</span> nums[low]</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt;= nums[low]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># nums[mid] &lt; nums[low]</span></span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low, high = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        <span class="keyword">if</span> nums[low] &lt; nums[high]: <span class="comment"># no rotation</span></span><br><span class="line">            <span class="keyword">return</span> nums[low]</span><br><span class="line">        mid = (high + low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt;= nums[low]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># nums[mid] &lt; nums[low]</span></span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
 <p>程序说明：</p>
 <ul>
 <li>当<code>nums[low] &lt; nums[high]</code>时，当前区间内数组无旋转（比如 [0,1,2,3,4,5,6,7] 或 [0,1,2]），从循环不变式的条件可以马上推断，<code>nums[low]</code>就是最小值。返回值满足后置条件。</li>
@@ -629,35 +629,167 @@ int binSearch(int a[], int n, int v)
 </ul>
 <p>实际上，这就是刷题网站<a target="_blank" rel="noopener" href="https://ssg.leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/">力扣（LeetCode）上第153号问题（寻找旋转排序数组中的最小值）</a>的答案。</p>
 <p>其实换一种思路，还可以得到此题的第二种解法。如果将中间值与最右侧（上界）进行比较，当中间值大于最右侧值时，最小值一定出现在中间值的右侧；当中间值小于最右侧值时，最小值一定不会出现在中间值的右侧。这一结论对于旋转次数为零及区间只剩两个元素时都成立！从这里我们可以修改Python实现如下</p>
-<figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素（解法2）</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin2</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low = <span class="number">0</span></span><br><span class="line">    high = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt; nums[high]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>二分查找 - 寻找旋转数组的最小元素（解法2）</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findMin2</span>(<span class="params">nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    low, high = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        mid = (high + low) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> nums[mid] &gt; nums[high]:</span><br><span class="line">            low= mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> nums[low]</span><br></pre></td></tr></table></figure>
 <p>此解法的代码看起来更简洁一些，提交LeetCode后同样通过无误。</p>
-<h3 id="n次方根">N次方根</h3>
-<p>另一类可用二分查找算法解决的变形问题，就是求方根。在前文“<a href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/">平方根运算</a>”，就分别讲解了计算整数和浮点数平方根的二分查找/搜索算法实现。这里再给出一个通用的计算整数n次方根的二分查找算法。</p>
-<p>对于整数n次方根，契约编程的各项要素是不同于数组输入的二分查找算法的。以下逐一加以说明：</p>
+<h3 id="k邻近元素">K邻近元素</h3>
+<p>下一个应用二分查找实现高效解法的例子，是<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-k-closest-elements/">力扣上第658号问题：找到 K 个最接近的元素</a>。题目的要求描述如下</p>
+<blockquote>
+<p>给定一个排序好的数组 arr，两个整数 k 和 x，从数组中找到最靠近 x（两数之差最小）的 k 个数。返回的结果必须要是按升序排好的。</p>
+</blockquote>
+<blockquote>
+<p>整数 a 比整数 b 更接近 x 需要满足：</p>
 <ul>
-<li>先决条件：函数输入是两个整数v和n，目标是求v的n次方根的整数部分。</li>
-<li>后置条件：输出为一个不小于零的整数，为v的n次方根取整后的值。</li>
-<li>循环不变式：每次循环中，v的整数n次方根都会在当前左闭右开区间内[low, high)
+<li>|a - x| &lt; |b - x| 或者<br />
+</li>
+<li>|a - x| == |b - x| 且 a &lt; b</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<p><strong>输入：</strong>arr = [1,2,3,4,5], k = 4, x = 3<br />
+<strong>输出：</strong>[1,2,3,4]</p>
+<p><strong>示例 2：</strong></p>
+<p><strong>输入：</strong>arr = [1,2,3,4,5], k = 4, x = -1<br />
+<strong>输出：</strong>[1,2,3,4]</p>
+<p><strong>提示：</strong></p>
+<ul>
+<li><pre><code>1 &lt;= k &lt;= arr.length</code></pre></li>
+<li><pre><code>1 &lt;= arr.length &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></pre></li>
+<li><pre><code>arr 按升序排列</code></pre></li>
+<li><pre><code>-10&lt;sup&gt;4&lt;/sup&gt; &lt;= arr[i], x &lt;= 10&lt;sup&gt;4&lt;/sup&gt;</code></pre></li>
+</ul>
+</blockquote>
+<p>此题的难度为中等，解法比较多。比较直观的一种解法是计算每个数组元素和 x 的差值的绝对值（即距离），然后最小堆实现找出距离最近的 k 个元素。无疑，这种解法时间复杂度是 <span class="math inline">\(O(n)\)</span>。它没有利用数组升序排列的性质，效率不高。</p>
+<p>第二种解法是使用双指针的排除法。由于最后要保留 k 个元素，我们就需要删除 n - k 个元素。由于数组是升序排列的，这些被排除的元素一定都在两端，所以可以使用左右两边相互碰撞的方法。从最左端和最右端开始碰撞对比， 谁与目标 x 的距离小，谁就保留，另一个数则删除。经过 n - k 次重复之后就找到了左边界，输出 arr[low, low+k]。这种解法时间复杂度依然是 <span class="math inline">\(O(n)\)</span>。</p>
+<p>还有更好的解法吗？其实应用二分查找，确实可以得到时间复杂度是 <span class="math inline">\(O(\log n)\)</span> 的最优解。以 n = 7 的数组序列 [3,10,19,57,68,71,72] 为例，仔细观察 k = 3 时不同 x 值情况下的输出：</p>
+<ul>
+<li>x = 5 =&gt; [3,10,19]</li>
+<li>x = 20 =&gt; [10,19,57]</li>
+<li>x = 45 =&gt; [19,57,68]</li>
+<li>x = 64 =&gt; [57,68,71]</li>
+<li>x = 72 =&gt; [68,71,72]</li>
+</ul>
+<p>可以看到，不论输入值 x 的变化如何，输出结果一定是输入数组序列的子数组，其长度为 k。这相当于应用一个滑动窗口从输入数组中截取一个长度为 k 的子集。此子集的起始位置索引值一定在 [0, n - k] 范围内。所以定位符合要求的子数组，等同于查找一个最优的起始位置 <span class="math inline">\(i∈[0,n-k]\)</span>。因为数组是升序排列的，只要每次循环中保证最优的起始位置一定在收缩的区间内，二分查找就是可行的。</p>
+<p>然而，在循环体内如何判定舍弃哪一半呢？这似乎是一个难题。对此，我们可以考察 [mid, mid + k] 区间，比较两端（即arr[mid] 与 arr[mid + k]）和 x 的距离，来决定最优解的窗口应该朝哪个方向滑动。以同样数组序列 [3,10,19,57,68,71,72] 和输入 k and x 数值为例，下表总结了五种可能的情况：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">x</th>
+<th style="text-align: center;">arr[0]</th>
+<th style="text-align: center;">arr[1]</th>
+<th style="text-align: center;">arr[2]</th>
+<th style="text-align: center;">arr[3]</th>
+<th style="text-align: center;">arr[4]</th>
+<th style="text-align: center;">arr[5]</th>
+<th style="text-align: center;">arr[6]</th>
+<th style="text-align: center;">判定</th>
+<th style="text-align: center;">更新</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3(low)</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;"><u>19</u>(mid)</td>
+<td style="text-align: center;"><u>57</u></td>
+<td style="text-align: center;"><u>68</u>(high)</td>
+<td style="text-align: center;"><u>71</u></td>
+<td style="text-align: center;">72</td>
+<td style="text-align: center;">x 位于区间左侧边界外</td>
+<td style="text-align: center;">舍弃右半区间 (high = mid)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">3(low)</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;"><u>19</u>(mid)</td>
+<td style="text-align: center;"><u>57</u></td>
+<td style="text-align: center;"><u>68</u>(high)</td>
+<td style="text-align: center;"><u>71</u></td>
+<td style="text-align: center;">72</td>
+<td style="text-align: center;">x 在区间内，靠近左侧边界</td>
+<td style="text-align: center;">舍弃右半区间 (high = mid)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">3(low)</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;"><u>19</u>(mid)</td>
+<td style="text-align: center;"><u>57</u></td>
+<td style="text-align: center;"><u>68</u>(high)</td>
+<td style="text-align: center;"><u>71</u></td>
+<td style="text-align: center;">72</td>
+<td style="text-align: center;">x 在区间内，与左右侧边界等距</td>
+<td style="text-align: center;">舍弃右半区间 (high = mid)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">3(low)</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;"><u>19</u>(mid)</td>
+<td style="text-align: center;"><u>57</u></td>
+<td style="text-align: center;"><u>68</u>(high)</td>
+<td style="text-align: center;"><u>71</u></td>
+<td style="text-align: center;">72</td>
+<td style="text-align: center;">x 在区间内，靠近右侧边界</td>
+<td style="text-align: center;">舍弃左半区间 (low = mid + 1)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">72</td>
+<td style="text-align: center;">3(low)</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;"><u>19</u>(mid)</td>
+<td style="text-align: center;"><u>57</u></td>
+<td style="text-align: center;"><u>68</u>(high)</td>
+<td style="text-align: center;"><u>71</u></td>
+<td style="text-align: center;">72</td>
+<td style="text-align: center;">x 位于区间右侧边界外</td>
+<td style="text-align: center;">舍弃左半区间 (low = mid + 1)</td>
+</tr>
+</tbody>
+</table>
+<p>说明：</p>
+<ul>
+<li>对于此输入数组序列，n = 7, k = 3，所以初始化二分查找的上下界分别为 0 和 4，中间位置索引值 mid = 2。考察的区间为 [2, 5]，对应子数组 [19,57,68,71]。这些元素在上表中都用下划线标出。</li>
+<li>当输入 x 数值为5时，x 位于考察区间对应的子数组左侧边界外。无疑最优解的起始位置不可能在元素 19 右侧，因为那边的元素的数值离 x 越来越远。我们可以放心地舍弃右半区，更新 high = mid。</li>
+<li>当输入 x 数值为20时，(20 - 19) &lt; (71 - 20)，所以 x 在区间内且靠近左侧边界。此时最优解的起始位置也不可能在元素 19 右侧。同样我们舍弃右半区，更新 high = mid。</li>
+<li>当输入x 数值为45时，(45 - 19) = (71 - 45)，所以 x 正好在考察区间中点。依据题目的要求，左右距离相等时选择左侧的点。我们一样舍弃右半区，更新 high = mid。</li>
+<li>当输入 x 数值为64或72时，x 要么位于区间内靠近右侧边界，要么位于区间右侧边界外。此时最优解的起始位置不可能在元素 57 左侧。我们可以舍弃左半区，更新 low = mid + 1</li>
+</ul>
+<p>确定了循环更新的判定后，就可以直接编写Python代码实现了。对于上面的五种情况，虽然每一种都可以写出单独的比较语句，但这样程序效率太低了。实际上，舍弃左半区的两种情况用一个判定语句 (x - arr[mid]) &gt; (arr[mid + k] - x) 就可以了。x 位于区间内靠近右侧边界时，这一条件判定当然为真。而当 x 位于区间右侧边界外时，此式的右边为负、左边为正，判定还是为真。对于其他三种舍弃右半区的情况，此判定都为假。由此我们得到Python函数实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findClosestElements</span>(<span class="params">arr: <span class="built_in">list</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span>, x: <span class="built_in">int</span></span>) -&gt; <span class="built_in">list</span>[<span class="built_in">int</span>]:</span></span><br><span class="line">    low, high = <span class="number">0</span>, <span class="built_in">len</span>(arr) - k</span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        mid = (low + high) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> (x - arr[mid]) &gt; (arr[mid + k] - x):</span><br><span class="line">            low = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            high = mid</span><br><span class="line">    <span class="keyword">return</span> arr[low:(low + k)]</span><br></pre></td></tr></table></figure>
+<p>此代码中 while 循环继续的条件是 <code>low &lt; high</code>，似乎与对称边界（<span class="math inline">\(i∈[0,n-k]\)</span>）的一般解法不符。其实这是因为当<code>low</code>和<code>high</code>相等时，我们已经得到了最优解，不必再进入循环体。</p>
+<h3 id="n次方根">N次方根</h3>
+<p>另一类可用二分查找算法解决的变形问题，就是求方根。在前文“<a href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/">平方根运算</a>”，就分别讲解了计算整数和浮点数平方根的二分查找/搜索算法实现。这里再给出一个通用的计算整数 n 次方根的二分查找算法。</p>
+<p>对于整数 n 次方根，契约编程的各项要素是不同于数组输入的二分查找算法的。以下逐一加以说明：</p>
+<ul>
+<li>先决条件：函数输入是两个整数 v 和 n，目标是求 v 的 n 次方根的整数部分。</li>
+<li>后置条件：输出为一个不小于零的整数，为 v 的 n 次方根取整后的值。</li>
+<li>循环不变式：这里的搜索空间是从1到 n 的整个自然数集合。每次循环中，v 的整数 n 次方根都会在当前左闭右开区间内 [low, high)
 <ul>
 <li>下界 <span class="math inline">\(low\leqslant \lfloor\sqrt[n]{x}\rfloor\)</span></li>
 <li>上界 <span class="math inline">\(high &gt;\lfloor\sqrt[n]{x}\rfloor\)</span></li>
 </ul></li>
-<li>限定函数：因为上下界会根据v与当前的中间元素比较的结果而改变，总体区间不断缩减的，循环次数被限定。</li>
+<li>限定函数：因为上下界会根据 v 与当前的中间元素比较的结果而改变，总体区间不断缩减的，循环次数被限定。</li>
 </ul>
-<p>由此，得到求整数n次方根的不对称边界解法的Python语言实现如下：</p>
+<p>显然，在循环体内确定上界或下界更新的断定条件，应该是中间值的 n 次幂和目标值 v 的比较结果。由此，得到求整数 n 次方根的不对称边界解法的Python语言实现如下：</p>
 <figure class="highlight python"><figcaption><span>二分查找 - 求整数n次方根</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binSearch_introot</span>(<span class="params">v: <span class="built_in">int</span>, n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Use the binary search method to find out the integer</span></span><br><span class="line"><span class="string">    component of the n&#x27;th root of v, an integer i such that</span></span><br><span class="line"><span class="string">    i ** n &lt;= v &lt; (i + 1) ** n.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span>(v &gt;= <span class="number">0</span>)</span><br><span class="line">    </span><br><span class="line">    low, mid, high = <span class="number">0</span>, <span class="number">0</span>, v</span><br><span class="line">    <span class="keyword">while</span> low &lt; high:</span><br><span class="line">        mid = (low + high) // <span class="number">2</span></span><br><span class="line">        power = mid ** n</span><br><span class="line">        <span class="keyword">if</span> power &lt; v:</span><br><span class="line">            low = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> power &gt; v:</span><br><span class="line">            high = mid</span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># power == v</span></span><br><span class="line">            <span class="keyword">return</span> mid</span><br><span class="line">    <span class="keyword">return</span> low - <span class="number">1</span> <span class="keyword">if</span> low &gt; <span class="number">1</span> <span class="keyword">else</span> low</span><br></pre></td></tr></table></figure>
-<p>这里在循环结束后，为满足后置条件，我们要检查<code>low</code>的数值。因为<code>low</code>的值在循环终止前被赋值<code>mid + 1</code>，而此操作使得<code>low &lt; high</code>不再为真，所以必须减一。例外是输入v值为1的情况。</p>
+<p>此外，在循环结束后，为满足后置条件，我们要检查<code>low</code>的数值。因为<code>low</code>的值在循环终止前被赋值<code>mid + 1</code>，而此操作使得<code>low &lt; high</code>不再为真，所以必须减一。例外是输入 v 值为 1 的情况。</p>
 <h2 id="常见错误">常见错误</h2>
 <p>下面是面试者在回答二分查找的编程实现问题时经常出现的错误：</p>
 <ul>
 <li>不能正确处理零元素或单个元素数组的情况（这时会出现上下界与中间位置重合）</li>
 <li>不能在数组的第一个或最后一个元素中找到目标值的情况，可能是初始化上下界造成的问题</li>
+<li>不能处理数组中的重复元素，特别是重复元素跨越两个子区间时</li>
 <li>不能处理目标值不存在造成的搜索失败的情况，原因也可能源自错误的上下界初始值
 <ul>
-<li>对称边界解法使用闭合区间 <span class="math inline">\(i∈[low,high]\)</span>，通常应该设定<code>low = 0</code>，<code>high = n - 1</code></li>
-<li>不对称边界解法使用半闭合区间 <span class="math inline">\(i∈[low,high)\)</span>，通常应该设定<code>low = 0</code>，<code>high = n</code></li>
+<li>对称边界解法使用闭合区间 <span class="math inline">\(i∈[low,high]\)</span>，通常应该设定<code>low = 0</code>和<code>high = n - 1</code></li>
+<li>不对称边界解法使用半闭合区间 <span class="math inline">\(i∈[low,high)\)</span>，通常应该设定<code>low = 0</code>和<code>high = n</code></li>
 </ul></li>
-<li>不能处理数组中的重复元素，特别是重复元素跨越两个子区间时</li>
+<li>没有正确设定 while 循环继续的条件，不理解使用 &lt;= 和 &lt; 的区别
+<ul>
+<li>对称边界解法一般使用<code>low &lt;= high</code> (但也有例外，参见<a href="#旋转数组">旋转数组</a>和<a href="#K邻近元素">K邻近元素</a>）</li>
+<li>不对称边界解法一般使用<code>low &lt; high</code>，因为 low 应该总是小于 high。</li>
+</ul></li>
 <li>在探测后缩小区间时，没有正确设定子区间的端点，导致无限循环
 <ul>
 <li>如果循环继续的条件是<code>low &lt;= high</code>，则更新式一般为<code>low = mid + 1</code>或<code>high = mid - 1</code></li>
@@ -665,9 +797,9 @@ int binSearch(int a[], int n, int v)
 </ul></li>
 <li>不能正确计算当前区间中间位置的索引值、地址（指针）值或用作比较的元素值
 <ul>
-<li>计算中间位置索引时整数溢出：<code>(low + high) &gt;&gt; 1</code></li>
-<li>计算中间位置地址时作指针相加运算：<code>(low + high) / 2</code></li>
-<li>计算中间位置元素值时结果溢出：<code>mid * mid</code> (C/C++/Java时会发生，Python OK)</li>
+<li>计算中间位置索引时整数溢出：<code>(low + high) / 2</code> 或<code>(low + high) &gt;&gt; 1</code>（C/C++/Java编程实现时会发生，Python用 <code>(low + high) // 2</code> OK）</li>
+<li>计算中间位置地址时做错误地使用指针相加运算：<code>(low + high) / 2</code>（C/C++编程实现时会发生）</li>
+<li>计算中间位置元素值时结果溢出：<code>mid * mid</code>（C/C++/Java编程实现时会发生，Python OK）</li>
 </ul></li>
 </ul>
 <p>如果深入理解契约编程，牢记二分查找的基本解题框架，写出正确的循环不变式并将其保持为真的思想贯彻在编程中，再特别留意以上几点容易出错的地方，就一定可以提交令人满意的答案。</p>
@@ -778,14 +910,14 @@ int binSearch(int a[], int n, int v)
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">252k</span>
+    <span title="站点总字数">254k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:49</span>
+    <span title="站点阅读时长">3:51</span>
   </span>
 </div>
 <div class="busuanzi-count">

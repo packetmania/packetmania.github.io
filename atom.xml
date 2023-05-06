@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-05-06T06:51:17.518Z</updated>
+  <updated>2023-05-06T07:10:21.703Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/"/>
     <id>https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/</id>
     <published>2022-12-29T22:52:16.000Z</published>
-    <updated>2023-05-06T06:51:17.518Z</updated>
+    <updated>2023-05-06T07:10:21.703Z</updated>
     
     
     <summary type="html">&lt;p&gt;正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。</summary>

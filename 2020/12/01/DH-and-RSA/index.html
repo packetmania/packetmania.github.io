@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/dtls-server-key.png">
 <meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/dtls-client-key.png">
 <meta property="article:published_time" content="2020-12-01T16:55:44.000Z">
-<meta property="article:modified_time" content="2023-05-29T23:35:03.030Z">
+<meta property="article:modified_time" content="2023-05-29T23:51:15.818Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -294,7 +294,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-05-29 16:35:03" itemprop="dateModified" datetime="2023-05-29T16:35:03-07:00">2023-05-29</time>
+        <time title="修改时间：2023-05-29 16:51:15" itemprop="dateModified" datetime="2023-05-29T16:51:15-07:00">2023-05-29</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -327,7 +327,7 @@
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>10 分钟</span>
+      <span>11 分钟</span>
     </span>
 </div>
 
@@ -652,14 +652,8 @@ end
 <ul>
 <li>双方先各自验证对方发过来的签名</li>
 <li>验证成功后运行 DH 算法生成同样的预备主密钥 (pre_master_secret)</li>
-<li>双方调用<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246#page-14">伪随机函数(PRF)</a>从预备主密钥生成48字节主密钥 (master_secret)：
-<ul>
-<li>master_secret=PRF(pre_master_secret, "master secret", Cr+Sr)[0..47]</li>
-</ul></li>
-<li>双方再次调用 PRF 从主密钥生成72字节密钥块 (key_block)：
-<ul>
-<li>key_block=PRF(master_secret, "key expansion", Sr+Cr)[0..71]</li>
-</ul></li>
+<li>双方调用<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246#page-14">伪随机函数(PRF)</a>从预备主密钥生成48字节主密钥 (master_secret)： <span class="math display">\[master\_secret = \operatorname{PRF}(pre\_master\_secret,\unicode{x201C}master\;secret\unicode{x201D},Cr+Sr)[0..47]\]</span></li>
+<li>双方再次调用 PRF 从主密钥生成72字节密钥块 (key_block)： <span class="math display">\[key\_block = \operatorname{PRF}(master\_secret,\unicode{x201C}key\;expand\unicode{x201D},Sr+Cr)[0..71]\]</span></li>
 <li>密钥块分配给 HMAC-SHA1 和 AES_128_CBC 功能模块：
 <ul>
 <li>客户机写消息验证码 (MAC) 密钥：20字节</li>
@@ -669,10 +663,7 @@ end
 </ul>
 注意TLS/DTLS 1.2规定此密码套件使用显式初始向量 (IV)，不需要分配密钥块</li>
 <li>客户机产生更新密码规范 (Change Cipher Spec) 消息，表明开始使用加密和 MAC 模块</li>
-<li>客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块：
-<ul>
-<li>PRF(master_secret, finished, SHA256(handshake_messages))[0..11]</li>
-</ul></li>
+<li>客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块： <span class="math display">\[\operatorname{PRF}(master\_secret,finished\_label,\operatorname{SHA256}(handshake\_messages))[0..11]\]</span></li>
 <li>客户机发送更新密码规范消息和加密后的握手结束消息到服务器</li>
 <li>服务器验证收到的客户机握手结束消息后，重复上面三步，生成自己的更新密码规范消息和加密后的握手结束消息，发送给客户机</li>
 <li>客户机验证收到的服务器握手结束消息完成握手，加密通道建成</li>
@@ -776,7 +767,7 @@ end
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">254k</span>
+    <span title="站点总字数">255k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">

@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/dtls-server-key.png">
 <meta property="og:image" content="https://www.packetmania.net/2020/12/01/DH-and-RSA/dtls-client-key.png">
 <meta property="article:published_time" content="2020-12-01T16:55:44.000Z">
-<meta property="article:modified_time" content="2022-11-24T20:54:49.008Z">
+<meta property="article:modified_time" content="2023-05-29T23:35:03.030Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -294,7 +294,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-11-24 12:54:49" itemprop="dateModified" datetime="2022-11-24T12:54:49-08:00">2022-11-24</time>
+        <time title="修改时间：2023-05-29 16:35:03" itemprop="dateModified" datetime="2023-05-29T16:35:03-07:00">2023-05-29</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -327,7 +327,7 @@
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>11 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -564,13 +564,13 @@
 <p>TLS 协议采用主从式（客户机/服务器）架构模型。它的工作模式，是使用 X.509 认证和非对称加密算法对通信方做身份认证，之后交换密钥生成对称加密的会话密钥。这个会话密钥就用来加密通信双方交换的数据，保证信息的保密性和可靠性，不必担心被第三方攻击或窃听。为了标识方便，TLS 1.2 协议将使用的<em>身份验证、密钥交换、批量加密和消息认证码算法</em> 组合成<strong>密码套件 (Cipher Suite) </strong>名称。每个密码套件被赋予一个双字节的编码。<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4">TLS 密码套件注册表</a>提供了全部登记在录的密码套件命名参考表，参考表以编码值从小到大排序。</p>
 <div class="note info"><p>由于非对称加密算法 (RSA 等) 计算强度远远高于对称加密算法 (AES 等)，从性能上考虑实际应用几乎总是使用对称加密算法批量加密消息。</p>
 </div>
-<p>TLS 1.2 协议支持一系列组合迪菲-赫尔曼密钥交换与 RSA 公钥加密算法的密码套件。它们都以<code>TLS_DH_RSA</code>或<code>TLS_DHE_RSA</code>作为开头。DHE 中的 “E” 代表 “Ephemeral” (临时的)，其意义是要求每次会话都要产生随机的 <span class="math inline">\((a,b)\)</span> 值。所以<code>TLS_DHE_RSA</code>密码套件能提供前向保密，而<code>TLS_DH_RSA</code>不可以，实际应用中应该优先选择前者。</p>
-<p>这里以典型的<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code>(编码 0x00,0x33) 密码套件为例，解析迪菲-赫尔曼与 RSA 协同工作建立 DTLS 会话的过程。首先解释一下密码套件的构成：</p>
+<p>TLS 1.2 协议支持一系列组合迪菲-赫尔曼密钥交换与 RSA 公钥加密算法的密码套件。它们都以 TLS_DH_RSA 或 TLS_DHE_RSA 作为开头。DHE 中的 “E” 代表 “Ephemeral” (临时的)，其意义是要求每次会话都要产生随机的 <span class="math inline">\((a,b)\)</span> 值。所以 TLS_DHE_RSA 密码套件能提供前向保密，而 TLS_DH_RSA 不可以，实际应用中应该优先选择前者。</p>
+<p>这里以典型的 TLS_DHE_RSA_WITH_AES_128_CBC_SHA (编码 0x00,0x33) 密码套件为例，解析迪菲-赫尔曼与 RSA 协同工作建立 DTLS 会话的过程。首先解释一下密码套件的构成：</p>
 <ul>
-<li><code>DHE</code>：临时 DH 实现密钥交换</li>
-<li><code>RSA</code>：签名认证 DHE 的公钥</li>
-<li><code>AES_128_CBC</code>：128比特密码分组链接模式 AES 加密</li>
-<li><code>SHA</code>：160比特 <code>HMAC-SHA1</code> 散列消息认证码</li>
+<li>DHE：临时 DH 实现密钥交换</li>
+<li>RSA：签名认证 DHE 的公钥</li>
+<li>AES_128_CBC：128比特密码分组链接模式 AES 加密</li>
+<li>SHA：160比特 HMAC-SHA1 散列消息认证码</li>
 </ul>
 <p>参考从网络端口截取的数据包文件 <a href="dtls-dhe-rsa.pcap">dtls-dhe-rsa.pcap</a>，可得到以下握手协议消息时序图：</p>
 <pre class="mermaid">
@@ -624,7 +624,7 @@ end
 <ul>
 <li>下图中 <span class="math inline">\(p\)</span> 的长度256字节，说明密钥长度为2048比特，<span class="math inline">\(Pubkey\)</span> 就是 <span class="math inline">\(A\)</span></li>
 <li>图中也可看到签名选用算法是 SHA512 和 RSA，</li>
-<li>操作是先计算 <span class="math inline">\(SHA512(Cr,Sr,p,g,A)\)</span>，再用服务器 RSA 私钥加密<img src="dtls-server-key.png" /></li>
+<li>操作是先计算 <span class="math inline">\(\operatorname{SHA512}(Cr,Sr,p,g,A)\)</span>，再用服务器 RSA 私钥加密<img src="dtls-server-key.png" /></li>
 </ul></li>
 <li>之后是服务器发的证书请求消息和问候结束消息
 <ul>
@@ -645,16 +645,22 @@ end
 <li>客户机最后发出证书验证消息，消息包含了签名 <span class="math inline">\(Cs\)</span>
 <ul>
 <li>签名覆盖除最开始的客户机问候 <span class="math inline">\(\require{enclose}\enclose{circle}{1}\)</span> 及问候验证请求 <span class="math inline">\(\require{enclose}\enclose{circle}{2}\)</span> 之外的全部过往消息</li>
-<li>签名操作同样是先计算 <span class="math inline">\(SHA512\)</span>，再用客户机 RSA 私钥加密</li>
+<li>签名操作同样是先计算 SHA512，再用客户机 RSA 私钥加密</li>
 </ul></li>
 </ul></li>
 <li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{10}-\enclose{circle}{11}\)</span> 完成握手并建立加密通道：
 <ul>
 <li>双方先各自验证对方发过来的签名</li>
-<li>验证成功后运行 DH 算法生成同样的预备主密钥 (<code>pre_master_secret</code>)</li>
-<li>双方调用<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246#page-14">伪随机函数(PRF)</a>从预备主密钥生成48字节主密钥 (<code>master_secret</code>)： <span class="math display">\[master\_secret = PRF(pre\_master\_secret,\unicode{x201C}master\;secret\unicode{x201D},Cr+Sr)[0..47]\]</span></li>
-<li>双方再次调用 PRF 从主密钥生成72字节密钥块 (<code>key_block</code>)： <span class="math display">\[key\_block = PRF(master\_secret,\unicode{x201C}key\;expansion\unicode{x201D},Sr+Cr)[0,71]\]</span></li>
-<li>密钥块分配给<code>HMAC-SHA1</code>和<code>AES_128_CBC</code>功能模块：
+<li>验证成功后运行 DH 算法生成同样的预备主密钥 (pre_master_secret)</li>
+<li>双方调用<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5246#page-14">伪随机函数(PRF)</a>从预备主密钥生成48字节主密钥 (master_secret)：
+<ul>
+<li>master_secret=PRF(pre_master_secret, "master secret", Cr+Sr)[0..47]</li>
+</ul></li>
+<li>双方再次调用 PRF 从主密钥生成72字节密钥块 (key_block)：
+<ul>
+<li>key_block=PRF(master_secret, "key expansion", Sr+Cr)[0..71]</li>
+</ul></li>
+<li>密钥块分配给 HMAC-SHA1 和 AES_128_CBC 功能模块：
 <ul>
 <li>客户机写消息验证码 (MAC) 密钥：20字节</li>
 <li>服务器写消息验证码 (MAC) 密钥：20字节</li>
@@ -663,14 +669,17 @@ end
 </ul>
 注意TLS/DTLS 1.2规定此密码套件使用显式初始向量 (IV)，不需要分配密钥块</li>
 <li>客户机产生更新密码规范 (Change Cipher Spec) 消息，表明开始使用加密和 MAC 模块</li>
-<li>客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块： <span class="math display">\[PRF(master\_secret,finished\_label,SHA256(handshake\_messages)[0,11]\]</span></li>
+<li>客户机第三次调用 PRF 生成用于主密钥和握手消息验证的12字节握手结束验证码，验证码打包成握手结束消息，输入到加密和 MAC 模块：
+<ul>
+<li>PRF(master_secret, finished, SHA256(handshake_messages))[0..11]</li>
+</ul></li>
 <li>客户机发送更新密码规范消息和加密后的握手结束消息到服务器</li>
 <li>服务器验证收到的客户机握手结束消息后，重复上面三步，生成自己的更新密码规范消息和加密后的握手结束消息，发送给客户机</li>
 <li>客户机验证收到的服务器握手结束消息完成握手，加密通道建成</li>
 </ul></li>
 <li>数据包 <span class="math inline">\(\require{enclose}\enclose{circle}{12}-\enclose{circle}{13}\)</span> 显示加密的应用数据交换正式开始</li>
 </ul>
-<p>这就是使用<code>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</code>(编码 0x00,0x33) 密码套件建立安全信息通道的完整过程。DHE 实现了有前向保密保护的密钥交换，而 RSA 数字签名为 DHE 提供了身份验证功能，二者结合打造了一种安全通信的解决方案。清楚了解了这些之后，我们就会更好地掌握迪菲-赫尔曼与 RSA 的工作机理，有效应用于实际工作中并避免不必要的失误。</p>
+<p>这就是使用 TLS_DHE_RSA_WITH_AES_128_CBC_SHA 密码套件建立安全信息通道的完整过程。DHE 实现了有前向保密保护的密钥交换，而 RSA 数字签名为 DHE 提供了身份验证功能，二者结合打造了一种安全通信的解决方案。清楚了解了这些之后，我们就会更好地掌握迪菲-赫尔曼与 RSA 的工作机理，有效应用于实际工作中并避免不必要的失误。</p>
 
     </div>
 
@@ -767,7 +776,7 @@ end
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">255k</span>
+    <span title="站点总字数">254k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">

@@ -424,7 +424,7 @@
     <link href="https://www.packetmania.net/2020/12/01/DH-and-RSA/"/>
     <id>https://www.packetmania.net/2020/12/01/DH-and-RSA/</id>
     <published>2020-12-01T16:55:44.000Z</published>
-    <updated>2023-05-29T23:51:15.818Z</updated>
+    <updated>2023-05-30T04:21:44.106Z</updated>
     
     
     <summary type="html">&lt;p&gt;近日在一次研发小组内部的 WPA3 技术介绍会上，演讲者提到加密无线开放网络的 &lt;a href=&quot;https://tools.ietf.org/html/rfc8110&quot;&gt;OWE&lt;/a&gt; 技术基于迪菲—赫尔曼密钥交换，并随口说迪菲—赫尔曼密钥交换是使用和 RSA 相似的技术。这种说法是错误的！</summary>

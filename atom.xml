@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-05-06T07:10:21.703Z</updated>
+  <updated>2023-08-21T07:03:27.254Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>启用 TLS 1.3 提升网络应用的安全性和性能</title>
+    <link href="https://www.packetmania.net/2023/07/04/TLS1-3-intro/"/>
+    <id>https://www.packetmania.net/2023/07/04/TLS1-3-intro/</id>
+    <published>2023-07-05T00:34:57.000Z</published>
+    <updated>2023-08-21T07:03:27.254Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;TLS（传输层安全）是一种用于保护网络通信的加密协议，TLS 1.3 是 TLS 协议的最新版本。TLS 1.3 的引入旨在提供比以前版本更强大的安全性、隐私保护和性能。这里对比其所取代的 1.2 版本，对 TLS 1.3 做一个简单的介绍。并且，针对基于 OpenSSL 的网络应用，给出了使用和实现 TLS 1.3 的示例。</summary>
+    
+    
+    
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    
+    
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>程序员面试题精解（3）— 二分查找</title>
@@ -416,27 +439,6 @@
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
     <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>迪菲—赫尔曼密钥交换是使用和RSA相似的技术吗？</title>
-    <link href="https://www.packetmania.net/2020/12/01/DH-and-RSA/"/>
-    <id>https://www.packetmania.net/2020/12/01/DH-and-RSA/</id>
-    <published>2020-12-01T16:55:44.000Z</published>
-    <updated>2023-05-30T04:21:44.106Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;近日在一次研发小组内部的 WPA3 技术介绍会上，演讲者提到加密无线开放网络的 &lt;a href=&quot;https://tools.ietf.org/html/rfc8110&quot;&gt;OWE&lt;/a&gt; 技术基于迪菲—赫尔曼密钥交换，并随口说迪菲—赫尔曼密钥交换是使用和 RSA 相似的技术。这种说法是错误的！</summary>
-    
-    
-    
-    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
-    
-    
-    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
-    
-    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
   </entry>
   

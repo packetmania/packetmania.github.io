@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="TLS（传输层安全）是一种用于保护网络通信的加密协议，TLS 1.3 是 TLS 协议的最新版本。TLS 1.3 的引入旨在提供比以前版本更强大的安全性、隐私保护和性能。这里对比其所取代的 1.2 版本，对 TLS 1.3 做一个简单的介绍。并且，针对基于 OpenSSL 的网络应用，给出了使用和实现 TLS 1.3 的示例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="启用 TLS 1.3 提升网络应用的安全性和性能">
+<meta property="og:url" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="TLS（传输层安全）是一种用于保护网络通信的加密协议，TLS 1.3 是 TLS 协议的最新版本。TLS 1.3 的引入旨在提供比以前版本更强大的安全性、隐私保护和性能。这里对比其所取代的 1.2 版本，对 TLS 1.3 做一个简单的介绍。并且，针对基于 OpenSSL 的网络应用，给出了使用和实现 TLS 1.3 的示例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_2vs1_3-handshake.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_3-0-RTT.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_3-clienthello.jpg">
+<meta property="article:published_time" content="2023-07-05T00:34:57.000Z">
+<meta property="article:modified_time" content="2023-08-21T07:03:27.254Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="网络安全">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_2vs1_3-handshake.jpg">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2023/07/04/TLS1-3-intro/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2023/07/04/TLS1-3-intro/","path":"2023/07/04/TLS1-3-intro/","title":"启用 TLS 1.3 提升网络应用的安全性和性能"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>启用 TLS 1.3 提升网络应用的安全性和性能 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tls-1.3-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">TLS 1.3 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E5%BC%BA%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">安全强化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E5%A5%97%E4%BB%B6"><span class="nav-number">1.1.1.</span> <span class="nav-text">密码套件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2"><span class="nav-number">1.1.2.</span> <span class="nav-text">密钥交换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%E9%AA%8C%E8%AF%81"><span class="nav-number">1.1.3.</span> <span class="nav-text">签名验证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87"><span class="nav-number">1.2.</span> <span class="nav-text">性能提升</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8C%96%E7%9A%84%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">简化的握手过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rtt-%E4%BC%9A%E8%AF%9D%E6%81%A2%E5%A4%8D"><span class="nav-number">1.2.2.</span> <span class="nav-text">0-RTT 会话恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">常见问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">应用和实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apache-http-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">Apache HTTP 服务器应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-%E5%BA%94%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">Nginx 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lighttpd-%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">Lighttpd 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.4.</span> <span class="nav-text">软件实现</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2023/07/04/TLS1-3-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          启用 TLS 1.3 提升网络应用的安全性和性能
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-07-04 17:34:57" itemprop="dateCreated datePublished" datetime="2023-07-04T17:34:57-07:00">2023-07-04</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-08-21 00:03:27" itemprop="dateModified" datetime="2023-08-21T00:03:27-07:00">2023-08-21</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>15k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>TLS（传输层安全）是一种用于保护网络通信的加密协议，TLS 1.3 是 TLS 协议的最新版本。TLS 1.3 的引入旨在提供比以前版本更强大的安全性、隐私保护和性能。这里对比其所取代的 1.2 版本，对 TLS 1.3 做一个简单的介绍。并且，针对基于 OpenSSL 的网络应用，给出了使用和实现 TLS 1.3 的示例。 <span id="more"></span></p>
+<div class="note success no-icon"><p><strong>It takes 20 years to build a reputation and a few minutes of cyber-incident to ruin it.</strong><br> <strong>— <em>Stéphane Nappo</em>（斯特凡·纳波，法国兴业银行国际银行部全球信息安全主管）</strong></p>
+</div>
+<h2 id="tls-1.3-简介">TLS 1.3 简介</h2>
+<p>TLS 1.3 是最新推荐的加密协议，适用于保护各种网络通信，包括网页浏览、电子邮件、即时消息和其他应用程序。通过使用 TLS 1.3，可以建立更安全、更可靠的通信连接，确保数据的机密性和完整性。它于2018年8月由互联网工程任务组（IETF）标准化，发布于文档<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc8446">RFC 8446</a>。</p>
+<p>TLS 1.3 引入了与 TLS 1.2 相比的一些重要改进。下表呈现了二者的简要比较：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">比较方面</th>
+<th style="text-align: center;">TLS 1.2</th>
+<th style="text-align: right;">TLS 1.3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">协议设计</td>
+<td style="text-align: center;">请求-响应模型</td>
+<td style="text-align: right;">减少往返次数</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">握手过程</td>
+<td style="text-align: center;">多次往返</td>
+<td style="text-align: right;">单次往返</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">密码套件</td>
+<td style="text-align: center;">支持范围广泛，包括一些不安全的算法</td>
+<td style="text-align: right;">着重于更强的密码算法</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">安全性</td>
+<td style="text-align: center;">有已知漏洞（如CBC漏洞等）</td>
+<td style="text-align: right;">解决了先前问题，更强的安全性</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">性能</td>
+<td style="text-align: center;">多次往返造成高延迟</td>
+<td style="text-align: right;">连接建立更快</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">抵御攻击</td>
+<td style="text-align: center;">易受到降级攻击和填充应答攻击</td>
+<td style="text-align: right;">有额外防护减少攻击风险</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">兼容性</td>
+<td style="text-align: center;">在不同平台上得到广泛支持</td>
+<td style="text-align: right;">支持率逐渐提升，老旧系统可能不可用</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">实现支持</td>
+<td style="text-align: center;">有许多密码库可用</td>
+<td style="text-align: right;">各种库软件都提供支持</td>
+</tr>
+</tbody>
+</table>
+<p>可以看出，强化的安全性和性能提升是 TLS 1.3 最显著的特性，以下对此展开作一些介绍。</p>
+<h3 id="安全强化">安全强化</h3>
+<h4 id="密码套件">密码套件</h4>
+<p>TLS 1.3 的协议设计理念以增强安全性为首要目标。由此，TLS 1.3 大幅减少了支持的密码套件数量。它移除了不安全和有弱点的密码套件，仅保留了更安全和现代的密码套件。这样有助于提高通信的安全性，避免使用过时或易受攻击的密码套件。</p>
+<p>具体地说，TLS 1.3 删除了各种使用RSA密钥传输、静态迪菲—赫尔曼密钥交换、CBC操作模式或SHA-1的密码套件。它只采纳了有限的几个带有关联数据的认证加密（AEAD）密码套件。AEAD 能够同时保证数据的保密性、完整性和真实性，其高安全性使其成为TLS 1.3 的排他性选择。</p>
+<p>另一方面，以前 TLS 版本中的密码套件命名中包括密钥交换、数字签名、加密及消息验证全部算法。每个密码套件在一个名为 "互联网编号分配机构"（IANA）的组织维护的表格中都拥有一个编码位。每推出一种新的密码算法，就需要在列表中添加一系列新组合。这导致了总体有效选择的编码位数目激增，整个列表已经变得非常庞大。这种情况也使得密码套件的取舍变得复杂而混乱。</p>
+<p>TLS 1.3 的设计改变了密码套件的概念。它将密钥交换机制和数字签名认证剥离出来，新的密码套件命名规则是<code>TLS_&lt;AEAD算法&gt;_&lt;散列算法&gt;</code>。其中散列算法用于 TLS 1.3 新定义的密钥派生函数 HKDF 和生成握手阶段的消息验证码 (MAC)。TLS 1.3 协议所支持的密码套件有：</p>
+<figure class="highlight c"><figcaption><span>RFC 8446 - Appendix B.4. Cipher Suites</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">+------------------------------+-------------+</span><br><span class="line">| Description                  | Value       |</span><br><span class="line">+------------------------------+-------------+</span><br><span class="line">| TLS_AES_128_GCM_SHA256       | &#123;<span class="number">0x13</span>,<span class="number">0x01</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_AES_256_GCM_SHA384       | &#123;<span class="number">0x13</span>,<span class="number">0x02</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_CHACHA20_POLY1305_SHA256 | &#123;<span class="number">0x13</span>,<span class="number">0x03</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_AES_128_CCM_SHA256       | &#123;<span class="number">0x13</span>,<span class="number">0x04</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_AES_128_CCM_8_SHA256     | &#123;<span class="number">0x13</span>,<span class="number">0x05</span>&#125; |</span><br><span class="line">+------------------------------+-------------+</span><br></pre></td></tr></table></figure>
+<p>这种简化的密码套件定义和大幅减少的协商参数集，也可以加速 TLS 1.3 的握手过程，从而提高了整体性能。</p>
+<h4 id="密钥交换">密钥交换</h4>
+<p>TLS 1.3 强调前向保密性（forward secrecy），确保通信的机密性即使在长期密钥泄露的情况下也能得到保护。它只允许基于临时迪菲-赫尔曼密钥交换（DHE）或椭圆曲线迪菲-赫尔曼密钥交换（ECDHE）的密钥交换。二者都具有前向保密特性。并且，协议明确限制了密钥交换所使用的有安全保障的椭圆曲线群和有限域群：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Elliptic Curve Groups (ECDHE) */</span></span><br><span class="line">secp256r1(<span class="number">0x0017</span>), secp384r1(<span class="number">0x0018</span>), secp521r1(<span class="number">0x0019</span>),</span><br><span class="line">x25519(<span class="number">0x001D</span>), x448(<span class="number">0x001E</span>),</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Finite Field Groups (DHE) */</span></span><br><span class="line">ffdhe2048(<span class="number">0x0100</span>), ffdhe3072(<span class="number">0x0101</span>), ffdhe4096(<span class="number">0x0102</span>),</span><br><span class="line">ffdhe6144(<span class="number">0x0103</span>), ffdhe8192(<span class="number">0x0104</span>),</span><br></pre></td></tr></table></figure>
+<p>以上用于 ECDHE 的椭圆曲线群由<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc8422">RFC 8422</a>指定。前三个是 FIPS.186-4 规范定义的，对应的 NIST 命名为 P-256/P-384/P-512，而后两种（x25519/x448）是 ANSI.X9-62.2005 推荐的。<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc7919">RFC7919</a>详细说明了用于 DHE 的四个有限域群（ffdhe####）。这些有限域群中的素数都是安全素数（safe prime）。</p>
+<div class="note info"><p>如果素数 <span class="math inline">\(p\)</span> 满足 <span class="math inline">\(q = (p-1) /2\)</span> 也是素数的条件，那它就是安全素数。</p>
+</div>
+<h4 id="签名验证">签名验证</h4>
+<p>对于密钥交换阶段的签名验证，TLS 1.3 引入了更多的签名算法套件，以适应不同的安全需求：</p>
+<ul>
+<li>RSA 签名算法：TLS 1.3 仍然支持基于RSA的签名算法，包括RSA-PKCS1-SHA256、RSA-PKCS1-SHA384等。这些算法使用RSA密钥来进行数字签名。</li>
+<li>ECDSA 签名算法：TLS 1.3 引入了更多的基于椭圆曲线密码学（ECC）的签名算法，如ECDSA-SHA256、ECDSA-SHA384等。这些算法使用椭圆曲线密钥来进行数字签名，通常在安全性和性能方面优于RSA。</li>
+<li>EdDSA 签名算法：TLS 1.3 还引入了基于 Edwards 曲线的 EdDSA（Edwards-curve Digital Signature Algorithm）签名算法。它具有高效性能和强大的安全性，适用于移动设备和资源受限的环境。</li>
+<li>RSASSA-PSS 签名算法：除了传统的 RSA-PKCS1 签名算法，TLS 1.3 还引入了 RSASSA-PSS 签名算法，它是基于 RSA 的一种更安全的签名方式，具有更好的抗攻击性。</li>
+<li>PSK 签名算法：TLS 1.3 支持基于预共享密钥（PSK）的签名算法，适用于 PSK 握手模式。这种方式不涉及数字签名，而是使用预共享密钥进行验证。</li>
+</ul>
+<h3 id="性能提升">性能提升</h3>
+<h4 id="简化的握手过程">简化的握手过程</h4>
+<p>高速移动互联网的发展大趋势要求尽可能地使用 HTTPS/TLS 保护所有流量的私密性。这样做的不利之处是新连接会变得有点慢。为了让客户机和网络服务器达成一致的密钥达成，双方需要通过 TLS “握手过程” 交换加密数据。在 TLS 1.2 及其之前的所有协议中，初始的握手过程都要求至少两次往返消息传递。与单纯的 HTTP 相比，HTTPS 的 TLS 握手过程所产生的额外延迟会对注重性能的应用程序非常不利。</p>
+<p>TLS 1.3 大幅简化了握手过程，在大多数情况下仅需要一次往返，从而加快了连接建立速度和降低了延迟。每个 TLS 1.3 连接都将使用基于 (EC)DHE 的密钥交换，而服务器支持的参数可能很容易猜到（比如 ECDHE + x25519 或 P-256）。由于选择有限，客户端可以直接在第一条信息中发送 (EC)DHE 密钥共享信息，而不用等到服务器确认它愿意支持哪种密钥交换。这样，服务器就可以提前一轮推导出共享密钥并发送加密数据。</p>
+<p>下面是 TLS 1.2 和 TLS 1.3 的握手过程消息序列对比图，TLS 1.3 的握手使用以下借用自RFC 8446规范的符号：‘+’表示值得注意的扩展名；‘*’指可选消息或扩展名；‘[]’、‘()’和‘{}’表示加密过的消息，其中用于加密的密钥各不相同。</p>
+<figure>
+<img src="TLS1_2vs1_3-handshake.jpg" alt="TLS 1.2 握手（左）对比 TLS 1.3 握手（右）" /><figcaption aria-hidden="true">TLS 1.2 握手（左）对比 TLS 1.3 握手（右）</figcaption>
+</figure>
+<p>参考此图，说明下面几点：</p>
+<ul>
+<li>可以明显看出 TLS 1.3 删除了 TLS 1.2 使用的几条消息：<code>ServerHelloDone</code>、<code>ChangeCipherSpec</code>、<code>ServerKeyExchange</code>和<code>ClientKeyExchange</code>。TLS 1.2 的服务器密钥交换（<code>ServerKeyExchange</code>）和客户端密钥交换（<code>ClientKeyExchange</code>）消息的内容随协商的身份验证和密钥共享方法而变化。在 TLS 1.3 中，这些信息被移至<code>ClientHello</code>和<code>ServerHello</code>消息的扩展中。TLS 1.3 完全弃用了<code>ServerHelloDone</code>和 <code>ChangeCipherSpec</code>消息，没有替换。</li>
+<li>对于 TLS 1.3 基于公钥的验证模式可能是最重要的。它总是使用 (EC)DHE 来实现前向保密。图中显示了必须在这种模式下使用的<code>ClientHello</code>中的四个扩展：<code>key_share</code>、<code>signature_algorithms</code>、<code>supported_groups</code>和<code>support_versions</code>。</li>
+<li>在 TLS 1.2 握手过程中，控制数据的交换需要在客户端和服务器之间多次往返。TLS 1.2 的<code>ClientKeyExchange</code>和<code>ChangeCipherSpec</code>消息由分开的数据包传输，完成（<code>Finished</code>）消息是第一条（也是唯一一条）加密的握手消息。整个过程要传输5～7个数据包。</li>
+<li>在 TLS 1.3 握手过程中，加密的应用数据（<code>Application Data</code>）已在第一轮往返后由客户端发送，加密扩展（<code>EncryptedExtensions</code>）为 TLS 早期版本中 <code>ServerHello</code> 中的许多扩展提供了私密保护。如果需要相互验证（这在物联网部署中很常见），服务器将使用证书请求（<code>CertificateRequest</code>）消息。</li>
+<li>TLS 1.3 中的证书（<code>Certificate</code>）、证书验证（<code>CertificateVerify</code>）和完成（<code>Finished</code>）消息保留了早期 TLS 版本的语义，但是它们都是使用非对称加密的消息。通过加密证书和证书验证消息，TLS 1.3 能够更好地防止中间人攻击和伪造证书攻击，同时增强连接的隐私。这也是TLS 1.3 设计中的一个重要安全特性。</li>
+</ul>
+<p>在极少数情况下，当服务器不支持客户端发送的某个密钥共享方法时，服务器可以发送一条新消息<code>HelloRetryRequest</code>，让客户端知道它支持哪些群。由于群列表已大幅缩减，预计这种情况不会经常发生。</p>
+<h4 id="rtt-会话恢复">0-RTT 会话恢复</h4>
+<p>TLS 1.3 中的 0-RTT（Zero Round Trip Time）是一种特殊的握手模式，旨在在重新建立连接时加快连接速度。通常，在 TLS 握手过程中，客户端和服务器需要交换多个往返以确保连接的安全性。但是，在某些情况下，客户端和服务器之间的连接可能会因为一些原因（例如，客户端之前曾与服务器进行过通信）而中断，然后再次建立连接。这时候，0-RTT 恢复模式就能发挥作用。</p>
+<p>下面是0-RTT是如何工作的简要解释：</p>
+<ol type="1">
+<li><p><strong>客户端记录会话票据</strong>：在正常的 TLS 1.3 握手过程中，客户端和服务器会在握手期间生成一个称为"会话票据"（Session Ticket）的数据结构。会话票据包含了有关连接的信息，包括密钥参数和加密套件等。在 0-RTT 握手中，客户端启动重新连接时将其发送给服务器。</p></li>
+<li><p><strong>服务器存储会话票据</strong>：在正常的 TLS 1.3 握手过程中，服务器会生成并返回一个称为"会话标识"（Session ID）的数据结构，以便客户端可以在未来的握手中重用会话票据。服务器会将客户端提供的会话票据存储起来。</p></li>
+<li><p><strong>0-RTT 握手</strong>：当客户端重新连接服务器时，它会在<code>ClientHello</code>消息中包含之前记录的会话票据和加密的应用数据。服务器接收到此消息后，会查找并提取相应的会话票据，并用它来快速恢复会话状态。这样，服务器可以在0个往返的情况下立即建立安全连接，从而加快连接建立的速度。服务器接着可以向客户端发送数据，以实现 0-RTT 数据的传输。</p></li>
+</ol>
+<p>TLS 1.3 的 0-RTT 会话恢复和数据传输过程的消息序列如下：</p>
+<figure>
+<img src="TLS1_3-0-RTT.jpg" style="width:50.0%;height:50.0%" alt="TLS 1.3 0-RTT" /><figcaption aria-hidden="true">TLS 1.3 0-RTT</figcaption>
+</figure>
+<h3 id="常见问题">常见问题</h3>
+<ul>
+<li><p><strong>TLS 1.3 协议允许使用 RSA 数字证书吗？</strong></p>
+<p>一个常见的误解，是说“TLS 1.3 不兼容 RSA 数字证书”。显然，以上的“签名验证”一节的描述说明这是错误的。TLS 1.3 仍然支持使用 RSA 进行密钥交换和身份验证。然而，考虑到 RSA 的安全性问题，推荐在构建和部署新的TLS 1.3应用程序时，首选 ECC 密钥交换算法和数字证书来实现更高的安全性和性能。</p>
+<p>其实，TLS 1.3 真正停止使用的是 DSA（Digital Signature Algorithm）签名算法。这也是与 TLS 1.2 的一个显著不同。 DSA 存在一些安全性和性能方面的限制，并且在实践中很少使用，因此在 TLS 1.3 中被移除。</p></li>
+<li><p><strong>TLS 1.3 握手过程中，服务器如何指定要求客户端提供证书？</strong></p>
+<p>在某些场景下，服务器也需要验证客户端的身份，确保只有合法的客户端才能访问服务器资源。这就是使用mTLS（Mutual TLS）的情况。TLS 1.3 握手过程中，服务器可以通过发送一个特殊的证书请求（<code>CertificateRequest</code>）扩展来指定要求客户端提供证书。当服务器决定要求客户端提供证书时，它在<code>Server Hello</code>消息之后发送<code>CertificateRequest</code>扩展消息。这个扩展消息包含了一些必要的参数，如支持的证书类型列表、可接受的证书颁发机构列表等。客户端收到后会知道服务器要求它提供证书，它可以选择性地响应请求。如果客户端也配置了对 mTLS 的支持，决定提供证书，就通过发送<code>Certificate</code>消息来提供其证书链。</p></li>
+<li><p><strong>0-RTT 是否会有遭受重放（replay）攻击的风险？</strong></p>
+<p>TLS 1.3 的 0-RTT 会话恢复模式没有互动，在某些情况下确实会面临重放攻击的风险。攻击者可能重复之前发送的数据，以模拟合法的请求。为了最大程度地避免和减少重放攻击的风险，TLS 1.3 提供了一些保护措施和建议：</p>
+<ol type="1">
+<li>最简单的防重放方法是服务器只允许每个会话票据使用一次。 例如，服务器可以维护一个包含所有尚未使用的有效票据的数据库，在每张票据被使用时将其从数据库中删除。如果收到了未知的票据，服务器就会退回到完全握手状态。</li>
+<li>服务器可以限制接受会话票据的时间窗口，即允许 0-RTT 数据有效的时间范围。这样可以减小攻击者成功重放的可能性。</li>
+<li>客户端和服务器还应该将 0-RTT 数据仅用于无状态的请求，即不会对服务器状态产生影响的请求如 HTTP GET。对于需要修改服务器状态或产生影响的请求，限制仅使用正常的握手模式。</li>
+<li>防重放的另一种方法是记录从 ClientHello 导出的唯一值（通常是随机值或 PSK 捆绑值），并拒绝重复。 记录所有 ClientHellos 会导致状态无限制增长，但结合上面的第2条，服务器可以在给定的时间窗口内记录 ClientHellos，并使用 "obfuscated_ticket_age"（混淆票据年龄）来确保票据不会在窗口外被重复使用。</li>
+</ol></li>
+<li><p><strong>TLS 1.3 协议适用于 UDP 和 EAP 吗？</strong></p>
+<p>TLS 最初是为 TCP 连接设计的，后来引入了适用于 UDP 的变体 DTLS（Datagram Transport Layer Security）。以 TLS 1.3 为基础，IETF 推出了相应的升级版 DTLS 1.3 协议<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9147">RFC 9147</a>。DTLS 1.3 的设计目标是提供“[与 TLS 1.3] 同等的安全保证，但次序保证和不可重放性除外”。此协议发布于2022年4月，目前支持它的软件库还不多。</p>
+<p>TLS 也可以在多种 EAP 类型中用作认证和加密的协议，如 EAP-TLS、EAP-FAST 和 PEAP 等。对应 TLS 1.3，IETF 也公布了两个技术标准文档：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9190">RFC 9190</a>：EAP-TLS 1.3: Using the Extensible Authentication Protocol with TLS 1.3（2022年2月）</li>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9427">RFC 9427</a>：TLS-Based Extensible Authentication Protocol (EAP) Types for Use with TLS 1.3（2023年6月）</li>
+</ul>
+<p>这两个协议也都很新，支持它们的软件库更新还有待时日。</p></li>
+<li><p><strong>如果客户端不知道服务器是否支持 TLS 1.3，应该如何选择 TLS 握手方式？</strong></p>
+<p>TLS 协议提供了一种内置机制协商端点之间的运行版本。TLS 1.3 继续了这一传统。RFC 8446 附录 D.1 “Negotiating with an Older Server”给出具体的说明：</p>
+<blockquote>
+<p>A TLS 1.3 client who wishes to negotiate with servers that do not support TLS 1.3 will send a normal TLS 1.3 ClientHello containing 0x0303 (TLS 1.2) in ClientHello.legacy_version but with the correct version(s) in the "supported_versions" extension. <strong>If the server does not support TLS 1.3, it will respond with a ServerHello containing an older version number.</strong> If the client agrees to use this version, the negotiation will proceed as appropriate for the negotiated protocol.</p>
+</blockquote>
+<p>这段话的意思是，如果 TLS 1.3 客户端希望与不支持 TLS 1.3 的服务器进行协商，则发送一个包含 TLS 1.2 版本号的正常<code>ClientHello</code>消息，同时在该消息的<code>supported_versions</code>扩展中填入所支持的版本号（TLS 1.3 和 TLS 1.2）。如果服务器不支持 TLS 1.3，它就会回应一个包含 TLS 1.2 版本编号的 <code>ServerHello</code>。 如果客户端同意使用该版本，握手过程将按照协商协议的适当方式继续进行。</p>
+<p>下面的 TLS 1.3 <code>ClientHello</code>数据包分析截图清晰地展现了这一点。在左边显示的握手消息的版本号为“Version: TLS 1.2 (0x0303)”，同时可以看到密码套件部分先列出了3个 TLS 1.3 AEAD密码套件，后面跟着14个 TLS 1.2 常规密码套件。右边有<code>key_share</code>、<code>signature_algorithms</code>、<code>supported_groups</code>和<code>support_versions</code>4个扩展。<code>support_versions</code>扩展包括 TLS 1.3 和 TLS 1.2 两个版本号。这就是给出了供服务器选择的 TLS 版本。另外<code>key_share</code>扩展列出了客户端首选的密钥共享方法为<code>x25519</code>和<code>secp256r1</code>（即 NIST P-256）</p>
+<p><img src="TLS1_3-clienthello.jpg" /></p></li>
+</ul>
+<h2 id="应用和实现">应用和实现</h2>
+<p>TLS 1.3 强化的安全性和优化的性能使其成为各类网络应用程序安全通信的首选。下面先针对典型的三大网页服务器软件 Apache、Nginx 和 Lighttpd，简单介绍一下如何启用它们 TLS 1.3 功能。最后给出了在自己开发的应用软件中实现 TLS 1.3 的程序示例。</p>
+<div class="note warning"><p><strong>注意：</strong>许多网络应用程序的安全通信实现依赖于第三方的 SSL/TLS 编程软件库，比如wolfSSL、GnuTLS、NSS 和 OpenSSL等。因此要开启这些应用的 TLS 1.3 功能，需要确保它们使用的链接库支持 TLS 1.3 。比如2018年9月，流行的 OpenSSL 项目发布了 1.1.1 版本的库，其中支持 TLS 1.3 是其 "首要的新功能"。</p>
+</div>
+<h3 id="apache-http-服务器应用">Apache HTTP 服务器应用</h3>
+<p>Apache HTTP 服务器是Apache软件基金会的一个开放源码的网页服务器软件。由于其跨平台和安全性，Apache HTTP 服务器被广泛使用，是最流行的Web服务器软件之一。Apache支持多种特性，其中许多通过编译的模块实现核心功能的扩展，比如身份验证方案、代理服务器、URL 重写、SSL/TLS 支持，以及将Perl/Python等解释器编译到服务器中等。</p>
+<p>Apache HTTP 服务器从 2.4.36 版本开始内建对 TLS 1.3 的支持，无需安装任何附加模块或补丁。下面的命令可用来验证服务器的版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ apache2ctl -v </span><br><span class="line">Server version: Apache/2.4.41 (Ubuntu)</span><br><span class="line">Server built:   2020-04-13T17:19:17</span><br></pre></td></tr></table></figure>
+<p>版本验证无误后，就可以更新配置文件的<code>SSLProtocol</code>行。如下将使 Apache HTTP 服务器只支持 TLS 1.3 协议</p>
+<figure class="highlight nginx"><figcaption><span>/etc/apache2/mods-available/ssl.conf</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 只启用TLS 1.3 版本协议</span></span><br><span class="line"><span class="attribute">SSLProtocol</span> -all +TLSv1.<span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>如果需要兼容支持 TLS 1.2 的客户端，可以加上<code>+TLSv1.2</code>。更新配置之后，重启服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo service apache2 restart</span><br></pre></td></tr></table></figure>
+<h3 id="nginx-应用">Nginx 应用</h3>
+<p>Nginx 是基于异步框架和模块化设计的高性能网页服务器，也可以用于反向代理、负载均衡器和HTTP缓存应用。它是根据类BSD许可证条款发布的免费开源软件。Nginx 使用异步事件驱动的方法来处理请求，可以在高负载下提供更可预测的性能。当前 Nginx 的市场占有率与 Apache HTTP 服务器几乎持平。</p>
+<p>Nginx 从 1.13.0 版本 开始支持 TLS 1.3。下面的命令可用来验证 Nginx 的版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ nginx -v</span><br><span class="line">nginx version: nginx/1.17.10 (Ubuntu)</span><br></pre></td></tr></table></figure>
+<p>在 Nginx 的配置文件中，找到server块并修改<code>ssl_protocols</code>行就可以启用 TLS 1.3：</p>
+<figure class="highlight nginx"><figcaption><span>/etc/nginx/nginx.conf</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">443</span> ssl http2;</span><br><span class="line">    <span class="attribute">listen</span> [::]:<span class="number">443</span> ssl http2;</span><br><span class="line">    <span class="attribute">server_name</span> example.com;</span><br><span class="line">    <span class="attribute">root</span> /var/www/example.com/public;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">ssl_certificate</span> /path/to/your/certificate.crt;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /path/to/your/private-key.key;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 添加对 TLS 1.3 的支持</span></span><br><span class="line">    <span class="attribute">ssl_protocols</span> TLSv1.<span class="number">2</span> TLSv1.<span class="number">3</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># ...其他配置...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果不需要继续支持 TLS 1.2，可以删除前面的<code>TLSv1.2</code>。修改完成，可以运行以下命令测试Nginx 的配置，然后重启服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo nginx -t</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</span><br><span class="line"></span><br><span class="line">$ sudo service nginx restart</span><br></pre></td></tr></table></figure>
+<h3 id="lighttpd-应用">Lighttpd 应用</h3>
+<p>Lighttpd（发音为"lighty"）是一个轻量级的开源网页服务器软件。它专注于高性能、低内存占用和快速的响应速度。Lighttpd适用于各种规模的网页应用和静态内容的提供。它的设计目标是提供一个高效、灵活和可扩展的网页服务器，尤其适用于高负载和资源受限（如嵌入式系统）的环境。</p>
+<p>第一个支持 TLS 1.3 的 Lighttpd 发布是 1.4.56 版。从这个版本开始，Lighttpd 默认支持 TLS 的最低版本是 TLS 1.2。也就是说，如果不做相应的配置文件修改，这时 Lighttpd 支持 TLS 1.2 和 TLS 1.3。</p>
+<p>要限定只使用 Lighttpd 的 TLS 1.3 功能，先确保 mod_openssl 模块已加载。然后在配置文件 lighttpd.conf 中 ，找到<code>server.modules</code>部分，添加以下<code>ssl.openssl.ssl-conf-cmd</code>行：</p>
+<figure class="highlight nginx"><figcaption><span>/etc/lighttpd/lighttpd.conf</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">server.<span class="attribute">modules</span> += (<span class="string">&quot;mod_openssl&quot;</span>)</span><br><span class="line">$SERVER[<span class="string">&quot;socket&quot;</span>] == <span class="string">&quot;:443&quot;</span> &#123;</span><br><span class="line">    ssl.<span class="attribute">engine</span> = <span class="string">&quot;enable&quot;</span> </span><br><span class="line">    ssl.pemfile = <span class="string">&quot;/path/to/your/cert.pem&quot;</span></span><br><span class="line">    ssl.privkey = <span class="string">&quot;/path/to/your/privkey.pem&quot;</span></span><br><span class="line">    ssl.openssl.ssl-conf-cmd = (<span class="string">&quot;MinProtocol&quot;</span> =&gt; <span class="string">&quot;TLSv1.3&quot;</span>,</span><br><span class="line">                                <span class="string">&quot;Options&quot;</span> =&gt; <span class="string">&quot;-ServerPreference&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这将设定 Lighttpd 支持的最低版本是 TLS 1.3。最后保存并重新加载 Lighttpd 配置，使更改生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo lighttpd -t -f /etc/lighttpd/lighttpd.conf <span class="comment"># 检查配置是否正确</span></span><br><span class="line">sudo systemctl reload lighttpd <span class="comment"># 重新加载Lighttpd配置</span></span><br></pre></td></tr></table></figure>
+<h3 id="软件实现">软件实现</h3>
+<p>如果是自己设计和实现的网络安全应用，先确认使用的链接库是否支持 TLS 1.3。以 OpenSSL 库为例，执行如下的两个<code>openssl</code>命令行检查系统安装的版本和所支持的 TLS 1.3 密码套件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ openssl version</span><br><span class="line">OpenSSL 1.1.1f  31 Mar 2020</span><br><span class="line"></span><br><span class="line">$ openssl ciphers -v | grep TLSv1.3</span><br><span class="line">TLS_AES_256_GCM_SHA384  TLSv1.3 Kx=any      Au=any  Enc=AESGCM(256) Mac=AEAD</span><br><span class="line">TLS_CHACHA20_POLY1305_SHA256 TLSv1.3 Kx=any      Au=any  Enc=CHACHA20/POLY1305(256) Mac=AEAD</span><br><span class="line">TLS_AES_128_GCM_SHA256  TLSv1.3 Kx=any      Au=any  Enc=AESGCM(128) Mac=AEAD</span><br></pre></td></tr></table></figure>
+<p>如上第一个命令的输出结果显示所使用的 OpenSSL 库的版本是 1.1.1f，是支持 TLS 1.3 的。第二个命令的输出也证实了默认可以使用的三个 TLS 1.3 密码套件。</p>
+<p>下面是用C语言编写的 TLS 1.3 客户端和服务器的简单示例程序：</p>
+<div class="tabs" id="openssl-实现-tls1.3-示例"><ul class="nav-tabs"><li class="tab active"><a href="#openssl-实现-tls1.3-示例-1">客户端</a></li><li class="tab"><a href="#openssl-实现-tls1.3-示例-2">服务器</a></li></ul><div class="tab-content"><div class="tab-pane active" id="openssl-实现-tls1.3-示例-1"><figure class="highlight c"><figcaption><span>tls_client.c</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;openssl/ssl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;openssl/err.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SSL_CTX *ctx;</span><br><span class="line">    SSL *ssl;</span><br><span class="line">    <span class="keyword">int</span> client_fd;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">server_addr</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化OpenSSL库</span></span><br><span class="line">    SSL_library_init();</span><br><span class="line">    SSL_load_error_strings();</span><br><span class="line">    ERR_load_BIO_strings();</span><br><span class="line">    OpenSSL_add_all_algorithms();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建TLS 1.3上下文</span></span><br><span class="line">    ctx = SSL_CTX_new(TLS_client_method());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建socket</span></span><br><span class="line">    client_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 连接服务器</span></span><br><span class="line">    <span class="built_in">memset</span>(&amp;server_addr, <span class="number">0</span>, <span class="keyword">sizeof</span>(server_addr));</span><br><span class="line">    server_addr.sin_family = AF_INET;</span><br><span class="line">    server_addr.sin_port = htons(<span class="number">4433</span>);</span><br><span class="line">    inet_pton(AF_INET, <span class="string">&quot;127.0.0.1&quot;</span>, &amp;server_addr.sin_addr);</span><br><span class="line"></span><br><span class="line">    connect(client_fd, (struct sockaddr*)&amp;server_addr, <span class="keyword">sizeof</span>(server_addr));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建TLS连接</span></span><br><span class="line">    ssl = SSL_new(ctx);</span><br><span class="line">    SSL_set_fd(ssl, client_fd);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 握手</span></span><br><span class="line">    <span class="keyword">if</span> (SSL_connect(ssl) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        ERR_print_errors_fp(<span class="built_in">stderr</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 发送和接收数据</span></span><br><span class="line">        <span class="keyword">char</span> message[] = <span class="string">&quot;Hello from client!&quot;</span>;</span><br><span class="line">        SSL_write(ssl, message, <span class="built_in">strlen</span>(message));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> buffer[<span class="number">1024</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        SSL_read(ssl, buffer, <span class="keyword">sizeof</span>(buffer));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Received: %s\n&quot;</span>, buffer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 关闭连接</span></span><br><span class="line">    SSL_shutdown(ssl);</span><br><span class="line">    SSL_free(ssl);</span><br><span class="line">    close(client_fd);</span><br><span class="line">    SSL_CTX_free(ctx);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div class="tab-pane" id="openssl-实现-tls1.3-示例-2"><figure class="highlight c"><figcaption><span>tls_server.c</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;openssl/ssl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;openssl/err.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SSL_CTX *ctx;</span><br><span class="line">    SSL *ssl;</span><br><span class="line">    <span class="keyword">int</span> server_fd, client_fd;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">server_addr</span>, <span class="title">client_addr</span>;</span></span><br><span class="line">    <span class="keyword">socklen_t</span> client_len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化OpenSSL库</span></span><br><span class="line">    SSL_library_init();</span><br><span class="line">    SSL_load_error_strings();</span><br><span class="line">    ERR_load_BIO_strings();</span><br><span class="line">    OpenSSL_add_all_algorithms();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建TLS 1.3上下文</span></span><br><span class="line">    ctx = SSL_CTX_new(TLS_server_method());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 加载证书和私钥</span></span><br><span class="line">    SSL_CTX_use_certificate_file(ctx, <span class="string">&quot;server.crt&quot;</span>, SSL_FILETYPE_PEM);</span><br><span class="line">    SSL_CTX_use_PrivateKey_file(ctx, <span class="string">&quot;server.key&quot;</span>, SSL_FILETYPE_PEM);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建socket</span></span><br><span class="line">    server_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绑定地址</span></span><br><span class="line">    <span class="built_in">memset</span>(&amp;server_addr, <span class="number">0</span>, <span class="keyword">sizeof</span>(server_addr));</span><br><span class="line">    server_addr.sin_family = AF_INET;</span><br><span class="line">    server_addr.sin_port = htons(<span class="number">4433</span>);</span><br><span class="line">    server_addr.sin_addr.s_addr = INADDR_ANY;</span><br><span class="line"></span><br><span class="line">    bind(server_fd, (struct sockaddr*)&amp;server_addr, <span class="keyword">sizeof</span>(server_addr));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 监听</span></span><br><span class="line">    listen(server_fd, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Server is listening on port 4433...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 接受客户端连接</span></span><br><span class="line">        client_len = <span class="keyword">sizeof</span>(client_addr);</span><br><span class="line">        client_fd = accept(server_fd, (struct sockaddr*)&amp;client_addr, &amp;client_len);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Client connected.\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建TLS连接</span></span><br><span class="line">        ssl = SSL_new(ctx);</span><br><span class="line">        SSL_set_fd(ssl, client_fd);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 握手</span></span><br><span class="line">        <span class="keyword">if</span> (SSL_accept(ssl) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            ERR_print_errors_fp(<span class="built_in">stderr</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 发送和接收数据</span></span><br><span class="line">            <span class="keyword">char</span> buffer[<span class="number">1024</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">            SSL_read(ssl, buffer, <span class="keyword">sizeof</span>(buffer));</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Received: %s\n&quot;</span>, buffer);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">char</span> response[] = <span class="string">&quot;Hello from server!&quot;</span>;</span><br><span class="line">            SSL_write(ssl, response, <span class="built_in">strlen</span>(response));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 关闭连接</span></span><br><span class="line">        SSL_shutdown(ssl);</span><br><span class="line">        SSL_free(ssl);</span><br><span class="line">        close(client_fd);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    SSL_CTX_free(ctx);</span><br><span class="line">    close(server_fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div></div></div>
+<p>上述示例仅提供了 TLS 1.3 最基本的客户端和服务器实现。实际应用中，需要预先生成有效的证书和私钥，并根据具体需求进一步优化和扩展代码。</p>
+<p>还可以观察到在上面的示例中，客户端和服务器的程序都没有明确指定 TLS 1.3 版本。为什么？这是因为在 OpenSSL 1.1.1 及以上版本中，TLS 1.3 是默认启用的。因此在 TLS 客户端和服务器的上下文<code>ctx</code>中，不需要显式指定 TLS 版本。在使用OpenSSL库时，默认情况下会使用最高版本的 TLS，即 TLS 1.3（如果双方都支持）。如果对方不支持 TLS 1.3，它会尝试使用较旧的 TLS 版本来建立连接。</p>
+<p>如果希望限定 TLS 版本，可以在上下文中明确指定所需的 TLS 版本。例如，在 TLS 客户端示例中，如果你希望明确指定只能使用 TLS 1.3 版本，可以像这样修改代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建TLS 1.3上下文</span></span><br><span class="line">ctx = SSL_CTX_new(TLS_client_method());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 明确指定TLS 1.3版本</span></span><br><span class="line">SSL_CTX_set_min_proto_version(ctx, TLS1_3_VERSION);</span><br><span class="line">SSL_CTX_set_max_proto_version(ctx, TLS1_3_VERSION);</span><br></pre></td></tr></table></figure>
+<p>在 TL S服务器示例中，你也可以使用类似的方式明确指定 TLS 1.3 版本：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建TLS 1.3上下文</span></span><br><span class="line">ctx = SSL_CTX_new(TLS_server_method());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 明确指定TLS 1.3版本</span></span><br><span class="line">SSL_CTX_set_min_proto_version(ctx, TLS1_3_VERSION);</span><br><span class="line">SSL_CTX_set_max_proto_version(ctx, TLS1_3_VERSION);</span><br></pre></td></tr></table></figure>
+<p>如果想要限定协议的最低版本为 TLS 1.2，可以修改<code>SSL_CTX_set_min_proto_version()</code>的调用参数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建TLS 上下文</span></span><br><span class="line">ctx = SSL_CTX_new(...);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 指定最低 TLS 1.2 和 最高 TLS 1.3</span></span><br><span class="line">SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);</span><br><span class="line">SSL_CTX_set_max_proto_version(ctx, TLS1_3_VERSION);</span><br></pre></td></tr></table></figure>
+<p>总之，通过调用<code>SSL_CTX_set_min_proto_version()</code>和<code>SSL_CTX_set_max_proto_version()</code>函数，我们可以精准限定所支持 TLS 协议的版本范围。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2023/07/04/TLS1-3-intro/" title="启用 TLS 1.3 提升网络应用的安全性和性能">https://www.packetmania.net/2023/07/04/TLS1-3-intro/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 网络安全</a>
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/12/29/PGITVW-3-binsearch/" rel="prev" title="程序员面试题精解（3）— 二分查找">
+                  <i class="fa fa-chevron-left"></i> 程序员面试题精解（3）— 二分查找
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">269k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:05</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"2045a026c52dce33beee9bd64dd5bd52"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

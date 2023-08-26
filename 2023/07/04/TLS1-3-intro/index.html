@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_3-0-RTT.jpg">
 <meta property="og:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_3-clienthello.jpg">
 <meta property="article:published_time" content="2023-07-05T00:34:57.000Z">
-<meta property="article:modified_time" content="2023-08-22T05:43:31.780Z">
+<meta property="article:modified_time" content="2023-08-26T03:05:16.698Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -165,7 +165,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tls-1.3-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">TLS 1.3 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E5%BC%BA%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">安全强化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E5%A5%97%E4%BB%B6"><span class="nav-number">1.1.1.</span> <span class="nav-text">密码套件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2"><span class="nav-number">1.1.2.</span> <span class="nav-text">密钥交换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%E9%AA%8C%E8%AF%81"><span class="nav-number">1.1.3.</span> <span class="nav-text">签名验证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87"><span class="nav-number">1.2.</span> <span class="nav-text">性能提升</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8C%96%E7%9A%84%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">简化的握手过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rtt-%E4%BC%9A%E8%AF%9D%E6%81%A2%E5%A4%8D"><span class="nav-number">1.2.2.</span> <span class="nav-text">0-RTT 会话恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">常见问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">应用和实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apache-http-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">Apache HTTP 服务器应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-%E5%BA%94%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">Nginx 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lighttpd-%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">Lighttpd 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.4.</span> <span class="nav-text">软件实现</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tls-1.3-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">TLS 1.3 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E5%BC%BA%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">安全强化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E5%A5%97%E4%BB%B6"><span class="nav-number">1.1.1.</span> <span class="nav-text">密码套件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2"><span class="nav-number">1.1.2.</span> <span class="nav-text">密钥交换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%E9%AA%8C%E8%AF%81"><span class="nav-number">1.1.3.</span> <span class="nav-text">签名验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%94%B9%E8%BF%9B"><span class="nav-number">1.1.4.</span> <span class="nav-text">其他改进</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87"><span class="nav-number">1.2.</span> <span class="nav-text">性能提升</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8C%96%E7%9A%84%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">简化的握手过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rtt-%E4%BC%9A%E8%AF%9D%E6%81%A2%E5%A4%8D"><span class="nav-number">1.2.2.</span> <span class="nav-text">0-RTT 会话恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">常见问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">应用和实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apache-http-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">Apache HTTP 服务器应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-%E5%BA%94%E7%94%A8"><span class="nav-number">2.2.</span> <span class="nav-text">Nginx 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lighttpd-%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">Lighttpd 应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.4.</span> <span class="nav-text">软件实现</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -293,7 +293,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-08-21 22:43:31" itemprop="dateModified" datetime="2023-08-21T22:43:31-07:00">2023-08-21</time>
+        <time title="修改时间：2023-08-25 20:05:16" itemprop="dateModified" datetime="2023-08-25T20:05:16-07:00">2023-08-25</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -326,7 +326,7 @@
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>13 分钟</span>
+      <span>14 分钟</span>
     </span>
 </div>
 
@@ -346,51 +346,51 @@
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">比较方面</th>
+<th style="text-align: center;">比较方面</th>
 <th style="text-align: center;">TLS 1.2</th>
-<th style="text-align: right;">TLS 1.3</th>
+<th style="text-align: center;">TLS 1.3</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">协议设计</td>
+<td style="text-align: center;">协议设计</td>
 <td style="text-align: center;">请求-响应模型</td>
-<td style="text-align: right;">减少往返次数</td>
+<td style="text-align: center;">减少往返次数</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">握手过程</td>
+<td style="text-align: center;">握手过程</td>
 <td style="text-align: center;">多次往返</td>
-<td style="text-align: right;">单次往返</td>
+<td style="text-align: center;">单次往返</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">密码套件</td>
+<td style="text-align: center;">密码套件</td>
 <td style="text-align: center;">支持范围广泛，包括一些不安全的算法</td>
-<td style="text-align: right;">着重于更强的密码算法</td>
+<td style="text-align: center;">着重于更强的密码算法</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">安全性</td>
+<td style="text-align: center;">安全性</td>
 <td style="text-align: center;">有已知漏洞（如CBC漏洞等）</td>
-<td style="text-align: right;">解决了先前问题，更强的安全性</td>
+<td style="text-align: center;">解决了先前问题，更强的安全性</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">性能</td>
+<td style="text-align: center;">性能</td>
 <td style="text-align: center;">多次往返造成高延迟</td>
-<td style="text-align: right;">连接建立更快</td>
+<td style="text-align: center;">连接建立更快</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">抵御攻击</td>
+<td style="text-align: center;">抵御攻击</td>
 <td style="text-align: center;">易受到降级攻击和填充应答攻击</td>
-<td style="text-align: right;">有额外防护减少攻击风险</td>
+<td style="text-align: center;">有额外防护减少攻击风险</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">兼容性</td>
+<td style="text-align: center;">兼容性</td>
 <td style="text-align: center;">在不同平台上得到广泛支持</td>
-<td style="text-align: right;">支持率逐渐提升，老旧系统可能不可用</td>
+<td style="text-align: center;">支持率逐渐提升，老旧系统可能不可用</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">实现支持</td>
+<td style="text-align: center;">实现支持</td>
 <td style="text-align: center;">有许多密码库可用</td>
-<td style="text-align: right;">各种库软件都提供支持</td>
+<td style="text-align: center;">各种库软件都提供支持</td>
 </tr>
 </tbody>
 </table>
@@ -418,6 +418,15 @@
 <li><strong>RSASSA-PSS 签名算法</strong>：除了传统的 RSA-PKCS1 签名算法，TLS 1.3 还引入了 RSASSA-PSS 签名算法，它是基于 RSA 的一种更安全的签名方式，具有更好的抗攻击性。</li>
 <li><strong>PSK 签名算法</strong>：TLS 1.3 支持基于预共享密钥（PSK）的签名算法，适用于 PSK 握手模式。这种方式不涉及数字签名，而是使用预共享密钥进行验证。</li>
 </ul>
+<p>TLS 1.3 停止使用 DSA（Digital Signature Algorithm）签名算法。这也是与 TLS 1.2 的一个显著不同。 DSA 存在一些安全性和性能方面的限制，并且在实践中很少使用，因此 TLS 1.3 移除了对 DSA 证书的支持。</p>
+<h4 id="其他改进">其他改进</h4>
+<p>此外，TLS 1.3 还包括以下改进增强安全性</p>
+<ul>
+<li>TLS 1.3 不允许数据压缩。TLS 早期版本中的数据压缩功能可能导致 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/CRIME">CRIME</a> 攻击等安全问题。为了避免这种风险，TLS 1.3 完全取消了对数据压缩的支持。</li>
+<li>与早期版本的TLS不同，TLS 1.3 禁止在连接建立后进行再协商。这有助于减少安全风险和复杂性。重新协商可能引入新的安全漏洞，而且在连接过程中的频繁协商也可能导致性能问题。</li>
+<li>TLS 1.3 握手过程中服务器问候<code>ServerHello</code>消息之后的所有握手信息现在都被加密。新引入的加密扩展<code>EncryptedExtensions</code>消息使以前在服务器问候消息中以明文发送的各种扩展信息也能得到加密保护。</li>
+<li>TLS 1.3 对服务器发送到客户端的证书消息实施非对称加密保护。这种加密可以防止中间人攻击、信息泄露和证书伪造等威胁，进一步增强连接的安全性和隐私保护。</li>
+</ul>
 <h3 id="性能提升">性能提升</h3>
 <h4 id="简化的握手过程">简化的握手过程</h4>
 <p>高速移动互联网的发展大趋势要求尽可能地使用 HTTPS/TLS 保护所有流量的私密性。这样做的不利之处是新连接会变得有点慢。为了让客户机和网络服务器达成一致的密钥达成，双方需要通过 TLS “握手过程” 交换加密数据。在 TLS 1.2 及其之前的所有协议中，初始的握手过程都要求至少两次往返消息传递。与单纯的 HTTP 相比，HTTPS 的 TLS 握手过程所产生的额外延迟会对注重性能的应用程序非常不利。</p>
@@ -431,7 +440,7 @@
 <li>可以明显看出 TLS 1.3 删除了 TLS 1.2 使用的几条消息：<code>ServerHelloDone</code>、<code>ChangeCipherSpec</code>、<code>ServerKeyExchange</code>和<code>ClientKeyExchange</code>。TLS 1.2 的服务器密钥交换（<code>ServerKeyExchange</code>）和客户端密钥交换（<code>ClientKeyExchange</code>）消息的内容随协商的身份验证和密钥共享方法而变化。在 TLS 1.3 中，这些信息被移至<code>ClientHello</code>和<code>ServerHello</code>消息的扩展中。TLS 1.3 完全弃用了<code>ServerHelloDone</code>和 <code>ChangeCipherSpec</code>消息，没有替换。</li>
 <li>对于 TLS 1.3 基于公钥的验证模式可能是最重要的。它总是使用 (EC)DHE 来实现前向保密。图中显示了必须在这种模式下使用的<code>ClientHello</code>中的四个扩展：<code>key_share</code>、<code>signature_algorithms</code>、<code>supported_groups</code>和<code>support_versions</code>。</li>
 <li>在 TLS 1.2 握手过程中，控制数据的交换需要在客户端和服务器之间多次往返。TLS 1.2 的<code>ClientKeyExchange</code>和<code>ChangeCipherSpec</code>消息由分开的数据包传输，完成（<code>Finished</code>）消息是第一条（也是唯一一条）加密的握手消息。整个过程要传输5～7个数据包。</li>
-<li>在 TLS 1.3 握手过程中，加密的应用数据（<code>Application Data</code>）已在第一轮往返后由客户端发送，加密扩展（<code>EncryptedExtensions</code>）为 TLS 早期版本中 <code>ServerHello</code> 中的许多扩展提供了私密保护。如果需要相互验证（这在物联网部署中很常见），服务器将使用证书请求（<code>CertificateRequest</code>）消息。</li>
+<li>在 TLS 1.3 握手过程中，加密的应用数据（<code>Application Data</code>）已在第一轮往返后由客户端发送。如前所述，加密扩展（<code>EncryptedExtensions</code>）为 TLS 早期版本中 <code>ServerHello</code> 中的许多扩展提供了私密保护。如果需要相互验证（这在物联网部署中很常见），服务器将使用证书请求（<code>CertificateRequest</code>）消息。</li>
 <li>TLS 1.3 中的证书（<code>Certificate</code>）、证书验证（<code>CertificateVerify</code>）和完成（<code>Finished</code>）消息保留了早期 TLS 版本的语义，但是它们都是使用非对称加密的消息。通过加密证书和证书验证消息，TLS 1.3 能够更好地防止中间人攻击和伪造证书攻击，同时增强连接的隐私。这也是TLS 1.3 设计中的一个重要安全特性。</li>
 </ul>
 <p>在极少数情况下，当服务器不支持客户端发送的某个密钥共享方法时，服务器可以发送一条新消息<code>HelloRetryRequest</code>，让客户端知道它支持哪些群。由于群列表已大幅缩减，预计这种情况不会经常发生。</p>
@@ -449,8 +458,7 @@
 <h3 id="常见问题">常见问题</h3>
 <ul>
 <li><p><strong>TLS 1.3 协议允许使用 RSA 数字证书吗？</strong></p>
-<p>一个常见的误解，是说“TLS 1.3 不兼容 RSA 数字证书”。显然，以上的“签名验证”一节的描述说明这是错误的。TLS 1.3 仍然支持使用 RSA 进行密钥交换和身份验证。然而，考虑到 RSA 的安全性问题，推荐在构建和部署新的TLS 1.3应用程序时，首选 ECC 密钥交换算法和数字证书来实现更高的安全性和性能。</p>
-<p>其实，TLS 1.3 真正停止使用的是 DSA（Digital Signature Algorithm）签名算法。这也是与 TLS 1.2 的一个显著不同。 DSA 存在一些安全性和性能方面的限制，并且在实践中很少使用，因此在 TLS 1.3 中被移除。</p></li>
+<p>一个常见的误解，是说“TLS 1.3 不兼容 RSA 数字证书”。显然，以上的“签名验证”一节的描述说明这是错误的。TLS 1.3 仍然支持使用 RSA 进行密钥交换和身份验证。然而，考虑到 RSA 的安全性问题，推荐在构建和部署新的TLS 1.3应用程序时，首选 ECC 密钥交换算法和数字证书来实现更高的安全性和性能。</p></li>
 <li><p><strong>TLS 1.3 握手过程中，服务器如何指定要求客户端提供证书？</strong></p>
 <p>在某些场景下，服务器也需要验证客户端的身份，确保只有合法的客户端才能访问服务器资源。这就是使用mTLS（Mutual TLS）的情况。TLS 1.3 握手过程中，服务器可以通过发送一个特殊的证书请求（<code>CertificateRequest</code>）扩展来指定要求客户端提供证书。当服务器决定要求客户端提供证书时，它在<code>Server Hello</code>消息之后发送<code>CertificateRequest</code>扩展消息。这个扩展消息包含了一些必要的参数，如支持的证书类型列表、可接受的证书颁发机构列表等。客户端收到后会知道服务器要求它提供证书，它可以选择性地响应请求。如果客户端也配置了对 mTLS 的支持，决定提供证书，就通过发送<code>Certificate</code>消息来提供其证书链。</p></li>
 <li><p><strong>0-RTT 是否会有遭受重放（replay）攻击的风险？</strong></p>
@@ -461,14 +469,6 @@
 <li>客户端和服务器还应该将 0-RTT 数据仅用于无状态的请求，即不会对服务器状态产生影响的请求如 HTTP GET。对于需要修改服务器状态或产生影响的请求，限制仅使用正常的握手模式。</li>
 <li>防重放的另一种方法是记录从 ClientHello 导出的唯一值（通常是随机值或 PSK 捆绑值），并拒绝重复。 记录所有 ClientHellos 会导致状态无限制增长，但结合上面的第2条，服务器可以在给定的时间窗口内记录 ClientHellos，并使用 "obfuscated_ticket_age"（混淆票据年龄）来确保票据不会在窗口外被重复使用。</li>
 </ol></li>
-<li><p><strong>TLS 1.3 协议适用于 UDP 和 EAP 吗？</strong></p>
-<p>TLS 最初是为 TCP 连接设计的，后来引入了适用于 UDP 的变体 DTLS（Datagram Transport Layer Security）。以 TLS 1.3 为基础，IETF 推出了相应的升级版 DTLS 1.3 协议<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9147">RFC 9147</a>。DTLS 1.3 的设计目标是提供“[与 TLS 1.3] 同等的安全保证，但次序保证和不可重放性除外”。此协议发布于2022年4月，目前支持它的软件库还不多。</p>
-<p>TLS 也可以在多种 EAP 类型中用作认证和加密的协议，如 EAP-TLS、EAP-FAST 和 PEAP 等。对应 TLS 1.3，IETF 也公布了两个技术标准文档：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9190">RFC 9190</a>：EAP-TLS 1.3: Using the Extensible Authentication Protocol with TLS 1.3（2022年2月）</li>
-<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9427">RFC 9427</a>：TLS-Based Extensible Authentication Protocol (EAP) Types for Use with TLS 1.3（2023年6月）</li>
-</ul>
-<p>这两个协议也都很新，支持它们的软件库更新还有待时日。</p></li>
 <li><p><strong>如果客户端不知道服务器是否支持 TLS 1.3，应该如何选择 TLS 握手方式？</strong></p>
 <p>TLS 协议提供了一种内置机制协商端点之间的运行版本。TLS 1.3 继续了这一传统。RFC 8446 附录 D.1 “Negotiating with an Older Server”给出具体的说明：</p>
 <blockquote>
@@ -477,6 +477,14 @@
 <p>这段话的意思是，如果 TLS 1.3 客户端希望与不支持 TLS 1.3 的服务器进行协商，则发送一个包含 TLS 1.2 版本号的正常<code>ClientHello</code>消息，同时在该消息的<code>supported_versions</code>扩展中填入所支持的版本号（TLS 1.3 和 TLS 1.2）。如果服务器不支持 TLS 1.3，它就会回应一个包含 TLS 1.2 版本编号的 <code>ServerHello</code>。 如果客户端同意使用该版本，握手过程将按照协商协议的适当方式继续进行。</p>
 <p>下面的 TLS 1.3 <code>ClientHello</code>数据包分析截图清晰地展现了这一点。在左边显示的握手消息的版本号为“Version: TLS 1.2 (0x0303)”，同时可以看到密码套件部分先列出了3个 TLS 1.3 AEAD密码套件，后面跟着14个 TLS 1.2 常规密码套件。右边有<code>key_share</code>、<code>signature_algorithms</code>、<code>supported_groups</code>和<code>support_versions</code>4个扩展。<code>support_versions</code>扩展包括 TLS 1.3 和 TLS 1.2 两个版本号。这就是给出了供服务器选择的 TLS 版本。另外<code>key_share</code>扩展列出了客户端首选的密钥共享方法为<code>x25519</code>和<code>secp256r1</code>（即 NIST P-256）</p>
 <p><img src="TLS1_3-clienthello.jpg" /></p></li>
+<li><p><strong>TLS 1.3 协议适用于 UDP 和 EAP 吗？</strong></p>
+<p>TLS 最初是为 TCP 连接设计的，后来引入了适用于 UDP 的变体 DTLS（Datagram Transport Layer Security）。以 TLS 1.3 为基础，IETF 推出了相应的升级版 DTLS 1.3 协议<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9147">RFC 9147</a>。DTLS 1.3 的设计目标是提供“[与 TLS 1.3] 同等的安全保证，但次序保证和不可重放性除外”。此协议发布于2022年4月，目前支持它的软件库还不多。</p>
+<p>TLS 也可以在多种 EAP 类型中用作认证和加密的协议，如 EAP-TLS、EAP-FAST 和 PEAP 等。对应 TLS 1.3，IETF 也公布了两个技术标准文档：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9190">RFC 9190</a>: EAP-TLS 1.3: Using the Extensible Authentication Protocol with TLS 1.3（2022年2月）</li>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc9427">RFC 9427</a>: TLS-Based Extensible Authentication Protocol (EAP) Types for Use with TLS 1.3（2023年6月）</li>
+</ul>
+<p>这两个协议也都很新，支持它们的软件库更新还有待时日。</p></li>
 </ul>
 <h2 id="应用和实现">应用和实现</h2>
 <p>TLS 1.3 强化的安全性和优化的性能使其成为各类网络应用程序安全通信的首选。下面先针对典型的三大网页服务器软件 Apache、Nginx 和 Lighttpd，简单介绍一下如何启用它们 TLS 1.3 功能。最后给出了在自己开发的应用软件中实现 TLS 1.3 的程序示例。</p>
@@ -614,7 +622,7 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">269k</span>
+    <span title="站点总字数">270k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">

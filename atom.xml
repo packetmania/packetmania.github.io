@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-08-26T03:05:16.698Z</updated>
+  <updated>2023-08-26T03:42:50.884Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2023/07/04/TLS1-3-intro/"/>
     <id>https://www.packetmania.net/2023/07/04/TLS1-3-intro/</id>
     <published>2023-07-05T00:34:57.000Z</published>
-    <updated>2023-08-26T03:05:16.698Z</updated>
+    <updated>2023-08-26T03:42:50.884Z</updated>
     
     
     <summary type="html">&lt;p&gt;TLS（传输层安全）是一种用于保护网络通信的加密协议，TLS 1.3 是 TLS 协议的最新版本。TLS 1.3 的引入旨在提供比以前版本更强大的安全性、隐私保护和性能。这里对比其所取代的 1.2 版本，对 TLS 1.3 做一个简单的介绍。并且，针对基于 OpenSSL 的网络应用，给出了使用和实现 TLS 1.3 的示例。</summary>
@@ -77,11 +77,11 @@
     
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
+    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     

@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_3-0-RTT.jpg">
 <meta property="og:image" content="https://www.packetmania.net/2023/07/04/TLS1-3-intro/TLS1_3-clienthello.jpg">
 <meta property="article:published_time" content="2023-07-05T00:34:57.000Z">
-<meta property="article:modified_time" content="2023-08-26T03:42:50.884Z">
+<meta property="article:modified_time" content="2023-08-26T05:43:57.299Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -293,7 +293,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-08-25 20:42:50" itemprop="dateModified" datetime="2023-08-25T20:42:50-07:00">2023-08-25</time>
+        <time title="修改时间：2023-08-25 22:43:57" itemprop="dateModified" datetime="2023-08-25T22:43:57-07:00">2023-08-25</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -341,7 +341,7 @@
 <div class="note success no-icon"><p><strong>It takes 20 years to build a reputation and a few minutes of cyber-incident to ruin it.</strong><br> <strong>— <em>Stéphane Nappo</em>（斯特凡·纳波，法国SEB集团副总裁兼全球信息安全主管，2018年度全球CISO）</strong></p>
 </div>
 <h2 id="tls-1.3-简介">TLS 1.3 简介</h2>
-<p>TLS 1.3 是最新推荐的加密协议，适用于保护各种网络通信，包括网页浏览、电子邮件、即时消息和其他应用程序。通过使用 TLS 1.3，可以建立更安全、更可靠的通信连接，确保数据的机密性和完整性。它于2018年8月由互联网工程任务组（IETF）标准化，发布于文档 <a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc8446">RFC 8446</a>。</p>
+<p>TLS 1.3 是最新推荐的加密协议，适用于保护各种网络通信，包括网页浏览、电子邮件、在线交易、即时通讯、移动支付和其他许多应用。通过使用 TLS 1.3，可以建立更安全、更可靠的通信连接，确保数据的私密性和完整性。它于2018年8月由互联网工程任务组（IETF）标准化，发布于文档 <a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc8446">RFC 8446</a>。</p>
 <p>TLS 1.3 引入了与 TLS 1.2 相比的一些重要改进。下表呈现了二者的简要比较：</p>
 <table>
 <thead>
@@ -400,11 +400,11 @@
 <p>TLS 1.3 的协议设计理念以增强安全性为首要目标。由此，TLS 1.3 大幅减少了支持的密码套件数量。它移除了不安全和有弱点的密码套件，仅保留了更安全和现代的密码套件。这样有助于提高通信的安全性，避免使用过时或易受攻击的密码套件。</p>
 <p>具体地说，TLS 1.3 删除了各种使用RSA密钥传输、静态迪菲—赫尔曼密钥交换、CBC操作模式或SHA-1的密码套件。它只采纳了有限的几个带有关联数据的认证加密（AEAD）密码套件。AEAD 能够同时保证数据的保密性、完整性和真实性，其高安全性使其成为TLS 1.3 的排他性选择。</p>
 <p>另一方面，以前 TLS 版本中的密码套件命名中包括密钥交换、数字签名、加密及消息验证全部算法。每个密码套件在一个名为 "互联网编号分配机构"（IANA）的组织维护的表格中都拥有一个编码位。每推出一种新的密码算法，就需要在列表中添加一系列新组合。这导致了总体有效选择的编码位数目激增，整个列表已经变得非常庞大。这种情况也使得密码套件的取舍变得复杂而混乱。</p>
-<p>TLS 1.3 的设计改变了密码套件的概念。它将密钥交换机制和数字签名认证剥离出来，新的密码套件命名规则是<code>TLS_&lt;AEAD算法&gt;_&lt;散列算法&gt;</code>。其中散列算法用于 TLS 1.3 新定义的密钥派生函数 HKDF 和生成握手阶段的消息验证码 (MAC)。TLS 1.3 协议所支持的密码套件有：</p>
+<p>TLS 1.3 的设计改变了密码套件的概念。它将密钥交换机制和数字签名认证剥离出来，新的密码套件命名规则是<code>TLS_&lt;AEAD算法&gt;_&lt;散列算法&gt;</code>。其中散列算法用于 TLS 1.3 新定义的密钥派生函数 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/HKDF">HKDF</a> 和生成握手阶段的消息验证码 (MAC)。TLS 1.3 协议所支持的密码套件有：</p>
 <figure class="highlight c"><figcaption><span>RFC 8446 - Appendix B.4. Cipher Suites</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">+------------------------------+-------------+</span><br><span class="line">| Description                  | Value       |</span><br><span class="line">+------------------------------+-------------+</span><br><span class="line">| TLS_AES_128_GCM_SHA256       | &#123;<span class="number">0x13</span>,<span class="number">0x01</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_AES_256_GCM_SHA384       | &#123;<span class="number">0x13</span>,<span class="number">0x02</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_CHACHA20_POLY1305_SHA256 | &#123;<span class="number">0x13</span>,<span class="number">0x03</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_AES_128_CCM_SHA256       | &#123;<span class="number">0x13</span>,<span class="number">0x04</span>&#125; |</span><br><span class="line">|                              |             |</span><br><span class="line">| TLS_AES_128_CCM_8_SHA256     | &#123;<span class="number">0x13</span>,<span class="number">0x05</span>&#125; |</span><br><span class="line">+------------------------------+-------------+</span><br></pre></td></tr></table></figure>
 <p>这种简化的密码套件定义和大幅减少的协商参数集，也可以加速 TLS 1.3 的握手过程，从而提高了整体性能。</p>
 <h4 id="密钥交换">密钥交换</h4>
-<p>TLS 1.3 强调前向保密性（forward secrecy），确保通信的机密性即使在长期密钥泄露的情况下也能得到保护。它只允许基于临时迪菲-赫尔曼密钥交换（DHE）或椭圆曲线迪菲-赫尔曼密钥交换（ECDHE）的密钥交换。二者都具有前向保密特性。并且，协议明确限制了密钥交换所使用的有安全保障的椭圆曲线群和有限域群：</p>
+<p>TLS 1.3 强调前向保密性（forward secrecy），确保通信的私密性即使在长期密钥泄露的情况下也能得到保护。它只允许基于临时迪菲-赫尔曼密钥交换（DHE）或临时椭圆曲线迪菲-赫尔曼密钥交换（ECDHE）的共享密钥方法。二者都具有前向保密特性。并且，协议明确限制了密钥交换所使用的有安全保障的椭圆曲线群和有限域群：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Elliptic Curve Groups (ECDHE) */</span></span><br><span class="line">secp256r1(<span class="number">0x0017</span>), secp384r1(<span class="number">0x0018</span>), secp521r1(<span class="number">0x0019</span>),</span><br><span class="line">x25519(<span class="number">0x001D</span>), x448(<span class="number">0x001E</span>),</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Finite Field Groups (DHE) */</span></span><br><span class="line">ffdhe2048(<span class="number">0x0100</span>), ffdhe3072(<span class="number">0x0101</span>), ffdhe4096(<span class="number">0x0102</span>),</span><br><span class="line">ffdhe6144(<span class="number">0x0103</span>), ffdhe8192(<span class="number">0x0104</span>),</span><br></pre></td></tr></table></figure>
 <p>以上用于 ECDHE 的椭圆曲线群由<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc8422">RFC 8422</a>指定。前三个是 FIPS.186-4 规范定义的，对应的 NIST 命名为 P-256/P-384/P-512，而后两种（x25519/x448）是 ANSI.X9-62.2005 推荐的。<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc7919">RFC7919</a>详细说明了用于 DHE 的四个有限域群（ffdhe####）。这些有限域群中的素数都是安全素数（safe prime）。</p>
 <div class="note info"><p>如果素数 <span class="math inline">\(p\)</span> 满足 <span class="math inline">\(q = (p-1) /2\)</span> 也是素数的条件，那它就是安全素数。</p>
@@ -460,7 +460,7 @@
 <li><p><strong>TLS 1.3 协议允许使用 RSA 数字证书吗？</strong></p>
 <p>一个常见的误解，是说“TLS 1.3 不兼容 RSA 数字证书”。显然，以上的“签名验证”一节的描述说明这是错误的。TLS 1.3 仍然支持使用 RSA 进行密钥交换和身份验证。然而，考虑到 RSA 的安全性问题，推荐在构建和部署新的TLS 1.3应用程序时，首选 ECC 密钥交换算法和数字证书来实现更高的安全性和性能。</p></li>
 <li><p><strong>TLS 1.3 握手过程中，服务器如何指定要求客户端提供证书？</strong></p>
-<p>在某些场景下，服务器也需要验证客户端的身份，确保只有合法的客户端才能访问服务器资源。这就是使用mTLS（Mutual TLS）的情况。TLS 1.3 握手过程中，服务器可以通过发送一个特殊的证书请求（<code>CertificateRequest</code>）扩展来指定要求客户端提供证书。当服务器决定要求客户端提供证书时，它在<code>Server Hello</code>消息之后发送<code>CertificateRequest</code>扩展消息。这个扩展消息包含了一些必要的参数，如支持的证书类型列表、可接受的证书颁发机构列表等。客户端收到后会知道服务器要求它提供证书，它可以选择性地响应请求。如果客户端也配置了对 mTLS 的支持，决定提供证书，就通过发送<code>Certificate</code>消息来提供其证书链。</p></li>
+<p>在某些场景下，服务器也需要验证客户端的身份，确保只有合法的客户端才能访问服务器资源。这就是使用mTLS（Mutual TLS）的情况。TLS 1.3 握手过程中，服务器可以通过发送一个特殊的证书请求（<code>CertificateRequest</code>）扩展来指定要求客户端提供证书。当服务器决定要求客户端提供证书时，它在<code>ServerHello</code>消息之后发送<code>CertificateRequest</code>扩展消息。这个扩展消息包含了一些必要的参数，如支持的证书类型列表、可接受的证书颁发机构列表等。客户端收到后会知道服务器要求它提供证书，它可以选择性地响应请求。如果客户端也配置了对 mTLS 的支持，决定提供证书，就通过发送<code>Certificate</code>消息来提供其证书链。</p></li>
 <li><p><strong>0-RTT 是否会有遭受重放（replay）攻击的风险？</strong></p>
 <p>TLS 1.3 的 0-RTT 会话恢复模式没有互动，在某些情况下确实会面临重放攻击的风险。攻击者可能重复之前发送的数据，以模拟合法的请求。为了最大程度地避免和减少重放攻击的风险，TLS 1.3 提供了一些保护措施和建议：</p>
 <ol type="1">

@@ -32,7 +32,7 @@
 <meta property="og:description" content="RSA加密算法是一种非对称加密算法，1977年由麻省理工学院的三位密码学家和计算机科学家共同发明。RSA公钥加密算法和加密系统提供了数据保密和签名验证功能，在互联网中得到广泛使用。从诞生时起，RSA就开始成为现代密码学的一个主要研究对象。许多密码分析学家和信息安全专家一直在研究其可能的理论缺陷和技术漏洞，以保障实际应用中的安全性和可靠性。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-01T20:15:48.000Z">
-<meta property="article:modified_time" content="2023-09-15T16:33:09.262Z">
+<meta property="article:modified_time" content="2023-11-14T06:17:03.115Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="网络安全">
@@ -161,7 +161,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E5%88%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">大数分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E7%BA%A7%E6%94%BB%E5%87%BB"><span class="nav-number">2.</span> <span class="nav-text">初级攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8E%E5%85%AC%E9%92%A5%E6%8C%87%E6%95%B0%E6%94%BB%E5%87%BB"><span class="nav-number">3.</span> <span class="nav-text">低公钥指数攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E6%94%BB%E5%87%BB"><span class="nav-number">3.1.</span> <span class="nav-text">广播攻击</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E5%88%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">大数分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E7%BA%A7%E6%94%BB%E5%87%BB"><span class="nav-number">2.</span> <span class="nav-text">初级攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8E%E5%85%AC%E9%92%A5%E6%8C%87%E6%95%B0%E6%94%BB%E5%87%BB"><span class="nav-number">3.</span> <span class="nav-text">低公钥指数攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E6%94%BB%E5%87%BB"><span class="nav-number">3.1.</span> <span class="nav-text">广播攻击</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -289,7 +289,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-09-15 09:33:09" itemprop="dateModified" datetime="2023-09-15T09:33:09-07:00">2023-09-15</time>
+        <time title="修改时间：2023-11-13 22:17:03" itemprop="dateModified" datetime="2023-11-13T22:17:03-08:00">2023-11-13</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -361,7 +361,7 @@
 </ol>
 <p>注意，<a target="_blank" rel="noopener" href="http://people.csail.mit.edu/rivest/Rsapaper.pdf">原始的RSA论文</a>里第二步和第三步采用 <span class="math inline">\(N\)</span> 的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/欧拉函数">欧拉函数</a> <span class="math inline">\(\varphi(N)\)</span>。这两个函数之间的关系是： <span class="math display">\[\varphi(N)=\lambda(N)⋅\mathrm{gcd}(p-1,q-1)\]</span> 这里 <span class="math inline">\(\mathrm{gcd}\)</span> 为最大公约数函数。使用 <span class="math inline">\(\lambda(N)\)</span> 可以求得最小可用的私钥指数 <span class="math inline">\(d\)</span>，有利于高效的解密和签名运算。无论是使用欧拉函数还是卡迈克尔函数，遵循以上流程的实现常常被称为“<strong>教科书RSA</strong>”。</p>
 <p>教科书RSA是不安全的，有许多简单而有效的攻击手段。在详细讨论教科书RSA的安全漏洞之前，有必要审视一下人所共知的首要攻击方法 — 大数分解！</p>
-<h3 id="大数分解">大数分解</h3>
+<h2 id="大数分解">大数分解</h2>
 <p>RSA加密算法安全性的理论基石，就是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/整数分解"><strong>大数素因数分解问题</strong></a>。如果能从已知的<span class="math inline">\(N\)</span>里面分离出 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，就可以马上推导出私钥指数<span class="math inline">\(d\)</span>，从而完全破解RSA。大数分解是公认的计算难题，已知最好的渐近线运行时间算法是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/普通数域筛选法">普通数域筛选法</a> (General Number Field Sieve，简写GNFS)，其时间复杂度是<span class="math inline">\({\displaystyle \exp \left(\left(c+o(1)\right)(\ln N)^{\frac {1}{3}}(\ln \ln N)^{\frac {2}{3}}\right)}\)</span>，这里常数 <span class="math inline">\(c = 4/\sqrt[3]{9}\)</span>，<span class="math inline">\(\displaystyle \exp\)</span>为自然常数 (2.718) 的幂函数。</p>
 <p>对于给定的大数，精确地估计应用GNFS算法的实际复杂度是困难的。但是依据启发式的复杂性经验估计，我们可以粗略看出计算时间复杂性的增长趋势：</p>
 <ul>
@@ -374,7 +374,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">p=random_prime(<span class="number">2</span>**<span class="number">120</span>)</span><br><span class="line">q=random_prime(<span class="number">2</span>**<span class="number">120</span>)</span><br><span class="line">n=p*q</span><br><span class="line"><span class="built_in">print</span>(n)</span><br><span class="line">factor(n)</span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="number">28912520751034191277571809785701738245635791077300278534278526509273423</span></span><br><span class="line"><span class="number">38293227899687810929829874029597363</span> * <span class="number">755029605411506802434801930237797621</span></span><br></pre></td></tr></table></figure>
 <p>在几分钟之内就得到了结果，一个72位十进制数字 (240比特) 的大数被分解出来了。要知道，在1977年的RSA论文里，提到分解一个75位十进制数字大约需要104天。人类的技术进步是如此惊人！</p>
 <p>当攻方的矛越来越锋利时，守方的盾就必须越来越厚重。所以，1024比特RSA已经不安全，应用系统不应该使用少于2048比特的公钥 <span class="math inline">\(N\)</span>值。而当需要高安全性时，选择4096比特RSA。</p>
-<h3 id="初级攻击">初级攻击</h3>
+<h2 id="初级攻击">初级攻击</h2>
 <p>虽然大数分解是所有人都知道的攻击方方式，但是在RSA的应用中常见的一些低级错误所造成的安全漏洞，使得使用简单的攻击手段就可以得逞，下面对一些典型的初级攻击方式加以说明。</p>
 <ul>
 <li><p>在RSA的发展初期，基于当时计算能力的落后，找寻大的素数需要不少时间。因此，一些系统实现试图共用模数<span class="math inline">\(N\)</span>。想法是只生成一组<span class="math inline">\((p,q)\)</span>，然后所有的用户使用同样的<span class="math inline">\(N=pq\)</span>值，由大家都信任的中心机构为每个用户 <span class="math inline">\(i\)</span> 分配密钥对<span class="math inline">\((e_i,d_i)\)</span>，只要各自的私钥 <span class="math inline">\(d_i\)</span>保存好就不会出问题。很不幸，这是一个灾难性的错误！这种实现方案有两个巨大的安全漏洞：</p>
@@ -404,9 +404,9 @@
 <li>随机填充使得同样的明文产生不一样的密文，保障语义安全性，使得密码本攻击成为不可能</li>
 <li>严格格式定义的填充破坏了延展性，降低了选择密文攻击可能性。比如填充后开头几个字节必须为给定值，那对相应的密文进行代数运算后，解密出的数据极大可能不符合预定的格式，这就瓦解了选择密文攻击</li>
 </ul>
-<h3 id="低公钥指数攻击">低公钥指数攻击</h3>
+<h2 id="低公钥指数攻击">低公钥指数攻击</h2>
 <p>使用小的公钥指数是危险的，在不填充或不当填充的情况下，即使暴力开方破解不能成功，也还有一些高级的攻击手段。</p>
-<h4 id="广播攻击">广播攻击</h4>
+<h3 id="广播攻击">广播攻击</h3>
 <p>由瑞典理论计算科学家约翰·霍斯塔德<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>发现，因此也被称为<mark>霍斯塔德广播攻击</mark>。考虑这样一种简化的场景，假设爱丽丝需要发送同一条消息<span class="math inline">\(m\)</span>给鲍伯、卡罗尔和戴夫。三位接收者的公钥分别为<span class="math inline">\((N_1,3)\)</span>、<span class="math inline">\((N_2,3)\)</span>和<span class="math inline">\((N_3,3)\)</span>，即公钥指数都为3，公钥模数各不相同。消息不填充，爱丽丝直接用其他三人的公钥加密并发出三段密文<span class="math inline">\(c_1,c_2,c_3\)</span>： <span class="math display">\[\begin{cases}
 c_1=m^3\bmod N_1\\
 c_2=m^3\bmod N_2\\
@@ -442,16 +442,16 @@ M_3 &amp;=M/m_3=105/7=15,\quad t_3=15^{-1}\bmod 7 = 1\\
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solve_crt</span>(<span class="params">ai: <span class="built_in">list</span>, mi: <span class="built_in">list</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;中国余数定理求解函数，参考https://zh.wikipedia.org/zh-cn/中国剩余定理</span></span><br><span class="line"><span class="string">    mi,ai分别表示模数和取模后的余数，都为列表结构。函数工作的前提是mi两两互素&#x27;&#x27;&#x27;</span></span><br><span class="line">    M = reduce(<span class="keyword">lambda</span> x, y: x * y, mi)</span><br><span class="line">    ti = [a * (M//m) * <span class="built_in">int</span>(gmpy2.invert(M//m, m)) <span class="keyword">for</span> (m, a) <span class="keyword">in</span> <span class="built_in">zip</span>(mi, ai)]</span><br><span class="line">    <span class="keyword">return</span> reduce(<span class="keyword">lambda</span> x, y: x + y, ti) % M</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rsa_broadcast_attack</span>(<span class="params">ctexts: <span class="built_in">list</span>, moduli: <span class="built_in">list</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;RSA广播攻击：应用中国余数定理破解e=3&#x27;&#x27;&#x27;</span></span><br><span class="line">    c0, c1, c2 = ctexts[<span class="number">0</span>], ctexts[<span class="number">1</span>], ctexts[<span class="number">2</span>]</span><br><span class="line">    n0, n1, n2 = moduli[<span class="number">0</span>], moduli[<span class="number">1</span>], moduli[<span class="number">2</span>]</span><br><span class="line">    m0, m1, m2 = n1 * n2, n0 * n2, n0 * n1</span><br><span class="line">    t0 = (c0 * m0 * <span class="built_in">int</span>(gmpy2.invert(m0, n0)))</span><br><span class="line">    t1 = (c1 * m1 * <span class="built_in">int</span>(gmpy2.invert(m1, n1)))</span><br><span class="line">    t2 = (c2 * m2 * <span class="built_in">int</span>(gmpy2.invert(m2, n2)))</span><br><span class="line">    c = (t0 + t1 + t2) % (n0 * n1 * n2)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(gmpy2.iroot(c, <span class="number">3</span>)[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uint_to_bytes</span>(<span class="params">x: <span class="built_in">int</span></span>) -&gt; <span class="built_in">bytes</span>:</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;转换无符号整数到字节数组&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">bytes</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> x.to_bytes((x.bit_length() + <span class="number">7</span>) // <span class="number">8</span>, <span class="string">&#x27;big&#x27;</span>)</span><br><span class="line"></span><br><span class="line">quote = <span class="string">b&#x27;The cosmos is within us. We are made of star stuff. - Carl Sagan&#x27;</span></span><br><span class="line">bob = RSA(<span class="number">1024</span>, <span class="number">3</span>)</span><br><span class="line">carol = RSA(<span class="number">1024</span>, <span class="number">3</span>)</span><br><span class="line">dave = RSA(<span class="number">1024</span>, <span class="number">3</span>)</span><br><span class="line">cipher_list = [bob.encrypt(quote), carol.encrypt(quote), dave.encrypt(quote)]</span><br><span class="line">modulus_list = [bob.n, carol.n, dave.n]</span><br><span class="line"></span><br><span class="line">cracked_cipher = solve_crt(cipher_list, modulus_list)</span><br><span class="line">cracked_int = <span class="built_in">int</span>(gmpy2.iroot(cracked_cipher, <span class="number">3</span>)[<span class="number">0</span>])</span><br><span class="line"><span class="keyword">assert</span> cracked_int == rsa_broadcast_attack(cipher_list, modulus_list)</span><br><span class="line"></span><br><span class="line">hacked_quote = uint_to_bytes(cracked_int)</span><br><span class="line"><span class="keyword">assert</span> hacked_quote == quote</span><br></pre></td></tr></table></figure>
 <p>程序使用了两种方法仿真广播攻击。一种调用通用的中国余数定理求解函数<code>solve_crt()</code>，再将结果开立方根；另一种调用专门的针对公钥指数<span class="math inline">\(e=3\)</span>的广播攻击函数<code>rsa_broadcast_attack()</code>，直接输出破解的明文数值。这两个函数内部实现都是基于中国余数定理的通解公式，输出结果应该完全一致。破解的明文数值再输入到<code>uint_to_bytes()</code>函数，转换成字节数组与原文<code>quote</code>比较。注意，程序中使用了RSA类生成的对象模拟接收者鲍伯、卡罗尔和戴夫，鉴于篇幅所限RSA类的实现代码这里省略了。</p>
 <blockquote>
-<p>未完待续，敬请期待下篇：RSA的攻与防（二）</p>
+<p>下篇：<a href="https://www.packetmania.net/2020/12/01/RSA-attack-defense-2/">RSA的攻与防（二）</a></p>
 </blockquote>
 <section class="footnotes" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1" role="doc-endnote"><p>美国计算机科学家和安全技术专家加里·麦格劳(Gary McGraw)对软件开发者的一句著名忠告是 “<a target="_blank" rel="noopener" href="http://web.archive.org/web/20030629085904/http://www-106.ibm.com/developerworks/library/s-everything.html#author1">never roll your own cryptography</a>”<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>RSA原始论文 (第IX节C部分) 就提到了由已知<span class="math inline">\(d\)</span>分解<span class="math inline">\(N\)</span>的<a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf">米勒算法</a>。这一算法同样适用于由卡迈克尔函数<span class="math inline">\(\lambda(N)\)</span>生成的<span class="math inline">\(d\)</span>。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1" role="doc-endnote"><p>美国计算机科学家和安全技术专家加里·麦格劳（Gary McGraw）对软件开发者的一句著名忠告是 “<a target="_blank" rel="noopener" href="http://web.archive.org/web/20030629085904/http://www-106.ibm.com/developerworks/library/s-everything.html#author1">never roll your own cryptography</a>”<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>RSA原始论文（第IX节C部分）就提到了由已知 <span class="math inline">\(d\)</span> 分解 <span class="math inline">\(N\)</span>的<a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~glmiller/Publications/Papers/Mi76.pdf">米勒算法</a>。这一算法同样适用于由卡迈克尔函数<span class="math inline">\(\lambda(N)\)</span>生成的 <span class="math inline">\(d\)</span>。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3" role="doc-endnote"><p>gmpy2是一个用C语言写的Python扩展模块，支持多精度算术。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p>在一些特殊情况下，盲签名可用来有效地保护隐私。比如电子选举和数字现金应用中，签名者和消息作者可以是不同的。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>约翰·霍斯塔德 (Johan Håstad) ，瑞典理论计算科学家，皇家理工学院教授，美国数学学会 (AMS) 和计算机协会 (ACM)双会士。<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>约翰·霍斯塔德（Johan Håstad），瑞典理论计算科学家，皇家理工学院教授，美国数学学会（AMS）和计算机协会（ACM）双会士。<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -551,14 +551,14 @@ M_3 &amp;=M/m_3=105/7=15,\quad t_3=15^{-1}\bmod 7 = 1\\
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">270k</span>
+    <span title="站点总字数">288k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:05</span>
+    <span title="站点阅读时长">4:21</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="这是RSA攻防战的第二篇。本文首先补充说明特定情况下的两种大数分解方法，介绍它们的算法精要和适用场景，并给出Python参考实现。接下来深入解析典型的低私钥指数攻击算法——维纳攻击，详细讲解其数学基础、攻击原理及流程，也提供了完整的Python程序。文中还引用了近年最新研究的维纳攻击成立时私钥指数新上限，还使用测试用例验证了这一上限的正确性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RSA的攻与防（二）">
+<meta property="og:url" content="https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="这是RSA攻防战的第二篇。本文首先补充说明特定情况下的两种大数分解方法，介绍它们的算法精要和适用场景，并给出Python参考实现。接下来深入解析典型的低私钥指数攻击算法——维纳攻击，详细讲解其数学基础、攻击原理及流程，也提供了完整的Python程序。文中还引用了近年最新研究的维纳攻击成立时私钥指数新上限，还使用测试用例验证了这一上限的正确性。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/Pollard_rho_cycle.png">
+<meta property="article:published_time" content="2023-11-14T06:05:44.398Z">
+<meta property="article:modified_time" content="2023-11-14T07:36:29.590Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="网络安全">
+<meta property="article:tag" content="Python编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/Pollard_rho_cycle.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/","path":"2023/11/13/RSA-attack-defense-2/","title":"RSA的攻与防（二）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RSA的攻与防（二） | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E5%88%86%E8%A7%A3%E8%A1%A5%E5%85%85"><span class="nav-number">1.</span> <span class="nav-text">大数分解（补充）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%B9%E9%A9%AC%E5%9B%A0%E6%95%B0%E5%88%86%E8%A7%A3%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">费马因数分解法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A2%E6%8B%89%E5%BE%B7-rho-%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">波拉德 \(\rho\) 算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8E%E7%A7%81%E9%92%A5%E6%8C%87%E6%95%B0%E6%94%BB%E5%87%BB"><span class="nav-number">2.</span> <span class="nav-text">低私钥指数攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%B4%E7%BA%B3%E6%94%BB%E5%87%BB"><span class="nav-number">2.1.</span> <span class="nav-text">维纳攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E5%88%86%E6%95%B0"><span class="nav-number">2.1.1.</span> <span class="nav-text">连分数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="nav-number">2.1.2.</span> <span class="nav-text">攻击原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B"><span class="nav-number">2.1.3.</span> <span class="nav-text">攻击流程</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机网络技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机网络技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RSA的攻与防（二）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-13 22:05:44 / 修改时间：23:36:29" itemprop="dateCreated datePublished" datetime="2023-11-13T22:05:44-08:00">2023-11-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>18k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>这是RSA攻防战的第二篇。本文首先补充说明特定情况下的两种大数分解方法，介绍它们的算法精要和适用场景，并给出Python参考实现。接下来深入解析典型的低私钥指数攻击算法——维纳攻击，详细讲解其数学基础、攻击原理及流程，也提供了完整的Python程序。文中还引用了近年最新研究的维纳攻击成立时私钥指数新上限，还使用测试用例验证了这一上限的正确性。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>The enemy knows the system being used.</strong><br> <strong>— <em>Claude Shannon</em>（克劳德·香农，美国数学家、电子工程师和密码学家，信息论的创始人。）</strong></p>
+</div>
+<p>上篇：<a href="https://www.packetmania.net/2020/12/01/RSA-attack-defense/">RSA的攻与防（一）</a></p>
+<h2 id="大数分解补充">大数分解（补充）</h2>
+<p>即使RSA加密算法所使用的模数<span class="math inline">\(N\)</span>是很大的数值（有足够多的比特位），如果其素因数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>差距太小或太大，也会产生问题。这时有特定的因数分解算法，可以有效地从公钥模数<span class="math inline">\(N\)</span>中分离出<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>。</p>
+<h3 id="费马因数分解法">费马因数分解法</h3>
+<p>当素因数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>相距太近时，应用费马因数分解法能在一个很短的时间内分解模数<span class="math inline">\(N\)</span>。费马因数分解法（Fermat's factorization method）以法国数学家<a href="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/">皮埃尔·德·费马</a>（Pierre de Fermat）的名字命名。其出发点是每一个正奇整数都可以表示为两个完全平方数之差，即 <span class="math display">\[N=a^2-b^2\]</span> 右边适用代数因式分解后得到 <span class="math inline">\((a+b)(a-b)\)</span>。如果这两个因子都不为1，则它们是<span class="math inline">\(N\)</span>的非平凡因子。对于RSA的模数<span class="math inline">\(N\)</span>，假定 <span class="math inline">\(p&gt;q\)</span>，对应就有 <span class="math inline">\(p=a+b\)</span>和 <span class="math inline">\(q=a-b\)</span>。反过来，可以导出 <span class="math display">\[N=\left({\frac {p+q}{2}}\right)^{2}-\left({\frac {p-q}{2}}\right)^{2}\]</span> 费马因数分解法的思想就是<strong>从<span class="math inline">\(\lceil{\sqrt N}\rceil\)</span>开始，逐次加一尝试 <span class="math inline">\(a\)</span>的各种值，验证是否有 <span class="math inline">\(a^{2}-N=b^{2}\)</span></strong>。如果为真，就找到了两个非平凡因子，也就是 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>。这种方法所需的步数大约为 <span class="math display">\[{\frac{p+q}{2}}-{\sqrt N}=\frac{({\sqrt p}-{\sqrt q})^{2}}{2}=\frac{({\sqrt N}-q)^{2}}{2q}\]</span></p>
+<p>一般情况下，费马因数分解法比试除法好不到哪去，最坏情况下可能更慢。然而，<strong>当 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 的差值不大时，<span class="math inline">\(q\)</span> 很接近<span class="math inline">\(\sqrt N\)</span>，计算的步数就非常少了</strong>。极端的例子是，如果 <span class="math inline">\(q\)</span> 与<span class="math inline">\(\sqrt N\)</span>的差异小于<span class="math inline">\({\left(4N\right)}^{\frac 1 4}\)</span>，此方法只需要一步就结束了。</p>
+<p>以下是费马因数分解法的Python实现，以及应用于分解RSA模数<span class="math inline">\(N\)</span>的示例</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">FermatFactor</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="keyword">assert</span> n % <span class="number">2</span> != <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    a = gmpy2.isqrt(n) + <span class="number">1</span></span><br><span class="line">    b2 = gmpy2.square(a) - n</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> gmpy2.is_square(b2):</span><br><span class="line">        a += <span class="number">1</span></span><br><span class="line">        b2 = gmpy2.square(a) - n</span><br><span class="line"></span><br><span class="line">    b = gmpy2.isqrt(b2)</span><br><span class="line">    <span class="keyword">return</span> a + b, a - b</span><br><span class="line"></span><br><span class="line">p = <span class="number">7422236843002619998657542152935407597465626963556444983366482781089760760914403641211700959458736191688739694068306773186013683526913015038631710959988771</span></span><br><span class="line">q = <span class="number">7422236843002619998657542152935407597465626963556444983366482781089760759017266051147512413638949173306397011800331344424158682304439958652982994939276427</span></span><br><span class="line">N = p * q</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;N =&quot;</span>, N)</span><br><span class="line"></span><br><span class="line">start = time.process_time()</span><br><span class="line">(p1, q1) = FermatFactor(N)</span><br><span class="line">end = time.process_time()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Elapsed time <span class="subst">&#123;end - start:<span class="number">.3</span>f&#125;</span>s.&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span>(p == p1)</span><br><span class="line"><span class="keyword">assert</span>(q == q1)</span><br></pre></td></tr></table></figure>
+<p>程序开始定义的<code>FermatFactor()</code>函数实现费马因数分解法。它调用了gmpy2的三个库函数：<code>isqrt()</code>求整数平方根，<code>square()</code>实现平方运算，<code>is_square()</code>验证是否为平方数。后面给出两个154个十进制数位的大素数 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，二者相乘得到<span class="math inline">\(N\)</span>。然后将<span class="math inline">\(N\)</span>输入到<code>FermatFactor()</code>函数，同时计时。函数返回后打印耗时并确认分解出数值。</p>
+<p>此程序在 MacBook Pro（2019）上的运行结果是</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">N = 55089599753625499150129246679078411260946554356961748980861372828434789664694269460953507615455541204658984798121874916511031276020889949113155608279765385693784204971246654484161179832345357692487854383961212865469152326807704510472371156179457167612793412416133943976901478047318514990960333355366785001217</span><br><span class="line">Elapsed time 27.830s.</span><br></pre></td></tr></table></figure>
+<p>可以看到，不到半分钟的时间，这个308个十进制数位（约为1024比特）的大数就被成功分解出来了！再回头审查 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>，可以发现这两个154个十进制数位的大素数前面71位完全一样。这正是费马因数分解法发挥力量的场景。如果简单修改<code>FermatFactor()</code>函数，保存起始的<span class="math inline">\(a\)</span>值与循环结束后的值比较，得到循环次数60613989。如此之小的数值，难怪这么快分解就完成了。</p>
+<p>因此，大素数 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 的选择不仅要随机，还必须相距足够远。在得到两个大素数后，必须检查它们之间的差值。如果太小就要重新生成，以防止被攻击者使用费马因数分解法爆破。</p>
+<h3 id="波拉德-rho-算法">波拉德 <span class="math inline">\(\rho\)</span> 算法</h3>
+<p>物极必反。虽然大素因数<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>要相距足够远，但如果差距太大也是危险的，这时可能会被波拉德 <span class="math inline">\(\rho\)</span>（rho）算法破解。此算法由英国数学家约翰·波拉德<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>于1975年发明。它仅需要少量的存储空间，其预期运行时间与被分解合数的最小素因数的平方根成正比。</p>
+<p>波拉德 <span class="math inline">\(\rho\)</span> 算法核心思想是利用遍历序列的碰撞规律来搜索因子，其随机性和递归性使得它可以在相对较低的复杂度内有效分解整数。首先，对于<span class="math inline">\(N=pq\)</span>，假定 <span class="math inline">\(p\)</span> 是较小那个非平凡因子。算法定义了一个基于模<span class="math inline">\(N\)</span>的多项式<span class="math display">\[f(x)=(x^{2}+c){\pmod N}\]</span> 用此多项式做递归调用可以生成一个伪随机序列，序列的生成公式是 <span class="math inline">\(x_{n+1}=f(x_n)\)</span>。比如给定一个的初始值 <span class="math inline">\(x_0=2\)</span> 和常数 <span class="math inline">\(c=1\)</span>，就有 <span class="math display">\[\begin{align}
+x_1&amp;=f(2)=5\\
+x_2&amp;=f(x_1)=f(f(2))=26\\
+x_3&amp;=f(x_2)=f(f(f(2)))=677\\
+\end{align}\]</span> 对于这样产生的序列中的两个数 <span class="math inline">\(x_i\)</span> 和 <span class="math inline">\(x_j\)</span>，如果 <span class="math inline">\(x_i\neq x_j\)</span> 并且 <span class="math inline">\(x_i\equiv x_j{\pmod p}\)</span>，则 <span class="math inline">\(|x_i-x_j|\)</span> 一定是 <span class="math inline">\(p\)</span> 的倍数。这时做最大公约数运算 <span class="math inline">\(\gcd(|x_i-x_j|,N)\)</span>，结果就是 <span class="math inline">\(p\)</span>。依据<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E7%94%9F%E6%97%A5%E5%95%8F%E9%A1%8C">生日悖论</a>，在最坏情形下，期望在生成大约<span class="math inline">\(\sqrt p\)</span>个数后，就会出现两个在模 <span class="math inline">\(p\)</span>下相同的数，从而成功分解<span class="math inline">\(N\)</span>。但是，由于要执行两两比较，此时的时间复杂度还是不令人满意。另外，当<span class="math inline">\(N\)</span>很大时，保存这么多数也是一个麻烦。</p>
+<p>如何解决这些问题？这正是波拉德 <span class="math inline">\(\rho\)</span>算法的精妙所在。波拉德发现，这个伪随机数生成器生成的序列有两个特性：</p>
+<ol type="1">
+<li><p>因为每个数仅取决于其前面的值，同时生成的数又是有限的，所以迟早会进入循环。如下所示，最终生成的序列会构成与希腊字母 <span class="math inline">\(\rho\)</span>形状相似的有向图，算法名称也由此而来。<img src="Pollard_rho_cycle.png" style="width:50.0%;height:50.0%" alt="形如希腊字母 ρ 的环路图" /></p></li>
+<li><p>当 <span class="math inline">\(|x_i-x_j| \equiv 0 \pmod p\)</span> 时，一定有 <span class="math display">\[|f(x_i)-f(x_j)|=|{x_i}^2-{x_j}^2|=|x_i+x_j|\cdot|x_i-x_j|\equiv 0 \pmod p\]</span> 这说明序列中如果两个数满足模运算条件，所有等距的数对都满足同样的条件。</p></li>
+</ol>
+<p>洞悉这两个特性的波拉德利用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cycle_detection#Floyd&#39;s_tortoise_and_hare">Floyd环路判定算法</a>（也称龟兔赛跑算法），设置快慢两个节点 <span class="math inline">\(x_h\)</span> 和 <span class="math inline">\(x_t\)</span>。从相同的初始值 <span class="math inline">\(x_0\)</span> 出发，慢节点 <span class="math inline">\(x_t\)</span> 每步移动到序列下一个节点，而快节点 <span class="math inline">\(x_h\)</span> 一次向前移动两个节点，即 <span class="math display">\[\begin{align}
+x_t&amp;=f(x_t)\\
+x_h&amp;=f(f(x_h))\\
+\end{align}\]</span> 之后，计算 <span class="math inline">\(\gcd(|x_h-x_t|,N)\)</span>，大于1且小于<span class="math inline">\(N\)</span>的结果就是 <span class="math inline">\(p\)</span>，否则继续同样的步骤。在这样的设计下，因为每次移动都相当于检查一个新的节点间距，这样就不必要进行两两比较了。如果没有找到，最终快慢节点会在环上相遇，这时求最大公约数的结果为<span class="math inline">\(N\)</span>。此时算法的建议是退出，然后换一个初始值或常数 <span class="math inline">\(c\)</span> 重新生成伪随机数序列再试。</p>
+<p>这就是经典的波拉德 <span class="math inline">\(\rho\)</span> 算法。它的时间复杂度是<span class="math inline">\(𝑂(\sqrt p\log N)\)</span>（<span class="math inline">\(\log\)</span>来源于所需的<span class="math inline">\(\gcd\)</span>运算）。对于RSA模数<span class="math inline">\(N\)</span>，显然 <span class="math inline">\(p\leq \sqrt N\)</span>，于是时间复杂度上限可写为<span class="math inline">\(𝑂(N^{\frac 1 4}\log N)\)</span>。波拉德 <span class="math inline">\(\rho\)</span> 算法的时间复杂度表达式说明：被分解合数的最小素因数越小，预期的分解就越快，太小的 <span class="math inline">\(p\)</span> 是极不安全的。</p>
+<p>波拉德 <span class="math inline">\(\rho\)</span> 算法的编程不难，下面的Python程序给出了算法的函数实现<code>PollardRhoFactor()</code>和一些测试用例</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">PollardRhoFactor</span>(<span class="params">n, seed, c</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>: <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">if</span> gmpy2.is_prime(n): <span class="keyword">return</span> n</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        f = <span class="keyword">lambda</span> x: (x**<span class="number">2</span> + c) % n</span><br><span class="line">        t = h = seed</span><br><span class="line">        d = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> d == <span class="number">1</span>:</span><br><span class="line">            t = f(t)    <span class="comment"># Tortoise</span></span><br><span class="line">            h = f(f(h)) <span class="comment"># Hare</span></span><br><span class="line">            d = gmpy2.gcd(h - t, n)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> d != n:</span><br><span class="line">            <span class="keyword">return</span> d <span class="comment"># find a non-trivial factor</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># start a new round with updated seed and c</span></span><br><span class="line">        seed = h</span><br><span class="line">        c += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">N = [<span class="number">10967535067</span>, <span class="number">18446744073709551617</span>, <span class="number">97546105601219326301</span>,</span><br><span class="line">     <span class="number">780002082420246798979794021150335143</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;N&#x27;</span>:&lt;<span class="number">37</span>&#125;</span><span class="subst">&#123;<span class="string">&#x27;P&#x27;</span>:&lt;<span class="number">16</span>&#125;</span><span class="subst">&#123;<span class="string">&#x27;Elapsed Time (s)&#x27;</span>:&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(N)):</span><br><span class="line">    start = time.process_time()</span><br><span class="line">    p = PollardRhoFactor(N[i], <span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    end = time.process_time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;N[i]:&lt;<span class="number">37</span>&#125;</span><span class="subst">&#123;p:&lt;<span class="number">16</span>&#125;</span><span class="subst">&#123;end - start:<span class="number">16.3</span>f&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">F8 = <span class="number">2</span>**(<span class="number">2</span>**<span class="number">8</span>) + <span class="number">1</span> <span class="comment"># A 78-digit Fermat number</span></span><br><span class="line">start = time.process_time()</span><br><span class="line">p = PollardRhoFactor(F8, <span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">end = time.process_time()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;\nF8 = <span class="subst">&#123;F8&#125;</span>\np = <span class="subst">&#123;p&#125;</span>\nElapsed time <span class="subst">&#123;end - start:<span class="number">.3</span>f&#125;</span>s&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>函数<code>PollardRhoFactor()</code>接受三个参数：<code>n</code>是待分解的合数，<code>seed</code>是伪随机序列的初始值，<code>c</code>是生成多项式中的常数值。函数内部使用两个<code>while</code>构成双循环：外循环定义生成多项式<code>f</code>和快慢节点<code>h</code>及<code>t</code>，内循环实现节点移动和最大公约数运算。只有当最大公约数<code>d</code>不为1时，才结束内循环。此时如果<code>d</code>不等于<code>n</code>，它就是要找的非平凡因子，函数返回<code>d</code>。<code>d</code>等于<code>n</code>时，快慢节点已在环上相遇。这时在外循环重设<code>seed</code>为快节点的数值，并将<code>c</code>加一，就此重新开始新的一轮搜寻。</p>
+<p>在 MacBook Pro（2019）上运行以上代码，输出如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">N                                    P               Elapsed Time (s)</span><br><span class="line">10967535067                          104729                     0.001</span><br><span class="line">18446744073709551617                 274177                     0.002</span><br><span class="line">97546105601219326301                 9876543191                 0.132</span><br><span class="line">780002082420246798979794021150335143 244300526707007            6.124</span><br><span class="line"></span><br><span class="line">F8 = 115792089237316195423570985008687907853269984665640564039457584007913129639937</span><br><span class="line">p = 1238926361552897</span><br><span class="line">Elapsed time 64.411s</span><br></pre></td></tr></table></figure>
+<p>此结果证明了波拉德 <span class="math inline">\(\rho\)</span> 算法的有效性。特别是最后一个测试，函数的输入是费马数 <span class="math inline">\(F_8\)</span>（定义是 <span class="math inline">\(F_{n}=2^{2^{n}}+1\)</span>，其中 <span class="math inline">\(n\)</span> 为非负整数）。在1980年，波拉德与澳大利亚数学家理查德·布伦特<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>一起应用此算法首次分解<span class="math inline">\(F_8\)</span>。当时他们使用的是UNIVAC 1100/42计算机，耗时2小时。而现在，在一台普及版的笔记本电脑上，波拉德 <span class="math inline">\(\rho\)</span> 算法用时64.4秒就分解出了<span class="math inline">\(F_8\)</span>的较小的素因子1238926361552897。</p>
+<p>后续波拉德与布伦特还对算法做了进一步的改进。他们观察到，如果<span class="math inline">\(\gcd(d, N)&gt;1\)</span>，对于任意正整数 <span class="math inline">\(k\)</span>，也有<span class="math inline">\(\gcd(kd, N)&gt;1\)</span>。所以将连续 <span class="math inline">\(k\)</span> 个<span class="math inline">\((|x_h-x_t| \pmod N)\)</span>相乘，用得到的积做模<span class="math inline">\(N\)</span>运算，再与<span class="math inline">\(N\)</span>求最大公约数，可以得到一样的结果。这种方法用<span class="math inline">\((k-1)\)</span>次模<span class="math inline">\(N\)</span>上的乘法和一次<span class="math inline">\(\gcd\)</span>代替 <span class="math inline">\(k\)</span> 次<span class="math inline">\(\gcd\)</span>，从而达到加速效果。缺点是，有时它可能会因引入一个重复因子而导致算法失败。在这种情况下，可以将 <span class="math inline">\(k\)</span> 重设为1，返回常规波拉德 <span class="math inline">\(\rho\)</span> 算法。</p>
+<p>下面的Python函数实现了改进的波拉德 <span class="math inline">\(\rho\)</span>算法。它加入了额外的一个<code>for</code>循环实现 <span class="math inline">\(k\)</span> 个差值模<span class="math inline">\(N\)</span>上的连乘，得到的积存在变量<code>mult</code>中。<code>mult</code>再与<span class="math inline">\(N\)</span>求最大公约数，结果赋值给<code>d</code>。如果失败，<span class="math inline">\(k\)</span> 在外循环里被置为1。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">PollardRhoFactor2</span>(<span class="params">n, seed, c, k</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>: <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">if</span> gmpy2.is_prime(n): <span class="keyword">return</span> n</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        f = <span class="keyword">lambda</span> x: (x**<span class="number">2</span> + c) % n</span><br><span class="line">        t = h = seed</span><br><span class="line">        d = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> d == <span class="number">1</span>:</span><br><span class="line">            mult = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">                t = f(t)    <span class="comment"># Tortoise</span></span><br><span class="line">                h = f(f(h)) <span class="comment"># Hare</span></span><br><span class="line">                mult = (mult * <span class="built_in">abs</span>(h - t)) % n</span><br><span class="line">                </span><br><span class="line">            d = gmpy2.gcd(mult % n, n)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> d != n:</span><br><span class="line">            <span class="keyword">return</span> d <span class="comment"># find a non-trivial factor</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># start a new round with updated seed and c</span></span><br><span class="line">        seed = h</span><br><span class="line">        c += <span class="number">1</span></span><br><span class="line">        k = <span class="number">1</span> <span class="comment"># fall back to regular rho algorithm</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;N&#x27;</span>:&lt;<span class="number">37</span>&#125;</span><span class="subst">&#123;<span class="string">&#x27;P&#x27;</span>:&lt;<span class="number">16</span>&#125;</span><span class="subst">&#123;<span class="string">&#x27;Elapsed Time (s)&#x27;</span>:&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(N)):</span><br><span class="line">    start = time.process_time()</span><br><span class="line">    p = PollardRhoFactor2(N[i], <span class="number">2</span>, <span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">    end = time.process_time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;N[i]:&lt;<span class="number">37</span>&#125;</span><span class="subst">&#123;p:&lt;<span class="number">16</span>&#125;</span><span class="subst">&#123;end - start:<span class="number">16.3</span>f&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">F8 = <span class="number">2</span>**(<span class="number">2</span>**<span class="number">8</span>) + <span class="number">1</span> <span class="comment"># A 78-digit Fermat number</span></span><br><span class="line">start = time.process_time()</span><br><span class="line">p = PollardRhoFactor2(F8, <span class="number">2</span>, <span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">end = time.process_time()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;\nF8 = <span class="subst">&#123;F8&#125;</span>\np = <span class="subst">&#123;p&#125;</span>\nElapsed time <span class="subst">&#123;end - start:<span class="number">.3</span>f&#125;</span>s&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>使用同样的测试用例，调用时设<span class="math inline">\(k\)</span>为100，程序运行的结果是</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">N                                    P               Elapsed Time (s)</span><br><span class="line">10967535067                          104729                     0.001</span><br><span class="line">18446744073709551617                 274177                     0.002</span><br><span class="line">97546105601219326301                 9876543191                 0.128</span><br><span class="line">780002082420246798979794021150335143 244300526707007            5.854</span><br><span class="line"></span><br><span class="line">F8 = 115792089237316195423570985008687907853269984665640564039457584007913129639937</span><br><span class="line">p = 1238926361552897</span><br><span class="line">Elapsed time 46.601s</span><br></pre></td></tr></table></figure>
+<p>可以看到，对于比较小的合数<span class="math inline">\(N\)</span>，改进并不明显。当<span class="math inline">\(N\)</span>变大时，速度明显加快。对于十进制78位的费马数 <span class="math inline">\(F_8\)</span>，改进的波拉德 <span class="math inline">\(\rho\)</span> 算法用时仅为46.6秒，对比常规算法加速比超过27%。改进的波拉德 <span class="math inline">\(\rho\)</span>算法确实带来了速度的显着提升。</p>
+<p>总结以上波拉德 <span class="math inline">\(\rho\)</span>算法的分析、实现和测试，在生成RSA所用的素数 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 时，有必要设置一个数值下限。如果其中任何一个太小，必须重新生成，不然就可能被攻击者应用波拉德 <span class="math inline">\(\rho\)</span> 算法破解。</p>
+<h2 id="低私钥指数攻击">低私钥指数攻击</h2>
+<p>对于一些特殊的应用场景（如智能卡和物联网），受限于设备的计算能力和低功耗要求，需要小一些的私钥指数 <span class="math inline">\(d\)</span> 以加快解密或生成数字签名的速度。然而，太低的私钥指数非常危险，有一些巧妙的攻击方法可以完全瓦解RSA加密系统。</p>
+<h3 id="维纳攻击">维纳攻击</h3>
+<p>1990年，加拿大密码学家迈克尔·维纳（Michael J. Wiener）构思了一种基于<strong>连分数逼近</strong>的破解方案<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>，在一定条件下可以有效地从RSA的公开密钥<span class="math inline">\((N,e)\)</span>解出私钥指数<span class="math inline">\(d\)</span>。在讲解这种攻击的工作原理之前，先简单介绍一下连分数的概念和关键特性。</p>
+<h4 id="连分数">连分数</h4>
+<p>连分数本身只是一种数学表达式，但它引入了一种研究实数的新视角。以下就是典型的连分数<span class="math display">\[x = a_0 + \cfrac{1}{a_1 + \cfrac{1}{a_2 + \cfrac{1}{\ddots\,}}} \]</span> 其中 <span class="math inline">\(a_{0}\)</span>是整数，而所有其他的 <span class="math inline">\(a_{i}(i=1,\ldots ,n)\)</span>都是正整数。连分数也常常简写作<span class="math inline">\(x=[a_0;a_1,a_2,\ldots,a_n]\)</span>。连分数有如下性质：</p>
+<ol type="1">
+<li><p>有理数可以表示为有限连分数，即有限数目的<span class="math inline">\(a_{i}\)</span>。无理数可用一种精确的方式表示为无限连分数。下面是两个例子： <span class="math display">\[\begin{align}
+\frac {68} {75}​&amp;=0+\cfrac {1} {1+\cfrac {1} {\small 9+\cfrac {1} {\scriptsize 1+\cfrac {1} {2+\cfrac {1} {2}}}}}=[0;1,9,1,2,2]\\
+π&amp;=[3;7,15,1,292,1,1,1,2,…]
+\end{align}\]</span></p></li>
+<li><p>计算正有理数 <span class="math inline">\(f\)</span> 的连分数表示时，先减去 <span class="math inline">\(f\)</span> 的整数部分，然后反复倒转余数并减去整数部分，直到余数为零。设 <span class="math inline">\(a_i\)</span> 为整数商，<span class="math inline">\(r_i\)</span> 为第 <span class="math inline">\(i\)</span> 步的余数，<span class="math inline">\(n\)</span> 为倒转步数，则有 <span class="math display">\[\begin{align}
+a_0 &amp;= \lfloor f \rfloor,  &amp;r_0 &amp;= f - a_0\\
+a_i&amp;={\large\lfloor} \frac 1 {r_{i-1}} {\large\rfloor}, &amp;r_i &amp;=\frac 1 {r_{i-1}} - a_i \quad (i = 1, 2, ..., n)\\
+\end{align}\]</span> 用Python语言实现的正有理数的连分数扩展函数如下</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cf_expansion</span>(<span class="params">nm: <span class="built_in">int</span>, dn:<span class="built_in">int</span></span>) -&gt; <span class="built_in">list</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Continued Fraction Expansion of Rationals</span></span><br><span class="line"><span class="string">    Parameters:</span></span><br><span class="line"><span class="string">        nm - nominator</span></span><br><span class="line"><span class="string">        dn - denomainator</span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">        List for the abbreviated notation of the continued fraction</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    cf = []</span><br><span class="line">    a, r = nm // dn, nm % dn</span><br><span class="line">    cf.append(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> r != <span class="number">0</span>:</span><br><span class="line">        nm, dn = dn, r</span><br><span class="line">        a = nm // dn</span><br><span class="line">        r = nm % dn</span><br><span class="line">        cf.append(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> cf</span><br></pre></td></tr></table></figure></p></li>
+<li><p>无论是有理数还是无理数，其连分数表示的初始段计算出来的有理数都提供了对这个数本身逐次的逼近。这些有理数被称为连分数的<strong>收敛子</strong>（convergent，也译为“渐进分数”）。所有奇数编号的收敛子都小于原数，而奇数编号的收敛子都大于它。记连分数第 <span class="math inline">\(i\)</span> 个收敛子的分子为 <span class="math inline">\(h_i\)</span>，分母为 <span class="math inline">\(k_i\)</span>，并且设定 <span class="math inline">\(h_{-1}=1,h_{-2}=0\)</span> 和 <span class="math inline">\(k_{-1}=0,k_{-2}=1\)</span>，则收敛子的递归计算公式为 <span class="math display">\[\frac{h_i}{k_i}= \frac{a_i h_{i-1}+h_{i-2}}{a_i k_{i-1}+k_{i-2}}\]</span> 比如对于上面的例子<span class="math inline">\(\frac {68} {75}\)</span>，其连分数的连续收敛子依次为 <span class="math display">\[\begin{align}
+\frac {h_0} {k_0} &amp;= [0] = \frac 0 1 = 0\\
+\frac {h_1} {k_1} &amp;= [0;1] = \frac 1 1 = 1\\
+\frac {h_2} {k_2} &amp;= [0;1,9] = \frac 9 {10}\\
+\frac {h_3} {k_3} &amp;= [0;1,9,1] = \frac {10} {11}\\
+\frac {h_4} {k_4} &amp;= [0;1,9,1,2] = \frac {29} {32}\\
+\end{align}\]</span>可以验证这些收敛子满足前述的奇偶性质，而且越来越接近真实值。下面的Python函数实现了一个给定连分数的收敛子生成器，它返回收敛子分子和分母元组对象。</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cf_convergent</span>(<span class="params">cf: <span class="built_in">list</span></span>) -&gt; (<span class="built_in">int</span>, <span class="built_in">int</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Calculates the convergents of a continued fraction</span></span><br><span class="line"><span class="string">    Parameters:</span></span><br><span class="line"><span class="string">        cf - list for the continued fraction expansion</span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">        A generator object of the convergent tuple</span></span><br><span class="line"><span class="string">        (nominator, denominator)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    nm = [] <span class="comment"># Nominators</span></span><br><span class="line">    dn = [] <span class="comment"># Denominators</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(cf)):</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">0</span>:</span><br><span class="line">            ni, di = cf[i], <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> i == <span class="number">1</span>:</span><br><span class="line">            ni, di = cf[i]*cf[i-<span class="number">1</span>] + <span class="number">1</span>, cf[i]</span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># i &gt; 1</span></span><br><span class="line">            ni = cf[i]*nm[i-<span class="number">1</span>] + nm[i-<span class="number">2</span>]</span><br><span class="line">            di = cf[i]*dn[i-<span class="number">1</span>] + dn[i-<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">        nm.append(ni)</span><br><span class="line">        dn.append(di)</span><br><span class="line">        <span class="keyword">yield</span> ni, di</span><br></pre></td></tr></table></figure></p></li>
+<li><p>关于连分数的收敛子还有一个重要的勒让德定理<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>（Legendre Theorem）：对于正有理数 <span class="math inline">\(f\)</span>，如果整数 <span class="math inline">\(a\)</span> 和正整数 <span class="math inline">\(b\)</span>（即 <span class="math inline">\(a∈ \mathbb Z, b ∈ \mathbb Z^+\)</span>）满足<span class="math display">\[\left\lvert\,f - \frac a b\right\rvert&lt; \frac 1 {2b^2}\]</span>那么<span class="math inline">\(\frac a b\)</span>等于 <span class="math inline">\(f\)</span> 的连分数的一个收敛子。</p></li>
+</ol>
+<h4 id="攻击原理">攻击原理</h4>
+<p>现在解析维纳攻击的工作原理。从RSA公私钥之间的关系 <span class="math inline">\(ed\equiv 1 {\pmod {\varphi (N)}}\)</span>，可以导出存在整数 <span class="math inline">\(k\)</span> 使得<span class="math display">\[ed - k\varphi (N) = 1\]</span> 两边同时除以 <span class="math inline">\(d\varphi (N)\)</span> 得到<span class="math display">\[\left\lvert\frac e {\varphi (N)} - \frac k d\right\rvert = \frac 1 {d{\varphi (N)}}\]</span> 仔细观察上式，因为<span class="math inline">\(\varphi (N)\)</span>本身很大，而且<span class="math inline">\(\gcd(k,d)=1\)</span>，<span class="math inline">\(\frac k d\)</span>与<span class="math inline">\(\frac e {\varphi (N)}\)</span>非常接近。此外<span class="math display">\[\varphi (N)=(p-1)(q-1)=N-(p+q)+1\]</span>其与<span class="math inline">\(N\)</span>的差值也相对很小，所以<span class="math inline">\(\frac k d\)</span>与<span class="math inline">\(\frac e N\)</span>也相差不大。RSA的<span class="math inline">\((N,e)\)</span>都是公开的，由此维纳大胆地构想——<strong>如果对<span class="math inline">\(\frac e N\)</span>进行连分数展开，有可能<span class="math inline">\(\frac k d\)</span>就是其中的某个收敛子！</strong></p>
+<p>那么如何验证某个收敛子确实就是<span class="math inline">\(\frac k d\)</span>呢？有了 <span class="math inline">\(k\)</span> 和 <span class="math inline">\(d\)</span>，就可以算出 <span class="math inline">\(\varphi (N)\)</span>，从而得到 <span class="math inline">\((p+q)\)</span>。既然 <span class="math inline">\((p+q)\)</span> 和 <span class="math inline">\(pq\)</span> 都已知，构造一个简单的一元二次方程<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>就能解出 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span>。如果二者相乘等于<span class="math inline">\(N\)</span>，<span class="math inline">\(k\)</span> 和 <span class="math inline">\(d\)</span> 就是对的，攻击就成功了。</p>
+<p>维纳攻击成立的条件是什么？参考上面一节讲到的关于连分数收敛子的勒让德定理，可以得出如果有 <span class="math display">\[\left\lvert\frac e N - \frac k d\right\rvert &lt; \frac 1 {2{d^2}}\]</span>则<span class="math inline">\(\frac k d\)</span>一定是<span class="math inline">\(\frac e N\)</span>的某个收敛子。由此式还能推导出攻击破解私钥指数 <span class="math inline">\(d\)</span> 的上限。<a target="_blank" rel="noopener" href="https://scholar.google.com/scholar?cluster=14819867265705249637&amp;hl=en&amp;as_sdt=0,5">维纳的原始论文</a>指出上界为 <span class="math inline">\(N^{\frac 1 4}\)</span>，但是没有具体的分析。1999年，美国密码学家丹·博内<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>提供了<a target="_blank" rel="noopener" href="https://crypto.stanford.edu/~dabo/papers/RSA-survey.pdf">第一个严格证明的上限</a>，表明在 <span class="math inline">\(q&lt;p&lt;2q\)</span> 和 <span class="math inline">\(e&lt;\varphi (N)\)</span> 的约束下，维纳攻击适用于 <span class="math inline">\(d&lt;\frac 1 3 N^{\frac 1 4}\)</span> 的情况。2019年，澳大利亚伍伦贡大学（University of Wollongong）的几位研究者发表的一篇<a target="_blank" rel="noopener" href="https://ink.library.smu.edu.sg/cgi/viewcontent.cgi?article=8411&amp;context=sis_research">新论文</a>进一步拓展相同约束条件下的上限为 <span class="math display">\[d\leq \frac 1 {\sqrt[4]{18}} N^\frac 1 4=\frac 1 {2.06...}N^\frac 1 4\]</span></p>
+<p>注意，出于简洁的考虑，以上维纳攻击原理的解析基于欧拉函数 <span class="math inline">\(\varphi (N)\)</span>。实际中RSA密钥对的生成经常使用卡迈克尔函数<span class="math inline">\(\lambda(N)\)</span>。二者之间的关系是 <span class="math display">\[\varphi (N)=\lambda(n)\cdot\gcd(p-1,q-1)\]</span> 可以证明从 <span class="math inline">\(ed\equiv 1 {\pmod {\lambda (N)}}\)</span> 出发，能得到同样的结论。实际上，维纳就是基于<span class="math inline">\(\lambda(N)\)</span>推导的，感兴趣的读者请去仔细阅读他的原始论文。</p>
+<h4 id="攻击流程">攻击流程</h4>
+<p>理解了维纳攻击的原理，其攻击流程可以总结如下：</p>
+<ol type="1">
+<li>将<span class="math inline">\(\frac e N\)</span>作连分数展开</li>
+<li>生成此连分数的连续收敛子序列</li>
+<li>依次检查每个收敛子的分子 <span class="math inline">\(k\)</span> 和分母 <span class="math inline">\(d\)</span>
+<ul>
+<li>如果<span class="math inline">\(k\)</span>为零，或<span class="math inline">\(d\)</span>为偶数，或不满足 <span class="math inline">\(ed\equiv 1 \pmod k\)</span>，跳过此收敛子</li>
+<li>计算 <span class="math inline">\(\varphi (N) = \frac {ed-1} k\)</span>，求 <span class="math inline">\(x^2−(N−\varphi (N)+1)x+N\)</span> 的整数根 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span></li>
+<li>验证 <span class="math inline">\(N=p\cdot q\)</span>，如果为真，攻击成功，返回 <span class="math inline">\((p,q,d)\)</span>；否则继续</li>
+</ul></li>
+<li>如果全部收敛子都检查完毕，维纳攻击失败。</li>
+</ol>
+<p>对应的完整Python程序实现如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">solve_rsa_primes</span>(<span class="params">s: <span class="built_in">int</span>, m: <span class="built_in">int</span></span>) -&gt; <span class="built_in">tuple</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Solve RSA prime numbers (p, q) from the quadratic equation</span></span><br><span class="line"><span class="string">    p^2 - s * p + m = 0 with the formula p = s/2 +/- sqrt((s/2)^2 - m)</span></span><br><span class="line"><span class="string">    Parameters:</span></span><br><span class="line"><span class="string">        s - sum of primes (p + q)</span></span><br><span class="line"><span class="string">        m - product of primes (p * q)</span></span><br><span class="line"><span class="string">    Return: (p, q)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    half_s = s &gt;&gt; <span class="number">1</span></span><br><span class="line">    tmp = gmpy2.isqrt(half_s ** <span class="number">2</span> - m)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(half_s + tmp), <span class="built_in">int</span>(half_s - tmp)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wiener_attack</span>(<span class="params">n: <span class="built_in">int</span>, e: <span class="built_in">int</span></span>) -&gt; (<span class="built_in">int</span>, <span class="built_in">int</span>, <span class="built_in">int</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; Wiener&#x27;s Attack on RSA public key cryptosystem</span></span><br><span class="line"><span class="string">    Parameters:</span></span><br><span class="line"><span class="string">        N - RSA modulus N = p*q</span></span><br><span class="line"><span class="string">        e - RSA public exponent</span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">        A tuple of (p, q, d)</span></span><br><span class="line"><span class="string">        p, q - the two prime factors of RSA modulus N</span></span><br><span class="line"><span class="string">        d - RSA private exponent</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    cfe = cf_expansion(e, n) <span class="comment"># Convert e/n into a continued fraction</span></span><br><span class="line">    cvg = cf_convergent(cfe) <span class="comment"># Get all of its convergents</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> k, d <span class="keyword">in</span> cvg:</span><br><span class="line">        <span class="comment"># Check if k and d meet the requirements</span></span><br><span class="line">        <span class="keyword">if</span> k == <span class="number">0</span> <span class="keyword">or</span> d % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">or</span> (e * d) % k != <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># assume ed ≡ 1 (mod ϕ(n))</span></span><br><span class="line">        phi = (e * d - <span class="number">1</span>) // k </span><br><span class="line">        p, q = solve_rsa_primes(n - phi + <span class="number">1</span>, n)</span><br><span class="line">        <span class="keyword">if</span> n == p * q:</span><br><span class="line">            <span class="keyword">return</span> p, q, d</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">uint_to_bytes</span>(<span class="params">x: <span class="built_in">int</span></span>) -&gt; <span class="built_in">bytes</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; This works only for unsigned (non-negative) integers.</span></span><br><span class="line"><span class="string">    It does not work for 0.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">bytes</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> x.to_bytes((x.bit_length() + <span class="number">7</span>) // <span class="number">8</span>, <span class="string">&#x27;big&#x27;</span>)</span><br><span class="line"></span><br><span class="line">N = <span class="built_in">int</span>(</span><br><span class="line">    <span class="string">&#x27;6727075990400738687345725133831068548505159909089226&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;9093081511054056173840933739311418333016536024767844&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;14065504536979164089581789354173719785815972324079&#x27;</span>)</span><br><span class="line"></span><br><span class="line">e = <span class="built_in">int</span>(</span><br><span class="line">    <span class="string">&#x27;4805054278857670490961232238450763248932257077920876&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;3637915365038611552743522891345050097418639182479215&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;15546177391127175463544741368225721957798416107743&#x27;</span>)</span><br><span class="line"></span><br><span class="line">c = <span class="built_in">int</span>(</span><br><span class="line">    <span class="string">&#x27;5928120944877154092488159606792758283490469364444892&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;1679423458017133739626176287570534122326362199676752&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;56510422984948872954949616521392542703915478027634&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p, q, d = wiener_attack(N, e)</span><br><span class="line"><span class="keyword">assert</span> <span class="keyword">not</span> d <span class="keyword">is</span> <span class="literal">None</span>, <span class="string">&quot;Wiener&#x27;s Attack failed!&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;p =&quot;</span>, p)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;q =&quot;</span>, q)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;d =&quot;</span>, d)</span><br><span class="line"><span class="built_in">print</span>(uint_to_bytes(<span class="built_in">pow</span>(c, d, N)))</span><br><span class="line"></span><br><span class="line">N = <span class="built_in">int</span>(</span><br><span class="line">    <span class="string">&#x27;22836858353287668091920368816286415778103964252589&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;28295130420474999022996621982166664596581454018899&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;48429922376560732622754871538043874356270300826321&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;16650572564937978011181394388679265524940467869924&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;85473650038355720409426235584833584188449224331698&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;63569900296911605460645581176522325967221393273906&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;69673188457131381644120787783215342848744792830245&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;01805598140668893320307200136190794138325132168722&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;14217943474001731747822701596634040292342194986951&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;94551646668806852454006312372413658692027515557841&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;41440661232146905186431357112566536770669381756925&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;38179415478954522854711968599279014482060579354284&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;55238863726089083&#x27;</span>)</span><br><span class="line"></span><br><span class="line">e = <span class="built_in">int</span>(</span><br><span class="line">    <span class="string">&#x27;17160819308904585327789016134897914235762203050367&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;34632679585567058963995675965428034906637374660531&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;64750599687461192166424505919293706011293378320096&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;43372382766547546926535697752805239918767190684796&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;26509298669049485976118315666126871681847641670872&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;58895073919139366379901867664076540531765577090231&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;67209821832859747419658344363466584895316847817524&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;24703257392651850823517297420382138943770358904660&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;59442300191228592937251734592732623207324742303631&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;32436274414264865868028527840102483762414082363751&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;87208612632105886502393648156776330236987329249988&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;11429508256124902530957499338336903951924035916501&#x27;</span>\</span><br><span class="line">    <span class="string">&#x27;53661610070010419&#x27;</span>)</span><br><span class="line"></span><br><span class="line">d = wiener_attack(N, e)</span><br><span class="line"><span class="keyword">assert</span> <span class="keyword">not</span> d <span class="keyword">is</span> <span class="literal">None</span>, <span class="string">&quot;Wiener&#x27;s attack failed!&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;d =&quot;</span>, d)</span><br><span class="line"></span><br><span class="line">old_b = <span class="built_in">int</span>(gmpy2.root(N, <span class="number">4</span>)/<span class="number">3</span>)</span><br><span class="line">new_b = <span class="built_in">int</span>(gmpy2.root(N, <span class="number">4</span>)/gmpy2.root(<span class="number">18</span>, <span class="number">4</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;old_b =&quot;</span>, old_b)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;new_b =&quot;</span>, new_b)</span><br><span class="line"><span class="keyword">assert</span> d &gt; old_b <span class="keyword">and</span> d &lt;= new_b</span><br></pre></td></tr></table></figure>
+<p>上面的代码最后是两个测试用例。参考下面的程序运行输出，第一个用例给定一个较小的RSA模数 <span class="math inline">\(N\)</span>，而 <span class="math inline">\(e\)</span> 却相对较大，这正是维纳攻击发挥作用的场景。程序调用攻击函数<code>wiener_attack()</code>，迅速算出了 <span class="math inline">\(d\)</span> 为7并解密恢复了原文<code>Wiener's attack success!</code>。</p>
+<p>第二个用例设定了2048比特的 <span class="math inline">\(N\)</span>和 <span class="math inline">\(e\)</span>，维纳攻击也很快成功了。同时程序还检验了破解出来的 <span class="math inline">\(d\)</span>（511比特），确认它是大于旧的上限<code>old_b</code>（<span class="math inline">\(N^{\frac 1 4}\)</span>），但略小于新的上限<code>new_b</code>（<span class="math inline">\(\frac 1 {\sqrt[4]{18}} N^\frac 1 4\)</span>）。这证实了伍伦贡大学研究者的结论。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">p = 105192975360365123391387526351896101933106732127903638948310435293844052701259</span><br><span class="line">q = 63949859459297920725542167940404754256294386312715512490347273751054137071981</span><br><span class="line">d = 7</span><br><span class="line">b<span class="string">&quot;Wiener&#x27;s attack success!&quot;</span></span><br><span class="line">d = 5968166949079360555220268992852191823920023811474288738674370592596189517443887780023653031793516493806462114248181371416016184480421640973439863346079123</span><br><span class="line">old_b = 4097678063688683751669784036917434915284399064709500941393388469932708726583832656910141469383433913840738001283204519671690533047637554279688711463501824</span><br><span class="line">new_b = 5968166949079360962136673400587903792234115710617172051628964885379180548131448950677569697264501402772121272285767654845001503996650347315559383468867584</span><br></pre></td></tr></table></figure>
+<p>无疑，这两个测试用例证明了维纳攻击的有效性和成立条件。要预防维纳攻击，就必须保证RSA私钥指数 <span class="math inline">\(d\)</span> 大于能使攻击成立的上限值。有可能现在知道的上限也并非最终的边界，所以选择 <span class="math inline">\(d\)</span> 不小于 <span class="math inline">\(N^\frac 1 2\)</span> 是较为稳妥的方案。实际应用中，常常使用<a href="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/#%E5%8A%A0%E9%80%9Frsa%E8%A7%A3%E5%AF%86">费马小定理和中国余数定理相结合推演出的一种加速解密方法</a>，这样即使是较大的 <span class="math inline">\(d\)</span> 也能实现快速解密和数字签名。</p>
+<blockquote>
+<p>未完待续，敬请期待下篇：RSA的攻与防（三）</p>
+</blockquote>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>约翰·波拉德（John Pollard），英国数学家，1999年因对整数分解和离散对数的代数密码分析的重大贡献获得<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/RSA_Award_for_Excellence_in_Mathematics">RSA数学卓越奖</a>。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>理查德·布伦特（Richard Brent），澳大利亚数学家和计算机科学家，其研究领域包括数论（特别是因式分解）、随机数生成器、计算机体系结构和算法分析，IEEE 和 ACM 双会士，澳大利亚科学院院士。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>M. Wiener, “<a target="_blank" rel="noopener" href="https://scholar.google.com/scholar?cluster=14819867265705249637&amp;hl=en&amp;as_sdt=0,5">Cryptanalysis of short RSA secret exponents</a>,” <em>IEEE Trans. Inform. Theory</em>, vol. 36, pp. 553–558, May 1990<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>阿德里安-马里·勒让德（Adrien-Marie Legendre），法国数学家，在统计学、数论、抽象代数与数学分析上贡献诸多。<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>参见前文：<a href="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/">巧解picoCTF的RSA挑战题Sum-O-Primes</a><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>丹·博内（Dan Boneh），以色列裔美国应用密码学家和计算机安全专家，美国数学学会会士，美国国家工程院院士，斯坦福大学教授。2005年获RSA数学卓越奖，2013年获哥德尔奖。<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/" title="RSA的攻与防（二）">https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 网络安全</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/07/04/TLS1-3-intro/" rel="prev" title="启用 TLS 1.3 提升网络应用的安全性和性能">
+                  <i class="fa fa-chevron-left"></i> 启用 TLS 1.3 提升网络应用的安全性和性能
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">288k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:21</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"f962ef8aaac58478016151edf0abd72a"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

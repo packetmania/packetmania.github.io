@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-11-14T07:36:29.590Z</updated>
+  <updated>2023-11-14T18:40:09.367Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/"/>
     <id>https://www.packetmania.net/2023/11/13/RSA-attack-defense-2/</id>
     <published>2023-11-14T06:05:44.398Z</published>
-    <updated>2023-11-14T07:36:29.590Z</updated>
+    <updated>2023-11-14T18:40:09.367Z</updated>
     
     
     <summary type="html">&lt;p&gt;这是RSA攻防战的第二篇。本文首先补充说明特定情况下的两种大数分解方法，介绍它们的算法精要和适用场景，并给出Python参考实现。接下来深入解析典型的低私钥指数攻击算法——维纳攻击，详细讲解其数学基础、攻击原理及流程，也提供了完整的Python程序。文中还引用了近年最新研究的维纳攻击成立时私钥指数新上限，还使用测试用例验证了这一上限的正确性。</summary>

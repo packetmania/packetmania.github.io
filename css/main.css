@@ -3221,3 +3221,12 @@ mjx-container[display='true'] + br {
     padding: 10px 12px;
   }
 }
+#busuanzi_container_page_pv {
+  display: inline;
+}
+.busuanzi-count #busuanzi_container_site_uv {
+  display: inline;
+}
+.busuanzi-count #busuanzi_container_site_pv {
+  display: inline;
+}

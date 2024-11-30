@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-11-19T06:29:38.774Z</updated>
+  <updated>2023-12-30T23:06:59.814Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RSA的攻与防（三）</title>
+    <link href="https://www.packetmania.net/2023/12/29/RSA-attack-defense-3/"/>
+    <id>https://www.packetmania.net/2023/12/29/RSA-attack-defense-3/</id>
+    <published>2023-12-30T00:26:13.000Z</published>
+    <updated>2023-12-30T23:06:59.814Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;继续RSA攻防战，本篇专注介绍科波史密斯攻击（Coppersmith）</summary>
+    
+    
+    
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    
+    
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>RSA的攻与防（二）</title>
@@ -418,27 +441,6 @@
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
     
     <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>IPv6动态地址分配机制详解</title>
-    <link href="https://www.packetmania.net/2020/12/01/IPv6-Addressing/"/>
-    <id>https://www.packetmania.net/2020/12/01/IPv6-Addressing/</id>
-    <published>2020-12-01T21:59:19.000Z</published>
-    <updated>2022-03-14T06:59:51.661Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;IPv6支持多个地址，地址分配更加灵活方便。与 IPv4 仅仅依赖 DHCP 协议的地址分配方法不同，IPv6 加入了原生的无状态地址自动配置 (&lt;a href=&quot;https://tools.ietf.org/html/rfc4862&quot;&gt;Sateless Address Autoconfiguration&lt;/a&gt;，简写 SLAAC) 协议。SLAAC 既可以单独工作为主机提供 IPv6 地址，又能与 &lt;a href=&quot;https://tools.ietf.org/html/rfc8415&quot;&gt;DHCPv6&lt;/a&gt; 协同运作产生新的分配方案。这里对 IPv6 动态地址分配机制做一个全面分析。</summary>
-    
-    
-    
-    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
-    
-    
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
-    <category term="思科技术" scheme="https://www.packetmania.net/tags/%E6%80%9D%E7%A7%91%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   

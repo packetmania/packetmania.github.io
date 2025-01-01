@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2025-01-01T06:17:07.901Z</updated>
+  <updated>2025-01-01T06:23:41.062Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2024/12/31/Fix-View-Count/"/>
     <id>https://www.packetmania.net/2024/12/31/Fix-View-Count/</id>
     <published>2025-01-01T00:14:13.000Z</published>
-    <updated>2025-01-01T06:17:07.901Z</updated>
+    <updated>2025-01-01T06:23:41.062Z</updated>
     
     
     <summary type="html">&lt;p&gt;本博客应用Hexo框架和NexT主题构建，并一直使用&lt;a href=&quot;https://ibruce.info/2015/04/04/busuanzi/&quot;&gt;不蒜子 (busuanzi)&lt;/a&gt;提供的访客和阅读次数统计功能。但是，最近几个月发现统计数据没有实时更新，而且不同浏览器显示的计数也不一样。经过一番查询和调研，终于找到解决办法。</summary>

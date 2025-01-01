@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2023-12-30T23:06:59.814Z</updated>
+  <updated>2025-01-01T06:17:07.901Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>解决不蒜子文章阅读计数错误的问题</title>
+    <link href="https://www.packetmania.net/2024/12/31/Fix-View-Count/"/>
+    <id>https://www.packetmania.net/2024/12/31/Fix-View-Count/</id>
+    <published>2025-01-01T00:14:13.000Z</published>
+    <updated>2025-01-01T06:17:07.901Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本博客应用Hexo框架和NexT主题构建，并一直使用&lt;a href=&quot;https://ibruce.info/2015/04/04/busuanzi/&quot;&gt;不蒜子 (busuanzi)&lt;/a&gt;提供的访客和阅读次数统计功能。但是，最近几个月发现统计数据没有实时更新，而且不同浏览器显示的计数也不一样。经过一番查询和调研，终于找到解决办法。</summary>
+    
+    
+    
+    <category term="站点建设" scheme="https://www.packetmania.net/categories/%E7%AB%99%E7%82%B9%E5%BB%BA%E8%AE%BE/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>RSA的攻与防（三）</title>
@@ -123,11 +140,11 @@
     
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     
@@ -418,29 +435,6 @@
     
     
     <category term="通信系统" scheme="https://www.packetmania.net/tags/%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>AES-CBC密文填充攻击—深入理解和编程实现</title>
-    <link href="https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/"/>
-    <id>https://www.packetmania.net/2020/12/01/AES-CBC-PaddingOracleAttack/</id>
-    <published>2020-12-02T05:18:32.000Z</published>
-    <updated>2023-01-24T06:28:17.337Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;密文填充攻击 (Padding Oracle Attack) 可能是现代密码学史上的最有名也最成功的攻击方法。攻击者利用密文的填充验证反馈信息，实现密文破解。这里简单回顾密文填充攻击的发展历史，然后深入剖析AES-CBC工作模式下的攻击原理，最后给出了Python的编程实现示例。</summary>
-    
-    
-    
-    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
-    
-    
-    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
-    
-    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
-    
-    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   

@@ -34,13 +34,13 @@
 <meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/redphasor.png">
 <meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/bluephasor.png">
 <meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/superposition.png">
-<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture1-4.png">
-<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png">
-<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture3.png">
-<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture4.png">
-<meta property="og:image" content="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture5-468x200.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/testbed.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/sta.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/throughput-no-mumimo.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/throughput-mumimo.png">
+<meta property="og:image" content="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/throughput-gain.png">
 <meta property="article:published_time" content="2021-06-05T21:49:07.000Z">
-<meta property="article:modified_time" content="2021-11-28T01:39:13.655Z">
+<meta property="article:modified_time" content="2025-02-16T07:15:09.023Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="思科技术">
 <meta property="article:tag" content="Wi-Fi">
@@ -110,7 +110,7 @@
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
         <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-        <li class="menu-item menu-item-tasks"><a href="/VXlzTWJvcVNzcmRzdkNnaG0/" rel="section"><i class="fa fa-tasks fa-fw"></i>任务清单</a></li>
+        <li class="menu-item menu-item-tasks"><a href="/VXlzTWJvcVNzcmRzdkNnaG0/" rel="section"><i class="fa fa-tasks fa-fw"></i>任务</a></li>
         <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
         <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
         <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
@@ -298,7 +298,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-27 17:39:13" itemprop="dateModified" datetime="2021-11-27T17:39:13-08:00">2021-11-27</time>
+        <time title="修改时间：2025-02-15 23:15:09" itemprop="dateModified" datetime="2025-02-15T23:15:09-08:00">2025-02-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -364,20 +364,20 @@
 <p>空间位置的重要性决定了MU-MIMO环境中的嗅探更加复杂。请注意，将嗅探器靠近AP将得到我们之前提到的乱码效果。嗅探探头必须放置在靠近被嗅探设备的物理位置，通常每个设备都需要一个嗅探探头。</p>
 <h3 id="系统概述和测试基础设施">系统概述和测试基础设施</h3>
 <p>在这个MU-MIMO测试中，我们使用了octoScope（现在已并入思博伦<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>）STACK-MAX 测试台。在基础设施方面，使用运行IOS-XE 17.6.1（Beta测试版代码）的Catalyst 9800无线局域网控制器和Catalyst 9130接入点。C9130 AP支持最多8×8上行链路和下行链路MU-MIMO，以及8个空间流。Pal-6E支持Wi-Fi 6，最多可仿真256个站点或充当嗅探器探头。</p>
-<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture1-4.png" /></p>
+<p><img src="testbed.png" /></p>
 <p>STApal是基于Intel AX210芯片组的具有完整功能STA<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>，运行在自己的硬件平台上。所有测试室都与外界完全隔离，它们之间的信号路径由全屏蔽衰减器控制，因此可以进行可靠且可重复的测量。腔室内衬射频（RF）吸收泡沫，以显著减少内部反射并防止驻波。</p>
 <p>对于此MU-MIMO测试，我们使用多达4个STA。RF路径将来自C9130 AP的信号连接到各个STA。我们在LOS或IEEE通道模型A模式下使用多路径仿真器 (MPE)。每对天线都馈入一组四个客户端，如下图所示。我们已经看到空间分离是MU-MIMO操作成功的必要条件。通过将天线放置在消声测试室的角落，实现了最佳空间分离。这允许四个独立的MU-MIMO流发送到四组、每组四个的STA。</p>
-<p><img srcset="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1-300x186.png 300w, https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png 592w" sizes="(max-width: 592px) 100vw, 592px" loading="lazy" class="aligncenter wp-image-366831 size-full" src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture2-1.png" alt="" width="592" height="368"></p>
+<p><img src="sta.png" /></p>
 <h3 id="实际测试">实际测试</h3>
 <p>为了演示MU-MIMO增益效果，我们将C9130 AP放置在腔室的中心，并传输下行链路UDP数据到连接到角落天线上的STA。</p>
 <p>首先，我们关闭MU-MIMO并且只开启一个STA。我们注意到吞吐量仅略高于1000 Mbps，略低于1200 Mbps的物理层速率。20秒后，我们引入了另一个STA，看到总吞吐量保持在1000 Mbps，但两个STA共享信道，每个STA达到了500 Mbps。20秒后，我们引入了第三个STA。同样，总吞吐量保持为1000 MBps，三个STA共享信道，每个STA的速度略高于300 Mbps。第四个STA的引入遵循相同的模式，聚合保持不变，每个STA得到250 Mbps。</p>
-<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture3.png" /></p>
+<p><img src="throughput-no-mumimo.png" /></p>
 <p>我们重复了这个实验，这次开启了MU-MIMO。</p>
 <p>从一个STA开始，我们实现了熟悉的1000 Mbps。20秒后，我们引入了第二个STA，并观察到聚合速率已增加到2000 Mbps，这明显高于物理层速率。我们还注意到，每个STA的接收速度仍接近之前的1000 Mbps。与之前的STA共享信道的实验不同，在本实验中，它们每个都能够相互独立地充分利用自己的信道。</p>
-<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture4.png" /></p>
+<p><img src="throughput-mumimo.png" /></p>
 <p>添加第三个STA将聚合速度增加到2200 Mbps。三个STA中的每一个仍接收730 Mbps。添加第四个STA导致总吞吐量2100 Mbps的，每个STA接收525 Mbps，比单用户操作增加了两倍。</p>
 <p>下图总结了测试结果：</p>
-<p><img src="https://storage.googleapis.com/blogs-images/ciscoblogs/1/2021/05/Picture5-468x200.png" /></p>
+<p><img src="throughput-gain.png" /></p>
 <h3 id="结论">结论</h3>
 <p>MU-MIMO利用接收器的空间分离引导独立的消息同时发送到每个接收器。这样可以更有效地使用介质，并提升网络可以实现的聚合数据率。Catalyst 9130 AP的开创性调度程序设计，在多用户传输场景中提供了卓越的吞吐量增益。这是更高MCS速率、低探测开销和高效动态分组调度的结果。</p>
 <p>WLAN上默认启用DL和UL MU-MIMO以及OFDMA。这些功能在现有版本的9800系列无线控制器上可用，但上述增强功能将从 17.6.1版本开始提供。</p>

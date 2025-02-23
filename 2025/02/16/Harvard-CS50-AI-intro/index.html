@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="哈佛大学的 CS50AI 是一门在线开放课程，专注于介绍人工智能的基础知识，并使用 Python 进行编程和项目实践。该课程由哈佛大学教授 David J. Malan 及其团队制作和授课，是广受欢迎的 CS50 计算机科学系列课程的一部分，适合已经具备一定编程基础的学习者。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈佛 CS50-AI 课程介绍：从零开始学习人工智能">
+<meta property="og:url" content="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="哈佛大学的 CS50AI 是一门在线开放课程，专注于介绍人工智能的基础知识，并使用 Python 进行编程和项目实践。该课程由哈佛大学教授 David J. Malan 及其团队制作和授课，是广受欢迎的 CS50 计算机科学系列课程的一部分，适合已经具备一定编程基础的学习者。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/CS50AI-enrolled.png">
+<meta property="og:image" content="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/AI-A_modern_Approach.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/CS50AI-gradebook-sample.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/CS50AI-cert-sample.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/CS50AI-cert-verified-Sample.png">
+<meta property="article:published_time" content="2025-02-16T21:05:26.000Z">
+<meta property="article:modified_time" content="2025-02-23T00:06:51.250Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="人工智能和机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/CS50AI-enrolled.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/","path":"2025/02/16/Harvard-CS50-AI-intro/","title":"哈佛 CS50-AI 课程介绍：从零开始学习人工智能"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>哈佛 CS50-AI 课程介绍：从零开始学习人工智能 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tasks"><a href="/VXlzTWJvcVNzcmRzdkNnaG0/" rel="section"><i class="fa fa-tasks fa-fw"></i>任务</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">课程简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B%E7%BD%91%E5%9D%80"><span class="nav-number">1.1.</span> <span class="nav-text">课程网址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.</span> <span class="nav-text">课程信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E8%AF%81%E4%B9%A6"><span class="nav-number">1.3.</span> <span class="nav-text">认证证书</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%99%E5%AD%A6%E5%A4%A7%E7%BA%B2"><span class="nav-number">2.</span> <span class="nav-text">教学大纲</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2search"><span class="nav-number">2.1.</span> <span class="nav-text">搜索（Search）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E6%8E%A8%E7%90%86knowledge"><span class="nav-number">2.2.</span> <span class="nav-text">知识推理（Knowledge）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E7%8E%87%E6%8E%A8%E7%90%86uncertainty"><span class="nav-number">2.3.</span> <span class="nav-text">概率推理（Uncertainty）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96optimization"><span class="nav-number">2.4.</span> <span class="nav-text">优化（Optimization）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0learning"><span class="nav-number">2.5.</span> <span class="nav-text">机器学习（Learning）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Cneural-networks"><span class="nav-number">2.6.</span> <span class="nav-text">神经网络（Neural Networks）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86language"><span class="nav-number">2.7.</span> <span class="nav-text">自然语言处理（Language）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%8F%E9%AA%8C%E4%BD%93%E4%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">经验体会</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B%E5%87%86%E5%A4%87"><span class="nav-number">3.1.</span> <span class="nav-text">课程准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%BA%A6%E5%AE%89%E6%8E%92"><span class="nav-number">3.2.</span> <span class="nav-text">进度安排</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%8F%E9%AA%8C"><span class="nav-number">3.3.</span> <span class="nav-text">项目经验</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机科学与技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机科学与技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          哈佛 CS50-AI 课程介绍：从零开始学习人工智能
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-16 13:05:26" itemprop="dateCreated datePublished" datetime="2025-02-16T13:05:26-08:00">2025-02-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2025-02-22 16:06:51" itemprop="dateModified" datetime="2025-02-22T16:06:51-08:00">2025-02-22</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/" itemprop="url" rel="index"><span itemprop="name">学习体会</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>哈佛大学的 CS50AI 是一门在线开放课程，专注于介绍人工智能的基础知识，并使用 Python 进行编程和项目实践。该课程由哈佛大学教授 David J. Malan 及其团队制作和授课，是广受欢迎的 CS50 计算机科学系列课程的一部分，适合已经具备一定编程基础的学习者。 <span id="more"></span></p>
+<div class="note success no-icon"><p><strong>Artificial intelligence is the new electricity.</strong><br> <strong>— <em>Andrew Ng</em>（吴恩达，英裔美国计算机科学家和技术企业家，专注于机器学习和人工智能，谷歌大脑项目的联合创始人和负责人，曾任百度首席科学家）</strong></p>
+</div>
+<h2 id="课程简介">课程简介</h2>
+<p>CS50AI 课程的全称是 CS50’s Introduction to Artificial Intelligence with Python，即 CS50 Python 人工智能入门。哈佛大学和在线课堂平台 edX 合作于2020年推出该课程，并在2024年进行了修订和更新。</p>
+<p>CS50AI 课程引入现代人工智能的基础概念和算法，并讲解游戏引擎、手写识别和机器翻译等技术的产生思想。通过实践项目，学生可以接触到图搜索算法、分类、优化、机器学习、大型语言模型等人工智能主题背后的理论，并将其融入到自己的 Python 程序中。课程结束时，学生将获得机器学习库方面的经验以及人工智能原理方面的知识，从而为进一步深入学习人工智能和机器学习的高级技术做好准备。</p>
+<h3 id="课程网址">课程网址</h3>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.edx.org/learn/artificial-intelligence/harvard-university-cs50-s-introduction-to-artificial-intelligence-with-python">edX 课程页面</a>：在这里可以免费注册最新的 CS50AI 课程。注册后就能看到所有授课内容的相关链接，还有课程时间线和进度信息。</li>
+<li><a target="_blank" rel="noopener" href="https://cs50.harvard.edu/ai/">CS50AI 官网</a>：这是课程的实际主页。这里包含所有主题单元的授课音视频、讲义笔记和PPT、源代码、测验、编程项目及讨论群的社交网络链接等。</li>
+</ul>
+<p>下图显示注册后收到的电子邮件包含的课程信息及开始链接：</p>
+<p><img src="CS50AI-enrolled.png" style="width:50.0%;height:50.0%" /></p>
+<h3 id="课程信息">课程信息</h3>
+<ul>
+<li><p>教学形式为在线自学（Self-Paced），没有固定时间限制，可以自由安排学习进度。按照推荐的每周10-30小时学习进度，可以七周完成。如果无法达到推荐的周学时也没有关系，只要在年底（12/31）前完成全部编程项目就算达成目标。</p></li>
+<li><p>课程包含七个核心单元。教学材料包括视频讲解、代码示例、测验和总共12个 AI 实战项目。每个单元模块包含一个1～2小时的视频讲座、一个在线小测验和一两个编程实践任务。小测验是可选的，但非常有助于考察我们对基本概念的理解。编程项目将进一步强化学到的知识点和实际应用能力。</p></li>
+<li><p>CS50AI 要求的先修知识：</p>
+<ul>
+<li>Python 基础：如果没有 Python 编程经验，可以先学习 <a target="_blank" rel="noopener" href="https://cs50.harvard.edu/x/">CS50x</a> 或 <a target="_blank" rel="noopener" href="https://cs50.harvard.edu/python/">Python 入门课程</a>。</li>
+<li>数学基础：了解基本的线性代数、概率论和逻辑推理会更容易理解 AI 相关内容。</li>
+</ul></li>
+<li><p>CS50AI 没有指定的官方教科书，但课程提供了一些相关的学习资源，其中最重要的是《人工智能：现代方法》（Artificial Intelligence： A Modern Approach）。此书的第 4 版是迄今为止最新和最全面的人工智能理论与实践介绍，在广度和深度上没有其它教材可以匹敌，强烈推荐。</p>
+<blockquote>
+<p><em><strong>Disclosure:</strong> This blog site is reader-supported. When you buy through the affiliate links below, as an Amazon Associate, I earn a tiny commission from qualifying purchases. Thank you.</em></p>
+</blockquote></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://amzn.to/4gSxNWe"><img src="AI-A_modern_Approach.jpg" style="width:45.0%;height:45.0%" /></a></p>
+<h3 id="认证证书">认证证书</h3>
+<p>课程是完全免费的，学习无需付费。在成功完成所有12个项目并提交后，就可以得到一个结业证书。如下图所示，左边为项目进度记录，右边是完成后生成的结业证书。</p>
+<div class="group-picture"><div class="group-picture-row"><div class="group-picture-column"><img src="CS50AI-gradebook-sample.jpg" /></div><div class="group-picture-column"><img src="CS50AI-cert-sample.jpg" /></div></div></div>
+<p>如果希望获得哈佛/edX平台联合认证的证书（Harvard edX 认证，下图为样例），以助力职业发展，可以付费申请官方证书。认证费用现为 $299。网上还可以找到一些折扣码，省掉～20%的费用。</p>
+<p><img src="CS50AI-cert-verified-Sample.png" style="width:55.0%;height:55.0%" /></p>
+<h2 id="教学大纲">教学大纲</h2>
+<p>CS50AI 课程共分为七个核心单元，下面逐一做一些概要说明。</p>
+<h3 id="搜索search">搜索（Search）</h3>
+<p>第一个单元模块介绍了帮助人工智能从起点找到目标的搜索算法。讲座涵盖了搜索问题的结构（包括状态、动作和目标）并探讨了不同的搜索策略，包括深度优先搜索（DFS）、广度优先搜索（BFS）、贪婪最佳优先搜索和 A* 搜索。这些算法通过迷宫求解等实际例子进行演示，讲座还涉及使用极小极大算法（Minimax）和 Alpha-beta 剪枝等对抗性搜索技术的游戏策略。</p>
+<p>编程项目：</p>
+<ul>
+<li><strong>Degrees</strong>（社交网络最短路径）: 利用图搜索算法（BFS）找出两位演员之间的最短合作关系路径（类似“<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%AD%E5%BA%A6%E5%88%86%E9%9A%94%E7%90%86%E8%AE%BA">六度分隔理论</a>”），算法实现用到了先进先出 （FIFO） 队列。</li>
+<li><strong>Tic-Tac-Toe</strong>（井字棋）: 应用包含 Alpha-beta 剪枝的 Minimax 算法，实现一个不可战胜的井字棋 AI。本项目需要安装 Python pygame 软件包。</li>
+</ul>
+<h3 id="知识推理knowledge">知识推理（Knowledge）</h3>
+<p>这里探讨了人工智能中的知识表示和推理，重点关注如何以机器可用于逻辑推导的方式编码信息。它介绍了命题逻辑（使用符号和逻辑运算符如 NOT、AND 和 OR等）和一阶逻辑（增加了量词和关系）。讲座演示了如何使用推理规则（如肯定前件式和归结法）从现有事实中推导新知识。它涵盖了知识库、模型检验和自动定理证明，展示了人工智能系统如何通过将知识表示为逻辑语句并应用系统化推理来进行逻辑推断和解决如谜题游戏等问题。</p>
+<p>编程项目：</p>
+<ul>
+<li><strong>Knights</strong>（骑士/无赖）：给定一个能够解谜的逻辑推理系统，可以根据每个角色所说的一组陈述句子，推断角色是骑士还是无赖。任务是确定如何用命题逻辑来表示这些谜题，以便此系统运行模型检查算法为我们解开这些谜题。</li>
+<li><strong>Minesweeper</strong>（扫雷）：基于知识的智能代理在做出决策时会考虑其知识库，并根据这些知识做出推断。任务是创建一个 AI 代理，收集并分析扫雷游戏中的棋盘信息和知识，从而推断出地雷的位置。本项目需要安装 Python pygame 软件包。</li>
+</ul>
+<h3 id="概率推理uncertainty">概率推理（Uncertainty）</h3>
+<p>第三讲讨论了人工智能系统如何处理不确定性，这在处理不完整信息或概率性结果时是一项关键能力。讲座介绍了概率论基础和贝叶斯网络（Bayesian Networks），用于表示变量之间的关系。它涵盖了条件概率、随机变量、独立性和联合概率分布。讲座解释了通过枚举、抽样和似然权重进行推理，以计算复杂场景中的概率。它还探讨了用于事件序列的马尔可夫模型和用于从可观察数据推断隐藏状态的隐马尔可夫模型（HMM），展示了概率推理如何使人工智能能够在不确定条件下做出明智决策。</p>
+<p>编程项目：</p>
+<ul>
+<li><strong>PageRank</strong>（网页排名）：实现谷歌 PageRank 算法，计算网页的重要性。具体应用两种 PageRank 计算方法 - 1. 通过从马尔可夫链随机冲浪者网页中抽样；2. 通过迭代使用 PageRank 公式。</li>
+<li><strong>Heredity</strong>（遗传概率推断）：任务是利用贝叶斯网络模拟的基因遗传模型对人群进行推断。通过给定信息，AI 将能够判断出每个人的基因概率分布，以及测试中性状表现的概率分布。</li>
+</ul>
+<h3 id="优化optimization">优化（Optimization）</h3>
+<p>此单元模块专注于寻找复杂问题最佳解决方案的优化技术。它介绍了局部搜索算法，如爬山法和模拟退火（Simulated Annealing），这些算法通过探索相邻状态来迭代改进解决方案。讲座涵盖了优化挑战，如陷入局部极值，并探讨了克服这些限制的技术。它讨论了线性规划和约束满足问题（CSP），其中 CSP 解决方案必须满足特定约束。讲座演示了回溯搜索、弧一致性（Arc Consistency）和 AC-3 算法等算法，并将这些概念应用于日程安排、地图着色和数独谜题等问题，展示了优化算法如何在穷举搜索不切实际的大型搜索空间中高效找到解决方案。</p>
+<p>编程项目：</p>
+<ul>
+<li><strong>Crossword</strong>（填字）：将填字游戏建模为一个CSP，每个方格序列都是一个变量，要求完成一个求解器 - 从给定的词汇表中为每个变量选择一个不同的词，满足所有的一元和二元约束条件。解决方案的编程要实现回溯搜索和 AC-3 算法。本项目需要安装 Python pillow 软件包。</li>
+</ul>
+<h3 id="机器学习learning">机器学习（Learning）</h3>
+<p>第五讲介绍了机器学习基础，重点关注监督学习技术，即计算机从带标签的训练数据中学习模式。讲座涵盖了几种分类算法，包括最近邻分类、k-最近邻、感知器学习和支持向量机，每种算法都有自己的决策边界创建方法。它解释了用于预测连续值的回归分析，并讨论了量化预测误差的损失函数。讲座还讨论了过拟合和正则化等重要概念，展示了如何平衡模型复杂性与泛化能力。此外，讲座引入强化学习，即代理通过奖励反馈学习最佳行为，探讨了马尔可夫决策过程和Q-学习算法。最后，它通过k-均值等聚类技术触及无监督学习，这些算法能在无标签数据中识别模式。</p>
+<p>编程项目：</p>
+<ul>
+<li><strong>Shopping</strong>（电子商务购物预测）：任务是建立一个近邻分类器帮助网站根据用户的相关信息确定其购买意图。 项目提供了某个购物网站大约 12,000 个用户的访问数据，以训练分类器。</li>
+<li><strong>Nim</strong>（尼姆游戏）： Nim 是一种两个人玩的回合制数学战略游戏。项目要求完成一个 AI，应用强化学习的Q-学习算法，反复与自己对弈，最终找到游戏的制胜策略。</li>
+</ul>
+<h3 id="神经网络neural-networks">神经网络（Neural Networks）</h3>
+<p>第六个单元探讨了神经网络，这是一种受人脑生物结构启发的计算模型。讲座解释了人工神经网络如何通过互连单元处理信息，这些单元将输入与加权连接和激活函数（如阶跃函数、S型函数和ReLU）结合起来。它涵盖了用于简单线性决策的感知器模型和用于处理复杂非线性问题的多层神经网络。讲座介绍了反向传播算法作为训练这些网络的方法，通过计算误差和更新权重。还讨论了梯度下降优化技术、防止过拟合的方法（如 dropout）以及 TensorFlow 等实现框架。特别关注了用于计算机视觉的卷积神经网络，解释了使图像处理成为可能的技术，如卷积、池化和扁平化。最后，讲座介绍了循环神经网络，作为处理语言翻译和图像描述等顺序数据处理任务的解决方案。</p>
+<p>编程项目：</p>
+<ul>
+<li><strong>Traffic</strong>（交通标志识别）：使用 TensorFlow 构建一个神经网络，根据路标图像对路标进行分类。项目使用德国交通标志识别基准 (GTSRB) 数据集，其中包含 43 种不同道路标志的数千张图像。</li>
+</ul>
+<h3 id="自然语言处理language">自然语言处理（Language）</h3>
+<p>第七个单元模块考察自然语言处理以及人工智能如何理解和生成人类语言。讲座首先介绍了各种自然语言处理任务，如自动摘要、翻译和语音识别，然后深入探讨了语言理解中语法和语义的挑战。它涵盖了上下文无关文法和语法树来表示句子结构，并探索了 n-gram 作为捕捉语言模式的词序列。讲座研究了将文本分解为有意义单位的标记化方法，并讨论了用于文本生成的马尔可夫模型。对于文本分类，讲座解释了词袋模型和朴素贝叶斯分类器，展示了人工智能如何在不理解语法的情况下分析情感。讲座解释了词表示技术，包括分布式表示和word2vec，展示了人工智能如何捕捉词语之间的语义关系。最后，介绍了用于语言任务的神经网络架构，包括具有注意力机制的循环神经网络和transformer模型，这些模型通过实现语言数据的并行处理，彻底革新了自然语言处理领域。</p>
+<p>编程项目：</p>
+<ul>
+<li><strong>Parser</strong>（句法解析器）：任务是编写一个 AI 来解析句子并提取名词短语，需要使用无上下文语法形式来解析英语句子，以确定其结构。本项目需要安装 Python 自然语言工具包 ntlk。</li>
+<li><strong>Attention</strong>（注意力机制）：项目有两个任务 - 1. 使用人工智能软件公司 Hugging Face 开发的 transformers Python 库，编写一个使用 BERT 预测遮蔽词的程序。该程序还将生成可视化注意力分数图表，144 个注意力头各生成一个图表；2. 分析程序生成的图表，试图了解 BERT 的注意力头在试图理解我们的自然语言时可能会注意什么。</li>
+</ul>
+<h2 id="经验体会">经验体会</h2>
+<p>本博主于2024年度完成了这一在线课程。总的来说，CS50AI 作为人工智能的入门课程非常出色，其课程安排结构清晰、涵盖内容全面，在理论理解和实践实现之间取得了很好的平衡。它采用的项目驱动式学习（Project-Based Learning）是一大亮点，通过 12 个 Python 编程项目巩固理论知识并进行实战应用。CS50AI 特别适合</p>
+<ul>
+<li>想要专攻人工智能的计算机科学学生</li>
+<li>希望将人工智能纳入技能组合的在职软件开发人员</li>
+<li>任何寻求系统化方式学习人工智能基础的人</li>
+</ul>
+<p>具体在课程准备、学习进度、时间安排和项目完成上，下面总结一些个人经验和体会：</p>
+<h3 id="课程准备">课程准备</h3>
+<p>对完全没有编程经验的人来说，CS50AI 的学习节奏可能具有挑战性。因此，建议一定要先快速入门 Python，达到可以舒适地阅读与理解简单的程序代码、编写 Python 简短应用函数的水平。 本课程的数学基础要求其实不高，但如果你已经忘记了大学一二年级所学的高等数学和工程数学的基本知识，就需要补充学习。当然，回头去看大学的教科书是不实际的。许多 AI 的入门书籍，包括前面推荐的《人工智能：现代方法》，都提供了讲解数学基础的附录，非常值得复习。</p>
+<p>还可以准备一些 Python 编程和相关数学知识的小抄（cheatsheet），打印放在手边随时查阅，非常方便。网上有许多现成的小抄以供下载，或者汇编组合自己觉得最重要的内容，生成定制小抄。</p>
+<h3 id="进度安排">进度安排</h3>
+<p>对于 Python 编程经验丰富、数学基础好的在校学生，如果能够付出每周20+小时学习 CS50AI，在一个月内突击学完课程所有内容并做完全部项目应该问题不大。如果你是和博主一样的在职人员，无法全日制地学习，可以考虑安排周末的时间。如果能做到周末两天每天集中6-8个小时学习和做编程项目，那么一个月内完成两个单元是可行的进展方案。这样整个课程就可以在四个月内结束。</p>
+<h3 id="项目经验">项目经验</h3>
+<ul>
+<li><p><strong>工具程序</strong></p>
+<p>CS50AI 课程属于哈佛大学 CS50 在线课程系列的一部分。所用这些课程的编程项目共享一组<a target="_blank" rel="noopener" href="https://github.com/cs50">CA50 工具程序</a>：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cs50.readthedocs.io/projects/check50/en/latest/">check50</a>：用于检查项目代码的测试工具。学习者可以使用 check50 本地测试项目代码。如果测试未通过，可以查看记录调试排错。</li>
+<li><a target="_blank" rel="noopener" href="https://cs50.readthedocs.io/style50/">style50</a>：一个命令行工具，用它来检查你的代码是否与<a target="_blank" rel="noopener" href="https://peps.python.org/pep-0008/">PEP 8 - Python 代码风格指南</a>一致。</li>
+<li><a target="_blank" rel="noopener" href="https://cs50.readthedocs.io/submit50/">submit50</a>：一个命令行工具，用于提交课程项目作业，可以多次提交以更新。</li>
+</ul>
+<p>这些工具程序的运行示例如下（对于不同的项目，只需更换项目名称即可）：</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">check50 ai50/projects/2024/x/degrees</span><br><span class="line">style50 degrees.py</span><br><span class="line">submit50 ai50/projects/2024/x/degrees</span><br></pre></td></tr></table></figure></p>
+<p>当运行 check50 工具进行测试时发现错误，调试需要参考测试用例时，可以去 <a target="_blank" rel="noopener" href="https://github.com/ai50/projects">CS50AI 项目的测试代码仓库</a> 查阅各个项目的实际测试用例。也可以在本机的<code>~/.local/share/check50/ai50/projects/</code>目录下找到同样的测试文件，比如第一个项目<code>Degrees</code>的测试用例位于</p>
+<p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.local/share/check50/ai50/projects/degrees/__init__.py</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>项目编程</strong></p>
+<p>在开始项目编程前，建议先完整地阅读所提供的代码，对整个程序框架有一个完整的了解。一些项目可以直接参考讲座中的演示代码（可从课程网站下载）。</p>
+<p>如果被某个项目的排错调试困住，可以求助各个社交网络的 CS50AI 讨论群（Discord、Slack 等）或者 <a target="_blank" rel="noopener" href="https://cs50.ai/">CS50 AI 助手</a>。如果实在无法厘清思路，不知从何处着手，可以参考一些项目完成后的代码仓库，比如本博主的 GitHub <a target="_blank" rel="noopener" href="https://github.com/packetmania/Harvard-CS50-AI">CS50AI代码仓库</a>。即使是这样，最好在看懂别人的答案后自己整理好思路，然后闭卷重新实现一下。 <strong>⚠️请不要直接复制代码，因为这样做使得项目实践乃至整个课程学习失去意义</strong>。</p></li>
+<li><p><strong>项目总结</strong></p>
+<p>最后给出 CS50AI 12 个项目的总结比较（备注栏给出编程实现时的一些提示，以供参考）：</p>
+<table>
+<thead>
+<tr class="header">
+<th><strong>项目名称</strong></th>
+<th><strong>学习单元</strong></th>
+<th><strong>技术领域和算法</strong></th>
+<th><strong>难度</strong></th>
+<th><strong>备注</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Degrees</strong></td>
+<td>搜索</td>
+<td>图搜索（BFS），FIFO 队列</td>
+<td>★★</td>
+<td>使用队列实现BFS，留意特殊情况</td>
+</tr>
+<tr class="even">
+<td><strong>Tic-Tac-Toe</strong></td>
+<td>搜索</td>
+<td>对抗性搜索，Minimax 和 Alpha-beta 剪枝</td>
+<td>★★</td>
+<td>从状态评估开始，递归实现 Minimax</td>
+</tr>
+<tr class="odd">
+<td><strong>Knights</strong></td>
+<td>知识推理</td>
+<td>命题逻辑，模型检查</td>
+<td>★★</td>
+<td>注意分解复杂语句</td>
+</tr>
+<tr class="even">
+<td><strong>Minesweeper</strong></td>
+<td>知识推理</td>
+<td>知识库，逻辑推理</td>
+<td>★★★</td>
+<td>使用递归，持续更新安全格子和地雷的集合</td>
+</tr>
+<tr class="odd">
+<td><strong>PageRank</strong></td>
+<td>概率推理</td>
+<td>马尔可夫链，PageRank 公式迭代</td>
+<td>★★★</td>
+<td>实现给定的随机搜索和迭代公式</td>
+</tr>
+<tr class="even">
+<td><strong>Heredity</strong></td>
+<td>概率推理</td>
+<td>概率分布，贝叶斯网络</td>
+<td>★★★</td>
+<td>使用联合概率表，谨慎处理条件式</td>
+</tr>
+<tr class="odd">
+<td><strong>Crossword</strong></td>
+<td>优化</td>
+<td>约束满足问题，回溯搜索和 AC-3 算法</td>
+<td>★★★★</td>
+<td>高效使用回溯，优化约束检查</td>
+</tr>
+<tr class="even">
+<td><strong>Shopping</strong></td>
+<td>机器学习</td>
+<td>监督学习技术，近邻分类器</td>
+<td>★★★</td>
+<td>注重特征选择和数据预处理</td>
+</tr>
+<tr class="odd">
+<td><strong>Nim</strong></td>
+<td>机器学习</td>
+<td>强化学习（Q-学习）</td>
+<td>★★★</td>
+<td>从基础Q-学习开始，实现探索策略</td>
+</tr>
+<tr class="even">
+<td><strong>Traffic</strong></td>
+<td>神经网络</td>
+<td>TensorFlow，计算机视觉（CNN）</td>
+<td>★★★★</td>
+<td>从简单的 CNN 架构开始，逐步优化</td>
+</tr>
+<tr class="odd">
+<td><strong>Parser</strong></td>
+<td>自然语言处理</td>
+<td>语法解析，规则处理</td>
+<td>★★★</td>
+<td>标记化细分和树构建</td>
+</tr>
+<tr class="even">
+<td><strong>Attention</strong></td>
+<td>自然语言处理</td>
+<td>注意力机制，Transformer，BERT</td>
+<td>★★★★★</td>
+<td>首先关注 TF-IDF 和查询处理</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<p>📌 <strong>学习 CS50AI，让你的 AI 职业成长之旅从这里开始！🚀</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/" title="哈佛 CS50-AI 课程介绍：从零开始学习人工智能">https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%92%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"><i class="fa fa-tag"></i> 人工智能和机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/31/Fix-View-Count/" rel="prev" title="解决不蒜子文章阅读计数错误的问题">
+                  <i class="fa fa-chevron-left"></i> 解决不蒜子文章阅读计数错误的问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">298k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:31</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script defer src="https://vercount.one/js"></script>
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"3c8407f3d451ad5f07edb52b8a1eb742"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

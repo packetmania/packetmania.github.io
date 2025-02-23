@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2025-01-01T06:23:41.062Z</updated>
+  <updated>2025-02-23T00:06:51.250Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>哈佛 CS50-AI 课程介绍：从零开始学习人工智能</title>
+    <link href="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/"/>
+    <id>https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</id>
+    <published>2025-02-16T21:05:26.000Z</published>
+    <updated>2025-02-23T00:06:51.250Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;哈佛大学的 CS50AI 是一门在线开放课程，专注于介绍人工智能的基础知识，并使用 Python 进行编程和项目实践。该课程由哈佛大学教授 David J. Malan 及其团队制作和授课，是广受欢迎的 CS50 计算机科学系列课程的一部分，适合已经具备一定编程基础的学习者。</summary>
+    
+    
+    
+    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
+    
+    
+    <category term="人工智能和机器学习" scheme="https://www.packetmania.net/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%92%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>解决不蒜子文章阅读计数错误的问题</title>
@@ -140,11 +159,11 @@
     
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
+    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     
@@ -416,25 +435,6 @@
     
     
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>克劳德·香农如何发明未来</title>
-    <link href="https://www.packetmania.net/2021/01/03/How-Shannon-invent-future/"/>
-    <id>https://www.packetmania.net/2021/01/03/How-Shannon-invent-future/</id>
-    <published>2021-01-03T22:15:00.000Z</published>
-    <updated>2021-11-28T19:38:24.874Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;2020年底，斯坦福大学工程学院的 David Tse 教授在知名的在线科普出版物《量子杂志》（Quanta Magazine）上发表&lt;a href=&quot;https://www.quantamagazine.org/how-claude-shannons-information-theory-invented-the-future-20201222/&quot;&gt;专栏文章&lt;/a&gt;，纪念美国数学家、电子工程师和密码学家、信息论的创始人克劳德·香农（Claude Shannon）博士。确实，给我们今天的生活带来极大便利的全球互联网和高速无线通信网络的开创和发展，都要归功于香农于1948年创立的现代信息理论。</summary>
-    
-    
-    
-    <category term="致敬先驱" scheme="https://www.packetmania.net/categories/%E8%87%B4%E6%95%AC%E5%85%88%E9%A9%B1/"/>
-    
-    
-    <category term="通信系统" scheme="https://www.packetmania.net/tags/%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F/"/>
     
   </entry>
   

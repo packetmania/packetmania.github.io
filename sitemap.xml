@@ -4,7 +4,7 @@
   <url>
     <loc>https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</loc>
     
-    <lastmod>2025-02-23</lastmod>
+    <lastmod>2025-02-24</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -308,6 +308,20 @@
 
   
   <url>
+    <loc>https://www.packetmania.net/tags/TCP-IP/</loc>
+    <lastmod>2025-02-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2025-02-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/</loc>
     <lastmod>2025-02-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -323,20 +337,6 @@
   
   <url>
     <loc>https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/</loc>
-    <lastmod>2025-02-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.packetmania.net/tags/TCP-IP/</loc>
-    <lastmod>2025-02-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2025-02-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

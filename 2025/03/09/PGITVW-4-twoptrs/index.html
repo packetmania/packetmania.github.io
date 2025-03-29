@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances | disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Disqus评论","order":-1},"utterances":{"text":"Utterances评论","order":-2},"gitalk":{"text":"Gitalk评论","order":-3}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="双指针技巧是一种强大而优雅的算法策略，常用于高效地解决数组、链表和字符串类型的问题。由于其能够优化解决方案并降低时间复杂度，因此在编程面试中被广泛考察。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员面试题精解（4）— 双指针">
+<meta property="og:url" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="双指针技巧是一种强大而优雅的算法策略，常用于高效地解决数组、链表和字符串类型的问题。由于其能够优化解决方案并降低时间复杂度，因此在编程面试中被广泛考察。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/sliding_window_fixed.png">
+<meta property="og:image" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/container_with_most_water.jpg">
+<meta property="og:image" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/rainwatertrap.png">
+<meta property="og:image" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/trap_the_water.png">
+<meta property="og:image" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/link_list_loop.png">
+<meta property="og:image" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/rho_hash_function.png">
+<meta property="article:published_time" content="2025-03-09T23:37:19.000Z">
+<meta property="article:modified_time" content="2025-03-29T06:38:11.847Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta property="article:tag" content="Python编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/sliding_window_fixed.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/","path":"2025/03/09/PGITVW-4-twoptrs/","title":"程序员面试题精解（4）— 双指针"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>程序员面试题精解（4）— 双指针 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tasks"><a href="/VXlzTWJvcVNzcmRzdkNnaG0/" rel="section"><i class="fa fa-tasks fa-fw"></i>任务</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">滑动窗口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E9%95%BF%E5%BA%A6%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">1.1.</span> <span class="nav-text">固定长度滑动窗口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E5%8F%98%E9%95%BF%E5%BA%A6%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">1.2.</span> <span class="nav-text">可变长度滑动窗口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%92%9E%E6%8C%87%E9%92%88"><span class="nav-number">2.</span> <span class="nav-text">对撞指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%9B%9E%E6%96%87%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.1.</span> <span class="nav-text">判断回文字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%A4%E6%95%B0%E5%92%8C"><span class="nav-number">2.2.</span> <span class="nav-text">有序数组两数和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%92%8C%E4%B8%BA%E9%9B%B6%E7%9A%84%E4%B8%89%E5%85%83%E7%BB%84"><span class="nav-number">2.3.</span> <span class="nav-text">和为零的三元组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%9B%E6%9C%80%E5%A4%9A%E6%B0%B4%E7%9A%84%E5%AE%B9%E5%99%A8"><span class="nav-number">2.4.</span> <span class="nav-text">盛最多水的容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%B1%E5%AD%90%E6%8E%92%E5%88%97%E6%8E%A5%E9%9B%A8%E6%B0%B4"><span class="nav-number">2.5.</span> <span class="nav-text">柱子排列接雨水</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E6%85%A2%E6%8C%87%E9%92%88"><span class="nav-number">3.</span> <span class="nav-text">快慢指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">链表相关的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E7%8E%AF%E8%B7%AF%E6%A3%80%E6%B5%8B"><span class="nav-number">3.1.1.</span> <span class="nav-text">链表环路检测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E7%8E%AF%E8%B7%AF%E5%85%A5%E5%8F%A3"><span class="nav-number">3.1.2.</span> <span class="nav-text">定位环路入口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%BB%E6%89%BE%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%82%B9"><span class="nav-number">3.1.3.</span> <span class="nav-text">寻找链表中点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8"><span class="nav-number">3.1.4.</span> <span class="nav-text">判断回文链表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E5%80%92%E6%95%B0%E8%8A%82%E7%82%B9"><span class="nav-number">3.1.5.</span> <span class="nav-text">链表倒数节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E9%93%BE%E8%A1%A8%E5%9C%BA%E6%99%AF%E5%BA%94%E7%94%A8"><span class="nav-number">3.2.</span> <span class="nav-text">非链表场景应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%BE%E9%87%8D%E5%A4%8D%E6%95%B0"><span class="nav-number">3.2.1.</span> <span class="nav-text">找重复数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%BE%E5%BF%AB%E4%B9%90%E6%95%B0"><span class="nav-number">3.2.2.</span> <span class="nav-text">找快乐数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A9%BA%E6%A0%BC%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.2.3.</span> <span class="nav-text">空格转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E5%92%8C%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">总结和应用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机科学与技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机科学与技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员面试题精解（4）— 双指针
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-03-09 16:37:19" itemprop="dateCreated datePublished" datetime="2025-03-09T16:37:19-07:00">2025-03-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2025-03-28 23:38:11" itemprop="dateModified" datetime="2025-03-28T23:38:11-07:00">2025-03-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">面试指南</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>23k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>21 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>双指针技巧是一种强大而优雅的算法策略，常用于高效地解决数组、链表和字符串类型的问题。由于其能够优化解决方案并降低时间复杂度，因此在编程面试中被广泛考察。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>The battle for a fast system can be won or lost in specifying the problem it is to solve.</strong><br> <strong>— 《编程珠玑》<em>Jon Bentley</em>（乔恩·本特利，美国计算机科学家，因其在计算机编程、算法和数据结构研究方面的贡献而闻名）</strong></p>
+</div>
+<p>在解决问题时，我们通常可以使用暴力方法遍历所有可能的情况，但这通常导致较高的时间复杂度。双指针之所以强大，是因为它能巧妙地避免嵌套循环，减少不必要的比较和计算。掌握双指针技巧可以帮助你将时间复杂度从 <span class="math inline">\(O(n^2)\)</span> 降低到 <span class="math inline">\(O(n)\)</span>，这在面试中是非常有价值的优化。在实际面试中，能够识别出可以使用双指针解决的问题，并熟练地应用这一技巧，往往是区分普通候选人和优秀候选人的关键因素之一。</p>
+<p>需要特别说明的是，这里的"指针"是一个通用概念，并不特指C/C++语言中的内存地址变量。在更广泛的计算机科学算法应用中，它也可以指代数组或字符串的索引变量，或者是遍历数据结构的迭代器。无论使用哪种编程语言，双指针技巧的核心思想都是一样的——使用两个移动的"指针"来优化搜索或遍历过程。</p>
+<p>根据指针移动的方式和相对位置，我们可以将运用于单一数据结构的双指针技巧分为下列几种主要模式：</p>
+<ol type="1">
+<li>滑动窗口（Sliding Window）：两个指针维护一个窗口，通常用于解决子数组/子字符串问题</li>
+<li>对撞指针：两个指针分别指向序列首尾元素，从两端向中间移动直到相撞为止</li>
+<li>快慢指针（Fast &amp; Slow Pointers）：两个指针以不同速度在数据序列中移动</li>
+</ol>
+<p>每种模式都有其特定的应用场景和技巧，掌握这些模式将使你能够解决各种面试中遇到的、看起来很复杂的算法问题。下面让我们详细探讨每种模式及其典型例题。</p>
+<h2 id="滑动窗口">滑动窗口</h2>
+<p>滑动窗口是双指针的一种特殊形式，使用两个指针表示一个窗口的起止边界。移动起点指针可以收缩窗口，而终点指针用于扩展窗口，通过动态调整窗口大小来解决问题。这种技巧在处理连续序列的问题上特别有效，如子数组、子字符串或子序列。滑动窗口的核心思想是将嵌套循环问题转化为单循环问题，通过维护窗口内的状态信息，避免了重复计算。</p>
+<p>比如对于一个数组 <span class="math inline">\([1, 3, 2, 6, -1, 4, 1, 8, 2]\)</span>，要求计算出长度为 <span class="math inline">\(k=5\)</span> 的连续子数组元素和。最简单的方法就是写一个双循环，对每一个数组元素计算从它开始长度为 <span class="math inline">\(5\)</span> 的子数组的和。由于对于输入数组的每个元素，我们都要计算 <span class="math inline">\(k\)</span> 个元素的总和，因此上述算法的时间复杂度为 <span class="math inline">\(O(n∗k)\)</span>，其中 <span class="math inline">\(n\)</span> 是输入数组中的元素个数。</p>
+<p>这种方法的低效之处在于，对于任意两个连续的大小为 <span class="math inline">\(5\)</span> 的子数组，重叠部分（包含四个元素）将被求值两次。我们能否以某种方式重复使用重叠元素计算的总和呢？解决这个问题的有效方法是将每个连续的子数组可视化为一个包含 “5”个元素的滑动窗口。这意味着，当进入下一个子数组时，窗口向右滑动一个元素。因此，为了重复使用上一个子数组的总和，我们将减去从窗口中移出的元素，然后加上新包含在滑动窗口中的元素。这样，我们就不必通过整个子数组来求和，因此，算法复杂度将降低为 <span class="math inline">\(O(n)\)</span>。</p>
+<p>如下图所示，以上述输入为例，索引为 0-4 的子数组和索引为 1-5 的子数组之间有四个重叠元素。通过使用两个指针 <code>start</code> 和 <code>end</code> 标记窗口起止点，当窗口滑动时，窗口内元素的和就是原来的值减去索引为 0 的元素（1）、再加上索引为 5 的元素（4）之后的结果。 <img src="sliding_window_fixed.png" style="width:55.0%;height:55.0%" /></p>
+<p>滑动窗口典型的应用场景包括：</p>
+<ul>
+<li>寻找最长/最短的满足特定条件的子数组或子字符串</li>
+<li>计算满足特定条件的子数组或子字符串的数量</li>
+<li>判断是否存在满足特定条件的子数组或子字符串</li>
+</ul>
+<p>滑动窗口可以分为两种主要类型：</p>
+<ol type="1">
+<li>固定长度窗口：窗口长度保持不变，整体向前滑动，适用于"找出所有长度为 <span class="math inline">\(k\)</span> 的..."类问题</li>
+<li>可变长度窗口：窗口长度根据特定条件动态调整，适用于"找出最长/最短满足条件的..."类问题</li>
+</ol>
+<h3 id="固定长度滑动窗口">固定长度滑动窗口</h3>
+<p>在窗口初始化后，固定长度滑动窗口的起点指针和终点指针总是同时向右移动，从而它的长度保持不变。下面给出了固定长度滑动窗口的代码模板</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">start = <span class="number">0</span></span><br><span class="line">end = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> end &lt; <span class="built_in">len</span>(arr):</span><br><span class="line">    window.append(arr[end])  <span class="comment"># 加入终点指针的新元素</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 达到窗口大小时，执行相关计算，然后移动起点指针缩小窗口</span></span><br><span class="line">    <span class="keyword">if</span> end &gt;= k - <span class="number">1</span>:</span><br><span class="line">        &lt;...&gt; <span class="comment"># 对窗口内元素执行相关计算</span></span><br><span class="line">        window.popleft()  <span class="comment"># 去除起点指针元素</span></span><br><span class="line">        start += <span class="number">1</span>  <span class="comment"># 移动起点指针</span></span><br><span class="line">    end += <span class="number">1</span>  <span class="comment"># 向右移动终点指针增大窗口，维持长度 k 不变</span></span><br></pre></td></tr></table></figure>
+<p>参考此模版，可以用 Python 实现求连续子数组元素和的函数如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_subarray_sum</span>(<span class="params">arr: <span class="built_in">list</span>, k: <span class="built_in">int</span></span>) -&gt; <span class="built_in">list</span>:</span></span><br><span class="line">    start, end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    winSum = <span class="number">0</span></span><br><span class="line">    sums = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> end &lt; <span class="built_in">len</span>(arr):</span><br><span class="line">        winSum += arr[end]  <span class="comment"># Add new end element</span></span><br><span class="line">        <span class="keyword">if</span> end &gt;= k - <span class="number">1</span>:</span><br><span class="line">            sums.append(winSum)  <span class="comment"># Save the current window sum</span></span><br><span class="line">            winSum -= arr[start]  <span class="comment"># Substract old start element </span></span><br><span class="line">            start += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line">        end += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sums</span><br></pre></td></tr></table></figure>
+<p>此函数的测试程序和输出结果如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = find_subarray_sum([<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">6</span>, -<span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">8</span>, <span class="number">2</span>], <span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Sums of the size 5 subarray: <span class="subst">&#123;result&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sums of the size 5 subarray: [11, 14, 12, 18, 14]</span><br></pre></td></tr></table></figure>
+<p>这个例子非常直观，很好地展示了滑动窗口的效率。下面来看看稍微复杂一点的问题：</p>
+<blockquote>
+<p>给你一个整数数组 <code>arr</code> 和两个整数 <code>k</code> 和 <code>threshold</code> 。<br> 请你返回长度为 k 且平均值大于等于 threshold 的子数组数目。</p>
+<p>示例 1：<br> <strong>输入：</strong>arr = [2,2,2,2,5,5,5,8], k = 3, threshold = 4<br> <strong>输出：</strong>3（解释：子数组 [2,5,5]，[5,5,5] 和 [5,5,8] 的平均值分别为 4，5 和 6 。其他长度为 3 的子数组的平均值都小于 4)<br></p>
+<p>示例 2：<br> <strong>输入：</strong>arr = [11,13,17,23,29,31,7,5,2,3], k = 3, threshold = 5<br> <strong>输出：</strong>6（解释：前 6 个长度为 3 的子数组平均值都大于 5）</p>
+</blockquote>
+<p>仔细阅读题目的要求，可以看出与前例并无实质性的变化。不同点仅在于现在不需要保存每个子数组的和，只要计算窗口元素的均值，且当均值不小于阈值时计数。所以可以将前例代码中数组列表 <code>sums</code> 换成计数变量，然后修改相关的操作就可以了。更新后的新函数如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numOfSubarrays</span>(<span class="params">arr: <span class="built_in">list</span>, k: <span class="built_in">int</span>, threshold: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    start, end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    winSum = <span class="number">0</span></span><br><span class="line">    num = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> end &lt; <span class="built_in">len</span>(arr):</span><br><span class="line">        winSum += arr[end]</span><br><span class="line">        <span class="keyword">if</span> end &gt;= k - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">if</span> (winSum &gt;= k * threshold):</span><br><span class="line">                num += <span class="number">1</span></span><br><span class="line">            winSum -= arr[start]</span><br><span class="line">            start += <span class="number">1</span></span><br><span class="line">        end += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> num</span><br></pre></td></tr></table></figure>
+<p>此代码实现简单明了，只是在前例的基础上变更了三行（4，9 和 10）。两个示例都测试无误。实际上，这道题就是<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/description/">力扣 1343</a> - <strong>大小为 K 且平均值大于等于阈值的子数组数目</strong>。虽然此题标记的难度中等，但是掌握了固定长度滑动窗口的技巧，它变得出乎意料地简单。</p>
+<p>固定长度滑动窗口应用于字符串，也可以很快解决<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-all-anagrams-in-a-string/description/">力扣 438</a>号问题 - <strong>找到字符串中所有字母异位词</strong>。题目给定一个字符串 s 和一个非空字符串 p，要求找到 s 中所有是 p 的字母异位词（anagram）的子串，返回这些子串的起始索引。由于字母异位词的长度固定为 p 的长度，我们可以使用固定大小的滑动窗口和字符计数来解决。</p>
+<p>使用 Python 编程解决此题的具体思路是</p>
+<ul>
+<li>使用两个标准字典分别存储目标模式串 p 和滑动窗口中的字符频率</li>
+<li>滑动窗口时，添加新字符并移除旧字符（参考代码模版）</li>
+<li>初始化第一个窗口及每次滑动窗口后后，检查是否匹配
+<ul>
+<li>使用字典相等性比较(==)来检查两个频率表是否相同</li>
+<li>在字符计数归零时从字典中删除该字符，这确保字典比较的正确性</li>
+</ul></li>
+</ul>
+<p>由此，可以写出答案如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findAnagrams</span>(<span class="params">s: <span class="built_in">str</span>, p: <span class="built_in">str</span></span>) -&gt; <span class="built_in">list</span>[<span class="built_in">int</span>]:</span></span><br><span class="line">    start, end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    pDict = &#123;&#125;</span><br><span class="line">    winDict = &#123;&#125;</span><br><span class="line">    result = []</span><br><span class="line">    k = <span class="built_in">len</span>(p)</span><br><span class="line">    n = <span class="built_in">len</span>(s)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> n &lt; k:  <span class="comment"># If s is shorter than p, no anagram</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># init the char counters for p</span></span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> p:</span><br><span class="line">        <span class="keyword">if</span> c <span class="keyword">in</span> pDict:</span><br><span class="line">            pDict[c] += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            pDict[c] = <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">while</span> end &lt; n:</span><br><span class="line">        new_c = s[end]  <span class="comment"># Add new end char to the window, counter++</span></span><br><span class="line">        <span class="keyword">if</span> new_c <span class="keyword">in</span> winDict:</span><br><span class="line">            winDict[new_c] += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            winDict[new_c] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> end &gt;= k - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">if</span> winDict == pDict:</span><br><span class="line">                result.append(start)</span><br><span class="line">            old_c = s[start]</span><br><span class="line">            winDict[old_c] -= <span class="number">1</span>  <span class="comment"># Remove the old start char, counter--</span></span><br><span class="line">            <span class="keyword">if</span> winDict[old_c] == <span class="number">0</span>:</span><br><span class="line">                winDict.pop(old_c)</span><br><span class="line">            start += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line"></span><br><span class="line">        end += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+<p>虽然此函数实现代码长的多，但其流程完全与模版一致，应该很容易理解。另外，也可以如下导入 Python Counter 模块替换字典，缩短代码行数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findAnagrams</span>(<span class="params">s: <span class="built_in">str</span>, p: <span class="built_in">str</span></span>) -&gt; <span class="built_in">list</span>[<span class="built_in">int</span>]:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    查找字符串s中所有p的字母异位词，返回它们的起始索引, 使用Counter对象优化实现</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    start, end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    result = []</span><br><span class="line">    n, k = <span class="built_in">len</span>(s), <span class="built_in">len</span>(p)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> n &lt; k:  <span class="comment"># 如果s比p短，不可能包含异位词</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 使用Counter对象来统计字符频率</span></span><br><span class="line">    p_counter = Counter(p)</span><br><span class="line">    w_counter = Counter()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> end &lt; n:</span><br><span class="line">	    w_counter[s[end] ] += <span class="number">1</span>  <span class="comment"># 添加新字符到窗口右侧, counter++</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> end &gt;= k - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">if</span> s_counter == p_counter:</span><br><span class="line">                result.append(start)</span><br><span class="line">            old_c = s[start]</span><br><span class="line">            w_counter[old_c] -= <span class="number">1</span>  <span class="comment"># 从窗口左侧移除旧字符, counter--</span></span><br><span class="line">            <span class="keyword">if</span> w_counter[old_c] == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">del</span> w_counter(old_c)  <span class="comment"># 从计数器中移除字符计数为0的条目</span></span><br><span class="line">            start += <span class="number">1</span>  <span class="comment"># 滑动窗口</span></span><br><span class="line"></span><br><span class="line">        end += <span class="number">1</span>  <span class="comment"># 滑动窗口</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+<h3 id="可变长度滑动窗口">可变长度滑动窗口</h3>
+<p>可变长度滑动窗口的窗口长度不定，其起止指针的向右移动并不同步，可以根据条件动态调整。可变长度滑动窗口增强了灵活性，为解决许多问题提供了方便。以下是可变长度滑动窗口的代码模板</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">start = <span class="number">0</span></span><br><span class="line">end = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> end &lt; <span class="built_in">len</span>(arr):</span><br><span class="line">    window.append(arr[right])  <span class="comment">#加入终点指针的新元素</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> 窗口需要缩小:</span><br><span class="line">        &lt;...&gt; <span class="comment"># 对窗口内元素执行相关计算</span></span><br><span class="line">        window.popleft()</span><br><span class="line">        start += <span class="number">1</span>  <span class="comment"># 移动起点指针缩小窗口</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 向右侧增大窗口</span></span><br><span class="line">    end += <span class="number">1</span>  <span class="comment"># 向右移动终点指针增大窗口</span></span><br></pre></td></tr></table></figure>
+<p>应用可变长度滑动窗口的一个典型例子是<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/">力扣 3</a> - <strong>无重复字符的最长子串</strong>。此题给定一个由英文字母、数字、符号和空格组成的字符串 s ，请你找出其中不含有重复字符的最长子串的长度。比如输入 <code>s = "abcabcbb"</code>，输出 3，因为无重复字符的最长子串是<code>"abc"</code>；而输入`s = "bbbbb"时，输出为 1。</p>
+<p>本题的关键在于确保滑动窗口内没有重复字符，其具体的解题思路有以下几点：</p>
+<ol type="1">
+<li>一开始起止指针都为 0， 向右移动终点指针，将右侧新字符加入当前窗口并记录该字符个数。</li>
+<li>如果该窗口中该新字符的个数多于 1，则右移起点指针缩小窗口，并更新窗口中对应字符的个数。</li>
+<li>如果该新字符的个数仍然多于 1，继续第二步右移起点指针，直到新字符的个数为 1。</li>
+<li>更新无重复字符的最长子串长度。</li>
+<li>如果还没到数据序列末尾，继续右移终点指针，回到第一步重复以上过程。</li>
+</ol>
+<p>按照此思路，套用代码模版的 Python 实现如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lengthOfLongestSubstring</span>(<span class="params">s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    start, end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    win = &#123;&#125;</span><br><span class="line">    result = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> end &lt; <span class="built_in">len</span>(s):</span><br><span class="line">        <span class="keyword">if</span> s[end] <span class="keyword">not</span> <span class="keyword">in</span> win:</span><br><span class="line">            win[s[end]] = <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            win[s[end]] += <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">        <span class="keyword">while</span> win[s[end]] &gt; <span class="number">1</span>:</span><br><span class="line">            win[s[start]] -= <span class="number">1</span></span><br><span class="line">            start += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line"></span><br><span class="line">        result = <span class="built_in">max</span>(result, end - start + <span class="number">1</span>)</span><br><span class="line">        end += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+<p>本题还有另一种解法。其实，当发现新加入的字符有重复时，右移起点指针不必一个个的加。我们可以记录每个字符最新出现的位置索引值，如果该值在窗口中，我们一次性地将起点指针重置到此位置。如下所示，这样写出的函数更简洁</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lengthOfLongestSubstring2</span>(<span class="params">s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    start, end = <span class="number">0</span></span><br><span class="line">    c_index = &#123;&#125;</span><br><span class="line">    length = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> end &lt; <span class="built_in">len</span>(s):</span><br><span class="line">        <span class="keyword">if</span> s[end] <span class="keyword">in</span> c_index:</span><br><span class="line">            <span class="comment"># New char already in the window, move start point</span></span><br><span class="line">            start = <span class="built_in">max</span>(start, c_index[s[end]] + <span class="number">1</span>)  <span class="comment"># Slide window</span></span><br><span class="line"></span><br><span class="line">        c_index[s[end]] = end  <span class="comment"># Update new char index </span></span><br><span class="line">        length = <span class="built_in">max</span>(length, end - start + <span class="number">1</span>)  <span class="comment"># Update max length</span></span><br><span class="line">        end += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> length</span><br></pre></td></tr></table></figure>
+<p>可以看到，第二种解法还是遵循可变长度滑动窗口的代码模版的基本结构，只是不再需要用第二个<code>while</code>循环来缩小窗口，也不必定义专门的数据结构追踪当前窗口的状态信息。确实是一个巧妙的设计。这两个答案在力扣网站提交都通过无误。</p>
+<p>可变长度滑动窗口应用于数组，能轻松解决<strong>长度最小的子数组</strong>（<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">力扣 209</a>）问题。题目要求是</p>
+<blockquote>
+<p>给定一个含有 n 个正整数的数组和一个正整数 target 。</p>
+<p>找出该数组中满足其总和大于等于 target 的长度最小的子数组，并返回其长度。如果不存在符合条件的子数组，返回 0 。</p>
+</blockquote>
+<p>充分理解了可变长度滑动窗口的算法精髓，我们就可以直接套用代码模版，得到下面的 Python 实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minSubArrayLen</span>(<span class="params">target: <span class="built_in">int</span>, nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    size = <span class="built_in">len</span>(nums)</span><br><span class="line">    minLen = size + <span class="number">1</span></span><br><span class="line">    star, end = <span class="number">0</span></span><br><span class="line">    winSum = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> end &lt; size:</span><br><span class="line">        winSum += nums[end]   <span class="comment"># Add new end element</span></span><br><span class="line">        <span class="keyword">while</span> winSum &gt;= target:</span><br><span class="line">            minLen = <span class="built_in">min</span>(minLen, end - start + <span class="number">1</span>)  <span class="comment"># Update minimum length </span></span><br><span class="line">            winSum -= nums[start]  <span class="comment"># Update window status</span></span><br><span class="line">            start += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line">        end += <span class="number">1</span>  <span class="comment"># Slide window</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> minLen <span class="keyword">if</span> minLen != size + <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>此代码清晰展示了窗口大小的动态化调整过程。通过两个阶段操作：先扩展窗口直到窗口内元素和不小于目标值<code>target</code>的条件，然后移动起点指针收缩窗口寻找最优解<code>minLen</code>。这就是可变长度滑动窗口的常见应用。</p>
+<h2 id="对撞指针">对撞指针</h2>
+<p>对撞指针通常从数组或数据序列的两端开始，向中间移动。这种模式常用于有序数组中寻找元素对或三元组，但也可用于某些特定的未排序数组问题。对撞指针之所以高效，是因为它通过两个指针的面对面移动来缩小搜索空间。当我们从两端向中间移动时，可以根据当前状态决定移动哪个指针，从而避免了不必要的计算。</p>
+<p>这种技巧在以下场景特别有用：</p>
+<ul>
+<li>判断回文字符串</li>
+<li>查找有序数组中满足特定条件（如和为特定值）的元素对</li>
+<li>三数之和、四数之和等问题</li>
+<li>容器盛水问题（这个问题不需要数组有序）</li>
+<li>接雨水问题（这个问题也不需要数组有序）</li>
+</ul>
+<p>对撞指针的典型实现模式是：</p>
+<ol type="1">
+<li>初始化左指针指向数据开头，右指针指向数据末尾</li>
+<li>在循环中，根据两个指针所指元素的特性决定移动哪个指针</li>
+<li>当两个指针相遇或交叉时，结束循环</li>
+</ol>
+<p>据此得到的对撞指针伪代码模板如下所示</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">left = <span class="number">0</span></span><br><span class="line">right = <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> left &lt; right:</span><br><span class="line">    <span class="keyword">if</span> 满足要求的特殊条件:</span><br><span class="line">        <span class="keyword">return</span> 符合条件的值 </span><br><span class="line">    <span class="keyword">elif</span> 条件-<span class="number">1</span>:</span><br><span class="line">        left += <span class="number">1</span></span><br><span class="line">    <span class="keyword">elif</span> 条件-<span class="number">2</span>:</span><br><span class="line">        right -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> 没找到 或 找到对应值</span><br></pre></td></tr></table></figure>
+<p>模板给出了程序设计的思路和框架，具体到各个问题可以做相应的调整。以下对常用的问题场景作进一步的说明和讲解。</p>
+<h3 id="判断回文字符串">判断回文字符串</h3>
+<p><strong>验证回文串</strong>（<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/valid-palindrome/description/">力扣 125</a>）是演示对撞指针的最直观的例子。不考虑大小写及非字母数字字符，正反着读都一样的字符串就是回文串。比如“A man, a plan, a canal: Panama”，拿掉标点符号和空格，再全部变成小写字母后就变成回文串“amanaplanacanalpanama”。</p>
+<p>很明显，基于其对折后完全相同的性质，使用对撞指针可以快速验证回文串。设置两个指针对向移动，并各自跳过非字母数字字符，它们每次指向的两个字符必须一样，否则就不是回文串。此思路变成 Python 代码就是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isPalindrome</span>(<span class="params">s: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span></span><br><span class="line">    left, right = <span class="number">0</span>, <span class="built_in">len</span>(s) - <span class="number">1</span></span><br><span class="line">    new_s = s.lower()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> left &lt; right:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> new_s[left].isalnum():</span><br><span class="line">            left += <span class="number">1</span>  <span class="comment"># Skip non-alphanumeric</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> new_s[right].isalnum():</span><br><span class="line">            right -= <span class="number">1</span>  <span class="comment"># Skip non-alphanumeric</span></span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> new_s[left] == new_s[right]:</span><br><span class="line">            <span class="comment"># Move both pointers, face to face</span></span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">            right -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>如前所述，虽然程序流程与模板并不一一对应，但是整体框架结构是完全一致的。</p>
+<h3 id="有序数组两数和">有序数组两数和</h3>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/description/">力扣 167</a> - <strong>两数之和 II - 输入有序数组</strong>给出了一个简单的应用对撞指针解数值相关题目的例子。题目给出一个下标从 1 开始的已按非递减顺序排列的整数数组，请你从数组中找出满足相加之和等于目标数的两个数的下标（假设每个输入只对应唯一的答案）。</p>
+<p>了解对撞指针，利用数组已排序的性质，可以快速解出这道题。我们先将左端最小值与右端最大值相加，如果和比目标数大，左移右指针，测试下一个小一点的和数；如果和比目标数小，右移左指针测试下一个大一点的和数；如果和等于目标数，就返回左右指针对应的索引值。继续此过程直到两个指针重合。由此得到的 Python 函数实现如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">twoSum</span>(<span class="params">self, numbers: <span class="built_in">list</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">list</span>[<span class="built_in">int</span>]:</span></span><br><span class="line">    left, right = <span class="number">0</span>, <span class="built_in">len</span>(numbers) - <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> left &lt; right:</span><br><span class="line">        summ = numbers[left] + numbers[right]</span><br><span class="line">        <span class="keyword">if</span> summ == target:</span><br><span class="line">            <span class="keyword">return</span> [left + <span class="number">1</span>, right + <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">elif</span> summ &lt; target:</span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> summ &gt; target:</span><br><span class="line">            right -= <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>注意，因为题目说明了输入对应唯一的答案，所以在<code>while</code>循环中一定会遇到和为目标数使函数返回的条件。对于不同的要求，要记住在循环结束后加上相应的返回语句。</p>
+<h3 id="和为零的三元组">和为零的三元组</h3>
+<p>对撞指针还能帮助解决多元数之和的面试题，比如<strong>三数之和</strong>（<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/3sum/description/">力扣 15</a>）。此题需要找到整数数组中所有和为 0 且不重复的三元组。</p>
+<p>为了沿用对撞指针模式，首先，我们要对数组进行排序，然后每次迭代一个数字。假设在迭代过程中，当前的数字是 “<span class="math inline">\(x\)</span>”，那么我们需要找到 “<span class="math inline">\(y\)</span> ”和 “<span class="math inline">\(z\)</span>”，使得<span class="math inline">\(y+z=-x\)</span>。由此将其转化为“两数之和配对”问题。另外为了满足不重复的要求，为此必须跳过任何重复的数字。由于数组先排序好了，所以所有重复的数字都会挨在一起，可以很容易跳过。三数之和问题答案的 Python 函数实现如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">threeSum</span>(<span class="params">self, nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">list</span>[<span class="built_in">list</span>[<span class="built_in">int</span>]]:</span></span><br><span class="line">    triplets = []</span><br><span class="line">    nums.sort()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(nums) - <span class="number">2</span>):</span><br><span class="line">        <span class="keyword">if</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> nums[i] == nums[i - <span class="number">1</span>]:</span><br><span class="line">            <span class="keyword">continue</span>  <span class="comment"># Skip same numbers to avoid duplicate triplets</span></span><br><span class="line">            </span><br><span class="line">        left, right = i + <span class="number">1</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        target = -nums[i]</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> left &lt; right:</span><br><span class="line">            summ = nums[left] + nums[right]</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> summ &lt; target:</span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> summ &gt; target:</span><br><span class="line">                right -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># summ == target</span></span><br><span class="line">                triplets.append([nums[i], nums[left], nums[right]])</span><br><span class="line">                </span><br><span class="line">                <span class="comment"># Skip same numbers to avoid duplicate triplets</span></span><br><span class="line">                <span class="keyword">while</span> left &lt; right <span class="keyword">and</span> nums[left] == nums[left + <span class="number">1</span>]:</span><br><span class="line">                    left += <span class="number">1</span></span><br><span class="line">                <span class="keyword">while</span> left &lt; right <span class="keyword">and</span> nums[right] == nums[right - <span class="number">1</span>]:</span><br><span class="line">                    right -= <span class="number">1</span></span><br><span class="line">                    </span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">                right -= <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> triplets</span><br></pre></td></tr></table></figure>
+<p>代码说明：</p>
+<ul>
+<li>这里应用 Python 内置排序函数<code>sort()</code>实现排序。</li>
+<li>程序设计有两个循环：外面的<code>for</code>循环遍历不重复的 <span class="math inline">\(x\)</span>，内部<code>while</code>循环寻找不重复的 <span class="math inline">\(y\)</span> 和 <span class="math inline">\(z\)</span>。</li>
+<li>内部<code>while</code>循环的实现可参考对撞指针的代码模版。</li>
+<li>此程序的时间复杂度为 <span class="math inline">\(O(n∗\log{n}+n^2)\)</span>，渐近等价于 <span class="math inline">\(O(n^2)\)</span>
+<ul>
+<li>数组排序的时间复杂度为 <span class="math inline">\(O(n∗\log{n})\)</span></li>
+<li>双循环的时间复杂度为 <span class="math inline">\(O(n^2)\)</span></li>
+</ul></li>
+</ul>
+<h3 id="盛最多水的容器">盛最多水的容器</h3>
+<p>前面两个例子中的数组都需要排序，但是对一些特定的问题，即使数组无序也能采用对撞指针解决，比如<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/container-with-most-water/description/">力扣 11</a> - <strong>盛最多水的容器</strong>。题目大意是，给定 <span class="math inline">\(n\)</span> 个非负整数 <span class="math inline">\(a_1,a_2,\dots,a_n\)</span>，每个数代表坐标中的一个点 <span class="math inline">\((i,a_i)\)</span>；在坐标内画 <span class="math inline">\(n\)</span> 条连接端点 <span class="math inline">\((i,0)\)</span> 和 <span class="math inline">\((i,a_i)\)</span> 垂直线；问其中哪两条线可使得它们与 <span class="math inline">\(x\)</span> 轴共同构成的容器容纳最多的水。如下图，以输入数组 <span class="math inline">\([1,8,6,2,5,4,8,3,7]\)</span> 为例，输出应当为 <span class="math inline">\(49\)</span>，因为由 <span class="math inline">\((2,8)\)</span> 和 <span class="math inline">\((9,7)\)</span> 两条线构成的容器能容纳的水量最大。</p>
+<p><img src="container_with_most_water.jpg" style="width:60.0%;height:60.0%" /></p>
+<p>从上图可以看到，<em>容器容纳的水量 = 左右两端较低直线的高度 x 两端直线之间的距离</em>。使用对撞指针求解时，我们应该移动较低直线所在的指针位置，从而可能得到更大的高度和容量，最终获取其中最大值。具体步骤如下：</p>
+<ol type="1">
+<li>初始化对撞指针，使两个指针指向数组开始和结束位置。</li>
+<li>计算当前容器容纳的水量，保存以备后续更新最大水量值。</li>
+<li>判断左右指针对应的垂直线高度值大小
+<ul>
+<li>如果左指针指向的直线高度比较低，则将左指针右移。</li>
+<li>如果右指针指向的直线高度比较低，则将右指针左移。</li>
+<li>如果遇到左右指针相撞，跳出循环，返回最大的面积。</li>
+</ul></li>
+<li>指针移动后，回到第二步重复。</li>
+</ol>
+<p>遵循这些步骤的 Python 实现如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxArea</span>(<span class="params">height: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    left, right = <span class="number">0</span>, <span class="built_in">len</span>(height) - <span class="number">1</span></span><br><span class="line">    maxVol = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> left &lt; right:</span><br><span class="line">        lower = <span class="built_in">min</span>(height[right], height[left])</span><br><span class="line">        maxVol = <span class="built_in">max</span>(maxVol, lower * (right - left))</span><br><span class="line">        <span class="keyword">if</span> height[left] &lt;= height[right]:</span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            right -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> maxVol</span><br></pre></td></tr></table></figure>
+<p>以上代码在力扣网站提交后通过， 但是执行用时较长，约 120-160ms，属于最慢的 10-20%一类答案。有没有更快的方案呢？答案是肯定的。其实在我们移动左右指针时，如果下一个高度值更小，可以直接跳过，因为这时得到的容量只会更小。基于此观察，可以在上面第三步时加入<code>while</code>语句，继续移动指针直到找到一个更大的高度或指针相撞才停止。由此修改过的代码如下（注意新加入的 9-11 和 14-16 行）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxArea_fast</span>(<span class="params">height: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    left, right = <span class="number">0</span>, <span class="built_in">len</span>(height) - <span class="number">1</span></span><br><span class="line">    maxVol = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> left &lt; right:</span><br><span class="line">        lower = <span class="built_in">min</span>(height[right], height[left])</span><br><span class="line">        maxVol = <span class="built_in">max</span>(maxVol, lower * (right - left))</span><br><span class="line">        <span class="keyword">if</span> height[left] &lt;= height[right]:</span><br><span class="line">            saved = height[left]</span><br><span class="line">            <span class="keyword">while</span> height[left+<span class="number">1</span>] &lt; saved <span class="keyword">and</span> left + <span class="number">1</span> &lt; right:</span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            saved = height[right]</span><br><span class="line">            <span class="keyword">while</span> saved &gt; height[right-<span class="number">1</span>] <span class="keyword">and</span> right - <span class="number">1</span> &gt; left:</span><br><span class="line">                right -= <span class="number">1</span></span><br><span class="line">            right -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> maxVol</span><br></pre></td></tr></table></figure>
+<p>以上优化后的答案提交也通过无误，执行用时约 30ms，击败了 95% 的其他答案☺️。</p>
+<h3 id="柱子排列接雨水">柱子排列接雨水</h3>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/trapping-rain-water/description/">力扣 43</a> - <strong>接雨水</strong>问题可能是对撞指针最优雅的应用，解法也不要求数组排序。题目的描叙很简短，给定 <span class="math inline">\(n\)</span> 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。如下图所示，给定柱子高度排列 <span class="math inline">\([0,1,0,2,1,0,1,3,2,1,2,1]\)</span>，在这种情况下，可以接 6 个单位的雨水（雨水以蓝色部分表示）</p>
+<p><img src="rainwatertrap.png" style="width:55.0%;height:55.0%" /></p>
+<p>这道题乍一看毫无头绪，但如果单独观察每一个柱子能够接住的雨量，就可以发现规律。实际上，每一个柱子能够接住的雨水的高度，取决于该柱子左侧最高柱子和右侧最高柱子中较矮的那个柱子的高度。比如，上面的例子中第五个柱子（索引值为 4）的高度为 1。它左边最高柱子为 2（索引值为 3），右边最高柱子为 3（索引值为 7），左边的那个较矮。用这个较矮的值减去第五个柱子自身的高度 1，得到 1 就是第五个柱子接雨量。只要从头遍历一遍，求出每一个柱子接雨量，相加之后就是总雨水的体积了。</p>
+<p>如何求出每个柱子左侧最高的柱子和右侧最高的柱子的数值呢？在遍历每个柱子时，用两个小一点的内循环去向左右寻找当然是可以做到的。但是这种暴力解法的时间复杂度是 <span class="math inline">\(O(n^2)\)</span>，在力扣网站提交后会超时，无法通过。</p>
+<p>应用对撞指针我们能巧妙地将时间复杂度降到 <span class="math inline">\(O(n)\)</span>。如果从两端开始，记录左侧最高柱子的高度（leftMax）和右侧最高柱子的高度（rightMax）。那边较小那边就可以向中间移动，移动后如果新柱子不高于原来该侧的最高值，就可以马上计算出该柱子的接雨量（因为另一侧已经高于该侧当前最高值），否则更新该侧的最高值更新记录再次与另一侧的最高值比较。重复此过程直到左右指针相撞，这样我们就执行一次单循环计算，就能累加出总接雨量。对应的 Python 程序如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trap</span>(<span class="params">self, height: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    left, right = <span class="number">0</span>, <span class="built_in">len</span>(height) - <span class="number">1</span></span><br><span class="line">    leftMax, rightMax = height[left], height[right]</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> left + <span class="number">1</span> &lt; right:</span><br><span class="line">        <span class="keyword">if</span> rightMax &gt; leftMax:</span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> height[left] &gt; leftMax:</span><br><span class="line">                leftMax = height[left]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                count += leftMax - height[left]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            right -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> height[right] &gt; rightMax:</span><br><span class="line">                rightMax = height[right]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                count += rightMax - height[right]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> count</span><br></pre></td></tr></table></figure>
+<p>以上程序大致还是遵循模版的，只是针对具体场景做了相应变化。代码提交后通过顺利✅，运行时间只有 3ms 🚀，打败了 99% 的其他答案😊。</p>
+<p><img src="trap_the_water.png" style="width:65.0%;height:65.0%" /></p>
+<p>据说这道接雨水问题是大厂面试的高频题，值得细细品味。为了更好地理解上面的答案，特地制作了下面的表格演示输入为<span class="math inline">\([4,2,6,3,2,5]\)</span>时，循环内每一步的变化</p>
+<table>
+<thead>
+<tr class="header">
+<th>循环轮次</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>左侧最高 (leftMax)</th>
+<th>右侧最高 (rightMax)</th>
+<th>接雨量 (count)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td><strong>4</strong> (left)</td>
+<td>2</td>
+<td>6</td>
+<td>3</td>
+<td>2</td>
+<td><strong>5</strong> (right)</td>
+<td>4</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td><strong>4</strong></td>
+<td>2 (left)</td>
+<td>6</td>
+<td>3</td>
+<td>2</td>
+<td><strong>5</strong> (right)</td>
+<td>4</td>
+<td>5</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>4</td>
+<td>2</td>
+<td><strong>6</strong> (left)</td>
+<td>3</td>
+<td>2</td>
+<td><strong>5</strong> (right)</td>
+<td>6</td>
+<td>5</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>4</td>
+<td>2</td>
+<td><strong>6</strong> (left)</td>
+<td>3</td>
+<td>2 (right)</td>
+<td><strong>5</strong></td>
+<td>6</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>4</td>
+<td>2</td>
+<td><strong>6</strong> (left)</td>
+<td>3 (right)</td>
+<td>2 (left)</td>
+<td><strong>5</strong></td>
+<td>6</td>
+<td>5</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<h2 id="快慢指针">快慢指针</h2>
+<p>快慢指针是双指针技巧中的一种特殊形式。它的特点是两个指针从同一侧开始遍历序列，但以不同速度、不同策略移动，直到快指针移动到序列尾端，或者两指针相交，或者满足其他特殊条件时为止。快慢指针的神奇之处在于，它可以在不使用额外空间的情况下解决一些看似复杂的问题。</p>
+<h3 id="链表相关的问题">链表相关的问题</h3>
+<p>在程序员面试中，这种技巧主要用于解决链表相关的问题，特别是那些需要找到链表特定位置或检测特定模式的问题。以下对主要的链表应用场景逐一解析。因为链表用 C 语言指针表达最直观，本节的程序全部用 C 语言实现。</p>
+<h4 id="链表环路检测">链表环路检测</h4>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-cycle/description/">力扣 141</a> - <strong>环形链表</strong>是快慢指针应用的经典示例。它给定一个链表，要求判断它是否有环。基于著名的 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cycle_detection#Floyd&#39;s_tortoise_and_hare">Floyd 环路判定算法</a>（也称龟兔赛跑算法），我们可以使用两个指针。慢指针一次移动一步，而快指针一次移动两步。如果链表存在环，二者会先后进入环路，并且快指针最终会追上慢指针。</p>
+<p>以下面的环形链表为例，初始化慢指针指向链表头节点【3】，快指针指向链表第二节点【2】。第一步后慢指针指向节点【2】，快指针指向节点【-4】。第二步二者都指向节点【0】，证明存在环路。</p>
+<p><img src="link_list_loop.png" style="width:50.0%;height:50.0%" /></p>
+<p>下面的代码是用 C 语言实现链表环路检测的例子（开头包含链表节点的结构体定义做参考）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">hasCycle</span><span class="params">(struct ListNode *head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="literal">NULL</span> || head-&gt;next == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">slow</span> =</span> head;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">fast</span> =</span> head;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="literal">NULL</span> &amp;&amp; fast-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        slow = slow-&gt;next;        <span class="comment">// 慢指针移动一步</span></span><br><span class="line">        fast = fast-&gt;next-&gt;next;  <span class="comment">// 快指针移动两步</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (slow == fast) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;  <span class="comment">// 快慢指针相遇，说明存在环</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，从相遇点开始，慢指针再走一圈，统计步数即为环的长度。由此我们可以修改函数如下，在确认环路存在后，计算并返回环路长度。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">findCycleLength</span><span class="params">(struct ListNode *head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="literal">NULL</span> || head-&gt;next == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;  <span class="comment">// 无环</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 检测是否有环</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">slow</span> =</span> head;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">fast</span> =</span> head;</span><br><span class="line">    <span class="keyword">bool</span> hasCycle = <span class="literal">false</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="literal">NULL</span> &amp;&amp; fast-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">        fast = fast-&gt;next-&gt;next;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (slow == fast) &#123;</span><br><span class="line">            hasCycle = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!hasCycle) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;  <span class="comment">// 无环</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 计算环的长度</span></span><br><span class="line">    slow = slow-&gt;next;  <span class="comment">// 先移动slow，使其不再与fast在同一位置</span></span><br><span class="line">    <span class="keyword">int</span> length = <span class="number">1</span>;  <span class="comment">// 已经移动一步</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 继续移动slow直到回到fast位置，统计环的长度</span></span><br><span class="line">    <span class="keyword">while</span> (slow != fast) &#123;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">        length++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="定位环路入口">定位环路入口</h4>
+<p>在一些实际运用中，定位链表环路的入口点有特别的意义。这也是 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-cycle-ii/description/">力扣 142</a> - <strong>环形链表 II</strong> 的要求：给定一个可能存在环的链表，如果存在环，找到环的入口节点。此题的解法要用到 Floyd 算法的第二阶段。当快慢指针相遇后，将一个指针重置到链表头节点，然后两个指针都以相同速度移动，它们的再次相遇点就是环的入口。</p>
+<p>为什么这种办法能找到环路的入口点呢？其实有严格的数学证明：</p>
+<ol type="1">
+<li>假设头节点到环入口的距离为 <span class="math inline">\(a\)</span>，环入口到相遇点的距离为 <span class="math inline">\(b\)</span>，相遇点回到环入口的距离为 <span class="math inline">\(c\)</span>；环的长度为 <span class="math inline">\(l=b+c\)</span></li>
+<li>在相遇点慢指针走了 <span class="math inline">\(a+b\)</span> 步，快指针走了 <span class="math inline">\(a+b+n * (b+c)\)</span> 步，其中 <span class="math inline">\(n\)</span> 是快指针在环中多转的圈数</li>
+<li>由于快指针速度是慢指针的两倍，所以有 <span class="math inline">\(2*(a+b)=a+b+n*(b+c)\)</span>，化简得到 <span class="math inline">\(a=c+(n-1)(b+c)\)</span></li>
+<li>这意味着从头节点走 <span class="math inline">\(a\)</span> 步和从相遇点走 <span class="math inline">\(c+(n-1)(b+c)\)</span> 步会到达同一点，即环的入口</li>
+<li>由于 <span class="math inline">\(c+(n-1)(b+c)=c+(n-1)*l\)</span> 表示从相遇点绕环 <span class="math inline">\(n-1\)</span> 圈后再走 <span class="math inline">\(c\)</span> 步，所以将慢指针重置到头节点，另一个留在相遇点，两者以单步长同速前进，必定会在环入口相遇</li>
+</ol>
+<p>有了上述的解释，下面的程序实现就很清楚明白了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct ListNode *<span class="title">detectCycle</span><span class="params">(struct ListNode *head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="literal">NULL</span> || head-&gt;next == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;  <span class="comment">// 无环</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 第一阶段：检测是否有环</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">slow</span> =</span> head;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">fast</span> =</span> head;</span><br><span class="line">    <span class="keyword">bool</span> hasCycle = <span class="literal">false</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="literal">NULL</span> &amp;&amp; fast-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">        fast = fast-&gt;next-&gt;next;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (slow == fast) &#123;</span><br><span class="line">            hasCycle = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!hasCycle) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;  <span class="comment">// 无环</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 第二阶段：寻找环的入口</span></span><br><span class="line">    slow = head;  <span class="comment">// 将slow重置到起点</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 两个指针以相同速度移动，相遇点就是环的入口</span></span><br><span class="line">    <span class="keyword">while</span> (slow != fast) &#123;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">        fast = fast-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> slow;  <span class="comment">// 返回环的入口节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果知道了环的长度 <span class="math inline">\(l\)</span>，也可以推导出环的入口。我们用下标标注节点位置，头节点可记为 <span class="math inline">\(X_0\)</span>，环的入口节点记为 <span class="math inline">\(X_s\)</span>，移动步长 <span class="math inline">\(l\)</span> 后的节点为 <span class="math inline">\(X_l\)</span>。那么 <span class="math inline">\(X_0\)</span> 到 <span class="math inline">\(X_s\)</span> 的距离，等于 <span class="math inline">\(X_l\)</span> 到 <span class="math inline">\(X_{l+s}\)</span> 的距离。而由于环的存在，<span class="math inline">\(X_s\)</span> 与 <span class="math inline">\(X_{l+s}\)</span> 实为同一节点。</p>
+<p>将这一思想变成程序流程，必须扩展一下快慢指针的定义。我们从链表头节点出发，设定让快指针先行 <span class="math inline">\(l\)</span> 步，然后和慢指针同速单步长移动。这样当快慢指针相遇时，二者指向的就是环的入口节点。</p>
+<h4 id="寻找链表中点">寻找链表中点</h4>
+<p>熟悉上面链表环路的解题技巧，解决 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/middle-of-the-linked-list/description/">力扣 876</a> - <strong>链表的中间结点</strong>问题就变得易如反掌了。如果快指针每次移动两步，慢指针每次移动一步，那么当快指针到达末尾时，慢指针恰好在中点。从这一思路就能很快写出简洁的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct ListNode* <span class="title">middleNode</span><span class="params">(struct ListNode* head)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">slow</span> =</span> head;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">fast</span> =</span> head;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="literal">NULL</span> &amp;&amp; fast-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">        fast = fast-&gt;next-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="判断回文链表">判断回文链表</h4>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/palindrome-linked-list/description/">力扣 234</a> - <strong>回文链表</strong>的题解需要应用前面寻找链表中点的答案。在找到中点后，我们反转后半部分链表，然后前后比较，就能判断是否为回文链表。下面就是此题的答案</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 辅助函数：反转链表</span></span><br><span class="line"><span class="function">struct ListNode* <span class="title">reverseList</span><span class="params">(struct ListNode* head)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">prev</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">current</span> =</span> head;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">next_temp</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (current != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        next_temp = current-&gt;next;</span><br><span class="line">        current-&gt;next = prev;</span><br><span class="line">        prev = current;</span><br><span class="line">        current = next_temp;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> prev;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPalindrome</span><span class="params">(struct ListNode* head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="literal">NULL</span> || head-&gt;next == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 1. 找到中点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">slow</span> =</span> head;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">fast</span> =</span> head;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (fast-&gt;next != <span class="literal">NULL</span> &amp;&amp; fast-&gt;next-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">        fast = fast-&gt;next-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 2. 反转后半部分</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">second_half</span> =</span> reverseList(slow-&gt;next);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 3. 比较两部分</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">first_half</span> =</span> head;</span><br><span class="line">    <span class="keyword">while</span> (second_half != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (first_half-&gt;val != second_half-&gt;val) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        first_half = first_half-&gt;next;</span><br><span class="line">        second_half = second_half-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="链表倒数节点">链表倒数节点</h4>
+<p>应用快慢指针于链表相关的面试题的最后一个例子，是 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/">力扣 19</a> - <strong>删除链表的倒数第 N 个结点</strong>。同样使用扩展定义的快慢指针，从链表头节点出发，我们可以让快指针先行 n 步，然后和慢指针同速移动。这样当快指针到达末尾时，慢指针指向的就是倒数第 n 个节点。</p>
+<p>在实际的编码实现时，要留意一些可能的例外，如链表为空、n 值为 0 或链表长度小于 n。下面考虑到这些的完整的 C 语言程序</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct ListNode* <span class="title">findKthFromEnd</span><span class="params">(struct ListNode* head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="literal">NULL</span> || n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">fast</span> =</span> head;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>* <span class="title">slow</span> =</span> head;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 快指针先前进 n 步</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (fast == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;  <span class="comment">// 链表长度小于 n</span></span><br><span class="line">        &#125;</span><br><span class="line">        fast = fast-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 两个指针同时移动，直到快指针到达链表末尾</span></span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        slow = slow-&gt;next;</span><br><span class="line">        fast = fast-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> slow;  <span class="comment">// 此时slow指向倒数第 n 个节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="非链表场景应用">非链表场景应用</h3>
+<p>快慢指针技巧不仅限于链表问题，还可以应用于数组、数字序列和字符串等数据结构。本节对这些应用简要举例说明。</p>
+<h4 id="找重复数">找重复数</h4>
+<p><strong>寻找重复数</strong>（<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-duplicate-number/description/">力扣 287</a>）的问题给定一个包含 n+1 个整数的数组，其数字都在 1 到 n 之间（包括 1 和 n），可知至少存在一个重复的整数。假设只有一个重复的整数，找出这个重复的数。这道题有多种解法，但是使用快慢指针运行Floyd 环路判定算法给出了一个优雅的答案。</p>
+<p>如果将数组视为一个隐式链表，那么值可视为指向下一个位置的指针（索引）。对于这个特定数组，重复的那个整数意味着有两个位置指向同一个索引，这就形成了环。所以，应用 Floyd 环路判定算法找到环的入口，那就是重复的数字。此一思想变成 Python 函数实现如下（与前面“定位环路入口”代码流程完全一致）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findDuplicate</span>(<span class="params">nums</span>):</span></span><br><span class="line">    <span class="comment"># 初始化慢指针和快指针</span></span><br><span class="line">    slow = nums[<span class="number">0</span>]</span><br><span class="line">    fast = nums[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 第一阶段：找到相遇点</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        slow = nums[slow]         <span class="comment"># 慢指针移动一步</span></span><br><span class="line">        fast = nums[nums[fast]]   <span class="comment"># 快指针移动两步</span></span><br><span class="line">        <span class="keyword">if</span> slow == fast:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 第二阶段：找到循环起点（重复数）</span></span><br><span class="line">    slow = nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">while</span> slow != fast:</span><br><span class="line">        slow = nums[slow]</span><br><span class="line">        fast = nums[fast]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> slow</span><br></pre></td></tr></table></figure>
+<h4 id="找快乐数">找快乐数</h4>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/happy-number/description/">力扣 202</a> - <strong>快乐数</strong> 是快慢指针应用于数字序列的一个好例子。此题要求编写一个函数来判断一个数是否为"快乐数"。"快乐数"定义为：对于一个正整数，每一次将该数替换为它每个位置上数字的平方和，然后重复这个过程直到这个数变为1，或是无限循环但始终变不到1。如果可以变为1，那么这个数就是快乐数。</p>
+<p>比如数23就是快乐数，因为</p>
+<ol type="1">
+<li><span class="math inline">\(2^{2}+3^​2=4+9=13\)</span></li>
+<li><span class="math inline">\(1^{2}+3^2=1+9=10\)</span></li>
+<li><span class="math inline">\(1^2+0^2=1\)</span></li>
+</ol>
+<p>而数37不是快乐数，因为计算过程中会重复出现同样的数字序列，结果陷入无限循环 <span class="math display">\[
+37\rightarrow3^2+7^2=58\rightarrow5^2+8^2=89\rightarrow145\rightarrow42\rightarrow20\rightarrow4\rightarrow16\rightarrow37
+\]</span></p>
+<p>从快乐数的定义，我们可以很快写出 Python 函数如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isHappy</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">bool</span>:</span></span><br><span class="line">    a = []  <span class="comment"># 保存每个生成的数</span></span><br><span class="line">    <span class="keyword">while</span> n <span class="keyword">not</span> <span class="keyword">in</span> a:</span><br><span class="line">        a.append(n)</span><br><span class="line">        n = <span class="built_in">sum</span>([<span class="built_in">int</span>(x) **<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">str</span>(n)])</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span> <span class="keyword">if</span> n == <span class="number">1</span> <span class="keyword">else</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<p>此答案本身逻辑正确，提交后也通过无误。但是它的一个缺点是需要额外存储空间，程序中列表<code>a</code>会保存全部遍历的数，直到出现重复的数为止。</p>
+<p>如果需要空间复杂度为<span class="math inline">\(O(1)\)</span>的答案，就要使用快慢指针来检测循环的发生。引用维基百科对计算机科学环路检测问题的定义</p>
+<blockquote>
+<p>对于将有限集 <span class="math inline">\(S\)</span> 映射到自身的任何函数 <span class="math inline">\(f\)</span>，以及 <span class="math inline">\(S\)</span> 中的任何初始值 <span class="math inline">\(x_0\)</span>，迭代函数值序列 <span class="math display">\[{\displaystyle x_{0},\;x_{1}=f(x_{0}),\;x_{2}=f(x_{1}),\dots ,\;x_{i}=f(x_{i-1}),\dots}\]</span> 最终一定两次生成相同的值：即有一对不同的索引 <span class="math inline">\(i\)</span> 和 <span class="math inline">\(j\)</span>，使得 <span class="math inline">\(x_i = x_j\)</span>。环路检测就是在给定 <span class="math inline">\(f\)</span> 和 <span class="math inline">\(x_0\)</span> 的情况下找到 <span class="math inline">\(i\)</span> 和 <span class="math inline">\(j\)</span> 的问题。</p>
+</blockquote>
+<p>这正好就是快乐数的情况。数替换的规则可视为一个迭代函数，用于生成下一个 <span class="math inline">\(x_i\)</span>。Floyd 环路判定算法本质上就是在迭代函数值序列中查找循环。充分理解了这些，应用快慢指针实现的不需保存中间数的快乐数验证程序如下（其中的<code>get_next</code>就是迭代函数）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isHappy2</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_next</span>(<span class="params">number</span>):</span></span><br><span class="line">        total_sum = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> number &gt; <span class="number">0</span>:</span><br><span class="line">            number, digit = <span class="built_in">divmod</span>(number, <span class="number">10</span>)</span><br><span class="line">            total_sum += digit ** <span class="number">2</span>  <span class="comment"># 计算每个位置上数字的平方和</span></span><br><span class="line">        <span class="keyword">return</span> total_sum</span><br><span class="line">    </span><br><span class="line">    slow, fast = n, n  <span class="comment"># 使用快慢指针</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        slow = get_next(slow)           <span class="comment"># 慢指针移动一步</span></span><br><span class="line">        fast = get_next(get_next(fast)) <span class="comment"># 快指针移动两步</span></span><br><span class="line">        <span class="keyword">if</span> fast == <span class="number">1</span> <span class="keyword">or</span> slow == fast:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> fast == <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h4 id="空格转换">空格转换</h4>
+<p>初始化快慢指针时，通常都将它们指向数据结构起始部分，但是也不尽然。请看下面的题目</p>
+<blockquote>
+<p>实现一个函数，用“%20”替换字符串中的每个空白。例如，如果输入是 “I like it.”，则输出 “I%20like%20it.”。</p>
+</blockquote>
+<p>这个问题常见于面试中，其实也是很实用的要求。在Web编程中，常常需要将 URL 字符串中的特殊字符需要转换成程序可理解的格式编码。</p>
+<p>在给定字符串缓存区容量足够的条件下，一种不加思考的办法是从左到右扫描，遇到空格时将其替换为 %20，并将空格之后的所有字符向后移动两位。可是这将导致重复移动后面的字符，时间复杂度为 <span class="math inline">\(O(n²)\)</span>，效率很低。有没有时间复杂度 <span class="math inline">\(O(n)\)</span> 方案呢?</p>
+<p>答案是肯定的。同样的前提条下，如果从右向左做扫描和替换操作，可以实现时间复杂度为 <span class="math inline">\(O(n)\)</span> 解决方案。具体的步骤如下</p>
+<ol type="1">
+<li>首先扫描整个字符串，得到原始长度（old_len）和空格数量（num_space）。</li>
+<li>计算新字符串长度 new_len = old_len + num_space * 2</li>
+<li>初始化两个指针
+<ul>
+<li>慢指针 <span class="math inline">\(P_s\)</span> 指向原始字符串的末尾；</li>
+<li>快指针 <span class="math inline">\(P_f\)</span> 指向扩展后字符串的末尾。</li>
+</ul></li>
+<li>从右向左逐个处理并移动指针
+<ul>
+<li>如果 <span class="math inline">\(P_s\)</span> 指向的是空格，就在 <span class="math inline">\(P_f\)</span> 的位置依次写入 '0', '2', '%'；</li>
+<li>否则，直接复制慢指针 <span class="math inline">\(P_s\)</span> 指向的字符到快指针 <span class="math inline">\(P_f\)</span> 指向的位置。</li>
+</ul></li>
+<li>当快慢指针相遇时，左边已没有空格了，算法结束。</li>
+</ol>
+<p>这种解法每个字符只移动一次，避免字符被重复移动，效率高。下面的表格将字符串可视化，展示了应用快慢指针的替换过程</p>
+<table>
+<thead>
+<tr class="header">
+<th>轮次</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>I</td>
+<td></td>
+<td>l</td>
+<td>i</td>
+<td>k</td>
+<td>e</td>
+<td></td>
+<td>i</td>
+<td>t</td>
+<td>.</td>
+<td>\0 (<span class="math inline">\(P_s\)</span>)</td>
+<td>---</td>
+<td>----</td>
+<td>---</td>
+<td>(<span class="math inline">\(P_f\)</span>)</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>I</td>
+<td></td>
+<td>l</td>
+<td>i</td>
+<td>k</td>
+<td>e</td>
+<td>(<span class="math inline">\(P_s\)</span>)</td>
+<td>---</td>
+<td>----</td>
+<td>---</td>
+<td>(<span class="math inline">\(P_f\)</span>)</td>
+<td>i</td>
+<td>t</td>
+<td>.</td>
+<td>\0</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>I</td>
+<td></td>
+<td>l</td>
+<td>i</td>
+<td>k</td>
+<td>e (<span class="math inline">\(P_s\)</span>)</td>
+<td>---</td>
+<td>(<span class="math inline">\(P_f\)</span>)</td>
+<td><mark>%</td>
+<td><mark>2</td>
+<td><mark>0</td>
+<td>i</td>
+<td>t</td>
+<td>.</td>
+<td>\0</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>I</td>
+<td>(<span class="math inline">\(P_s\)</span>)</td>
+<td>---</td>
+<td>(<span class="math inline">\(P_f\)</span>)</td>
+<td>l</td>
+<td>i</td>
+<td>k</td>
+<td>e</td>
+<td><mark>%</td>
+<td><mark>2</td>
+<td><mark>0</td>
+<td>i</td>
+<td>t</td>
+<td>.</td>
+<td>\0</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>I (<span class="math inline">\(P_s, P_f\)</span>)</td>
+<td><mark>%</td>
+<td><mark>2</td>
+<td><mark>0</td>
+<td>l</td>
+<td>i</td>
+<td>k</td>
+<td>e</td>
+<td><mark>%</td>
+<td><mark>2</td>
+<td><mark>0</td>
+<td>i</td>
+<td>t</td>
+<td>.</td>
+<td>\0</td>
+</tr>
+</tbody>
+</table>
+<p>在实际编程时，要考虑一些特殊情况，如空字符串、仅包含空格、连续空格、输入为 NULL 和缓存区容量不够等。此解决方案完整的 C 语言函数实现如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">replace</span><span class="params">(<span class="keyword">char</span> str[], <span class="keyword">int</span> cap)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!str || cap &lt;= <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> old_len = <span class="number">0</span>, num_space = <span class="number">0</span>, i;</span><br><span class="line">    <span class="comment">// Count original length and number of spaces</span></span><br><span class="line">    <span class="keyword">while</span> (str[i] ！= <span class="string">&#x27;\0&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (str[i] == <span class="string">&#x27; &#x27;</span>) num_space++;</span><br><span class="line">        old_len++;</span><br><span class="line">        i++</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> new_len = old_len + <span class="number">2</span> * num_space;  <span class="comment">// Each space adds 2 extra chars</span></span><br><span class="line">    <span class="keyword">if</span> (new_len &gt; cap) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> Ps = len, Pf = newLen;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Move characters from end to front, replacing space with &quot;%20&quot;</span></span><br><span class="line">    <span class="keyword">while</span> (Pf &gt; Ps &amp;&amp; Ps &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (str[Ps] == <span class="string">&#x27; &#x27;</span>) &#123;</span><br><span class="line">            str[Pf--] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">            str[Pf--] = <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line">            str[Pf--] = <span class="string">&#x27;%&#x27;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            str[Pf--] = str[Ps];</span><br><span class="line">        &#125;</span><br><span class="line">        Ps--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结和应用">总结和应用</h2>
+<p>本篇系统归纳和总结了算法面试中必备的双指针技巧。通过合理使用双指针可以大幅降低时间复杂度和/或空间复杂度。双指针的核心优势在于将嵌套循环（<span class="math inline">\(O(n²)\)</span>）优化为单循环（<span class="math inline">\(O(n)\)</span>），这在处理大规模数据时尤为重要。下面是本篇讲解的全部力扣挑战题及解决方案一览表，以便求职者快速参考和查询。</p>
+<table>
+<thead>
+<tr class="header">
+<th>力扣题号</th>
+<th>标题</th>
+<th>难度</th>
+<th>解决方案</th>
+<th>时间复杂度</th>
+<th>空间复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/description/">1343</a></td>
+<td>大小为 K 且平均值大于等于阈值的子数组数目</td>
+<td>中等</td>
+<td>固定长度滑动窗口</td>
+<td><span class="math inline">\(O(n+k)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-all-anagrams-in-a-string/description/">438</a></td>
+<td>找到字符串中所有字母异位词</td>
+<td>中等</td>
+<td>固定长度滑动窗口</td>
+<td><span class="math inline">\(O(n+k)\)</span></td>
+<td><span class="math inline">\(O(k)\)</span></td>
+</tr>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/">3</a></td>
+<td>无重复字符的最长子串</td>
+<td>中等</td>
+<td>可变长度滑动窗口</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(n)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-size-subarray-sum/description/">209</a></td>
+<td>长度最小的子数组</td>
+<td>中等</td>
+<td>可变长度滑动窗口</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/valid-palindrome/description/">125</a></td>
+<td>验证回文串</td>
+<td>简单</td>
+<td>对撞指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/description/">167</a></td>
+<td>两数之和 II - 输入有序数组</td>
+<td>中等</td>
+<td>对撞指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/3sum/description/">15</a></td>
+<td>三数之和</td>
+<td>中等</td>
+<td>对撞指针</td>
+<td><span class="math inline">\(O(n^2)\)</span></td>
+<td><span class="math inline">\(O(n)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/container-with-most-water/description/">11</a></td>
+<td>盛最多水的容器</td>
+<td>中等</td>
+<td>对撞指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/trapping-rain-water/description/">43</a></td>
+<td>接雨水</td>
+<td>困难</td>
+<td>对撞指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-cycle/description/">141</a></td>
+<td>环形链表</td>
+<td>简单</td>
+<td>快慢指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/linked-list-cycle-ii/description/">142</a></td>
+<td>环形链表 II（环入口）</td>
+<td>中等</td>
+<td>快慢指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/middle-of-the-linked-list/description/">876</a></td>
+<td>链表的中间结点</td>
+<td>简单</td>
+<td>快慢指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/palindrome-linked-list/description/">234</a></td>
+<td>回文链表</td>
+<td>简单</td>
+<td>快慢指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/">19</a></td>
+<td>删除链表的倒数第 N 个结点</td>
+<td>中等</td>
+<td>快慢指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-duplicate-number/description/">287</a></td>
+<td>寻找重复数</td>
+<td>中等</td>
+<td>快慢指针</td>
+<td><span class="math inline">\(O(n)\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+<tr class="even">
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/happy-number/description/">202</a></td>
+<td>快乐数</td>
+<td>简单</td>
+<td>快慢指针</td>
+<td><span class="math inline">\(O(\log{n})\)</span></td>
+<td><span class="math inline">\(O(1)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>双指针技巧在现实世界里有广泛的应用。比如由 Floyd 环路判定算法确定的快慢指针方法，可用来确定伪随机数发生器的周期长度，这是衡量其强度的标准之一。基于同样的理论和实践，英国数学家约翰·波拉德于1975年发明了波拉德 <span class="math inline">\(\rho\)</span>（rho）算法，可以在特定条件下成功分解大数素因子。另外，在密码学应用中，此技术还可用于发现加密散列函数中的碰撞。这就是著名的低内存散列碰撞搜索 <strong>Rho 方法</strong>。</p>
+<p>Rho 方法是一种用于寻找哈希碰撞的算法。与简单的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/%E7%94%9F%E6%97%A5%E6%94%BB%E5%87%BB">生日攻击</a>不同，它仅需很小的内存。该方法的工作流程如下：</p>
+<ol type="1">
+<li>给定一个具有 <span class="math inline">\(n\)</span> 位散列值的散列函数，选取一个随机的散列值 <span class="math inline">\(H_1\)</span>，并定义 <span class="math inline">\(H_1 = H_1&#39;\)</span>。</li>
+<li>计算 <span class="math inline">\(H_2 = \textbf{Hash}(H_1)\)</span>，以及 <span class="math inline">\(H_2&#39; = \textbf{Hash}(\textbf{Hash}(H_1&#39;))\)</span>；也就是说，在第一种情况下我们只应用一次散列函数，而在第二种情况下我们应用两次。</li>
+<li>重复此过程，计算 <span class="math inline">\(H_{i+1} = \textbf{Hash}(H_i)\)</span>，<span class="math inline">\(H_{i+1}&#39; = \textbf{Hash} (\textbf{Hash}(H_i&#39;))\)</span>，直到出现 <span class="math inline">\(H_{i+1} = H_{i+1}&#39;\)</span> 为止。</li>
+</ol>
+<p><img src="rho_hash_function.png" style="width:60.0%;height:60.0%" /></p>
+<p>上图有助于你理解该攻击方式，其中，从 <span class="math inline">\(H_1\)</span> 到 <span class="math inline">\(H_2\)</span> 的箭头表示 <span class="math inline">\(H_2 = \textbf{Hash}(H_1)\)</span>。注意：序列 $H_i $ 最终会进入一个循环，也称为周期（cycle），它的形状类似于希腊字母 <span class="math inline">\(\rho\)</span>。这个周期从 <span class="math inline">\(H_5\)</span> 开始，也就是碰撞点 <span class="math inline">\(\textbf{Hash} (H_4) = \textbf{Hash} (H_{10}) = H_5\)</span>。</p>
+<p>这里的关键点是：<strong>发现一个循环，就找到了一个碰撞</strong>。而循环的入口（起始点），就是碰撞点。所以前面学习到的定位环入口的方法，正好派上用场。注意到 Rho 方法无需在内存中存储大量散列值，也不需要对长列表进行排序。平均而言，散列值的位数是 <span class="math inline">\(n\)</span> 时，Rho 方法生成的数据序列的循环部分和尾部（即上图 中从 <span class="math inline">\(H_1\)</span> 到 <span class="math inline">\(H_5\)</span> 的那部分）各包含约 <span class="math inline">\(2^{n/2}\)</span> 个散列值。因此，为了找到一个碰撞，我们至少需要进行 <span class="math inline">\(2^{n/2} + 2^{n/2}\)</span> 次散列计算。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我喝杯咖啡</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="子曦 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/paypal.jpg" alt="子曦 PayPal">
+        <span>PayPal</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/" title="程序员面试题精解（4）— 双指针">https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/02/16/Harvard-CS50-AI-intro/" rel="prev" title="哈佛 CS50AI 课程介绍：从零开始学习人工智能">
+                  <i class="fa fa-chevron-left"></i> 哈佛 CS50AI 课程介绍：从零开始学习人工智能
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+            <li class="tab"><a href="#comment-disqus">Disqus评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+            <div class="tab-pane disqus" id="comment-disqus">
+              
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">321k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:51</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script defer src="https://vercount.one/js"></script>
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"packetmania-github-io","count":false,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"84587a3d3870ccc946524581ffe323bc"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

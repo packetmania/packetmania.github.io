@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2025-02-24T03:54:59.255Z</updated>
+  <updated>2025-03-29T06:38:11.847Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>程序员面试题精解（4）— 双指针</title>
+    <link href="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/"/>
+    <id>https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</id>
+    <published>2025-03-09T23:37:19.000Z</published>
+    <updated>2025-03-29T06:38:11.847Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;双指针技巧是一种强大而优雅的算法策略，常用于高效地解决数组、链表和字符串类型的问题。由于其能够优化解决方案并降低时间复杂度，因此在编程面试中被广泛考察。</summary>
+    
+    
+    
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>哈佛 CS50AI 课程介绍：从零开始学习人工智能</title>
@@ -113,11 +134,11 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
-    
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -136,9 +157,9 @@
     <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
     
     
-    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -157,13 +178,13 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
-    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
-    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
     
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
+    
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     
@@ -416,25 +437,6 @@
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>费马小定理的归纳法证明和应用</title>
-    <link href="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/"/>
-    <id>https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/</id>
-    <published>2021-02-14T22:55:53.000Z</published>
-    <updated>2023-11-17T07:18:05.807Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;在数学的发展史上，皮埃尔·德·费马（Pierre de Fermat）是一位特别的人物。他的正式职业是律师，却格外爱好数学。虽然是业余的，费马在数学上的成就不低于同时代的职业数学家。他对于现代微积分、解析几何、概率论和数论都有贡献。尤其是在数论领域，费马最有兴趣也成果最突出。</summary>
-    
-    
-    
-    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
-    
-    
-    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
   </entry>
   

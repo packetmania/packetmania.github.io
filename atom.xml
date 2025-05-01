@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2025-03-29T06:38:11.847Z</updated>
+  <updated>2025-05-01T18:09:28.796Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>程序员面试题精解（5）— 素数判定</title>
+    <link href="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/"/>
+    <id>https://www.packetmania.net/2025/04/19/PGITVW-5-primes/</id>
+    <published>2025-04-19T18:50:44.000Z</published>
+    <updated>2025-05-01T18:09:28.796Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;素数（Prime Numbers，又称质数）在密码学和加密通信中扮演着核心的角色，是现代网络安全技术的基石。同时，素数也广泛应用于高级编译器系统的“底层优化”、“散列设计”或“伪随机生成”模块中。如果要申请相关的软件工程师职位，一定要掌握素数搜寻与验证的编程诀窍。</summary>
+    
+    
+    
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    
+    
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>程序员面试题精解（4）— 双指针</title>
@@ -416,27 +437,6 @@
     
     
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python编程实现的教科书RSA</title>
-    <link href="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/"/>
-    <id>https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/</id>
-    <published>2021-03-01T19:08:51.000Z</published>
-    <updated>2022-02-03T08:03:47.149Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;RSA加密算法是现代公钥密码学的核心技术之一，在互联网中应用广泛。作为公钥密码学的经典算法，教科书RSA的编程实现可以帮助我们迅速掌握其数学机理和设计思想，并积累重要的密码技术软件实现经验。这里详述Python3.8编程环境下教科书RSA的实现示例。</summary>
-    
-    
-    
-    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
-    
-    
-    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
-    
-    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   

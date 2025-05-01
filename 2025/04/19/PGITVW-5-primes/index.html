@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances","storage":true,"lazyload":false,"nav":{"utterances":{"text":"Utterances评论","order":-1},"gitalk":{"text":"Gitalk评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="素数（Prime Numbers，又称质数）在密码学和加密通信中扮演着核心的角色，是现代网络安全技术的基石。同时，素数也广泛应用于高级编译器系统的“底层优化”、“散列设计”或“伪随机生成”模块中。如果要申请相关的软件工程师职位，一定要掌握素数搜寻与验证的编程诀窍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员面试题精解（5）— 素数判定">
+<meta property="og:url" content="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="素数（Prime Numbers，又称质数）在密码学和加密通信中扮演着核心的角色，是现代网络安全技术的基石。同时，素数也广泛应用于高级编译器系统的“底层优化”、“散列设计”或“伪随机生成”模块中。如果要申请相关的软件工程师职位，一定要掌握素数搜寻与验证的编程诀窍。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/Eratosthenes_profile.png">
+<meta property="article:published_time" content="2025-04-19T18:50:44.000Z">
+<meta property="article:modified_time" content="2025-05-01T18:09:28.796Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="Python编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/Eratosthenes_profile.png">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2025/04/19/PGITVW-5-primes/","path":"2025/04/19/PGITVW-5-primes/","title":"程序员面试题精解（5）— 素数判定"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>程序员面试题精解（5）— 素数判定 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tasks"><a href="/VXlzTWJvcVNzcmRzdkNnaG0/" rel="section"><i class="fa fa-tasks fa-fw"></i>任务</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E6%90%9C%E5%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">素数搜寻</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%95%E9%99%A4%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">试除法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%83%E6%B0%8F%E7%AD%9B"><span class="nav-number">1.2.</span> <span class="nav-text">埃氏筛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%AF%94%E8%BE%83"><span class="nav-number">1.3.</span> <span class="nav-text">性能比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E7%B4%A0%E6%95%B0%E9%AA%8C%E8%AF%81"><span class="nav-number">2.</span> <span class="nav-text">大素数验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%B9%E9%A9%AC%E7%B4%A0%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">2.1.</span> <span class="nav-text">费马素性检验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%B3%E5%8B%92-%E6%8B%89%E5%AE%BE%E7%B4%A0%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">2.2.</span> <span class="nav-text">米勒-拉宾素性检验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9B%E6%89%A3%E9%A2%98%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">力扣题解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E7%B4%A0%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">204. 计数素数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%96%87%E7%B4%A0%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">866. 回文素数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E6%8E%92%E5%88%97"><span class="nav-number">3.3.</span> <span class="nav-text">1175. 素数排列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4%E5%86%85%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%84%E4%B8%A4%E4%B8%AA%E8%B4%A8%E6%95%B0"><span class="nav-number">3.4.</span> <span class="nav-text">2523. 范围内最接近的两个质数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%92%8C%E7%AD%89%E4%BA%8E%E7%9B%AE%E6%A0%87%E5%80%BC%E7%9A%84%E7%B4%A0%E6%95%B0%E5%AF%B9"><span class="nav-number">3.5.</span> <span class="nav-text">2761. 和等于目标值的素数对</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机科学与技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机科学与技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员面试题精解（5）— 素数判定
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-19 11:50:44" itemprop="dateCreated datePublished" datetime="2025-04-19T11:50:44-07:00">2025-04-19</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2025-05-01 11:09:28" itemprop="dateModified" datetime="2025-05-01T11:09:28-07:00">2025-05-01</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">面试指南</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>素数（Prime Numbers，又称质数）在密码学和加密通信中扮演着核心的角色，是现代网络安全技术的基石。同时，素数也广泛应用于高级编译器系统的“底层优化”、“散列设计”或“伪随机生成”模块中。如果要申请相关的软件工程师职位，一定要掌握素数搜寻与验证的编程诀窍。<span id="more"></span></p>
+<div class="note success no-icon"><p><strong>The primes are the raw material out of which we have to build arithmetic.</strong><br> <strong>— <em>Carl Friedrich Gauss</em>（卡尔·弗里德里希·高斯，德国数学家、物理学家、天文学家、大地测量学家。被普遍认为是有史以来最伟大的数学家之一，并享有“首席数学家”和“数学王子”美誉。）</strong></p>
+</div>
+<h2 id="素数搜寻">素数搜寻</h2>
+<h3 id="试除法">试除法</h3>
+<p>素数是除了自身和 1 以外，没有其它素数因子的自然数。根据此定义，最直观的判定正整数 <span class="math inline">\(n\)</span> 是否是素数的方法，就是从 2 到 <span class="math inline">\(n-1\)</span> 逐个试除。由此，要找到不大于给定数<code>num</code>的全部素数，解法是对 [2, num] 区间每一个数执行试除法。下面的 Python 函数就是这种朴素试除法的实现。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method 1: The search range is from 2 to (num-1) per definition.</span></span><br><span class="line"><span class="comment"># This is the slowest.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_prime_naive</span>(<span class="params">n</span>):</span></span><br><span class="line">    prime_list = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, n + <span class="number">1</span>):</span><br><span class="line">        flag = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, i - <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> i % j == <span class="number">0</span>:</span><br><span class="line">                flag = <span class="literal">False</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">if</span> flag:</span><br><span class="line">            prime_list.append(i)</span><br><span class="line">    <span class="keyword">return</span> prime_list</span><br></pre></td></tr></table></figure>
+<p>不幸的是，朴素试除法也是最慢的解法，通过对范围内每个整数进行试除法来找出全部素数，其时间复杂度为 <span class="math inline">\(O(n^2)\)</span>。有没有快一点办法呢？当然。我们知道最小的素数是 2，它也是最小的素因子，所以一个整数 <span class="math inline">\(n\)</span> 最大的素因子一定不会大于 <span class="math inline">\(\lfloor\frac{n}{2}\rfloor\)</span>。那么上面程序的内循环次数减半就可以了，修改后的程序如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method 2: Cut the search range in half， to [2, floor(n/2)].</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_prime_halfway</span>(<span class="params">n</span>):</span></span><br><span class="line">    prime_list = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, n + <span class="number">1</span>):</span><br><span class="line">        flag = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, i // <span class="number">2</span> + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> i % j == <span class="number">0</span>:</span><br><span class="line">                flag = <span class="literal">False</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">if</span> flag:</span><br><span class="line">            prime_list.append(i)</span><br><span class="line">    <span class="keyword">return</span> prime_list</span><br></pre></td></tr></table></figure>
+<p>这种折半试除法确实可以加倍运行速度，但遗憾的是，其时间复杂度仍然为 <span class="math inline">\(O(n^2)\)</span>。还能改进一下吗？</p>
+<p>实际上，若 <span class="math inline">\({\displaystyle n=ab}\)</span> 是个合数（其中 <span class="math inline">\({\displaystyle a}\)</span> 与 <span class="math inline">\({\displaystyle b\neq 1}\)</span>），则其中一个因数 <span class="math inline">\({\displaystyle a}\)</span> 或 <span class="math inline">\({\displaystyle b}\)</span>必定不大于<span class="math inline">\({\displaystyle {\sqrt {n}}}\)</span>。即一个合数必须有一个因数小于或等于该数的平方根，否则该数就是素数。比如对于数 <span class="math inline">\(48\)</span>，<span class="math inline">\(\sqrt{48}=6.9282\)</span>，它的八个因数正好均匀分配在其平方根的两边 <span class="math display">\[48=2\times24=3\times16=4\times12=6\times8\]</span> 基于这个事实，我们可以进一步将试除的上限缩减到<span class="math inline">\(\lfloor{\displaystyle {\sqrt {n}}}\rfloor\)</span>，就得到了常规试除法实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method 3: The search range is from 2 to floor(sqrt&#123;N&#125;).</span></span><br><span class="line"><span class="comment"># This is based on the fact that a composite number must have a</span></span><br><span class="line"><span class="comment"># factor less than or equal to the square root of that number.</span></span><br><span class="line"><span class="comment"># Otherwise, the number is prime.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_prime_regular</span>(<span class="params">n</span>):</span></span><br><span class="line">    prime_list = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, n + <span class="number">1</span>):</span><br><span class="line">        flag = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">int</span>(i ** <span class="number">0.5</span>) + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> i % j == <span class="number">0</span>:</span><br><span class="line">                flag = <span class="literal">False</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">if</span> flag:</span><br><span class="line">            prime_list.append(i)</span><br><span class="line">    <span class="keyword">return</span> prime_list</span><br></pre></td></tr></table></figure>
+<p>可以看到，常规试除法将时间复杂度缩减到了 <span class="math inline">\(O(n\sqrt{n})\)</span>，真的不错。</p>
+<h3 id="埃氏筛">埃氏筛</h3>
+<p>“欲穷千里目，更上一层楼”。对于寻找不大于特定数的素数，还有更好的算法吗？确实有！那就是<strong>埃拉托斯特尼筛法</strong>（Sieve of Eratosthenes）。此算法得名于古希腊数学家埃拉托斯特尼<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。他独辟蹊径，从另一个角度探索问题的答案：与其对每一个数执行试除法，不如从最小的素数开始标记它所有倍数为合数，而下一个尚未被标记的最小自然数即是下一个素数。重复这一过程，就可以像筛子一样过滤掉给定范围内全部合数，剩下就都是素数了。</p>
+<figure>
+<img src="Eratosthenes_profile.png" alt="埃拉托斯特尼侧身像" /><figcaption aria-hidden="true">埃拉托斯特尼侧身像</figcaption>
+</figure>
+<p>在实际的运用中，此算法后来又加入了两点改进：</p>
+<ul>
+<li>标记某一素数 <span class="math inline">\({p}\)</span> 的倍数时，可直接从 <span class="math inline">\(p^{2}\)</span> 开始标记。因为所有小于 <span class="math inline">\(p^{2}\)</span> 的 <span class="math inline">\({p}\)</span> 的倍数必然有一个更小的素数为其因数，故它们之前已经被标记过了。</li>
+<li>寻找 <span class="math inline">\({\displaystyle n}\)</span> 以内的素数时，若找到了一个大于 <span class="math inline">\({\sqrt {n}}\)</span> 的素数，则剩余的所有尚未标记的数也都是素数，算法可以提前结束。因为若这些尚未标记的数中有任意一个为合数，其两个因数必然都大于<span class="math inline">\({\sqrt {n}}\)</span>，这是不可能的。</li>
+</ul>
+<p>以18为例，若要找出不大于18的所有素数，使用上述改进过的埃拉托斯特尼筛法的具体过程如下：</p>
+<ol type="1">
+<li>列出2以后所有数：2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18</li>
+<li>记录素数2，由2<sup>2</sup>=4开始划去2的倍数：<mark>2</mark> 3 <del>4</del> 5 <del>6</del> 7 <del>8</del> 9 <del>10</del> 11 <del>12</del> 13 <del>14</del> 15 <del>16</del> 17 <del>18</del></li>
+<li>记录下一素数3，由3<sup>2</sup>=9开始划去3的倍数：<mark>2</mark> <mark>3</mark> <del>4</del> 5 <del>6</del> 7 <del>8</del> <del>9</del> <del>10</del> 11 <del>12</del> 13 <del>14</del> <del>15</del> <del>16</del> 17 <del>18</del></li>
+<li>下一素数5，而5<sup>2</sup>=25&gt;18，故剩余所有未标记的数皆为素数：<mark>2</mark> <mark>3</mark> <del>4</del> <mark>5</mark> <del>6</del> <mark>7</mark> <del>8</del> <del>9</del> <del>10</del> <mark>11</mark> <del>12</del> <mark>13</mark> <del>14</del> <del>15</del> <del>16</del> <mark>17</mark> <del>18</del></li>
+</ol>
+<p>改进过的埃拉托斯特尼筛法的算法伪代码如下表示：</p>
+<blockquote>
+<p><strong>输入：</strong>整数 <span class="math inline">\(n &gt; 1\)</span></p>
+<p>设 <span class="math inline">\(A\)</span> 为布尔值数组，下标是 <span class="math inline">\(2\)</span> 至 <span class="math inline">\(n\)</span> 的整数，初始时全部设成 True。<br />
+<strong>for</strong> <span class="math inline">\(i = 2, 3, 4, ...\)</span>, 不超过<span class="math inline">\(\sqrt {n}\)</span>：<br />
+<span class="math inline">\(\qquad\)</span><strong>if</strong> <span class="math inline">\(A[i]\)</span> 为 True：<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><strong>for</strong> <span class="math inline">\(j = i^2, i^2+i, i^2+2i, i^2+3i, ...,\)</span> 不超过 <span class="math inline">\(n\)</span> ：<br />
+<span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(\qquad\)</span><span class="math inline">\(A[j]\)</span> := False</p>
+</blockquote>
+<blockquote>
+<p><strong>输出：</strong>使 <span class="math inline">\(A[i]\)</span> 为 True 的所有 <span class="math inline">\(i\)</span>。</p>
+</blockquote>
+<p>结合前面的讲解，可以很容易理解到，伪代码中内循环的 <span class="math inline">\(A[j]\)</span> := False 语句就是从每个确认的素数的平方开始划去其倍数的操作。我们也能很轻松地将这段伪代码转换成 Python 函数实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Method 4: Sieve of Eratosthenes</span></span><br><span class="line"><span class="comment"># It is one of the most efficient ways to find all of the smaller primes.</span></span><br><span class="line"><span class="comment"># Reference: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_prime_soe</span>(<span class="params">n</span>):</span></span><br><span class="line">    prime_flags = [<span class="literal">True</span>] * (n + <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">int</span>(n ** <span class="number">0.5</span>) + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> prime_flags[i]:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i * i, n + <span class="number">1</span>, i):</span><br><span class="line">                prime_flags[j] = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">return</span> [x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, n + <span class="number">1</span>) <span class="keyword">if</span> prime_flags[x]]</span><br></pre></td></tr></table></figure>
+<p>如何计算埃拉托斯特尼筛法的时间复杂度呢？无疑这取决于嵌套的两个<code>for</code>循环内的操作。操作的计数表达式是 <span class="math display">\[\frac{n}{2} + \frac{n}{3} + \frac{n}{5} + \frac{n}{7} + \cdots = n × (\frac{1}{2} + \frac{1}{3} + \frac{1}{5} + \frac{1}{7} + \cdots )\]</span> 括号中是素数的倒数之和，也被称为素数调和级数（prime harmonic series）。数学上有严格证明素数调和级数趋近于 <span class="math inline">\(\log(\log n)\)</span>，所以埃拉托斯特尼筛法的时间复杂度就是 <span class="math inline">\({\displaystyle O(n\log(\log n))}\)</span></p>
+<h3 id="性能比较">性能比较</h3>
+<p>前述的四种搜寻不大于特定数的素数的方法，最慢的是朴素试除法，最快的应该是埃氏筛。我们可以用下面的测试程序比较它们的性能</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assert</span> get_prime_naive(<span class="number">10</span>) == [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>]</span><br><span class="line"><span class="keyword">assert</span> get_prime_naive(<span class="number">100</span>) == get_prime_halfway(<span class="number">100</span>)</span><br><span class="line"><span class="keyword">assert</span> get_prime_halfway(<span class="number">1000</span>) == get_prime_regular(<span class="number">1000</span>)</span><br><span class="line"><span class="keyword">assert</span> get_prime_regular(<span class="number">10000</span>) == get_prime_soe(<span class="number">10000</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Load\tSlowest\tSlower\tRegular\tFast\tSpeedup\n&quot;</span> + <span class="string">&quot;-&quot;</span> * <span class="number">50</span>)</span><br><span class="line">repeat = <span class="number">10</span></span><br><span class="line"><span class="keyword">for</span> load <span class="keyword">in</span> [<span class="number">256</span>, <span class="number">1024</span>, <span class="number">4096</span>, <span class="number">16384</span>]:</span><br><span class="line">    t_slowest = timeit(<span class="keyword">lambda</span>: get_prime_naive(load), number=repeat)</span><br><span class="line">    t_slower = timeit(<span class="keyword">lambda</span>: get_prime_halfway(load), number=repeat)</span><br><span class="line">    t_regular = timeit(<span class="keyword">lambda</span>: get_prime_regular(load), number=repeat)</span><br><span class="line">    t_fast = timeit(<span class="keyword">lambda</span>: get_prime_soe(load), number=repeat)</span><br><span class="line">    speedup = t_slowest // t_fast</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;load&#125;</span>\t<span class="subst">&#123;t_slowest:<span class="number">.5</span>f&#125;</span>\t<span class="subst">&#123;t_slower:<span class="number">.5</span>f&#125;</span>\t<span class="subst">&#123;t_regular:<span class="number">.5</span>f&#125;</span>\t<span class="subst">&#123;t_fast:<span class="number">.5</span>f&#125;</span>\t<span class="subst">&#123;speedup:<span class="number">.0</span>f&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">t_fast = timeit(<span class="keyword">lambda</span>: get_prime_soe(<span class="number">1000000</span>), number=repeat)</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">len</span>(get_prime_soe(<span class="number">1000000</span>)) == <span class="number">78498</span></span><br><span class="line">t_average = t_fast / repeat</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;\nTime taken to find all prime numbers less than 1 million: <span class="subst">&#123;t_fast:<span class="number">.5</span>f&#125;</span>s&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>程序说明：</p>
+<ul>
+<li>开始的四个断言<code>assert</code>语句核对朴素试除法的结果并与其他三个函数实现交叉验证。</li>
+<li>后面的<code>for</code>循环依次逐渐增大工作量<code>load</code>，循环内调用 Python 的<code>timeit</code>工具测量重复10次的总运行时间，输出每一种方法的结果以及加速比（最慢方法的用时除以最快方法的用时）。</li>
+<li>最后测试用埃氏筛方法计算一百万以内素数的数目，验证结果并打印用时。</li>
+</ul>
+<p>在 MacBook Pro 2019 笔记本电脑上，测试程序的示例输出如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Load	Naive	HalfWay Regular	SoE 	Speedup</span><br><span class="line">-----------------------------------------------</span><br><span class="line">256     0.00330	0.00241	0.00146	0.00022 14</span><br><span class="line">1024	0.04203	0.02125	0.00577	0.00093 45</span><br><span class="line">4096	0.58356	0.27865	0.02709	0.00401 145</span><br><span class="line">16384	8.04601	3.90425	0.14061	0.01653 486</span><br><span class="line"></span><br><span class="line">Time taken to find all prime numbers less than 1 million: 1.16481s</span><br></pre></td></tr></table></figure>
+<p>测试结果与算法分析一致。最慢的是朴素试除法，折半试除法次慢。常规试除法是判定单个数素性的最好方法，而埃氏筛是搜寻不大于特定数的全部素数的最高效方法。还可以看到，埃氏筛对比朴素试除法的加速比，随着工作量的增长也相应增长。这对应二者时间复杂度 <span class="math inline">\({\displaystyle O(n\log(\log n))}\)</span> 与 <span class="math inline">\(O(n^2)\)</span> 的比例关系。</p>
+<p>用埃氏筛方法计算出一百万以内素数的数目为 78498，用时不到两秒。这个效率是惊人的，这就是算法的力量！</p>
+<h2 id="大素数验证">大素数验证</h2>
+<p>试除法和埃拉托斯特尼筛法都是素数判定的确定型算法。它们能给出确定的结果，但通常较慢。对于使用大素数的应用，如 2048 比特位的 RSA 模数 <span class="math inline">\(N\)</span>（<span class="math inline">\(N=pq\)</span>），两个素因子 <span class="math inline">\(p\)</span> 和 <span class="math inline">\(q\)</span> 都在 1024 比特位左右。对这么大的数执行确定型算法是不现实的，这时就需要快速的随机化算法。最常用的随机化算法就是费马素性检验和米勒-拉宾素性检验。</p>
+<h3 id="费马素性检验">费马素性检验</h3>
+<p>根据<a href="https://www.packetmania.net/2021/02/14/Fermats-Little-Theorem/">费马小定理</a> ：对于一个素数<span class="math inline">\(n\)</span> ，如果整数<span class="math inline">\(a\)</span>不是<span class="math inline">\(n\)</span>的倍数，则有<span class="math inline">\(a^{n-1}\equiv 1\pmod n\)</span>。如果我们想知道<span class="math inline">\(n\)</span>是否是素数，可以在区间<span class="math inline">\([2, n-2]\)</span>中选取<span class="math inline">\(a\)</span>，看看上面等式是否成立。如果对于数值<span class="math inline">\(a\)</span>等式不成立，那么<span class="math inline">\(n\)</span>是合数。如果有很多的<span class="math inline">\(a\)</span>能够使等式成立，那么<span class="math inline">\(n\)</span>可能是素数。</p>
+<p>显然，选取<span class="math inline">\(a\)</span>做检验的次数越多，等式成立时<span class="math inline">\(n\)</span>是素数的概率越高。此算法伪代码如下所示</p>
+<blockquote>
+<p><strong>输入：</strong><span class="math inline">\(n\)</span>需要检验的数；<span class="math inline">\(k\)</span>：检验次数。<br />
+重复<span class="math inline">\(k\)</span>次：<br />
+<span class="math inline">\(\qquad\)</span>在<span class="math inline">\([2, n − 2]\)</span>范围内随机选取<span class="math inline">\(a\)</span><br />
+<span class="math inline">\(\qquad\)</span>如果 <span class="math inline">\(a^{n − 1}\mod n ≠ 1\)</span>，那么返回<u>合数</u><br />
+返回<u>可能是素数</u><br />
+<strong>输出：</strong>当<span class="math inline">\(n\)</span>是合数时输出<u>合数</u>，否则输出<u>可能是素数</u></p>
+</blockquote>
+<p>因为在算法中使用了随机函数选取<span class="math inline">\(a\)</span>，所以这是一种随机化算法。参考上面的伪代码，可以很容易地得到 Python 语言实现的费马素性检验函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ferma_primality_check</span>(<span class="params">n, k=<span class="number">5</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;费马素性检验</span></span><br><span class="line"><span class="string">    参数:</span></span><br><span class="line"><span class="string">        n: 要检测的数字</span></span><br><span class="line"><span class="string">        k: 检验次数（次数越多，准确率越高）</span></span><br><span class="line"><span class="string">    返回:</span></span><br><span class="line"><span class="string">        如果是可能的素数，返回True；如果确定是合数，返回False</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">        <span class="comment"># 随机选择一个[2, n-2]之间的整数</span></span><br><span class="line">        a = random.randint(<span class="number">2</span>, n - <span class="number">2</span>)</span><br><span class="line">        <span class="comment"># 根据费马小定理</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">pow</span>(a, n - <span class="number">1</span>, n) != <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span>  <span class="comment"># 确定是合数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span>  <span class="comment"># 可能是素数</span></span><br></pre></td></tr></table></figure>
+<p>注意⚠️：费马小定理给出的是关于素数判定的必要但不充分条件。只能说检验重复次数越多，则被检验数是素数的概率越大。 在使用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%B9%B3%E6%96%B9%E6%B1%82%E5%B9%82">模幂运算</a>（Python 的pow函数所支持）的前提下，费马素性检验的时间复杂度是<span class="math inline">\(O(k \log^2n \log \log n)\)</span>。这是非常快的。</p>
+<h3 id="米勒-拉宾素性检验">米勒-拉宾素性检验</h3>
+<p>米勒-拉宾素性检验<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>，是当前普遍使用的一种素数判定法则。它利用随机化算法判断一个数是合数还是可能是素数。虽然同样基于<a target="_blank" rel="noopener" href="https://packetmania.github.io/2021/02/14/Fermats-Little-Theorem/">费马小定理</a>，米勒-拉宾素性检验比费马素性检验效率高得多。在展示米勒-拉宾素性检验的 Python 实现之前，简要介绍一下其工作原理。</p>
+<p>从费马小定理出发，如果<span class="math inline">\(n&gt;2\)</span>，<span class="math inline">\(n-1\)</span>是一个偶数，一定可以被表示为<span class="math inline">\(2^{s}*d\)</span>的形式，<span class="math inline">\(s\)</span>和<span class="math inline">\(d\)</span>都是正整数且<span class="math inline">\(d\)</span>是奇数。由此得到 <span class="math display">\[a^{2^{s}*d}\equiv 1\pmod n\]</span> 这时如果不断对上式左边取平方根再取模，总会得到<span class="math inline">\(1\)</span>或<span class="math inline">\(-1\)</span><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。如果得到了<span class="math inline">\(-1\)</span> ，意味着下面②式成立；如果从未得到<span class="math inline">\(-1\)</span>，则①式成立： <span class="math display">\[a^{d}\equiv 1{\pmod {n}}{\text{ ①}}\]</span> <span class="math display">\[a^{2^{r}d}\equiv -1{\pmod {n}}{\text{ ②}}\]</span> 其中<span class="math inline">\(r\)</span>是位于<span class="math inline">\([0, s-1]\)</span>区间的某个整数。所以，如果<span class="math inline">\(n\)</span>是大于<span class="math inline">\(2\)</span>的素数，一定有①或②式成立。这一规律的<u>逆否命题</u>也为真，即<strong>如果我们能找到这样一个<span class="math inline">\(\pmb{a}\)</span>，使得对任意<span class="math inline">\(\pmb{0\leq r\leq s-1}\)</span>以下两个式子均满足： <span class="math display">\[\pmb{a^{d}\not \equiv 1\pmod n}\]</span> <span class="math display">\[\pmb{a^{2^{r}d}\not \equiv -1\pmod n}\]</span> 那么<span class="math inline">\(\pmb{n}\)</span>一定不是一个素数</strong>。这就是米勒-拉宾素性测试的机理。对于待测数<span class="math inline">\(n\)</span>，算出<span class="math inline">\(s\)</span>和<span class="math inline">\(d\)</span>的值后，随机选取基数<span class="math inline">\(a\)</span>，迭代检测以上两式。如果都不成立，<span class="math inline">\(n\)</span>为合数，否则<span class="math inline">\(n\)</span>可能为素数。重复这一过程，<span class="math inline">\(n\)</span>为真素数的概率会越来越大。计算表明，经过<span class="math inline">\(k\)</span>轮测试，米勒-拉宾素性检验的差错率最高不超过<span class="math inline">\(4^{-k}\)</span>。</p>
+<p>Python实现的米勒-拉宾素性检验函数如下，代码中的变量<code>n,s,d,k</code>与上面的说明对应：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">miller_rabin_primality_check</span>(<span class="params">n, k=<span class="number">20</span></span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Miller-Rabin Primality Test wwith specified round of test </span></span><br><span class="line"><span class="string">    Input:</span></span><br><span class="line"><span class="string">        n - n &gt; 3, an odd integer to be tested for primality</span></span><br><span class="line"><span class="string">        k - the number of rounds of testing to perfor</span></span><br><span class="line"><span class="string">    Output:</span></span><br><span class="line"><span class="string">        True  - passed (n is a strong probable prime)</span></span><br><span class="line"><span class="string">        False - failed (n is a composite)&#x27;&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># For a given odd integer n &gt; 3, write n as (2^s)*d+1,</span></span><br><span class="line">    <span class="comment"># where s and d are positive integers and d is odd.</span></span><br><span class="line">    <span class="keyword">assert</span> n &gt; <span class="number">3</span></span><br><span class="line">    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    s, d = <span class="number">0</span>, n - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> d % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        d &gt;&gt;= <span class="number">1</span></span><br><span class="line">        s += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">        a = randrange(<span class="number">2</span>, n - <span class="number">1</span>)</span><br><span class="line">        x = <span class="built_in">pow</span>(a, d, n)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> x == <span class="number">1</span> <span class="keyword">or</span> x == n - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(s):</span><br><span class="line">            x = <span class="built_in">pow</span>(x, <span class="number">2</span>, n)</span><br><span class="line">            <span class="keyword">if</span> x == n - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># The for loop did not encounter a break statement,</span></span><br><span class="line">            <span class="comment"># so it fails the test, it must be a composite</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Passed the test, it is a strong probable prime</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>同样，基于模幂运算和多精度乘法，这个算法的时间复杂度是 <span class="math inline">\(O(k\log ^{3}n)\)</span>。显然这也快于任何确定性算法。所以，在需要大素数的网络安全通信应用中，常常先用费马素性检验方法作预测试，而后调用效率更高的米勒-拉宾素性测试以保证高准确度。比如早先流行的加密通讯程序 PGP 及其同类的开源工具 GnuPG（GPG），就是如此验证随机生成的大素数的。</p>
+<h2 id="力扣题解">力扣题解</h2>
+<p>了解费马素性检验和米勒-拉宾素性检验的知识，可以展示求职者宽广的知识面，是绝好的加分项。在实际面试时，掌握常规试除法和埃拉托斯特尼筛法及其算法实现，就可以解决素数搜寻和验证相关的绝大多数问题了。下面给出力扣题库中的几道素数（质数）相关题目的分析和题解。</p>
+<h3 id="计数素数">204. 计数素数</h3>
+<ul>
+<li><p><strong>问题描述：</strong>给定整数 <span class="math inline">\(n\)</span> ，返回所有小于非负整数 <span class="math inline">\(n\)</span> 的素数的数量 。</p></li>
+<li><p><strong>解题思路：</strong>这就是埃氏筛的直接应用，可以基本照搬前面<code>get_prime_soe()</code>函数的实现。不同点在于</p>
+<ol type="1">
+<li>要求是计数所有小于输入 <span class="math inline">\(n\)</span> 的素数，而前面函数对应的是不大于 <span class="math inline">\(n\)</span> 的。</li>
+<li>要求输出计数值，而不是素数列表或数组。</li>
+</ol></li>
+<li><p><strong>示例代码：</strong>针对上述的不同点稍加调整，可得到如下 Python 实现</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countPrimes</span>(<span class="params">n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    <span class="keyword">if</span> n &lt; <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        </span><br><span class="line">    prime_flags = [<span class="literal">True</span>] * n</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">int</span>(n ** <span class="number">0.5</span>) + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> prime_flags[i]:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i * i, n, i):</span><br><span class="line">                prime_flags[j] = <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span>(prime_flags) - <span class="number">2</span></span><br></pre></td></tr></table></figure> 说明一下，最后函数返回时减去2，是因为要排除头两项0和1，它们不是素数。</p></li>
+</ul>
+<h3 id="回文素数">866. 回文素数</h3>
+<ul>
+<li><p><strong>问题描述：</strong>给你一个整数 <span class="math inline">\(n\)</span>，返回大于或等于 <span class="math inline">\(n\)</span> 的最小回文素数。这里 <span class="math inline">\(1 ≤ n ≤ 10^8\)</span>。</p></li>
+<li><p><strong>解题思路：</strong>首先要了解一个数学知识：除了11以外，偶数位的回文数都可以被11整除（比如1221）。因此我们可以只生成奇数位的回文数，然后用常规试除法判定是否为素数。还要单独考虑 n &lt;= 11 时的特殊情况处理，这时返回值是回文素数数组 [2, 3, 5, 7, 11] 其中大于或等于 n 的数中最小的那一个。</p></li>
+<li><p><strong>示例代码：</strong>基于 Python 语言的解决方案如下</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">primePalindrome</span>(<span class="params">n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">    <span class="comment"># 判断一个数是否为素数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_prime</span>(<span class="params">num</span>):</span></span><br><span class="line">        <span class="keyword">if</span> num &lt; <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">int</span>(num ** <span class="number">0.5</span>) + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> num % i == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 处理小于等于11的情况</span></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">11</span>:</span><br><span class="line">        <span class="keyword">for</span> p <span class="keyword">in</span> [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>]:</span><br><span class="line">            <span class="keyword">if</span> p &gt;= n:</span><br><span class="line">                <span class="keyword">return</span> p</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 因为l=1的情况(个位数)已经在特殊情况中处理了，所以从l=2开始，</span></span><br><span class="line">    <span class="comment"># 使用高效方法生成奇数位回文数并检查是否为素数。</span></span><br><span class="line">    <span class="keyword">for</span> l <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="number">6</span>):  <span class="comment"># 控制半部分长度，生成总共最多9位的回文</span></span><br><span class="line">        <span class="comment"># 生成半长度为l的所有数字</span></span><br><span class="line">        <span class="keyword">for</span> root <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span> ** (l - <span class="number">1</span>), <span class="number">10</span> ** l):</span><br><span class="line">            s = <span class="built_in">str</span>(root)</span><br><span class="line">            pal = <span class="built_in">int</span>(s + s[-<span class="number">2</span>::-<span class="number">1</span>])  <span class="comment"># 生成奇数位回文（123 -&gt; 12321）</span></span><br><span class="line">            <span class="keyword">if</span> pal &gt;= n <span class="keyword">and</span> is_prime(pal):</span><br><span class="line">                <span class="keyword">return</span> pal</span><br></pre></td></tr></table></figure> 程序说明：</p>
+<pre><code> * 出于模块化设计的思想，定义了`is_prime()`子函数实现常规试除法。
+ * 巧妙的奇数回文生成方式：利用`s[-2::-1]` 从倒数第二个字符开始的反向切片，然后与原数串联起来。如当 s = &quot;123&quot; 时，s[-2::-1] = &quot;21&quot;，s + s[-2::-1] = &quot;12321&quot;。这就是 l=3时生成的5位回文数。以此类推，l=5 生成9位回文数。</code></pre></li>
+</ul>
+<h3 id="素数排列">1175. 素数排列</h3>
+<ul>
+<li><p><strong>问题描述：</strong>给定 <span class="math inline">\(n\)</span>，返回将 1 到 <span class="math inline">\(n\)</span> 的数字排列，使得素数在质数索引位置（从1开始计数）的排列总数，结果对 <span class="math inline">\(10^9 + 7\)</span> 取模。</p></li>
+<li><p><strong>解题思路：</strong>首先找出前 <span class="math inline">\(n\)</span> 个数中有多少个素数。设定有 <span class="math inline">\(p\)</span> 个素数，和数的数目则为 <span class="math inline">\((n-p)\)</span> 个。由此全部的排列方式为 <span class="math inline">\(p! * (n-p)!\)</span>。</p></li>
+<li><p><strong>示例代码：</strong>直接将以上的解题思路变成 Python 程序就是</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MOD = <span class="number">10</span>**<span class="number">9</span> + <span class="number">7</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numPrimeArrangements</span>(<span class="params">n: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">       <span class="function"><span class="keyword">def</span> <span class="title">is_prime</span>(<span class="params">x</span>):</span></span><br><span class="line">           <span class="keyword">if</span> x &lt; <span class="number">2</span>:</span><br><span class="line">               <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">           <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">int</span>(x**<span class="number">0.5</span>) + <span class="number">1</span>):</span><br><span class="line">               <span class="keyword">if</span> x % i == <span class="number">0</span>:</span><br><span class="line">                   <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">               <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">def</span> <span class="title">factorial</span>(<span class="params">x</span>):</span></span><br><span class="line">           res = <span class="number">1</span></span><br><span class="line">           <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, x + <span class="number">1</span>):</span><br><span class="line">               res = (res * i) % MOD</span><br><span class="line">           <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">       primes = <span class="built_in">sum</span>(is_prime(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, n+<span class="number">1</span>))</span><br><span class="line">       <span class="keyword">return</span> (factorial(primes) * factorial(n - primes)) % MOD</span><br></pre></td></tr></table></figure> 程序说明：</p>
+<ul>
+<li>子函数<code>is_prime()</code>和<code>factorial()</code>体现了模块化设计的思想。，<code>is_prime()</code>实现常规试除法，<code>factorial()</code>用<code>for</code>循环实现阶乘。</li>
+<li>注意在<code>factorial()</code>子函数循环中每一步乘法的结果都都对<span class="math inline">\(10^9 + 7\)</span> 取模，这种操作用于在处理大数乘法时控制中间结果的大小，避免溢出。它的数学原理是模运算的乘法同余性质，即恒等式 <span class="math display">\[(a⋅b)\mod n=[(a\mod n)⋅(b\mod n)]\mod n\]</span></li>
+</ul></li>
+</ul>
+<h3 id="范围内最接近的两个质数">2523. 范围内最接近的两个质数</h3>
+<ul>
+<li><p><strong>问题描述：</strong>给定一个区间 [left, right]，要求找出区间内相邻且差值最小的一对素数。如果不存在这样的素数对，则返回 [-1, -1]。</p></li>
+<li><p><strong>解题思路：</strong>先使用埃拉托斯特尼筛法高效地找出区间内所有素数，然后遍历所有相邻的素数对，计算它们的差值并记录具有最小差值的素数对。</p></li>
+<li><p><strong>示例代码：</strong>对原来的<code>get_prime_soe()</code>函数稍加调整，就可以实现对给定区间内所有素数的搜寻。后面用一个简单的<code>for</code>循环就可以计算和追踪相邻素数对的最小差值和该素数对本身。完整的 Python 程序如下</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">closestPrimes</span>(<span class="params">self, left: <span class="built_in">int</span>, right: <span class="built_in">int</span></span>) -&gt; <span class="built_in">list</span>[<span class="built_in">int</span>]:</span></span><br><span class="line">    MAX = right + <span class="number">1</span></span><br><span class="line">    is_prime = [<span class="literal">True</span>] * MAX</span><br><span class="line">    is_prime[<span class="number">0</span>] = is_prime[<span class="number">1</span>] = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">int</span>(MAX**<span class="number">0.5</span>) + <span class="number">1</span>):</span><br><span class="line">     <span class="keyword">if</span> is_prime[i]:</span><br><span class="line">         <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i*i, MAX, i):</span><br><span class="line">             is_prime[j] = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"> primes = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(left, right + <span class="number">1</span>) <span class="keyword">if</span> is_prime[i]]</span><br><span class="line"> <span class="keyword">if</span> <span class="built_in">len</span>(primes) &lt; <span class="number">2</span>:</span><br><span class="line">     <span class="keyword">return</span> [-<span class="number">1</span>, -<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"> min_pair = [-<span class="number">1</span>, -<span class="number">1</span>]</span><br><span class="line"> min_diff = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(primes)):</span><br><span class="line">     <span class="keyword">if</span> primes[i] - primes[i-<span class="number">1</span>] &lt; min_diff:</span><br><span class="line">         min_diff = primes[i] - primes[i-<span class="number">1</span>]</span><br><span class="line">         min_pair = [primes[i-<span class="number">1</span>], primes[i]]</span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> min_pair</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h3 id="和等于目标值的素数对">2761. 和等于目标值的素数对</h3>
+<ul>
+<li><p><strong>问题描述：</strong>给定一个偶数 <span class="math inline">\(n\)</span>，返回所有两个素数 <span class="math inline">\((x, y)\)</span> 的组合，使得 <span class="math inline">\(x + y = n\)</span> 且 <span class="math inline">\(x ≤ y\)</span>。</p></li>
+<li><p><strong>解题思路：</strong>同样先使用埃拉托色尼筛法生成 <span class="math inline">\(n\)</span> 以内所有素数，然后从最小的素数2开始遍历所有素数 <span class="math inline">\(p\)</span>，如果 <span class="math inline">\(n-p\)</span> 也是素数且满足 <span class="math inline">\(p &lt;= n-p\)</span>，将 <span class="math inline">\((p, n-p)\)</span> 加入结果列表。注意遍历可以到 <span class="math inline">\(\lfloor\frac{n}{2}\rfloor\)</span>为止，因为每个大于或等于 <span class="math inline">\(\frac{n}{2}\)</span> 的 <span class="math inline">\(y\)</span> 都对应一个小于或等于它的 <span class="math inline">\(x\)</span>。</p></li>
+<li><p><strong>示例代码：</strong>以上的思路很清晰，转化成 Python 程序如下</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findPrimePairs</span>(<span class="params">self, n: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="type">List</span>[<span class="built_in">int</span>]]:</span></span><br><span class="line">    is_prime = [<span class="literal">True</span>] * (n + <span class="number">1</span>)</span><br><span class="line">    is_prime[<span class="number">0</span>] = is_prime[<span class="number">1</span>] = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="built_in">int</span>(n**<span class="number">0.5</span>) + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> is_prime[i]:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i*i, n+<span class="number">1</span>, i):</span><br><span class="line">                is_prime[j] = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, n//<span class="number">2</span> + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> is_prime[i] <span class="keyword">and</span> is_prime[n - i]:</span><br><span class="line">            res.append([i, n - i])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>埃拉托斯特尼（前276年—前194年），古希腊数学家、地理学家、诗人、天文学家和音乐理论家。他是已知的第一个计算出地球周长的人，其计算结果非常准确，误差率不到 1%。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>卡内基梅隆大学的计算机系教授加里·米勒 (Gary Lee Miller) 首先提出了基于广义黎曼猜想的确定性算法，由于广义黎曼猜想并没有被证明，其后由以色列耶路撒冷希伯来大学的迈克尔·拉宾 (Michael O. Rabin) 教授作出修改，提出了不依赖于该假设的随机化算法。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>这是因为从 <span class="math inline">\(x^2\equiv 1\pmod n\)</span> 可以推导出 <span class="math inline">\((x-1)(x+1)=x^{2}-1\equiv 0\pmod n\)</span>，又由于<span class="math inline">\(n\)</span>是素数，根据<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/欧几里得引理">欧几里得引理</a>，它必然整除 <span class="math inline">\(x-1\)</span> 和 <span class="math inline">\(x+1\)</span>其中的一个，所以 <span class="math inline">\(x\bmod n\)</span> 一定是 <span class="math inline">\(1\)</span> 或 <span class="math inline">\(-1\)</span>。<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我喝杯咖啡</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="子曦 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/paypal.jpg" alt="子曦 PayPal">
+        <span>PayPal</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/" title="程序员面试题精解（5）— 素数判定">https://www.packetmania.net/2025/04/19/PGITVW-5-primes/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"><i class="fa fa-tag"></i> 密码学</a>
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/03/09/PGITVW-4-twoptrs/" rel="prev" title="程序员面试题精解（4）— 双指针">
+                  <i class="fa fa-chevron-left"></i> 程序员面试题精解（4）— 双指针
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">333k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:02</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script defer src="https://vercount.one/js"></script>
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"88c047328d8c7e337ad3e881c1e6d35f"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

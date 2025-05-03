@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2025-05-02T05:18:15.790Z</updated>
+  <updated>2025-05-03T02:05:45.226Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/"/>
     <id>https://www.packetmania.net/2025/04/19/PGITVW-5-primes/</id>
     <published>2025-04-19T18:50:44.000Z</published>
-    <updated>2025-05-02T05:18:15.790Z</updated>
+    <updated>2025-05-03T02:05:45.226Z</updated>
     
     
     <summary type="html">&lt;p&gt;素数（Prime Numbers，又称质数）在密码学和加密通信中扮演着核心的角色，是现代网络安全技术的基石。同时，素数也广泛应用于高级编译器系统的“底层优化”、“散列设计”或“伪随机生成”模块中。如果要申请相关的软件工程师职位，一定要掌握素数搜寻与验证的编程诀窍。</summary>
@@ -201,11 +201,11 @@
     
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     

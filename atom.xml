@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2025-05-03T02:05:45.226Z</updated>
+  <updated>2025-05-17T02:11:37.793Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AI辅助生成的统计博客文章浏览量的网络爬虫</title>
+    <link href="https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/"/>
+    <id>https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/</id>
+    <published>2025-05-05T06:08:54.000Z</published>
+    <updated>2025-05-17T02:11:37.793Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;一直就想建一个网页追踪本博客发布文章的浏览量。最近，借助 AI（ChatGPT）辅助生成了一个网络爬虫程序，可以准确地抓取全部文章的浏览量并自动创建Markdown格式的排行榜。</summary>
+    
+    
+    
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="人工智能和机器学习" scheme="https://www.packetmania.net/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%92%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>程序员面试题精解（5）— 素数判定</title>
@@ -52,9 +73,9 @@
     <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
     
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -155,11 +176,11 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -178,9 +199,9 @@
     <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
     
     
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
     <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -199,13 +220,13 @@
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     
     
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
     
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
-    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     
@@ -418,25 +439,6 @@
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>勇踏IP未至之境</title>
-    <link href="https://www.packetmania.net/2021/03/06/Internet-in-space/"/>
-    <id>https://www.packetmania.net/2021/03/06/Internet-in-space/</id>
-    <published>2021-03-06T23:04:48.000Z</published>
-    <updated>2021-11-28T01:39:13.655Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;协调世界时（UTC）2021年2月18日20时55分，美国宇航局（NASA）制造的&lt;strong&gt;毅力号&lt;/strong&gt;火星探测器成功登陆火星。之前的2月10日，中国首次自主发射的&lt;strong&gt;天问一号&lt;/strong&gt;火星探测器成功进入火星轨道，之后也将择机展开着陆、巡视等科学探测任务。人类对最近的邻星的科学探测活动，正在紧锣密鼓地进行中。到2030年，人类将开始执行载人航天器登陆火星计划，这将是我们实现卡尔·萨根走出“暗淡蓝点”、探寻太空家园的梦想的第一个里程碑！</summary>
-    
-    
-    
-    <category term="致敬先驱" scheme="https://www.packetmania.net/categories/%E8%87%B4%E6%95%AC%E5%85%88%E9%A9%B1/"/>
-    
-    
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
   </entry>
   

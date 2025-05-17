@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances","storage":true,"lazyload":false,"nav":{"utterances":{"text":"Utterances评论","order":-1},"gitalk":{"text":"Gitalk评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="一直就想建一个网页追踪本博客发布文章的浏览量。最近，借助 AI（ChatGPT）辅助生成了一个网络爬虫程序，可以准确地抓取全部文章的浏览量并自动创建Markdown格式的排行榜。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI辅助生成的统计博客文章浏览量的网络爬虫">
+<meta property="og:url" content="https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="一直就想建一个网页追踪本博客发布文章的浏览量。最近，借助 AI（ChatGPT）辅助生成了一个网络爬虫程序，可以准确地抓取全部文章的浏览量并自动创建Markdown格式的排行榜。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-05T06:08:54.000Z">
+<meta property="article:modified_time" content="2025-05-17T02:11:37.793Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="Python编程">
+<meta property="article:tag" content="人工智能和机器学习">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/","path":"2025/05/04/Web-Crawler-Viewcounts/","title":"AI辅助生成的统计博客文章浏览量的网络爬虫"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AI辅助生成的统计博客文章浏览量的网络爬虫 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tasks"><a href="/VXlzTWJvcVNzcmRzdkNnaG0/" rel="section"><i class="fa fa-tasks fa-fw"></i>任务</a></li>
+        <li class="menu-item menu-item-ranking"><a href="/ranking/" rel="section"><i class="fa fa-list-ol fa-fw"></i>排行榜</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB"><span class="nav-number">1.</span> <span class="nav-text">生成网络爬虫</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAcan-you-write-a-crawler-to-get-view-counts-for-the-posts-of-this-blog-site-www.packetmania.net"><span class="nav-number">1.1.</span> <span class="nav-text">提示：Can you write a crawler to get view counts for the posts of this blog site: www.packetmania.net</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAplease-write-a-crawler-for-me."><span class="nav-number">1.2.</span> <span class="nav-text">提示：Please write a crawler for me.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAyes"><span class="nav-number">1.3.</span> <span class="nav-text">提示：Yes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAboth-python-scripts-returned-found-0-posts..-something-wrong."><span class="nav-number">1.4.</span> <span class="nav-text">提示：Both python scripts returned &quot;Found 0 posts.&quot;. Something wrong.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAit-does-return-sitemap-content"><span class="nav-number">1.5.</span> <span class="nav-text">提示：It does return sitemap content:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%93%E5%8F%96%E9%98%85%E8%AF%BB%E6%AC%A1%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">抓取阅读次数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAnow-it-can-find-the-pages-but-the-view-count-still-missing"><span class="nav-number">2.1.</span> <span class="nav-text">提示：Now it can find the pages, but the view count still missing:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAactually-the-view-count-is-shown-as-%E9%98%85%E8%AF%BB%E6%AC%A1%E6%95%B0-1448"><span class="nav-number">2.2.</span> <span class="nav-text">提示：Actually the view count is shown as &quot;阅读次数： 1448&quot;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAstill-not-found"><span class="nav-number">2.3.</span> <span class="nav-text">提示：Still not found</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAhere-is-the-output"><span class="nav-number">2.4.</span> <span class="nav-text">提示：Here is the output:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BAnow-it-works"><span class="nav-number">2.5.</span> <span class="nav-text">提示：Now it works:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%87%E7%AB%A0%E6%8E%92%E8%A1%8C%E6%A6%9C"><span class="nav-number">3.</span> <span class="nav-text">创建文章排行榜</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98markdown"><span class="nav-number">4.</span> <span class="nav-text">保存Markdown</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%8F%8C%E8%AF%AD%E5%8D%9A%E5%AE%A2"><span class="nav-number">5.</span> <span class="nav-text">支持双语博客</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机科学与技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机科学与技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AI辅助生成的统计博客文章浏览量的网络爬虫
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-04 23:08:54" itemprop="dateCreated datePublished" datetime="2025-05-04T23:08:54-07:00">2025-05-04</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2025-05-16 19:11:37" itemprop="dateModified" datetime="2025-05-16T19:11:37-07:00">2025-05-16</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/" itemprop="url" rel="index"><span itemprop="name">技术小札</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>22k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>20 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>一直就想建一个网页追踪本博客发布文章的浏览量。最近，借助 AI（ChatGPT）辅助生成了一个网络爬虫程序，可以准确地抓取全部文章的浏览量并自动创建Markdown格式的排行榜。<span id="more"></span>整个过程大约1个多小时，估计自己从头开始写至少需要2-3小时的时间，确实AI将效率倍增。这里将与AI交互生成代码的关键提示和回应过程做个记录，以备参考。</p>
+<h3 id="生成网络爬虫">生成网络爬虫</h3>
+<div class="note info no-icon"><h4 id="提示can-you-write-a-crawler-to-get-view-counts-for-the-posts-of-this-blog-site-www.packetmania.net"><strong>提示：</strong>Can you write a crawler to get view counts for the posts of this blog site: www.packetmania.net</h4>
+<p><strong>回应：</strong>To retrieve the view counts for posts on www.packetmania.net, you can develop a web crawler that performs the following steps:​</p>
+<ol type="1">
+<li><p><strong>Access the Sitemap: </strong>Begin by fetching the site's sitemap, located at https://www.packetmania.net/sitemap.xml. This XML file lists all the URLs of the site's posts, facilitating efficient crawling.</p></li>
+<li><p><strong>Parse the Sitemap: </strong>Extract all post URLs from the <loc> tags within the sitemap.​</p></li>
+<li><p><strong>Fetch Each Post: </strong>For each URL obtained, send an HTTP GET request to retrieve the HTML content of the post.​</p></li>
+<li><p><strong>Extract View Counts: </strong>Analyze the HTML content to locate the view count. On PacketMania, the view count is typically found near the post's metadata. For example, in the post titled "IPv4 and IPv6 Header Checksum Algorithm Explained," the view count is displayed as follows: <code>Views: 78</code></p>
+<p>Your crawler should search for this pattern or similar indicators within the HTML to extract the view count.</p></li>
+<li><p><strong>Handle JavaScript Rendering: </strong>If the view counts are loaded dynamically via JavaScript, consider using tools like Selenium or Puppeteer, which can render JavaScript and allow you to extract the dynamically loaded content.​</p></li>
+<li><p><strong>Respect Robots.txt and Terms of Service: </strong>Before initiating the crawling process, review the site's robots.txt file and terms of service to ensure compliance with their crawling policies.​</p></li>
+<li><p><strong>Implement Rate Limiting: </strong>To avoid overwhelming the server, incorporate delays between your requests.​</p></li>
+</ol>
+<p>By following these steps, your crawler can systematically retrieve view counts for each post on PacketMania.</p>
+</div>
+<p>ChatGPT 马上给出了网络爬虫的工作流程，还提醒要实现速率限制，挺好！不废话了，直接让它写代码吧。</p>
+<div class="note info no-icon"><h4 id="提示please-write-a-crawler-for-me."><strong>提示：</strong>Please write a crawler for me.</h4>
+<p><strong>回应：</strong>Here’s a Python crawler using requests, BeautifulSoup, and re to extract view counts from blog posts on www.packetmania.net. This version assumes the view counts are rendered as plain text and not dynamically via JavaScript.</p>
+<p>✅ <strong>Requirements</strong> Install required packages first (if not already installed):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install requests beautifulsoup4 lxml</span><br></pre></td></tr></table></figure>
+<p>🕷️ <strong>Crawler Code</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 1: Fetch sitemap</span></span><br><span class="line">SITEMAP_URL = <span class="string">&quot;https://www.packetmania.net/sitemap.xml&quot;</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_post_urls</span>(<span class="params">sitemap_url</span>):</span></span><br><span class="line">    response = requests.get(sitemap_url, headers=headers)</span><br><span class="line">    soup = BeautifulSoup(response.content, <span class="string">&#x27;xml&#x27;</span>)</span><br><span class="line">    urls = [loc.text <span class="keyword">for</span> loc <span class="keyword">in</span> soup.find_all(<span class="string">&#x27;loc&#x27;</span>) <span class="keyword">if</span> <span class="string">&#x27;/en/&#x27;</span> <span class="keyword">in</span> loc.text]</span><br><span class="line">    <span class="keyword">return</span> urls</span><br><span class="line">    </span><br><span class="line"><span class="comment"># Step 2: Crawl each post and extract view count</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_view_count</span>(<span class="params">post_url</span>):</span></span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line"><span class="comment"># Step 3: Main function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crawl_packetmania</span>():</span></span><br><span class="line">    post_urls = get_post_urls(SITEMAP_URL)</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">for</span> i, url <span class="keyword">in</span> <span class="built_in">enumerate</span>(post_urls):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[<span class="subst">&#123;i+<span class="number">1</span>&#125;</span>/<span class="subst">&#123;<span class="built_in">len</span>(post_urls)&#125;</span>] Crawling <span class="subst">&#123;url&#125;</span>&quot;</span>)</span><br><span class="line">        views = extract_view_count(url)</span><br><span class="line">        ...</span><br><span class="line">        time.sleep(<span class="number">1</span>)  <span class="comment"># be polite </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    view_data = crawl_packetmania()</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>⚠️ <strong>Notes</strong></p>
+<ul>
+<li>If view counts are rendered via JavaScript, you’ll need to use <strong>Selenium</strong> or <strong>Playwright</strong>.</li>
+<li>Respect robots.txt: https://www.packetmania.net/robots.txt</li>
+<li>Add error handling and throttling for production use.</li>
+</ul>
+<p>Would you like a JavaScript-rendered version using Selenium as well?</p>
+</div>
+<p>ChatGPT 输出的开头贴心地给出了安装所需 Python 模块的命令行。接下来生成的程序结构很清晰，第一个函数<code>get_post_urls</code>分析输入的站点地图，返回全部文章的 URL。第二个函数<code>extract_view_count</code>从每个文章中抓取阅读次数。最后由<code>crawl_packetmania</code>函数汇总调用前二者得到全部博客文章浏览量的数据。在结尾， AI 还指出对于用 JavaScript 动态渲染产生的阅读次数，需要使用 <strong>Selenium</strong> （用于自动执行网络浏览器交互的软件包）模块，并问是否要生成支持 JavaScript 动态网页的版本。</p>
+<p>当然要，继续给 ChatGPT 提示。</p>
+<div class="note info no-icon"><h4 id="提示yes"><strong>提示：</strong>Yes</h4>
+<p><strong>回应：</strong>Here’s a JavaScript-rendered version of the crawler using Selenium with Python to extract view counts from www.packetmania.net. This handles sites where view counts are rendered dynamically via JavaScript.</p>
+<p>✅ <strong>Prerequisites</strong> Install the required Python packages:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
+<p>Also install ChromeDriver:</p>
+<ul>
+<li>Download from: https://sites.google.com/chromium.org/driver/</li>
+<li>Make sure it matches your version of Google Chrome and is in your system PATH.</li>
+</ul>
+<p>🕷️ Crawler Code (with Selenium)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.chrome.options <span class="keyword">import</span> Options</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 1: Get post URLs from sitemap</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_post_urls</span>(<span class="params">sitemap_url</span>):</span></span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line"><span class="comment"># Step 2: Use Selenium to render the page and extract view count</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_view_count</span>(<span class="params">driver, url</span>):</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        driver.get(url)</span><br><span class="line">        time.sleep(<span class="number">2</span>)  <span class="comment"># wait for page to render</span></span><br><span class="line">        page_source = driver.page_source</span><br><span class="line">        match = re.search(<span class="string">r&#x27;Views:\s*(\d+)&#x27;</span>, page_source)</span><br><span class="line">        <span class="keyword">if</span> match:</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">int</span>(match.group(<span class="number">1</span>))</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 3: Main function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crawl_with_selenium</span>():</span></span><br><span class="line">    ...</span><br><span class="line">        <span class="comment"># Setup headless Chrome</span></span><br><span class="line">    chrome_options = Options()</span><br><span class="line">    chrome_options.add_argument(<span class="string">&quot;--headless&quot;</span>)</span><br><span class="line">    chrome_options.add_argument(<span class="string">&quot;--disable-gpu&quot;</span>)</span><br><span class="line">    chrome_options.add_argument(<span class="string">&quot;--no-sandbox&quot;</span>)</span><br><span class="line"></span><br><span class="line">    driver = webdriver.Chrome(options=chrome_options)</span><br><span class="line">    results = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i, url <span class="keyword">in</span> <span class="built_in">enumerate</span>(urls):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[<span class="subst">&#123;i+<span class="number">1</span>&#125;</span>/<span class="subst">&#123;<span class="built_in">len</span>(urls)&#125;</span>] Crawling <span class="subst">&#123;url&#125;</span>&quot;</span>)</span><br><span class="line">        views = extract_view_count(driver, url)</span><br><span class="line">        ...</span><br><span class="line">     ...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>🛠️ <strong>Tips</strong></p>
+<ul>
+<li>You can switch to Firefox by using webdriver.Firefox() if preferred.</li>
+<li>To make it faster, reduce the wait time or optimize view count detection with XPath if you know the exact tag.</li>
+<li>If you're running it in a server environment without GUI, ensure headless mode is enabled (as it is above).</li>
+</ul>
+<p>Would you like this version wrapped into a Docker container or saved as a ready-to-run script package?</p>
+</div>
+<p>新的程序改用 Selenium 模块提供的工具抓取阅读次数，输出同样包括安装新模块的步骤。好了，现在可以测试程序了。</p>
+<p>不幸的是，程序不工作！！</p>
+<div class="note info no-icon"><h4 id="提示both-python-scripts-returned-found-0-posts..-something-wrong."><strong>提示：</strong>Both python scripts returned "Found 0 posts.". Something wrong.</h4>
+<p><strong>回应：</strong>It looks like I can't directly access the sitemap URL from my side. However, here's how you can troubleshoot it:</p>
+<p>✅ Step-by-Step Fix</p>
+<ol type="1">
+<li><strong>Open the Sitemap Manually：</strong>Visit this URL in your browser https://www.packetmania.net/sitemap.xml</li>
+</ol>
+<ul>
+<li>Do you see a list of blog post URLs?</li>
+<li>If it returns a 404 or is empty, the site might not use a standard XML sitemap.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Alternative: Crawl the Blog Index Page:</strong>If the sitemap is missing or not useful, you can extract post URLs by crawling from the main blog page, like https://www.packetmania.net/en/.</li>
+</ol>
+<p>...</p>
+<p>Let me know if the sitemap actually has content when you open it, or if you'd prefer the Selenium version of this updated crawler!</p>
+</div>
+<p>ChatGPT 正确地认识到问题出在站点地图的分析部分，程序找不到任何文章链接的 URL。但是它不能直接访问站点地图，建议手工检查站点地图内容。那好，我就喂给它 https://www.packetmania.net/sitemap.xml 的内容。</p>
+<div class="note info no-icon"><h4 id="提示it-does-return-sitemap-content"><strong>提示：</strong>It does return sitemap content:</h4>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">urlset</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">loc</span>&gt;</span>https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/<span class="tag">&lt;/<span class="name">loc</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">lastmod</span>&gt;</span>2025-03-29<span class="tag">&lt;/<span class="name">lastmod</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">changefreq</span>&gt;</span>monthly<span class="tag">&lt;/<span class="name">changefreq</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">priority</span>&gt;</span>0.6<span class="tag">&lt;/<span class="name">priority</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>回应：</strong>Thanks! That helps a lot.</p>
+<p>Your original sitemap does not contain /en/ in the URLs, so the filter if '/en/' in loc.text is incorrectly filtering everything out. Let's fix that. ... Here are the diff lines to fix the issue in your original script:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-    urls = [loc.text for loc in soup.find_all(&#x27;loc&#x27;) if &#x27;/en/&#x27; in loc.text]</span></span><br><span class="line"><span class="addition">+    urls = [loc.text for loc in soup.find_all(&#x27;loc&#x27;)]</span></span><br></pre></td></tr></table></figure>
+<p>That’s it! This change removes the unnecessary /en/ filter and allows the crawler to process all blog posts listed in the sitemap.</p>
+</div>
+<p>拿到站点地图内容，AI 立即意识到它的错误。原来它在分析部分的代码中加入了一个<code>/en/</code>过滤，所以全部的 URL 都被排除掉了。估计这是因为我一直是用英文提示的，而给的网址确实又包含一个英文副站点 www.packetmania.net/en/，AI 就想当然地只匹配英文副站点的 URL 了。AI 给出了补丁（diff）修复了这个错误。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python crawler-javascript.py</span><br><span class="line">Found 61 posts.</span><br></pre></td></tr></table></figure>
+<h3 id="抓取阅读次数">抓取阅读次数</h3>
+<p>虽然此时 ChatGPT 生成的网络爬虫可以返回正确的文章数目，但是却不能取出阅读量，还需要继续与之交互。</p>
+<div class="note info no-icon"><h4 id="提示now-it-can-find-the-pages-but-the-view-count-still-missing"><strong>提示：</strong>Now it can find the pages, but the view count still missing:</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[1/61] Crawling https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</span><br><span class="line"> -&gt; View count not found.</span><br><span class="line">[2/61] Crawling https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</span><br><span class="line"> -&gt; View count not found.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>回应：</strong>Thanks — good progress! Now that URLs are loading, but no view count is found, it’s very likely that:</p>
+<ol type="1">
+<li>The view count is rendered dynamically by JavaScript, or</li>
+<li>It's inside a specific HTML tag, not just plain text like <code>Views: 123</code></li>
+</ol>
+<p>🔍 <strong>Let’s Debug with Selenium</strong></p>
+<p>Update your Selenium version to inspect specific elements, rather than relying on regex over raw HTML. Here’s a diff-style fix for the extract_view_count() function in your crawler-javascript.py:</p>
+<p>...</p>
+</div>
+<p>这时从 AI 的回应中<code>2.</code>，我发现它给出的程序中还有同样的错误：阅读次数的正则表达式（Regular Expression）匹配用的是英文</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">match = re.search(<span class="string">r&#x27;Views:\s*(\d+)&#x27;</span>, page_source)</span><br></pre></td></tr></table></figure>
+<p>而实际的字符是<code>阅读次数： 1448</code>。下面让它纠正这个错误</p>
+<div class="note info no-icon"><h4 id="提示actually-the-view-count-is-shown-as-阅读次数-1448"><strong>提示：</strong>Actually the view count is shown as "阅读次数： 1448"</h4>
+<p><strong>回应：</strong>Ah, perfect! The view count is shown in Chinese as: <code>阅读次数：1448</code>。</p>
+<p>Let’s update your Selenium-based crawler to search for this instead.</p>
+<p>✅ <strong>Just update this part in extract_view_count():</strong></p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-        elements = driver.find_elements(By.XPATH, &quot;//*[contains(text(), &#x27;Views&#x27;)]&quot;)</span></span><br><span class="line"><span class="addition">+        elements = driver.find_elements(By.XPATH, &quot;//*[contains(text(), &#x27;阅读次数&#x27;)]&quot;)</span></span><br></pre></td></tr></table></figure>
+<p>And update the regex:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-            match = re.search(r&#x27;Views:\s*(\d+)&#x27;, el.text)</span></span><br><span class="line"><span class="addition">+            match = re.search(r&#x27;阅读次数[:：]?\s*(\d+)&#x27;, el.text)</span></span><br></pre></td></tr></table></figure>
+<p>... That should now correctly extract the Chinese-format view count from each blog post.</p>
+</div>
+<p>按照这两个 Diff 修改后，还是没有打印出阅读次数。继续让它排错</p>
+<div class="note info no-icon"><h4 id="提示still-not-found"><strong>提示：</strong>Still not found</h4>
+<p><strong>回应：</strong>Got it — since it’s still not found, let’s do a precise visual + DOM-based inspection. We’ll now:</p>
+<ol type="1">
+<li>Use Selenium to print out all elements containing "阅读次数".</li>
+<li>Confirm the exact tag/structure where the view count lives.</li>
+</ol>
+<p>✅ <strong>Debugging Version of extract_view_count()</strong></p>
+<p>Replace your current function with this debug version:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_view_count</span>(<span class="params">driver, url</span>):</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        driver.get(url)</span><br><span class="line">        time.sleep(<span class="number">2</span>)  <span class="comment"># Let JS render</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Print out all elements that contain &quot;阅读次数&quot;</span></span><br><span class="line">        elements = driver.find_elements(By.XPATH, <span class="string">&quot;//*[contains(text(), &#x27;阅读次数&#x27;)]&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> el <span class="keyword">in</span> elements:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Found text:&quot;</span>, el.text)  <span class="comment"># Debug output</span></span><br><span class="line">            match = re.search(<span class="string">r&#x27;阅读次数[:：]?\s*(\d+)&#x27;</span>, el.text)</span><br><span class="line">            <span class="keyword">if</span> match:</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">int</span>(match.group(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Optional: print page source if nothing is found</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> elements:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;No element with &#x27;阅读次数&#x27; found.&quot;</span>)</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;debug_output.html&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                f.write(driver.page_source)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Error processing <span class="subst">&#123;url&#125;</span>: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<p><strong>What This Does:</strong></p>
+<ul>
+<li>✅ Shows every el.text containing "阅读次数"</li>
+<li>📄 Dumps HTML to debug_output.html if nothing is found</li>
+<li>Helps us see <strong>how it’s rendered</strong> and where</li>
+</ul>
+<p>🧠 <strong>Next Step</strong></p>
+<ol type="1">
+<li>Run the script.</li>
+<li>Look at Found text: ... output — does it show the view count?</li>
+<li>If not, open debug_output.html and search for 阅读次数 — is it inside a &lt;script&gt;, inside Shadow DOM, or rendered with JavaScript framework?</li>
+</ol>
+<p>Once you show me the actual line or structure from the HTML, I can give you the exact XPath to extract it. Want to do that now?</p>
+</div>
+<p>再次运行修改<code>extract_view_count</code>函数后的程序，这一次输出了<code>阅读次数：</code>，但是仍然没有抓到数字。继续提示</p>
+<div class="note info no-icon"><h4 id="提示here-is-the-output"><strong>提示：</strong>Here is the output:</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">python crawler-javascript.py</span><br><span class="line">Found 61 posts.</span><br><span class="line">	</span><br><span class="line">[1/61] Crawling https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</span><br><span class="line">Found text: 阅读次数：</span><br><span class="line"> -&gt; View count not found.</span><br><span class="line">[2/61] Crawling https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</span><br><span class="line">Found text: 阅读次数：</span><br><span class="line"> -&gt; View count not found.</span><br><span class="line">···</span><br></pre></td></tr></table></figure>
+<p><strong>回应：</strong>Perfect, now we know:</p>
+<ul>
+<li>The element does exist</li>
+<li>But it only contains: 阅读次数： (no number inside the same element)</li>
+</ul>
+<p>That strongly suggests the <strong>number is in a <em>separate span or sibling tag</em></strong> next to the "阅读次数：" label.</p>
+<p>✅ <strong>Fix with More Precise XPath</strong></p>
+<p>Update the XPath to capture the <strong>label + number</strong> in one go:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">elements = driver.find_elements(By.XPATH, <span class="string">&quot;//*[contains(text(), &#x27;阅读次数&#x27;)]/..&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>...</p>
+</div>
+<p>AI 知道了问题所在，并指出了解决办法。改动程序后，阅读次数出来了！赶紧告诉 AI</p>
+<div class="note info no-icon"><h4 id="提示now-it-works"><strong>提示：</strong>Now it works:</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">python crawler-javascript.py</span><br><span class="line">Found 61 posts.</span><br><span class="line"></span><br><span class="line">[1/61] Crawling https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</span><br><span class="line">Found text: 阅读次数： 41</span><br><span class="line"> -&gt; Views: 41</span><br><span class="line">[2/61] Crawling https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</span><br><span class="line">Found text: 阅读次数： 276</span><br><span class="line"> -&gt; Views: 276</span><br><span class="line"> ...</span><br></pre></td></tr></table></figure>
+<p><strong>回应：</strong>🎉 Awesome! Glad it’s working now — great teamwork!</p>
+<p>Now that you're successfully extracting view counts, here are a few bonus suggestions you might want next:</p>
+<p>📤 <strong>Export Options</strong></p>
+<ol type="1">
+<li>To CSV:</li>
+<li>To JSON: ...</li>
+</ol>
+<p>🛠️ <strong>Optional Enhancements</strong></p>
+<ul>
+<li>Add --headful mode for debugging (show browser window)</li>
+<li>Randomized delay between requests (to avoid rate limits)</li>
+<li>Log failed pages for retrying</li>
+<li>Schedule regular crawling with cron or APScheduler</li>
+<li>Wrap it into a Docker container or Flask API</li>
+</ul>
+<p>Want help with any of these next steps?</p>
+</div>
+<p>ChatGPT 也很高兴😊，它还进一步给出了数据导出和增强功能一些建议，但是我有自己的主意。</p>
+<h3 id="创建文章排行榜">创建文章排行榜</h3>
+<p>提示 AI 继续完成一些改进：</p>
+<ul>
+<li>"Now please enhance this script to skip URLs that are not including &lt;year&gt;/&lt;month&gt;/&lt;day&gt;."</li>
+<li>"Can you also do more enhancements:
+<ol type="1">
+<li>Grab the title of each blog post</li>
+<li>Sort with the decreasing order of view count with titles list to the right.</li>
+</ol></li>
+</ul>
+<p>ChatGPT 迅速生成了相应的代码，没有错误。</p>
+<div class="note info no-icon"><p><strong>回应：</strong>Great! Let’s enhance the script so it <strong>only crawls URLs that match the pattern:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.packetmania.net/YYYY/MM/DD/some-slug/</span><br></pre></td></tr></table></figure>
+<p>✅ <strong>Code Diff</strong></p>
+<p>Apply this small filter inside your get_post_urls() function:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def get_post_urls(sitemap_url):</span><br><span class="line">    response = requests.get(sitemap_url, headers=headers)</span><br><span class="line">    soup = BeautifulSoup(response.content, &#x27;xml&#x27;)</span><br><span class="line"><span class="deletion">-    urls = [loc.text for loc in soup.find_all(&#x27;loc&#x27;)]</span></span><br><span class="line"><span class="addition">+    urls = [</span></span><br><span class="line"><span class="addition">+        loc.text for loc in soup.find_all(&#x27;loc&#x27;)</span></span><br><span class="line"><span class="addition">+        if re.search(r&#x27;/\d&#123;4&#125;/\d&#123;2&#125;/\d&#123;2&#125;/&#x27;, loc.text)</span></span><br><span class="line"><span class="addition">+    ]</span></span><br><span class="line">    return urls</span><br></pre></td></tr></table></figure>
+<p>✅ <strong>Explanation</strong></p>
+<ul>
+<li>The regex <code>r'/\d{4}/\d{2}/\d{2}/'</code> ensures the URL includes a valid date path (YYYY/MM/DD)</li>
+<li>This skips entries like index.html or archive pages</li>
+</ul>
+<p>✅ <strong>New Features:</strong></p>
+<ul>
+<li>Grab the blog post title</li>
+<li>Sort results by descending view count</li>
+<li>Output CSV with: <code>URL, Views, Title</code> (sorted)</li>
+</ul>
+<p>🔁 <strong>Code Changes</strong></p>
+<p>📌 1. Update extract_view_count() to also return title</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract_view_count</span>(<span class="params">driver, url</span>):</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        driver.get(url)</span><br><span class="line">        time.sleep(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        title = driver.title.strip()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Find parent element that includes view count</span></span><br><span class="line">        elements = driver.find_elements(By.XPATH, <span class="string">&quot;//*[contains(text(), &#x27;阅读次数&#x27;)]/..&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> el <span class="keyword">in</span> elements:</span><br><span class="line">            full_text = el.text</span><br><span class="line">            match = re.search(<span class="string">r&#x27;阅读次数[:：]?\s*(\d+)&#x27;</span>, full_text)</span><br><span class="line">            <span class="keyword">if</span> match:</span><br><span class="line">                views = <span class="built_in">int</span>(match.group(<span class="number">1</span>))</span><br><span class="line">                <span class="keyword">return</span> views, title</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Error processing <span class="subst">&#123;url&#125;</span>: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span>, <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<p>📌 2. Main crawl function with sorting and CSV output</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">crawl_packetmania</span>():</span></span><br><span class="line">    post_urls = get_post_urls(SITEMAP_URL)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Found <span class="subst">&#123;<span class="built_in">len</span>(post_urls)&#125;</span> posts.\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">    results = []</span><br><span class="line">    <span class="keyword">for</span> i, url <span class="keyword">in</span> <span class="built_in">enumerate</span>(post_urls):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[<span class="subst">&#123;i+<span class="number">1</span>&#125;</span>/<span class="subst">&#123;<span class="built_in">len</span>(post_urls)&#125;</span>] Crawling <span class="subst">&#123;url&#125;</span>&quot;</span>)</span><br><span class="line">        views, title = extract_view_count(driver, url)</span><br><span class="line">        <span class="keyword">if</span> views <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot; -&gt; Views: <span class="subst">&#123;views&#125;</span> | Title: <span class="subst">&#123;title&#125;</span>&quot;</span>)</span><br><span class="line">            results.append((url, views, title))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot; -&gt; View count not found.&quot;</span>)</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Sort by views descending</span></span><br><span class="line">    results.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>], reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Sort by views descending</span></span><br><span class="line">    results.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>], reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Save to CSV</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;packetmania_sorted_views.csv&quot;</span>, <span class="string">&quot;w&quot;</span>, newline=<span class="string">&#x27;&#x27;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        writer = csv.writer(f)</span><br><span class="line">        writer.writerow([<span class="string">&quot;URL&quot;</span>, <span class="string">&quot;Views&quot;</span>, <span class="string">&quot;Title&quot;</span>])</span><br><span class="line">        writer.writerows(results)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> results</span><br></pre></td></tr></table></figure>
+</div>
+<p>运行程序后验证这些代码改动都没有问题，满足提示的要求。可以看到，这里 ChatGPT 自作主张导出 CSV 格式的文件，估计因为这是常见的输出格式。而其实我想要的，是可以直接用于生成博客网站帖子的 Markdown 格式文件。</p>
+<h3 id="保存markdown">保存Markdown</h3>
+<p>接下来提示 AI 导出 Markdown 格式文件：</p>
+<ul>
+<li>“Please generate a markdown table format with the sorted list”</li>
+<li>“Please add the link to the Title in the table.”</li>
+<li>“Can you add a far left column with the order from 1 to the last number of posts.”</li>
+<li>“For the title, please strip out the ending "&lt;space&gt;*|*".”</li>
+</ul>
+<div class="note info no-icon"><p><strong>回应：</strong></p>
+<p>Sure! Here's how to output the sorted results as a <strong>Markdown table</strong> (<code>| URL | Views | Title |</code>) directly from your Python script.</p>
+<p>✅ <strong>Step: Add This to the End of </strong><code>crawl_packetmania()</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generate Markdown table</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;packetmania_views.md&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(<span class="string">&quot;| Views | Title |\n&quot;</span>)</span><br><span class="line">    f.write(<span class="string">&quot;|-------:|-------|\n&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> url, views, title <span class="keyword">in</span> results:</span><br><span class="line">        safe_title = title.replace(<span class="string">&quot;|&quot;</span>, <span class="string">&quot;-&quot;</span>)  <span class="comment"># prevent Markdown formatting issues</span></span><br><span class="line">        f.write(<span class="string">f&quot;| <span class="subst">&#123;views&#125;</span> | [<span class="subst">&#123;safe_title&#125;</span>](<span class="subst">&#123;url&#125;</span>) |\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>📌 <strong>Sample Output</strong></p>
+<p>This will produce something like:</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">| Views | Title |</span><br><span class="line">|-------:|-------|</span><br><span class="line">| 276 | [<span class="string">Harvard CS50 AI Intro</span>](<span class="link">https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</span>) |</span><br><span class="line">| 41 | [<span class="string">PGITVW Part 4 - Two Pointers</span>](<span class="link">https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</span>) |</span><br></pre></td></tr></table></figure>
+<p>✅ <strong>Final Markdown Export Code (with Rank Column)</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generate Markdown table with rank, views, and linked titles</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;packetmania_views.md&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(<span class="string">&quot;| # | Views | Title |\n&quot;</span>)</span><br><span class="line">    f.write(<span class="string">&quot;|--:|------:|-------|\n&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> idx, (url, views, title) <span class="keyword">in</span> <span class="built_in">enumerate</span>(results, <span class="number">1</span>):</span><br><span class="line">        safe_title = title.replace(<span class="string">&quot;|&quot;</span>, <span class="string">&quot;-&quot;</span>)  <span class="comment"># avoid breaking the table</span></span><br><span class="line">        f.write(<span class="string">f&quot;| <span class="subst">&#123;idx&#125;</span> | <span class="subst">&#123;views&#125;</span> | [<span class="subst">&#123;safe_title&#125;</span>](<span class="subst">&#123;url&#125;</span>) |\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>📌 <strong>Output Example</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">| # | Views | Title |</span><br><span class="line">|--:|------:|-------|</span><br><span class="line">| 1 | 276 | [<span class="string">Harvard CS50 AI Intro</span>](<span class="link">https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</span>) |</span><br><span class="line">| 2 | 41 | [<span class="string">PGITVW Part 4 - Two Pointers</span>](<span class="link">https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</span>) |</span><br><span class="line">| 3 | 28 | [<span class="string">Cisco WiFi6 MU-MIMO</span>](<span class="link">https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/</span>) |</span><br></pre></td></tr></table></figure>
+<p>✅ <strong>Fix: Strip trailing " | ..." from the title</strong></p>
+<p>Update the title cleaning line inside <code>extract_view_count()</code> like this:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- title = driver.title.strip()</span></span><br><span class="line"><span class="addition">+ title = re.sub(r&#x27;\s*\|\s*.*$&#x27;, &#x27;&#x27;, driver.title.strip())</span></span><br></pre></td></tr></table></figure>
+</div>
+<p>ChatGPT 完成这些任务没有一点压力，生成的程序没有问题。</p>
+<h3 id="支持双语博客">支持双语博客</h3>
+<p>最后让 AI 在一个程序里支持本博客的中英文网站，可以用命令行选项<code>--lang</code>指定。ChatGPT 也很快搞定了。</p>
+<ul>
+<li>"Add a command line option to generate Chinese output of the table md."</li>
+<li>“please add timestamp to the name of generated md file. Also for command line option --lang, use different URL for English or Chinese: Default: Chinese (zh) URL: www.packetmania.net, --lang en URL: www.packetmania.net/en"</li>
+<li>"The matching keyword for English would be "Views: "."</li>
+<li>"Please also add en or zh to the name of generated md file."</li>
+<li>"for the keyword, note the difference of ":" for English and “：” for Chinese."</li>
+<li>For the markdown file name timestamp part, please add the time to the seconds.</li>
+</ul>
+<div class="note info no-icon"><p><strong>回应：</strong></p>
+<p>✅ <strong>Step-by-Step Enhancements</strong></p>
+<ol type="1">
+<li>Use <code>argparse</code> to add a <code>--lang</code> option</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line">parser = argparse.ArgumentParser(description=<span class="string">&quot;PacketMania view count crawler&quot;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&quot;--lang&quot;</span>, choices=[<span class="string">&quot;en&quot;</span>, <span class="string">&quot;zh&quot;</span>], default=<span class="string">&quot;en&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;Language for Markdown output (en or zh)&quot;</span>)</span><br><span class="line">args = parser.parse_args()</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>Use language-specific headers</li>
+</ol>
+<p>Update your Markdown export section:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generate Markdown table with rank, views, and linked titles</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;packetmania_views.md&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">if</span> args.lang == <span class="string">&quot;zh&quot;</span>:</span><br><span class="line">        f.write(<span class="string">&quot;| 排名 | 阅读次数 | 标题 |\n&quot;</span>)</span><br><span class="line">        f.write(<span class="string">&quot;|-----:|----------:|------|\n&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        f.write(<span class="string">&quot;| # | Views | Title |\n&quot;</span>)</span><br><span class="line">        f.write(<span class="string">&quot;|--:|------:|-------|\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> idx, (url, views, title) <span class="keyword">in</span> <span class="built_in">enumerate</span>(results, <span class="number">1</span>):</span><br><span class="line">        safe_title = title.replace(<span class="string">&quot;|&quot;</span>, <span class="string">&quot;-&quot;</span>)  <span class="comment"># prevent MD issues</span></span><br><span class="line">        f.write(<span class="string">f&quot;| <span class="subst">&#123;idx&#125;</span> | <span class="subst">&#123;views&#125;</span> | [<span class="subst">&#123;safe_title&#125;</span>](<span class="subst">&#123;url&#125;</span>) |\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>✅ <strong>How to Use It</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python crawler-javascript.py --lang zh   <span class="comment"># Chinese headers</span></span><br><span class="line">python crawler-javascript.py --lang en   <span class="comment"># English headers (default)</span></span><br></pre></td></tr></table></figure>
+<p>🕷️ <strong>Final Enhanced</strong><code>crawler-javascript.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.chrome.options <span class="keyword">import</span> Options</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"> ...</span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">def</span> <span class="title">crawl_packetmania</span>(<span class="params">lang=<span class="string">&quot;zh&quot;</span></span>):</span></span><br><span class="line">    base_url = <span class="string">&quot;https://www.packetmania.net&quot;</span> <span class="keyword">if</span> lang == <span class="string">&quot;zh&quot;</span> <span class="keyword">else</span> <span class="string">&quot;https://www.packetmania.net/en&quot;</span></span><br><span class="line">    sitemap_url = <span class="string">f&quot;<span class="subst">&#123;base_url&#125;</span>/sitemap.xml&quot;</span></span><br><span class="line">    keyword = <span class="string">&quot;阅读次数&quot;</span> <span class="keyword">if</span> lang == <span class="string">&quot;zh&quot;</span> <span class="keyword">else</span> <span class="string">&quot;Views&quot;</span></span><br><span class="line"></span><br><span class="line">    post_urls = get_post_urls(sitemap_url)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Found <span class="subst">&#123;<span class="built_in">len</span>(post_urls)&#125;</span> posts.\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Setup headless Chrome</span></span><br><span class="line">    chrome_options = Options()</span><br><span class="line">    chrome_options.add_argument(<span class="string">&quot;--headless&quot;</span>)</span><br><span class="line">    chrome_options.add_argument(<span class="string">&quot;--disable-gpu&quot;</span>)</span><br><span class="line">    chrome_options.add_argument(<span class="string">&quot;--no-sandbox&quot;</span>)</span><br><span class="line">    driver = webdriver.Chrome(options=chrome_options)</span><br><span class="line"></span><br><span class="line">    results = []</span><br><span class="line">    <span class="keyword">for</span> i, url <span class="keyword">in</span> <span class="built_in">enumerate</span>(post_urls):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;[<span class="subst">&#123;i+<span class="number">1</span>&#125;</span>/<span class="subst">&#123;<span class="built_in">len</span>(post_urls)&#125;</span>] Crawling <span class="subst">&#123;url&#125;</span>&quot;</span>)</span><br><span class="line">        views, title = extract_view_count(driver, url, keyword)</span><br><span class="line">        <span class="keyword">if</span> views <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot; -&gt; Views: <span class="subst">&#123;views&#125;</span> | Title: <span class="subst">&#123;title&#125;</span>&quot;</span>)</span><br><span class="line">            results.append((url, views, title))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot; -&gt; View count not found.&quot;</span>)</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    driver.quit()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Sort by view count descending</span></span><br><span class="line">    results.sort(key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>], reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Generate timestamped Markdown filename</span></span><br><span class="line">    timestamp = datetime.datetime.now().strftime(<span class="string">&quot;%Y%m%d&quot;</span>)</span><br><span class="line">    md_filename = <span class="string">f&quot;packetmania_views_<span class="subst">&#123;timestamp&#125;</span>_<span class="subst">&#123;lang&#125;</span>.md&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Output Markdown table</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(md_filename, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">if</span> lang == <span class="string">&quot;zh&quot;</span>:</span><br><span class="line">            f.write(<span class="string">&quot;| 排名 | 阅读次数 | 标题 |\n&quot;</span>)</span><br><span class="line">            f.write(<span class="string">&quot;|-----:|----------:|------|\n&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            f.write(<span class="string">&quot;| # | Views | Title |\n&quot;</span>)</span><br><span class="line">            f.write(<span class="string">&quot;|--:|------:|-------|\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> idx, (url, views, title) <span class="keyword">in</span> <span class="built_in">enumerate</span>(results, <span class="number">1</span>):</span><br><span class="line">            safe_title = title.replace(<span class="string">&quot;|&quot;</span>, <span class="string">&quot;-&quot;</span>)</span><br><span class="line">            f.write(<span class="string">f&quot;| <span class="subst">&#123;idx&#125;</span> | <span class="subst">&#123;views&#125;</span> | [<span class="subst">&#123;safe_title&#125;</span>](<span class="subst">&#123;url&#125;</span>) |\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n✅ Markdown table written to `<span class="subst">&#123;md_filename&#125;</span>`&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> results</span><br></pre></td></tr></table></figure>
+<p>Excellent observation! The colon character differs between English and Chinese:</p>
+<ul>
+<li>English: : (ASCII colon)</li>
+<li>Chinese: ： (full-width colon U+FF1A)</li>
+</ul>
+<p>To ensure precise matching, we should:</p>
+<ul>
+<li>Use Views: (with ASCII colon) for English</li>
+<li>Use 阅读次数： (with Chinese full-width colon) for Chinese</li>
+</ul>
+<p>✅ <strong>Updated Keyword Handling</strong></p>
+<p>Update the <code>keyword</code> logic in <code>crawl_packetmania()</code>:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- keyword = &quot;阅读次数&quot; if lang == &quot;zh&quot; else &quot;Views&quot;</span></span><br><span class="line"><span class="addition">+ keyword = &quot;阅读次数：&quot; if lang == &quot;zh&quot; else &quot;Views:&quot;</span></span><br></pre></td></tr></table></figure>
+<p>And remove the regex fallback colon match (<code>[:：]?</code>) — it's no longer needed.</p>
+<p>🧪 <strong>Usage</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python crawler-javascript.py             <span class="comment"># 中文输出，默认站点</span></span><br><span class="line">python crawler-javascript.py --lang en   <span class="comment"># English output, &quot;/en&quot; URLs</span></span><br></pre></td></tr></table></figure>
+<p>This will generate a file like <code>packetmania_views_20250409_zh.md</code>.</p>
+<p>Great idea! Adding timestamp down to seconds will ensure uniqueness and precision.</p>
+<p>✅ <strong>Change the Timestamp Format</strong></p>
+<p>Update this line:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- timestamp = datetime.datetime.now().strftime(&quot;%Y%m%d&quot;)</span></span><br><span class="line"><span class="addition">+ timestamp = datetime.datetime.now().strftime(&quot;%Y%m%d_%H%M%S&quot;)</span></span><br></pre></td></tr></table></figure>
+<p>🧩 <strong>Updated Snippet for Markdown Filename</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generate filename with timestamp to the second</span></span><br><span class="line">timestamp = datetime.datetime.now().strftime(<span class="string">&quot;%Y%m%d_%H%M%S&quot;</span>)</span><br><span class="line">md_filename = <span class="string">f&quot;packetmania_views_<span class="subst">&#123;timestamp&#125;</span>_<span class="subst">&#123;lang&#125;</span>.md&quot;</span></span><br></pre></td></tr></table></figure>
+<p>This will produce filenames like <code>packetmania_views_20250409_153244_zh.md</code>.</p>
+</div>
+<h3 id="总结">总结</h3>
+<p>AI 生成的 完整的 Python 爬虫程序是 <a href="crawler-javascript.py">crawler-javascript.py</a>。最后让 ChatGPT 自己做个总结：</p>
+<div class="note info no-icon"><p><strong>回应：</strong>Here’s the complete updated crawler script with the following features:</p>
+<p>✅ Crawls blog posts from PacketMania<br />
+✅ Uses Selenium to extract dynamically rendered view counts<br />
+✅ Extracts post titles<br />
+✅ Filters URLs to only those matching <code>/YYYY/MM/DD/</code><br />
+✅ Sorts by view count in descending order<br />
+✅ Outputs a Markdown table with optional <code>--lang zh</code> for Chinese headers<br />
+✅ Markdown file named with timestamp to second<br />
+✅ Command line option for dual languages with language-specific base URL and view count match:</p>
+<ul>
+<li>zh (default): <code>https://www.packetmania.net</code>, <code>阅读次数：</code></li>
+<li>en: <code>https://www.packetmania.net/en</code>, <code>Views:</code></li>
+</ul>
+</div>
+<p>爬虫的输出示例如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">❯ cat packetmania_views_20250415_165701_zh.md</span><br><span class="line">| 排名 | 阅读次数 | 标题 |</span><br><span class="line">|-----:|----------:|------|</span><br><span class="line">| 1 | 11464 | [iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端](https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/) |</span><br><span class="line">| 2 | 8220 | [自己动手使用树莓派搭建家用NAS和流媒体服务器](https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/) |</span><br><span class="line">| 3 | 6631 | [IPv6动态地址分配机制详解](https://www.packetmania.net/2020/12/01/IPv6-Addressing/) |</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>导出的 Markdown 文件可直接由 Hexo 博客框架 + Next 主题转化成<a href="https://www.packetmania.net/ranking/">文章排行榜</a>网页，其链接也加入到博客的左侧菜单中。</p>
+<p>虽然对网络爬虫和网页服务的技术细节了解的不多，但是有了 Python 编程基础并通过与 ChatGPT 交互最终顺利达到了目标 。这是一次借助 AI 实现一个简单的网络爬虫的成功经验！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我喝杯咖啡</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="子曦 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/paypal.jpg" alt="子曦 PayPal">
+        <span>PayPal</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/" title="AI辅助生成的统计博客文章浏览量的网络爬虫">https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+              <a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%92%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"><i class="fa fa-tag"></i> 人工智能和机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/19/PGITVW-5-primes/" rel="prev" title="程序员面试题精解（5）— 素数判定">
+                  <i class="fa fa-chevron-left"></i> 程序员面试题精解（5）— 素数判定
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">355k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:22</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script defer src="https://vercount.one/js"></script>
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"e31cc480253f79f1d03ab23e5445c9c3"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="https://www.packetmania.net/atom.xml" rel="self"/>
   
   <link href="https://www.packetmania.net/"/>
-  <updated>2025-05-17T02:11:37.793Z</updated>
+  <updated>2025-09-28T05:08:35.922Z</updated>
   <id>https://www.packetmania.net/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LeetCode 75 学习计划清单和参考答案</title>
+    <link href="https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/"/>
+    <id>https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/</id>
+    <published>2025-09-27T17:11:08.000Z</published>
+    <updated>2025-09-28T05:08:35.922Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://leetcode.cn/studyplan/leetcode-75/&quot;&gt;LeetCode 75&lt;/a&gt; 学习计划精选 75 道经典算法题目，涵盖字符串、数组、散列、双指针、链表、树、图和动态规划等核心主题。它不仅帮助初学者快速掌握常用算法与数据结构，也能让有经验的程序员系统复习、查漏补缺。</summary>
+    
+    
+    
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    
+    
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>AI辅助生成的统计博客文章浏览量的网络爬虫</title>
@@ -222,11 +243,11 @@
     
     <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     
-    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
-    
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
     
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     
@@ -409,27 +430,6 @@
     
     
     <summary type="html">&lt;p&gt;在计算机网络设备和嵌入式系统的研发中，常常需要硬件和软件设计人员紧密配合，以实现精准而有效的平台支持。特别地，对于需要数据存取的设备，了解设备的基本工作原理、控制和数据线路的连接方式及信号流程，对于可靠的软件设计和实现必不可少。否则，如果硬件电路设计或软件程序编写基于错误的假定，将需要更多的时间调试、排错和补救，可能严重影响项目的进度。</summary>
-    
-    
-    
-    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
-    
-    
-    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    
-    <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C编程实现带有越界检查功能的内存管理函数</title>
-    <link href="https://www.packetmania.net/2021/03/28/Memory-overrun-detection/"/>
-    <id>https://www.packetmania.net/2021/03/28/Memory-overrun-detection/</id>
-    <published>2021-03-28T19:25:16.000Z</published>
-    <updated>2021-11-28T01:39:13.656Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;C语言具有高效、灵活、功能丰富和可移植性强等特点，在程序设计尤其是系统软件开发中备受青睐。它的高效灵活性很大程度上得益于其通过指针对存储器进行低端控制的功能，但代价是程序员必须格外谨慎处理内存的访问细节，避免内存泄漏和缓冲区溢出等运行错误。</summary>
     
     
     

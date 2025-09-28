@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)">
+<meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="piAnQ_mnwkhV_qh4_Se1yLzM1IwOvuq-vmYfXBkWRXU">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic%7CNoto+Serif+SC:300,300italic,400,400italic,700,700italic%7CRoboto+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.packetmania.net","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.8.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk | utterances","storage":true,"lazyload":false,"nav":{"utterances":{"text":"Utterances评论","order":-1},"gitalk":{"text":"Gitalk评论","order":-2}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="LeetCode 75 学习计划精选 75 道经典算法题目，涵盖字符串、数组、散列、双指针、链表、树、图和动态规划等核心主题。它不仅帮助初学者快速掌握常用算法与数据结构，也能让有经验的程序员系统复习、查漏补缺。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode 75 学习计划清单和参考答案">
+<meta property="og:url" content="https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/index.html">
+<meta property="og:site_name" content="网络热度">
+<meta property="og:description" content="LeetCode 75 学习计划精选 75 道经典算法题目，涵盖字符串、数组、散列、双指针、链表、树、图和动态规划等核心主题。它不仅帮助初学者快速掌握常用算法与数据结构，也能让有经验的程序员系统复习、查漏补缺。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-27T17:11:08.000Z">
+<meta property="article:modified_time" content="2025-09-28T05:08:35.922Z">
+<meta property="article:author" content="子曦">
+<meta property="article:tag" content="Python编程">
+<meta property="article:tag" content="C&#x2F;C++编程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/","path":"2025/09/27/LeetCode-75-Solutions/","title":"LeetCode 75 学习计划清单和参考答案"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>LeetCode 75 学习计划清单和参考答案 | 网络热度</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YKBP0QK7Z"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-9YKBP0QK7Z","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="网络热度" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">网络热度</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术 新知 共享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tasks"><a href="/VXlzTWJvcVNzcmRzdkNnaG0/" rel="section"><i class="fa fa-tasks fa-fw"></i>任务</a></li>
+        <li class="menu-item menu-item-ranking"><a href="/ranking/" rel="section"><i class="fa fa-list-ol fa-fw"></i>排行榜</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+        <li class="menu-item menu-item-rss"><a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+        <li class="menu-item menu-item-language"><a href="https://www.packetmania.net/en" rel="section"><i class="fa fa-language fa-fw"></i>English</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E5%88%92%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">计划概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%BA%A6%E6%B8%85%E5%8D%95"><span class="nav-number">2.</span> <span class="nav-text">进度清单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E5%BB%BA%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">学习建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E7%AD%94%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">参考答案</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="子曦"
+      src="/images/ccie.gif">
+  <p class="site-author-name" itemprop="name">子曦</p>
+  <div class="site-description" itemprop="description">计算机科学与技术及软件设计与实现</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/packetmania" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;packetmania" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zixiruoxue@gmail.com" title="E-Mail → mailto:zixiruoxue@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zixisean" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zixisean" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/15140531" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;15140531" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.packetmania.net/" title="https:&#x2F;&#x2F;blog.packetmania.net" rel="noopener" target="_blank">中国站（香港）</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.packetmania.net/" title="https:&#x2F;&#x2F;www.packetmania.net">国际站（美国）</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ccie.gif">
+      <meta itemprop="name" content="子曦">
+      <meta itemprop="description" content="计算机科学与技术及软件设计与实现">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="网络热度">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LeetCode 75 学习计划清单和参考答案
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-09-27 10:11:08 / 修改时间：22:08:35" itemprop="dateCreated datePublished" datetime="2025-09-27T10:11:08-07:00">2025-09-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/" itemprop="url" rel="index"><span itemprop="name">面试指南</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><a target="_blank" rel="noopener" href="https://leetcode.cn/studyplan/leetcode-75/">LeetCode 75</a> 学习计划精选 75 道经典算法题目，涵盖字符串、数组、散列、双指针、链表、树、图和动态规划等核心主题。它不仅帮助初学者快速掌握常用算法与数据结构，也能让有经验的程序员系统复习、查漏补缺。<span id="more"></span>这里一次性提供针对此学习计划的进度清单和全部 75 道题的参考答案。</p>
+<div class="note success no-icon"><p><strong>天天刷题，失业远离；每日力扣，工作招手。</strong><br></p>
+</div>
+<h3 id="计划概述">计划概述</h3>
+<p>力扣官网给出的 <a target="_blank" rel="noopener" href="https://leetcode.cn/studyplan/leetcode-75/">LeetCode 75</a> 学习计划的概述：</p>
+<ul>
+<li>精选面试必备的 75 道核心题目</li>
+<li>完整面试知识点辅以逐步深入的学习顺序</li>
+<li>配合抓重点式题目练习高效准备面试</li>
+<li>适合需要在 3 个月以内准备面试的用户</li>
+</ul>
+<p>此学习计划包含的 75 道题目的难度分布是</p>
+<ul>
+<li><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span>：16</li>
+<li><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span>：59</li>
+<li><span class="math inline">\(\mathrm{\color{red}{困难}}\)</span>：0</li>
+</ul>
+<p>由此可见，它没有难度为困难级别的题目，很适合大专院校的在校生为申请软件实习生的职位做准备。</p>
+<h3 id="进度清单">进度清单</h3>
+<p>针对此学习计划，笔者制作了一个<a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/leetcode75_checklist_cn.md">进度清单</a>（示例如下）</p>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>题号</th>
+<th>标题</th>
+<th>分组</th>
+<th>标签</th>
+<th>提示</th>
+<th>难度</th>
+<th>完成</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/merge-strings-alternately/">1768</a></td>
+<td>交替合并字符串</td>
+<td>数组/字符串</td>
+<td>双指针, 字符串</td>
+<td>使用两个指针遍历两个字符串</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td>☐</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/greatest-common-divisor-of-strings/">1071</a></td>
+<td>字符串的最大公因子</td>
+<td>数组/字符串</td>
+<td>字符串, 数学</td>
+<td>使用字符串拼接和最大公因子思想</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<h3 id="学习建议">学习建议</h3>
+<p>根据笔者的经验，如果有比较好的编程经验和算法功底，实际上累计 80 个小时的刷题及复习时间也应该够了。参见上面的进度清单，笔者还给出下面的建议</p>
+<ul>
+<li>用复选框追踪进度</li>
+<li>设置每日/每周目标</li>
+<li>用提示栏作为思路参考，避免直接看答案</li>
+<li>注重每组题型的解题模式</li>
+<li>复习题解并优化时间/空间复杂度</li>
+<li>每完成一组后回顾总结</li>
+<li>定期回顾已做题目，巩固理解</li>
+</ul>
+<h3 id="参考答案">参考答案</h3>
+<p>下面的表格列出了全部 75 道题的<a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/">参考答案</a>（绝大多数是基于 Python 语言，一小部分用 C 语言）：</p>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>题号</th>
+<th>标题</th>
+<th>分组</th>
+<th>标签</th>
+<th>提示</th>
+<th>难度</th>
+<th>答案</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/merge-strings-alternately/">1768</a></td>
+<td>交替合并字符串</td>
+<td>数组/字符串</td>
+<td>双指针, 字符串</td>
+<td>使用两个指针遍历两个字符串</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1768-MergeStringsAlternately.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/greatest-common-divisor-of-strings/">1071</a></td>
+<td>字符串的最大公因子</td>
+<td>数组/字符串</td>
+<td>字符串, 数学</td>
+<td>使用字符串拼接和最大公因子思想</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1071-GreatestCommonDivisorOfStrings.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/kids-with-the-greatest-number-of-candies/">1431</a></td>
+<td>拥有最多糖果的孩子</td>
+<td>数组/字符串</td>
+<td>数组, 贪心</td>
+<td>先找最大糖果数，再遍历每个孩子</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1431-KidsWithTheGreatestNumberOfCandies.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/can-place-flowers/">605</a></td>
+<td>种花问题</td>
+<td>数组/字符串</td>
+<td>数组, 贪心</td>
+<td>放花前检查相邻位置</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC605-CanPlaceFlowers.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-vowels-of-a-string/">345</a></td>
+<td>反转字符串中的元音字母</td>
+<td>数组/字符串</td>
+<td>双指针, 字符串</td>
+<td>使用双指针从两端遍历</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC345-ReverseVowelsOfAString.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-words-in-a-string/">151</a></td>
+<td>翻转字符串里的单词</td>
+<td>数组/字符串</td>
+<td>双指针, 字符串</td>
+<td>按空格分割并反转顺序</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC151-ReverseWordsInAString.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/product-of-array-except-self/">238</a></td>
+<td>除自身以外数组的乘积</td>
+<td>数组/字符串</td>
+<td>数组, 前缀和</td>
+<td>使用左右乘积数组</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC238-ProductOfArrayExceptSelf.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/increasing-triplet-subsequence/">334</a></td>
+<td>递增的三元子序列</td>
+<td>数组/字符串</td>
+<td>数组, 贪心</td>
+<td>记录最小和次小值</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC334-IncreasingTripletSubsequence.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/string-compression/">443</a></td>
+<td>压缩字符串</td>
+<td>数组/字符串</td>
+<td>双指针, 字符串</td>
+<td>统计连续字符</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC443-StringCompression.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/move-zeroes/">283</a></td>
+<td>移动零</td>
+<td>双指针</td>
+<td>数组, 双指针</td>
+<td>用写指针放非零元素</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC283-MoveZeros.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/is-subsequence/">392</a></td>
+<td>判断子序列</td>
+<td>双指针</td>
+<td>双指针, 字符串, 动态规划</td>
+<td>用双指针匹配字符</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC392-IsSubsequence.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/container-with-most-water/">11</a></td>
+<td>盛最多水的容器</td>
+<td>双指针</td>
+<td>数组, 双指针, 贪心</td>
+<td>从两端开始，移动较短的线</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC11-ContainerWithMostWater.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/max-number-of-k-sum-pairs/">1679</a></td>
+<td>和为 K 的数对最大数目</td>
+<td>双指针</td>
+<td>数组, 哈希表, 双指针</td>
+<td>排序或用哈希表</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1679-MaxNumberOfKSumPairs.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-average-subarray-i/">643</a></td>
+<td>子数组最大平均数 I</td>
+<td>滑动窗口</td>
+<td>数组, 滑动窗口</td>
+<td>使用大小为 k 的滑动窗口</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC643-MaximumAverageSubarrayI.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/">1456</a></td>
+<td>定长子串中元音的最大数目</td>
+<td>滑动窗口</td>
+<td>字符串, 滑动窗口</td>
+<td>滑动窗口统计元音数</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1456-MaximumNumberofVowelsInASubstirngOfGivenLength.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/max-consecutive-ones-iii/">1004</a></td>
+<td>最大连续 1 的个数 III</td>
+<td>滑动窗口</td>
+<td>数组, 二分, 滑动窗口, 前缀和</td>
+<td>滑动窗口最多包含 k 个零</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1004-MaxConsectiveOnesII.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>17</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-subarray-of-1s-after-deleting-one-element/">1493</a></td>
+<td>删掉一个元素以后全为 1 的最长子数组</td>
+<td>滑动窗口</td>
+<td>数组, 二分, 滑动窗口</td>
+<td>窗口最多允许一个零</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1493-LongestSubarrayOf1sAfterDeletingOneElement.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>18</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-highest-altitude/">1732</a></td>
+<td>找到最高海拔</td>
+<td>前缀和</td>
+<td>数组, 前缀和</td>
+<td>记录累计海拔</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1732-FindTheHighestAltitude.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>19</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-pivot-index/">724</a></td>
+<td>寻找数组的中心下标</td>
+<td>前缀和</td>
+<td>数组, 前缀和</td>
+<td>判断左右和是否相等</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC724-FindPivotIndex.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>20</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-difference-of-two-arrays/">2215</a></td>
+<td>找出两数组的不同</td>
+<td>哈希表/集合</td>
+<td>数组, 哈希表</td>
+<td>用集合找唯一元素</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2215-FindTheDifferenceOfTwoArrays.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>21</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/unique-number-of-occurrences/">1207</a></td>
+<td>独一无二的出现次数</td>
+<td>哈希表/集合</td>
+<td>数组, 哈希表</td>
+<td>统计频率并判断唯一性</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1207-UniqueNumberOfOccurrences.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>22</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/determine-if-two-strings-are-close/">1657</a></td>
+<td>判断两个字符串是否接近</td>
+<td>哈希表/集合</td>
+<td>哈希表, 字符串, 排序</td>
+<td>判断字符集和频率模式</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1657-DetermineIfTwoStringsAreClose.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>23</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/equal-row-and-column-pairs/">2352</a></td>
+<td>相等行列对</td>
+<td>哈希表/集合</td>
+<td>数组, 哈希表, 矩阵, 模拟</td>
+<td>行列转为可比较格式</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2352-EqualRowAndColumnPairs.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>24</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/removing-stars-from-a-string/">2390</a></td>
+<td>从字符串中移除星号</td>
+<td>栈</td>
+<td>字符串, 栈, 模拟</td>
+<td>用栈处理星号移除</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2390-RemovingStarsFromAString.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>25</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/asteroid-collision/">735</a></td>
+<td>行星碰撞</td>
+<td>栈</td>
+<td>数组, 栈, 模拟</td>
+<td>用栈模拟碰撞</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC735-AsteroidCollision.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>26</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/decode-string/">394</a></td>
+<td>字符串解码</td>
+<td>栈</td>
+<td>字符串, 栈, 递归</td>
+<td>用栈处理嵌套括号</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC394-DecodeString.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>27</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-recent-calls/">933</a></td>
+<td>最近的请求次数</td>
+<td>队列</td>
+<td>设计, 队列, 数据流</td>
+<td>用队列维护时间窗口</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC933-NumberOfRecentCalls.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>28</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/dota2-senate/">649</a></td>
+<td>Dota2 参议院</td>
+<td>队列</td>
+<td>字符串, 贪心, 队列</td>
+<td>用两个队列分别存储两党</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC649-Dota2Senate.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>29</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/delete-the-middle-node-of-a-linked-list/">2095</a></td>
+<td>删除链表的中间节点</td>
+<td>链表</td>
+<td>链表, 双指针</td>
+<td>快慢指针找中间节点</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2095-DeleteTheMiddleNodeOfALinkedList.c">C</a></td>
+</tr>
+<tr class="even">
+<td>30</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/odd-even-linked-list/">328</a></td>
+<td>奇偶链表</td>
+<td>链表</td>
+<td>链表</td>
+<td>分离奇偶位置节点</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC328-OddEvenLinkedList.c">C</a></td>
+</tr>
+<tr class="odd">
+<td>31</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-linked-list/">206</a></td>
+<td>反转链表</td>
+<td>链表</td>
+<td>链表, 递归</td>
+<td>迭代或递归反转</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC206-ReverseLinkedList.c">C</a></td>
+</tr>
+<tr class="even">
+<td>32</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-twin-sum-of-a-linked-list/">2130</a></td>
+<td>链表最大孪生和</td>
+<td>链表</td>
+<td>链表, 双指针, 栈</td>
+<td>找中点，反转后半部分</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2130-MaximumTwinSumOfALinkedList.c">C</a></td>
+</tr>
+<tr class="odd">
+<td>33</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-depth-of-binary-tree/">104</a></td>
+<td>二叉树的最大深度</td>
+<td>二叉树-DFS</td>
+<td>树, DFS, BFS, 二叉树</td>
+<td>递归或层序遍历</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC104-MaximumDepathOfBinaryTree.c">C</a></td>
+</tr>
+<tr class="even">
+<td>34</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/leaf-similar-trees/">872</a></td>
+<td>叶子相似的树</td>
+<td>二叉树-DFS</td>
+<td>树, DFS, 二叉树</td>
+<td>比较叶子序列</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC872-LeafSimilarTrees.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>35</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-good-nodes-in-binary-tree/">1448</a></td>
+<td>统计二叉树中好节点的数目</td>
+<td>二叉树-DFS</td>
+<td>树, DFS, 二叉树</td>
+<td>路径中记录最大值</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1448-CountGoodNodesInBinaryTree.c">C</a></td>
+</tr>
+<tr class="even">
+<td>36</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/path-sum-iii/">437</a></td>
+<td>路径总和 III</td>
+<td>二叉树-DFS</td>
+<td>树, DFS, 二叉树</td>
+<td>用前缀和 DFS</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC437-PathSumIII.c">C</a></td>
+</tr>
+<tr class="odd">
+<td>37</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-zigzag-path-in-a-binary-tree/">1372</a></td>
+<td>二叉树中的最长交错路径</td>
+<td>二叉树-DFS</td>
+<td>动态规划, 树, DFS, 二叉树</td>
+<td>记录方向和长度</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1372-LongestZigzagPathInABinaryTree.c">C</a></td>
+</tr>
+<tr class="even">
+<td>38</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/">236</a></td>
+<td>二叉树的最近公共祖先</td>
+<td>二叉树-DFS</td>
+<td>树, DFS, 二叉树</td>
+<td>递归查找</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC236-LowestCommonAncestorOfABinaryTree.c">C</a></td>
+</tr>
+<tr class="odd">
+<td>39</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-right-side-view/">199</a></td>
+<td>二叉树的右视图</td>
+<td>二叉树-BFS</td>
+<td>树, DFS, BFS, 二叉树</td>
+<td>层序遍历</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC199-BinaryTreeRightSideView.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>40</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-level-sum-of-a-binary-tree/">1161</a></td>
+<td>最大层内元素和</td>
+<td>二叉树-BFS</td>
+<td>树, BFS, 二叉树</td>
+<td>层序遍历统计和</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1161-MaximumLevelSumOfABinaryTree.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>41</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/search-in-a-binary-search-tree/">700</a></td>
+<td>二叉搜索树中的搜索</td>
+<td>二叉搜索树</td>
+<td>树, 二叉搜索树, 二叉树</td>
+<td>利用 BST 性质高效查找</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC700-SearchInABinarySearchTree.c">C</a></td>
+</tr>
+<tr class="even">
+<td>42</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/delete-node-in-a-bst/">450</a></td>
+<td>删除二叉搜索树中的节点</td>
+<td>二叉搜索树</td>
+<td>树, 二叉搜索树, 二叉树</td>
+<td>处理三种情况：叶子、单子节点、双子节点</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC450-DeleteNoeInABST.c">C</a></td>
+</tr>
+<tr class="odd">
+<td>43</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/keys-and-rooms/">841</a></td>
+<td>钥匙和房间</td>
+<td>图-DFS</td>
+<td>DFS, BFS, 图</td>
+<td>DFS/BFS 遍历所有可达房间</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC841-KeysAndRooms.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>44</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-provinces/">547</a></td>
+<td>省份数量</td>
+<td>图-DFS</td>
+<td>DFS, BFS, 并查集, 图</td>
+<td>统计连通分量</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC547-NumberOfProvinces.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>45</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/">1466</a></td>
+<td>重新规划路线</td>
+<td>图-DFS</td>
+<td>DFS, BFS, 图</td>
+<td>统计需要反转的边</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1466-ReorderRoutesToMakeAllPathsLeadToTheCityZero.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>46</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/evaluate-division/">399</a></td>
+<td>除法求值</td>
+<td>图-DFS</td>
+<td>数组, DFS, BFS, 并查集, 图, 最短路</td>
+<td>构建加权图，DFS 查询</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC399-EvaluateDivision.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>47</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/nearest-exit-from-entrance-in-maze/">1926</a></td>
+<td>迷宫中离入口最近的出口</td>
+<td>图-BFS</td>
+<td>数组, BFS, 矩阵</td>
+<td>BFS 找到最近出口</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1926-NearestExitFromEntranceInMaze.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>48</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/rotting-oranges/">994</a></td>
+<td>腐烂的橘子</td>
+<td>图-BFS</td>
+<td>数组, BFS, 矩阵</td>
+<td>多源 BFS 模拟</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC994-RottingOranges.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>49</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/kth-largest-element-in-an-array/">215</a></td>
+<td>数组中的第K个最大元素</td>
+<td>堆/优先队列</td>
+<td>数组, 分治, 排序, 堆, 快速选择</td>
+<td>用大小为 k 的小顶堆或快排</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC215-KthLargestElementInAnArray.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>50</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/smallest-number-in-infinite-set/">2336</a></td>
+<td>无限集中的最小数字</td>
+<td>堆/优先队列</td>
+<td>哈希表, 设计, 堆</td>
+<td>用小顶堆和集合维护</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2336-SmallestNumberInInfiniteSet.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>51</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-subsequence-score/">2542</a></td>
+<td>最大子序列分数</td>
+<td>堆/优先队列</td>
+<td>数组, 贪心, 排序, 堆</td>
+<td>一维排序，另一维用堆</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2542-MaximumSubsequenceScore.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>52</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/total-cost-to-hire-k-workers/">2462</a></td>
+<td>雇佣 K 名工人的总成本</td>
+<td>堆/优先队列</td>
+<td>数组, 双指针, 模拟, 堆</td>
+<td>两端各用一个堆</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2462-TotalCostToHireKWorkers.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>53</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/guess-number-higher-or-lower/">374</a></td>
+<td>猜数字大小</td>
+<td>二分查找</td>
+<td>二分查找, 交互, 游戏</td>
+<td>标准二分查找模板</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC374-GuessNumberHigherOrLower.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>54</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/">2300</a></td>
+<td>咒语和药水的成功对数</td>
+<td>二分查找</td>
+<td>数组, 双指针, 二分查找, 排序</td>
+<td>药水排序，咒语二分查找</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC2300-SuccessfulPairsOfSpellsAndPotions.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>55</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-peak-element/">162</a></td>
+<td>寻找峰值</td>
+<td>二分查找</td>
+<td>数组, 二分查找</td>
+<td>二分查找与邻居比较</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC162-FindPeakElement.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>56</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/koko-eating-bananas/">875</a></td>
+<td>爱吃香蕉的珂珂</td>
+<td>二分查找</td>
+<td>数组, 二分查找</td>
+<td>二分查找吃香蕉速度</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC875-KokoEatingBananas.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>57</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/letter-combinations-of-a-phone-number/">17</a></td>
+<td>电话号码的字母组合</td>
+<td>回溯</td>
+<td>哈希表, 字符串, 回溯</td>
+<td>DFS + 数字到字母映射</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC17-LetterCombinationOfAPhoneNumber.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>58</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combination-sum-iii/">216</a></td>
+<td>组合总和 III</td>
+<td>回溯</td>
+<td>数组, 回溯</td>
+<td>回溯满足和与数量限制</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC216-CombinationSumIII.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>59</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/n-th-tribonacci-number/">1137</a></td>
+<td>第 N 个泰波那契数</td>
+<td>动态规划-一维</td>
+<td>数学, 动态规划, 记忆化</td>
+<td>迭代或记忆化递归</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1137-NthTribonacciNumber.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>60</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/min-cost-climbing-stairs/">746</a></td>
+<td>使用最小花费爬楼梯</td>
+<td>动态规划-一维</td>
+<td>数组, 动态规划</td>
+<td>选择最小花费路径</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC746-MinCostClimbingStairs.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>61</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/house-robber/">198</a></td>
+<td>打家劫舍</td>
+<td>动态规划-一维</td>
+<td>数组, 动态规划</td>
+<td>不抢相邻房屋最大收益</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC198-HouseRobber.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>62</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/domino-and-tromino-tiling/">790</a></td>
+<td>多米诺和托米诺平铺</td>
+<td>动态规划-一维</td>
+<td>动态规划</td>
+<td>不同铺法状态转移</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC790-DominoAndTrominoTiling.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>63</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/unique-paths/">62</a></td>
+<td>不同路径</td>
+<td>动态规划-多维</td>
+<td>数学, 动态规划, 组合数学</td>
+<td>DP 或组合数学</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC62-UniquePaths.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>64</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-common-subsequence/">1143</a></td>
+<td>最长公共子序列</td>
+<td>动态规划-多维</td>
+<td>字符串, 动态规划</td>
+<td>构建二维 DP 表</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1143-LongestCommonSubsequence.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>65</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/">714</a></td>
+<td>买卖股票的最佳时机含手续费</td>
+<td>动态规划-多维</td>
+<td>数组, 动态规划, 贪心</td>
+<td>记录持有和卖出状态</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC714-BestTimeToBuyAndSellStockWithTransactionFee.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>66</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/edit-distance/">72</a></td>
+<td>编辑距离</td>
+<td>动态规划-多维</td>
+<td>字符串, 动态规划</td>
+<td>经典编辑距离 DP</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC72-EditDistance.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>67</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/counting-bits/">338</a></td>
+<td>比特位计数</td>
+<td>位运算</td>
+<td>动态规划, 位运算</td>
+<td>利用位运算性质</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC338-CountingBits.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>68</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/single-number/">136</a></td>
+<td>只出现一次的数字</td>
+<td>位运算</td>
+<td>数组, 位运算</td>
+<td>利用异或性质</td>
+<td><span class="math inline">\(\mathrm{\color{green}{简单}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC136-SingleNumber.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>69</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-flips-to-make-a-or-b-equal-to-c/">1318</a></td>
+<td>使 a 或 b 等于 c 的最少翻转次数</td>
+<td>位运算</td>
+<td>位运算</td>
+<td>检查每一位</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1318-MinimumFlipsToMakeAORBEqualToC.c">C</a></td>
+</tr>
+<tr class="even">
+<td>70</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/implement-trie-prefix-tree/">208</a></td>
+<td>实现 Trie (前缀树)</td>
+<td>Trie</td>
+<td>哈希表, 字符串, 设计, Trie</td>
+<td>用嵌套哈希表或数组实现</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC208-ImplementTrie.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>71</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/search-suggestions-system/">1268</a></td>
+<td>搜索推荐系统</td>
+<td>Trie</td>
+<td>数组, 字符串, Trie</td>
+<td>构建 Trie，遍历前缀</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC1268-SearchSuggestionsSystem.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>72</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlapping-intervals/">435</a></td>
+<td>无重叠区间</td>
+<td>区间</td>
+<td>数组, 动态规划, 贪心, 排序</td>
+<td>按结束时间排序，贪心选择</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC435-NonoverlappingIntervals.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>73</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/">452</a></td>
+<td>用最少数量的箭引爆气球</td>
+<td>区间</td>
+<td>数组, 贪心, 排序</td>
+<td>按区间排序，统计不重叠区间</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC452-MinimumNumberOfArrowsToBurstBalloons.py">Python</a></td>
+</tr>
+<tr class="even">
+<td>74</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/daily-temperatures/">739</a></td>
+<td>每日温度</td>
+<td>单调栈</td>
+<td>数组, 栈, 单调栈</td>
+<td>使用单调递减栈</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC739-DailyTemperatures.py">Python</a></td>
+</tr>
+<tr class="odd">
+<td>75</td>
+<td><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/online-stock-span/">901</a></td>
+<td>股票价格跨度</td>
+<td>单调栈</td>
+<td>栈, 设计, 单调栈, 数据流</td>
+<td>栈存储（价格, 跨度）对</td>
+<td><span class="math inline">\(\mathrm{\color{orange}{中等}}\)</span></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/packetmania/LeetCode/blob/main/LC901-OnlineStockSpan.py">Python</a></td>
+</tr>
+</tbody>
+</table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我喝杯咖啡</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="子曦 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/paypal.jpg" alt="子曦 PayPal">
+        <span>PayPal</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>子曦
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/" title="LeetCode 75 学习计划清单和参考答案">https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-ND</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Python%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> Python编程</a>
+              <a href="/tags/C-C-%E7%BC%96%E7%A8%8B/" rel="tag"><i class="fa fa-tag"></i> C/C++编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/04/Web-Crawler-Viewcounts/" rel="prev" title="AI辅助生成的统计博客文章浏览量的网络爬虫">
+                  <i class="fa fa-chevron-left"></i> AI辅助生成的统计博客文章浏览量的网络爬虫
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">Gitalk评论</a></li>
+            <li class="tab"><a href="#comment-utterances">Utterances评论</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane utterances" id="comment-utterances">
+              <div class="comments utterances-container"></div>
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">子曦</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">361k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:28</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5fc1fd29017282c7" async="async"></script>
+  </div>
+  <div class="powered-by">
+<span>本站已运行<span id="showDays"></span></span>
+<script>
+  var seconds = 1000;
+  var minutes = seconds * 60;
+  var hours = minutes * 60;
+  var days = hours * 24;
+  var years = days * 365;
+  var birthDay = Date.UTC(2020,11,25,14,00,00); // 这里设置建站时间
+  setInterval(function() {
+    var today = new Date();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth()+1;
+    var todayDate = today.getDate();
+    var todayHour = today.getHours();
+    var todayMinute = today.getMinutes();
+    var todaySecond = today.getSeconds();
+    var now = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+    var diff = now - birthDay;
+    var diffYears = Math.floor(diff/years);
+    var diffDays = Math.floor((diff/days)-diffYears*365);
+    var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+    var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+    var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+      document.getElementById('showDays').innerHTML=""+diffYears+"年"+diffDays+"天"+diffHours+"小时"+diffMinutes+"分钟"+diffSeconds+"秒";
+  }, 1000);
+</script>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"forest","dark":"forest"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.13.3/dist/mermaid.min.js","integrity":"sha256-blHXaX2RMvNwEOnrYOl/6/RKqNi97Ig3o6Ae3bhXPvM="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script defer src="https://vercount.one/js"></script>
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"a7a75899a42a12aef2fa1baf7d1e57c8"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

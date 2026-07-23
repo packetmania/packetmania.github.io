@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>子曦</name>
+  </author>
+  <generator uri="https://hexo.io/">Hexo</generator>
+  <icon>https://www.packetmania.net/icon.png</icon>
+  <id>https://www.packetmania.net/</id>
+  <link href="https://www.packetmania.net/" rel="alternate"/>
+  <link href="https://www.packetmania.net/atom.xml" rel="self"/>
+  <rights>All rights reserved 2026, 子曦</rights>
+  <subtitle>技术 新知 共享</subtitle>
+  <title>网络热度</title>
+  <updated>2026-06-07T23:58:17.354Z</updated>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/</id>
+    <link href="https://www.packetmania.net/2025/09/27/LeetCode-75-Solutions/"/>
+    <published>2025-09-27T17:11:08.000Z</published>
+    <summary>
+      <![CDATA[<p><a href="https://leetcode.cn/studyplan/leetcode-75/">LeetCode 75</a>
+学习计划精选 75
+道经典算法题目，涵盖字符串、数组、散列、双指针、链表、树、图和动态规划等核心主题。它不仅帮助初学者快速掌握常用算法与数据结构，也能让有经验的程序员系统复习、查漏补缺。这里一次性提供针对此学习计划的进度清单和全部
+75 道题的参考答案。]]>
+    </summary>
+    <title>LeetCode 75 学习计划清单和参考答案</title>
+    <updated>2026-06-07T23:58:17.354Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <category term="人工智能和机器学习" scheme="https://www.packetmania.net/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%92%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <id>https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/</id>
+    <link href="https://www.packetmania.net/2025/05/04/Web-Crawler-Viewcounts/"/>
+    <published>2025-05-05T06:08:54.000Z</published>
+    <summary>
+      <![CDATA[<p>一直就想建一个网页追踪本博客发布文章的浏览量。最近，借助
+AI（ChatGPT）辅助生成了一个网络爬虫程序，可以准确地抓取全部文章的浏览量并自动创建Markdown格式的排行榜。]]>
+    </summary>
+    <title>AI辅助生成的统计博客文章浏览量的网络爬虫</title>
+    <updated>2026-06-07T23:58:17.375Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2025/04/19/PGITVW-5-primes/</id>
+    <link href="https://www.packetmania.net/2025/04/19/PGITVW-5-primes/"/>
+    <published>2025-04-19T18:50:44.000Z</published>
+    <summary>
+      <![CDATA[<p>素数（Prime
+Numbers，又称质数）在密码学和加密通信中扮演着核心的角色，是现代网络安全技术的基石。同时，素数也广泛应用于高级编译器系统的“底层优化”、“散列设计”或“伪随机生成”模块中。如果要申请相关的软件工程师职位，一定要掌握素数搜寻与验证的编程诀窍。]]>
+    </summary>
+    <title>程序员面试题精解（5）— 素数判定</title>
+    <updated>2026-07-23T17:23:10.742Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/</id>
+    <link href="https://www.packetmania.net/2025/03/09/PGITVW-4-twoptrs/"/>
+    <published>2025-03-09T23:37:19.000Z</published>
+    <summary>
+      <![CDATA[<p>双指针技巧是一种强大而优雅的算法策略，常用于高效地解决数组、链表和字符串类型的问题。由于其能够优化解决方案并降低时间复杂度，因此在编程面试中被广泛考察。]]>
+    </summary>
+    <title>程序员面试题精解（4）— 双指针</title>
+    <updated>2026-06-07T23:58:17.356Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="学习体会" scheme="https://www.packetmania.net/categories/%E5%AD%A6%E4%B9%A0%E4%BD%93%E4%BC%9A/"/>
+    <category term="人工智能和机器学习" scheme="https://www.packetmania.net/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%92%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <id>https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/</id>
+    <link href="https://www.packetmania.net/2025/02/16/Harvard-CS50-AI-intro/"/>
+    <published>2025-02-16T21:05:26.000Z</published>
+    <summary>
+      <![CDATA[<p>哈佛大学的 CS50AI
+是一门在线开放课程，专注于介绍人工智能的基础知识，并使用 Python
+进行编程和项目实践。该课程由哈佛大学教授 David J. Malan
+及其团队制作和授课，是广受欢迎的 CS50
+计算机科学系列课程的一部分，适合已经具备一定编程基础的学习者。]]>
+    </summary>
+    <title>哈佛 CS50AI 课程介绍：从零开始学习人工智能</title>
+    <updated>2026-06-07T23:58:17.351Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="站点建设" scheme="https://www.packetmania.net/categories/%E7%AB%99%E7%82%B9%E5%BB%BA%E8%AE%BE/"/>
+    <id>https://www.packetmania.net/2024/12/31/Fix-View-Count/</id>
+    <link href="https://www.packetmania.net/2024/12/31/Fix-View-Count/"/>
+    <published>2025-01-01T00:14:13.000Z</published>
+    <summary>
+      <![CDATA[<p>本博客应用Hexo框架和NexT主题构建，并一直使用<a
+href="https://ibruce.info/2015/04/04/busuanzi/">不蒜子
+(busuanzi)</a>提供的访客和阅读次数统计功能。但是，最近几个月发现统计数据没有实时更新，而且不同浏览器显示的计数也不一样。经过一番查询和调研，终于找到解决办法。]]>
+    </summary>
+    <title>解决不蒜子文章阅读计数错误的问题</title>
+    <updated>2026-06-07T23:58:17.350Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2023/12/29/RSA-attack-defense-3/</id>
+    <link href="https://www.packetmania.net/2023/12/29/RSA-attack-defense-3/"/>
+    <published>2023-12-30T00:26:13.000Z</published>
+    <summary>内容被加密了, 请输入密码查看。</summary>
+    <title>RSA的攻与防（三）</title>
+    <updated>2026-06-07T23:58:17.369Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2023/11/23/RSA-attack-defense-2/</id>
+    <link href="https://www.packetmania.net/2023/11/23/RSA-attack-defense-2/"/>
+    <published>2023-11-23T19:48:25.000Z</published>
+    <summary>
+      <![CDATA[<p>这是RSA攻防战的第二篇。本文首先补充说明特定情况下的两种大数分解方法，介绍它们的算法精要和适用场景，并给出Python参考实现。接下来深入解析典型的低私钥指数攻击算法——维纳攻击，详细讲解其数学基础、攻击原理及流程，也提供了完整的Python程序。文中还引用了近年最新研究的维纳攻击成立时私钥指数新上限，还使用测试用例验证了这一上限的正确性。]]>
+    </summary>
+    <title>RSA的攻与防（二）</title>
+    <updated>2026-07-23T17:38:25.138Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2023/07/04/TLS1-3-intro/</id>
+    <link href="https://www.packetmania.net/2023/07/04/TLS1-3-intro/"/>
+    <published>2023-07-05T00:34:57.000Z</published>
+    <summary>
+      <![CDATA[<p>TLS（传输层安全）是一种用于保护网络通信的加密协议，TLS 1.3 是 TLS
+协议的最新版本。TLS 1.3
+的引入旨在提供比以前版本更强大的安全性、隐私保护和性能。这里对比其所取代的
+1.2 版本，对 TLS 1.3 做一个简单的介绍。并且，针对基于 OpenSSL
+的网络应用，给出了使用和实现 TLS 1.3 的示例。]]>
+    </summary>
+    <title>启用 TLS 1.3 提升网络应用的安全性和性能</title>
+    <updated>2026-06-07T23:58:17.373Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/</id>
+    <link href="https://www.packetmania.net/2022/12/29/PGITVW-3-binsearch/"/>
+    <published>2022-12-29T22:52:16.000Z</published>
+    <summary>
+      <![CDATA[<p>正如“算法分析之父”高德纳所言：尽管二分查找的基本思想相对简单，但细节可能出乎意料地棘手。在实际面试中，有非常多的程序员无法写出正确无误的二分查找程序。]]>
+    </summary>
+    <title>程序员面试题精解（3）— 二分查找</title>
+    <updated>2026-06-07T23:58:17.356Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
+    <id>https://www.packetmania.net/2022/12/23/uClibc-tips/</id>
+    <link href="https://www.packetmania.net/2022/12/23/uClibc-tips/"/>
+    <published>2022-12-23T23:37:26.000Z</published>
+    <summary>
+      <![CDATA[<p><a
+href="https://www.uclibc.org">uClibc</a>是一个面向嵌入式Linux系统的小巧而精致的C标准库，在低配置的嵌入式系统及物联网设备的研发中应用广泛。这里分享最近的一些使用经验，为需要解决相似问题或需求的工程师提供便利。]]>
+    </summary>
+    <title>嵌入式Linux系统中uClibc标准库使用经验笔记</title>
+    <updated>2026-06-07T23:58:17.379Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    <category term="Python编程" scheme="https://www.packetmania.net/tags/Python%E7%BC%96%E7%A8%8B/"/>
+    <category term="CTF" scheme="https://www.packetmania.net/tags/CTF/"/>
+    <id>https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/</id>
+    <link href="https://www.packetmania.net/2022/06/17/picoCTF-Sum-O-Primes/"/>
+    <published>2022-06-18T06:32:21.000Z</published>
+    <summary>
+      <![CDATA[<p>一个偶然的机会，接触到一道picoCTF的RSA挑战题Sum-O-Primes。这道题不难，了解RSA的基本算法就能做出来。另外，如果熟悉RSA算法演变的历史，还能找到第二种巧妙的快速解法。]]>
+    </summary>
+    <title>巧解picoCTF的RSA挑战题Sum-O-Primes</title>
+    <updated>2026-06-07T23:58:17.379Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术评论" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E8%AF%84%E8%AE%BA/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    <category term="网络安全" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"/>
+    <id>https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/</id>
+    <link href="https://www.packetmania.net/2022/05/01/Stop-TLS1-0-TLS1-1/"/>
+    <published>2022-05-01T19:20:25.000Z</published>
+    <summary>
+      <![CDATA[<p>2021年3月，互联网工程任务组（IETF）发布分类为当前最佳实践的<a
+href="https://tools.ietf.org/html/rfc8996">RFC 8996</a>，正式宣布弃用TLS
+1.0和 TLS
+1.1协议。如果你的应用程序和网站服务还在使用这些协议，请马上停止并立即更新到TLS
+1.2或TLS 1.3协议版本，以消除可能存在的安全隐患。]]>
+    </summary>
+    <title>请马上停止使用TLS 1.0和TLS 1.1！</title>
+    <updated>2026-06-07T23:58:17.369Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="动手实践" scheme="https://www.packetmania.net/categories/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5/"/>
+    <category term="树莓派" scheme="https://www.packetmania.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    <category term="NAS" scheme="https://www.packetmania.net/tags/NAS/"/>
+    <id>https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/</id>
+    <link href="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/"/>
+    <published>2021-12-19T18:53:08.000Z</published>
+    <summary>
+      <![CDATA[<p>网络附接存储（NAS）通过计算机网络提供对异构网络用户的文件级数据访问。随着硬盘价格的持续下降，NAS设备已经走入大众家庭。领先中小企业及家用NAS市场的品牌产商如群晖科技（Synology），其产品价格从低端<span
+class="tex2jax_ignore">$</span>300到高端<span
+class="tex2jax_ignore">$700</span>不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。]]>
+    </summary>
+    <title>自己动手使用树莓派搭建家用NAS和流媒体服务器</title>
+    <updated>2026-06-07T23:58:17.358Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="工具使用" scheme="https://www.packetmania.net/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"/>
+    <category term="编程工具" scheme="https://www.packetmania.net/tags/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/"/>
+    <id>https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/</id>
+    <link href="https://www.packetmania.net/2021/11/13/iTerm2-OMZ-Powerlevel10k/"/>
+    <published>2021-11-14T06:31:58.000Z</published>
+    <summary>
+      <![CDATA[<p>熟练使用基于终端的各种命令行工具，可以让程序员的工作效率倍增。在苹果macOS上，集成终端应用iTerm2、Oh-My-Zsh配置框架和Powerlevel10k主题，能打造出非常酷的资深程序员专业终端。]]>
+    </summary>
+    <title>iTerm2 + Oh-My-Zsh + Powerlevel10k 打造酷炫macOS终端</title>
+    <updated>2026-06-07T23:58:17.375Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="工具使用" scheme="https://www.packetmania.net/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2021/08/03/ASAN-intro/</id>
+    <link href="https://www.packetmania.net/2021/08/03/ASAN-intro/"/>
+    <published>2021-08-03T23:00:56.000Z</published>
+    <summary>
+      <![CDATA[<p>内存访问错误是最常见的软件错误，常常造成程序崩溃。程序员们一直在找寻优秀的内存访问错误检测工具，以便及时定位和排除错误以提高软件的可靠性。2012年由谷歌工程师开发的一款AddressSanitizer工具，以其覆盖面广、高效率和低开销的特性，已成为C/C++程序员们的首选。这里对其原理和使用方法做一个简要的介绍。]]>
+    </summary>
+    <title>AddressSanitizer — 程序员检测内存访问错误的利器</title>
+    <updated>2026-06-07T23:58:17.345Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/</id>
+    <link href="https://www.packetmania.net/2021/07/23/PGITVW-2-sqrt/"/>
+    <published>2021-07-23T23:28:43.000Z</published>
+    <summary>
+      <![CDATA[<p>遇到面试题“实现开平方根的函数”时，如果回答调用库函数<code>sqrt()</code>就可以了，那你就会错意了。很显然，面试官要求你实现自己的平方根运算函数。这时，如果再问为什么要自己写，那你的这次面试就危险了😌。]]>
+    </summary>
+    <title>程序员面试题精解（2）— 平方根运算</title>
+    <updated>2026-06-07T23:58:17.355Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="思科技术" scheme="https://www.packetmania.net/tags/%E6%80%9D%E7%A7%91%E6%8A%80%E6%9C%AF/"/>
+    <category term="Wi-Fi" scheme="https://www.packetmania.net/tags/Wi-Fi/"/>
+    <id>https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/</id>
+    <link href="https://www.packetmania.net/2021/06/05/Cisco-WiFi6-MuMIMO/"/>
+    <published>2021-06-05T21:49:07.000Z</published>
+    <summary>
+      <![CDATA[<p>思科的技术博客网站设立了<a
+href="https://blogs.cisco.com/tag/wi-fi-6">Wi-Fi 6专题页</a>，讲解Wi-Fi
+6技术要点及思科相应产品功能。近期的一篇由思科高级无线工程师<a
+href="https://blogs.cisco.com/author/shreyastrivedi">史瑞亚斯·特里维迪</a>和octoScope公司首席科学家<a
+href="http://www.linkedin.com/in/ehsshearer">史蒂夫·希勒</a>合作的<a
+href="https://blogs.cisco.com/networking/too-fast-too-furious-with-catalyst-wi-fi-6-mu-mimo">博文</a>，结合测试实例介绍OFDMA与MU-MIMO技术相结合，在多用户环境下达到两倍多总吞吐量的能力。文章简洁明了，可以让读者快速领悟Wi-Fi
+6的关键技术革新，特此翻译为中文，分享给感兴趣的朋友。]]>
+    </summary>
+    <title>思科 Catalyst Wi-Fi 6 MU-MIMO 带你畅享速度与激情</title>
+    <updated>2026-06-07T23:58:17.346Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="面试指南" scheme="https://www.packetmania.net/categories/%E9%9D%A2%E8%AF%95%E6%8C%87%E5%8D%97/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/</id>
+    <link href="https://www.packetmania.net/2021/05/30/PGITVW-1-bitcount/"/>
+    <published>2021-05-31T03:53:56.000Z</published>
+    <summary>
+      <![CDATA[<p>现代计算机的硬件设计建立于数字电路的基础之上，而数字电路采用以2为基数的二进制记数系统。由此，二进制及其数字位（称为比特）的运算构成计算机系统软件的基石。一个常见的程序员面试题，就是比特位计数，即计算给定整数的二进制表示中比特1的个数。]]>
+    </summary>
+    <title>程序员面试题精解（1）— 比特位计数</title>
+    <updated>2026-06-07T23:58:17.355Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>子曦</name>
+    </author>
+    <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
+    <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
+    <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    <id>https://www.packetmania.net/2021/04/10/Support-16bit-access/</id>
+    <link href="https://www.packetmania.net/2021/04/10/Support-16bit-access/"/>
+    <published>2021-04-10T23:19:12.000Z</published>
+    <summary>
+      <![CDATA[<p>在计算机网络设备和嵌入式系统的研发中，常常需要硬件和软件设计人员紧密配合，以实现精准而有效的平台支持。特别地，对于需要数据存取的设备，了解设备的基本工作原理、控制和数据线路的连接方式及信号流程，对于可靠的软件设计和实现必不可少。否则，如果硬件电路设计或软件程序编写基于错误的假定，将需要更多的时间调试、排错和补救，可能严重影响项目的进度。]]>
+    </summary>
+    <title>C编程支持16位存取接口的存储设备</title>
+    <updated>2026-06-07T23:58:17.372Z</updated>
+  </entry>
+</feed>

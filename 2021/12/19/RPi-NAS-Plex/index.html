@@ -50,7 +50,7 @@
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/ADM-HDD.png">
 <meta property="og:image" content="https://www.packetmania.net/2021/12/19/RPi-NAS-Plex/NASPi-final.jpg">
 <meta property="article:published_time" content="2021-12-19T18:53:08.000Z">
-<meta property="article:modified_time" content="2026-06-07T23:58:17.358Z">
+<meta property="article:modified_time" content="2026-07-23T20:15:57.219Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="NAS">
 <meta property="article:tag" content="树莓派">
@@ -358,7 +358,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-07 16:58:17" itemprop="dateModified" datetime="2026-06-07T16:58:17-07:00">2026-06-07</time>
+      <time title="修改时间：2026-07-23 13:15:57" itemprop="dateModified" datetime="2026-07-23T13:15:57-07:00">2026-07-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -678,16 +678,16 @@ target="_blank" rel="noopener" href="https://askubuntu.com/questions/1286545/wha
 successful”，我们知道安装成功。这时Plex流媒体服务也启动了，从macOS端再运行nmap扫描，发现TCP服务端口32400已开</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">❯ nmap -p1-65535 192.168.2.4 | grep open</span><br><span class="line">22/tcp    open     ssh</span><br><span class="line">80/tcp    open     http</span><br><span class="line">111/tcp   open     rpcbind</span><br><span class="line">139/tcp   open     netbios-ssn</span><br><span class="line">445/tcp   open     microsoft-ds</span><br><span class="line">2049/tcp  open     nfs</span><br><span class="line">5357/tcp  open     wsdapi</span><br><span class="line">32400/tcp open     plex</span><br></pre></td></tr></table></figure>
 <h4 id="配置媒体服务器">配置媒体服务器</h4>
-<p>Plex媒体服务器的配置是在网页上完成的。在macOS电脑端启动浏览器，键入网址<strong>http://&lt;IP-地址&gt;:32400/web</strong>，不出意外的话会看到如下的页面
-<img src="Plex-notice.png" style="width:80.0%;height:80.0%" />
-我们可以用Google、Facebook或Apple账户登录，也可以输入电邮创建新账户。逐步跟随页面的指示，不需要负任何费用，很快到达<strong>Server
+<p>Plex媒体服务器的配置是在网页上完成的。在macOS电脑端启动浏览器，键入网址<strong>http://&lt;IP-地址&gt;:32400/web</strong>，不出意外的话会看到如下的页面</p>
+<p><img src="Plex-notice.png" style="width:80.0%;height:80.0%" /></p>
+<p>我们可以用Google、Facebook或Apple账户登录，也可以输入电邮创建新账户。逐步跟随页面的指示，不需要负任何费用，很快到达<strong>Server
 Setup</strong>页面。这里可配置服务器名称和添加资料库。一般情况下我们没必要从外网访问家庭媒体服务器，
 所以记住在这一步取消勾选“Allow me to access my media outside my
 home”。添加资料库时，先选定资料库类型（电影、电视剧集、音乐和照片等），然后点击“BROWSE
 FOR MEDIA
-FOLDER”按钮浏览和选定对应的文件夹。资料库添加完毕，相应的媒体文件立即就会出现在本地的服务目录中，截图如下
-<img src="Plex-movie.png" style="width:90.0%;height:90.0%" />
-这里我们的树莓派NAS的本地服务器名为ZIXI-RPI-NAS，资料库里的电影目录中显示《黑客帝国》三部曲，并且正在播放第一部<em>The
+FOLDER”按钮浏览和选定对应的文件夹。资料库添加完毕，相应的媒体文件立即就会出现在本地的服务目录中，截图如下</p>
+<p><img src="Plex-movie.png" style="width:90.0%;height:90.0%" /></p>
+<p>这里我们的树莓派NAS的本地服务器名为ZIXI-RPI-NAS，资料库里的电影目录中显示《黑客帝国》三部曲，并且正在播放第一部<em>The
 Matrix</em>。将鼠标移到服务器名称上，名称右边会出现➕图标，点击可以继续添加新的媒体库。</p>
 <p>Plex媒体服务器配置好了后，我们可以从家庭网络上的任意设备打开浏览器做流媒体点播，不需要下载额外的应用程序。整个体验就如同我们自己的专有家庭奈飞（Netflix）服务一样！</p>
 <h2 id="性能评估">性能评估</h2>
@@ -696,9 +696,10 @@ Matrix</em>。将鼠标移到服务器名称上，名称右边会出现➕图标
 <p>参考Geekworm的<a
 target="_blank" rel="noopener" href="https://wiki.geekworm.com/Naspi_stress_test">NASPi压力测试维基页</a>，在SSH连接的终端执行下列的命令，从GitHub克隆测试程序运行压力测试：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/geekworm-com/rpi-cpu-stress</span><br><span class="line"><span class="built_in">cd</span> rpi-cpu-stress</span><br><span class="line"><span class="built_in">chmod</span> +x stress.sh</span><br><span class="line"><span class="built_in">sudo</span> ./stress.sh</span><br></pre></td></tr></table></figure>
-<p>同时建立第二个SSH连接，运行htop监控系统负荷状态。下图是接近5分钟时的截图（左边是htop实时显示，右边为压力测试输出）
-<img src="RPi-stress-test.png" style="width:80.0%;height:80.0%" />
-右边输出的<code>temp</code>值除以1000即是CPU的温度。可以看到，测试过程中所有4个CPU核都达到100%满负荷，而最高温度不操过70℃。这时抚摸机身没有明显热感。键入<code>ctrl-c</code>中止压力测试，再单独执行测温脚本：</p>
+<p>同时建立第二个SSH连接，运行htop监控系统负荷状态。下图是接近5分钟时的截图（左边是htop实时显示，右边为压力测试输出）</p>
+<p><img src="RPi-stress-test.png"
+style="width:80.0%;height:80.0%" /></p>
+<p>右边输出的<code>temp</code>值除以1000即是CPU的温度。可以看到，测试过程中所有4个CPU核都达到100%满负荷，而最高温度不操过70℃。这时抚摸机身没有明显热感。键入<code>ctrl-c</code>中止压力测试，再单独执行测温脚本：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pi@raspberrypi:~ $ ./pi-temp.sh</span><br><span class="line">Fri Dec 24 15:59:21 PST 2021 @ raspberrypi</span><br><span class="line">-------------------------------------------</span><br><span class="line">GPU =&gt; temp=39.9<span class="string">&#x27;C</span></span><br><span class="line"><span class="string">CPU =&gt; temp=40&#x27;</span>C</span><br></pre></td></tr></table></figure>
 <p>系统温度回到较低的数值范围。测试结果确认本系统符合设计要求。</p>
 <h3 id="文件传输测速">文件传输测速</h3>
@@ -1038,12 +1039,12 @@ target="_blank" rel="noopener" href="https://amzn.to/3Jp5qjd">https://amzn.to/3J
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
 </noscript>
-<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
-<script src="/js/third-party/comments/utterances.js" defer></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
 <script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","body":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"fce02bd85b6f6b010d3bc70baae54eb1"}</script>
 <script src="/js/third-party/comments/gitalk.js" defer></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
 
 </body>
 </html>

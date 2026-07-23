@@ -32,7 +32,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.packetmania.net/2021/03/01/Python-Textbook-RSA/finding-prime.jpg">
 <meta property="article:published_time" content="2021-03-01T19:08:51.000Z">
-<meta property="article:modified_time" content="2026-07-23T17:18:28.428Z">
+<meta property="article:modified_time" content="2026-07-23T20:19:56.869Z">
 <meta property="article:author" content="子曦">
 <meta property="article:tag" content="Python编程">
 <meta property="article:tag" content="密码学">
@@ -342,7 +342,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-07-23 10:18:28" itemprop="dateModified" datetime="2026-07-23T10:18:28-07:00">2026-07-23</time>
+      <time title="修改时间：2026-07-23 13:19:56" itemprop="dateModified" datetime="2026-07-23T13:19:56-07:00">2026-07-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -474,9 +474,10 @@ RSA加密算法需要计算模数<span
 class="math inline">\(N\)</span>的卡迈克尔函数<span
 class="math inline">\(\lambda(N)\)</span>，其公式是<span
 class="math inline">\(\lambda(pq)=\operatorname{lcm}(p − 1, q −
-1)\)</span>，这里用到了最小公倍数函数。最小公倍数与最大公约数的关系是：<span
-class="math display">\[\operatorname{lcm}(a,b)={\frac{(a\cdot
-b)}{\gcd(a,b)}}\]</span> 而求最大公约数有高效的欧几里得算法
+1)\)</span>，这里用到了最小公倍数函数。最小公倍数与最大公约数的关系是：</p>
+<p><span class="math display">\[\operatorname{lcm}(a,b)={\frac{(a\cdot
+b)}{\gcd(a,b)}}\]</span></p>
+<p>而求最大公约数有高效的欧几里得算法
 (辗转相除法)，其原理是：两个整数的最大公约数等于其中较小的数和两数相除余数的最大公约数。欧几里得算法的具体实现可以使用迭代或递归方法。这里应用迭代实现最大公约数函数，两个函数的Python代码如下：</p>
 <p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">gcd</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;Computes the Great Common Divisor using the Euclid&#x27;s algorithm&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">while</span> b:</span><br><span class="line">        a, b = b, a % b</span><br><span class="line">    <span class="keyword">return</span> a</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">lcm</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Computes the Lowest Common Multiple using the GCD method.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> a // gcd(a, b) * b</span><br></pre></td></tr></table></figure></p></li>
 <li><p><strong>扩展欧几里得算法<code>exgcd(a,b)</code>和模逆元函数<code>invmod(e,m)</code>：</strong><br />
@@ -812,12 +813,12 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
 </noscript>
-<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
-<script src="/js/third-party/comments/utterances.js" defer></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
 <script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"packetmania","repo":"packetmania.github.io","client_id":"a45f6ae3f97c1a467856","client_secret":"7d81b74f952b388f93dcb5a8c44cd12f657969fa","admin_user":"packetmania","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","body":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"7dae5eb181b68e7cc4a1750f0f468c95"}</script>
 <script src="/js/third-party/comments/gitalk.js" defer></script>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"packetmania/packetmania.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
 
 </body>
 </html>

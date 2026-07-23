@@ -192,8 +192,8 @@ href="https://ibruce.info/2015/04/04/busuanzi/">不蒜子
     <category term="技术小札" scheme="https://www.packetmania.net/categories/%E6%8A%80%E6%9C%AF%E5%B0%8F%E6%9C%AD/"/>
     <category term="TCP/IP" scheme="https://www.packetmania.net/tags/TCP-IP/"/>
     <category term="C/C++编程" scheme="https://www.packetmania.net/tags/C-C-%E7%BC%96%E7%A8%8B/"/>
-    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     <category term="系统编程" scheme="https://www.packetmania.net/tags/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"/>
+    <category term="密码学" scheme="https://www.packetmania.net/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
     <category term="网络通信" scheme="https://www.packetmania.net/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
     <id>https://www.packetmania.net/2022/12/23/uClibc-tips/</id>
     <link href="https://www.packetmania.net/2022/12/23/uClibc-tips/"/>
@@ -258,7 +258,7 @@ class="tex2jax_ignore">$</span>300到高端<span
 class="tex2jax_ignore">$700</span>不等。但如果你是树莓派玩家，只需要最低价一半左右的成本，就可以搭建很不错的家用NAS及流媒体播放服务。]]>
     </summary>
     <title>自己动手使用树莓派搭建家用NAS和流媒体服务器</title>
-    <updated>2026-06-07T23:58:17.358Z</updated>
+    <updated>2026-07-23T20:15:57.219Z</updated>
   </entry>
   <entry>
     <author>

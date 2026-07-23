@@ -1376,7 +1376,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #ff6aff;
+    background: #f167ff;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -3138,21 +3138,4 @@ header.header {
 }
 .busuanzi-count #busuanzi_container_site_pv {
   display: inline;
-}
-.post-related {
-  margin-top: 2.5em;
-  padding-top: 1.2em;
-  border-top: 1px solid var(--hr-color);
-}
-.post-related-title {
-  margin-bottom: 0.8em;
-  font-weight: 600;
-  font-size: 1.05em;
-}
-.post-related-list {
-  margin: 0;
-  padding-left: 1.4em;
-}
-.post-related-item {
-  margin: 0.4em 0;
 }
